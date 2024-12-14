@@ -15,9 +15,10 @@ datasource db {
 
 model User {
   id      Int      @id @default(autoincrement())
+  userName String   @unique
   password String
-  clubId Int
-  club Club[]
+  point Int @default(10000)
+  clubs Club[] @relation("UserClubs")
 
 
 }
@@ -28,9 +29,8 @@ model Club {
   clubLogo String?
   clubDescription String?
   clubLocation String?
-  clubOwnerId Int
-  clubMembers User @relation(fields: [clubOwnerId], references: [id])
-
+  users User[] @relation("UserClubs")
+  players Player[]
 
   
 
@@ -39,10 +39,11 @@ model Club {
 model Player {
   id Int @id @default(autoincrement())
   name String @unique
-  grade Int
+  grade String
   age Int
   avater String?
   clubid Int
+  club Club @relation(fields: [clubid], references: [id])
   suttlePoint Int @default(10000)
   win Int @default(0)
   lose Int @default(0)
