@@ -17,6 +17,7 @@ model User {
   id      Int      @id @default(autoincrement())
   password String
   clubId Int
+  club Club[]
 
 
 }
@@ -28,6 +29,8 @@ model Club {
   clubDescription String?
   clubLocation String?
   clubOwnerId Int
+  clubMembers User @relation(fields: [clubOwnerId], references: [id])
+
 
   
 
