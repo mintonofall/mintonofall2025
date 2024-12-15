@@ -5,9 +5,12 @@ import '@picocss/pico'
 import db from "@/lib/db";
 import Link from "next/link";
 import { useActionState } from "react";
+import {getUser} from "@/lib/getUserGoHome";
+import { redirect } from "next/navigation";
 
-export default function Home() {
+export default async function Home() {
   const [state, action] = useActionState(handleLogin, null);
+  const isUser = await getUser();
   return (
   <div className="flex flex-col items-center justify-center min-h-screen py-2">
     <Image src="/logo512.png" alt="Vercel Logo" width={512} height={512} />

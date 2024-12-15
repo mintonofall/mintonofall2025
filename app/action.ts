@@ -39,4 +39,4 @@ import { redirect } from "next/navigation";
       return {error: {password: "비밀번호가 일치하지 않습니다."}}
       }
     // }
-  };
+  }

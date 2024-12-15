@@ -1,10 +1,10 @@
 "use client";
-import { useFormState } from "react-dom";
 import '@picocss/pico'
 import  handleSignUp from "./action"
+import { useActionState } from "react";
 
 export default function CreateUser() {
-    const [state, action] = useFormState(handleSignUp, null);
+    const [state, action] = useActionState(handleSignUp, null);
 return (
     <form
       action={action}
