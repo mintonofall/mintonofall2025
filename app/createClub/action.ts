@@ -11,16 +11,18 @@ async function getUser() {
     return user;
   }
 }
-export default async function handleClubCreate(prevState: any, formdata: FormData) {
-const user = await getUser();
-  const clubname = formdata.get("clubname") as string;
-  const location = formdata.get("location") as string;
+export default async function handleClubCreate(
+  prevState: any,
+  formdata: FormData
+) {
+  const user = await getUser();
+  const clubName = formdata.get("clubName") as string;
+  const clubLocation = formdata.get("clubLocation") as string;
   const club = await db.club.create({
     data: {
-      clubname,
-      location,
-      sissopId: user!.id,
+      clubName,
+      clubLocation,
     },
-  })
+  });
   redirect("/home");
 }

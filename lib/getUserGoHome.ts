@@ -3,14 +3,19 @@ import db from "./db";
 import getSession from "./session";
 
 export async function getUser() {
-    const session = await getSession();
-    console.log(session);
-    if (session.id) {
-    redirect("/home");
-    }
+  const session = await getSession();
+  console.log(session);
+  if (session.id) {
+    const user = await db.user.findUnique({
+      where: {
+        id: session.id,
+      },
+    });
+    return user;
+  }
 }
 
 export async function logout() {
-    const session = getSession();
-    (await session).destroy();
+  const session = getSession();
+  (await session).destroy();
 }
