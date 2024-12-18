@@ -1,15 +1,25 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import WaitPlayerList from "@/app/component/WaitPlayerList";
 import db from "@/lib/db";
 
-export default async function GameBoard({
-    params,
-}: {
-    params: { id: string };
-}) {
-    const { id } = await params;
+export default function GameBoard({ params }: { params: { id: string } }) {
+    const [showPlayerList, setShowPlayerList] = useState(false);
+    const [id, setId] = useState<string | null>(null);
+
+    useEffect(() => {
+        async function fetchParams() {
+            const resolvedParams = await params;
+            setId(resolvedParams.id);
+        }
+        fetchParams();
+    }, [params]);
 
     const togglePlayerList = () => {
         setShowPlayerList((prev) => !prev);
     };
+
     return (
         <div className="flex h-screen">
             {/* 좌측 화면 */}
@@ -51,10 +61,24 @@ export default async function GameBoard({
             </div>
             {/* 우측 하단 고정 아이콘 */}
             <div className="fixed bottom-4 right-4">
-                <button className="bg-blue-500 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg">
+                <button
+                    className="bg-blue-500 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg"
+                    onClick={togglePlayerList}
+                >
                     <span className="text-3xl">+</span>
                 </button>
             </div>
+            {showPlayerList && (
+                <div className="fixed inset-y-0 right-0 w-1/4 bg-black bg-opacity-50 flex items-center justify-center">
+                    <button
+                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg"
+                        onClick={togglePlayerList}
+                    >
+                        <span className="text-xl">×</span>
+                    </button>
+                    <WaitPlayerList />
+                </div>
+            )}
         </div>
     );
 }
