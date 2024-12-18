@@ -1,6 +1,9 @@
 import db from "@/lib/db";
 import { getUser } from "@/lib/getUserGoHome";
 import Link from "next/link";
+import LogoutButton from "../component/LogoutButton";
+import { logout } from "@/lib/logout";
+import "@picocss/pico";
 
 export default async function Home() {
   const user = await getUser();
@@ -21,6 +24,7 @@ export default async function Home() {
   return (
     <div>
       <h1>Home {user?.userName}</h1>
+      <button onClick={logout}>Logout</button>
       {club?.clubs.map((club) => (
         <div key={club.id}>
           <Link href={`/home/${club.id}`}>
