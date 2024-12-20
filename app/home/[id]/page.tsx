@@ -20,6 +20,10 @@ export default function GameBoard({ params }: { params: { id: string } }) {
         setShowPlayerList((prev) => !prev);
     };
 
+    const closePlayerList = () => {
+        setShowPlayerList(false);
+    };
+
     return (
         <div className="flex h-screen">
             {/* 좌측 화면 */}
@@ -76,7 +80,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
                     >
                         <span className="text-xl">×</span>
                     </button>
-                    <WaitPlayerList />
+                    <WaitPlayerList onClose={closePlayerList} />
                 </div>
             )}
         </div>

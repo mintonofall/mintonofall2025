@@ -1,7 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import getSession from "./lib/session";
+import { redirect } from "next/navigation";
 
 export async function middleware(req: NextRequest) {
     const session = await getSession();
-    console.log("session", session);
+    if (req.nextUrl.pathname === "/") {
+        if (session.id) {
+            return NextResponse.redirect(new URL("/home", req.url));
+        }
+    }
 }
