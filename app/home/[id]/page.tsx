@@ -7,6 +7,7 @@ import db from "@/lib/db";
 export default function GameBoard({ params }: { params: { id: string } }) {
     const [showPlayerList, setShowPlayerList] = useState(false);
     const [id, setId] = useState<string | null>(null);
+    const [waitPlayerList, setWaitPlayerList] = useState<number[]>([]);
 
     useEffect(() => {
         async function fetchParams() {
@@ -24,6 +25,12 @@ export default function GameBoard({ params }: { params: { id: string } }) {
         setShowPlayerList(false);
     };
 
+    const enterPlayer = (playerId: number) => {
+        console.log(playerId);
+        const waitPlayerListCopy = [...waitPlayerList];
+        waitPlayerList.push(playerId);
+    };
+
     return (
         <div className="flex h-screen">
             {/* 좌측 화면 */}
@@ -35,7 +42,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
                 <div className="flex flex-row h-3/4 p-4">
                     {/* 하단 7 부분 */}
                     <div className="flex flex-col w-10 bg-green-200 ">
-                        <div className="grid grid-col-10 h-full gap-1">
+                        <div className="grid h-full gap-1">
                             <div className="bg-red-200">1</div>
                             <div className="bg-blue-200">2</div>
                             <div className="bg-yellow-200">3</div>
@@ -49,10 +56,10 @@ export default function GameBoard({ params }: { params: { id: string } }) {
                         </div>
                     </div>
                     <div className="w-full">
-                        <div className="grid grid-rows-10 grid-cols-4 gap-1 h-full">
+                        <div className="grid grid-rows-10 grid-cols-4 gap-1 w-full h-full ">
                             {Array.from({ length: 40 }, (_, index) => (
                                 <div key={index} className="bg-gray-300">
-                                    {index + 1}
+                                    {index}
                                 </div>
                             ))}
                         </div>
@@ -61,7 +68,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
             </div>
             {/* 우측 화면 */}
             <div className="w-1/3 bg-gray-400 p-4">
-                <div>Content for the right screen</div>
+                <div>{waitPlayerList}</div>
             </div>
             {/* 우측 하단 고정 아이콘 */}
             <div className="fixed bottom-4 right-4">
@@ -73,14 +80,17 @@ export default function GameBoard({ params }: { params: { id: string } }) {
                 </button>
             </div>
             {showPlayerList && (
-                <div className="fixed inset-y-0 right-0 w-1/4 bg-black bg-opacity-50 flex items-center justify-center">
+                <div className="fixed top-0 right-0 w-1/4 bg-black bg-opacity-50 flex items-center justify-center">
                     <button
                         className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg"
-                        onClick={togglePlayerList}
+                        // onClick={togglePlayerList}
                     >
                         <span className="text-xl">×</span>
                     </button>
-                    <WaitPlayerList onClose={closePlayerList} />
+                    <WaitPlayerList
+                        onClose={closePlayerList}
+                        onEnterPlayer={enterPlayer}
+                    />
                 </div>
             )}
         </div>

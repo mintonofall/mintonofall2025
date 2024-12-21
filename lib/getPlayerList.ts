@@ -7,7 +7,6 @@ async function getPlayerList() {
             clubid: 1,
         },
     });
-    console.log(players);
     return players;
 }
 
