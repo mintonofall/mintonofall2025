@@ -11,28 +11,30 @@ interface Player {
 import Image from "next/image";
 export default function PlayerCard(player: Player) {
     return (
-        <div className="flex items-center w-full">
+        <div className="flex items-center w-full h-auto p-1 bg-white shadow-md rounded-lg">
             <Image
                 src={`${player.avater}/public`}
-                width={100}
-                height={100}
+                width={80}
+                height={80}
                 alt={player.name}
-                className="rounded-3xl"
+                className="rounded-full"
                 style={{
                     objectFit: "cover",
-                    width: "100px",
-                    height: "100px",
+                    width: "80px",
+                    height: "80px",
                 }}
             />
-            <div className="ml-4">
-                <div>{player.name}</div>
-                <div className="flex">
-                    <div>{player.age}</div>
-                    <div>{player.grade}</div>
+            <div className="flex flex-col ml-4">
+                <div className="flex flex-row items-center space-x-2 mb-2">
+                    <div className="text-lg font-semibold">{player.name}</div>
+                    <div className="text-sm text-gray-500">{player.age}세</div>
+                    <div className="text-sm text-gray-500">{player.grade}</div>
                 </div>
-                <div>경기수: {player.games}</div>
-                <div>
-                    {player.win}승 {player.lose}패
+                <div className="text-sm text-gray-700">
+                    <div>경기수: {player.games}</div>
+                    <div>
+                        {player.win}승 {player.lose}패
+                    </div>
                 </div>
             </div>
         </div>

@@ -2,6 +2,7 @@
 import { redirect } from "next/navigation";
 import db from "./db";
 import getSession from "./session";
+import { NextResponse } from "next/server";
 
 export async function getUser() {
     const session = await getSession();
@@ -28,4 +29,67 @@ export async function getPlayer(id: number) {
         },
     });
     return player;
+}
+
+export async function pushWaitPlayerList(Playerid: number, clubid: number) {
+    const pushPlayer = await db.waitPlayerList.create({
+        data: {
+            clubid,
+            Playerid,
+            enterDate: new Date(),
+            exitDate: new Date(new Date().setDate(new Date().getDate() - 1)),
+        },
+    });
+}
+
+export async function getWaitPlayerList(clubid: number) {
+    const today = new Date(new Date().setHours(0, 0, 0, 0));
+    const waitPlayerList = await db.waitPlayerList.findMany({
+        where: {
+            clubid,
+            enterDate: {
+                gte: new Date(new Date().setHours(0, 0, 0, 0)),
+                lt: new Date(new Date().setHours(23, 59, 59, 999)),
+            },
+            exitDate: {
+                lt: today,
+            },
+        },
+    });
+    return waitPlayerList;
+}
+
+export async function exitPlayer(Playerid: number, clubid: number) {
+    const exitPlayer = await db.waitPlayerList.updateMany({
+        where: {
+            Playerid,
+            clubid,
+        },
+        data: {
+            exitDate: new Date(),
+        },
+    });
+}
+
+export async function createWaitGame(
+    clubid: number,
+    playerid: number,
+    point: number
+) {
+    const waitGames = await db.waitGame.create({
+        data: {
+            clubid,
+            playerid,
+            point,
+        },
+    });
+}
+
+export async function getWaitGames(clubid: number) {
+    const waitGames = await db.waitGame.findMany({
+        where: {
+            clubid,
+        },
+    });
+    return waitGames;
 }

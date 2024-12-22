@@ -40,6 +40,7 @@ model Player {
   id Int @id @default(autoincrement())
   name String @unique
   grade String
+  gender String @default("man")
   age Int
   avater String?
   clubid Int
@@ -59,4 +60,11 @@ model WaitPlayerList {
   Playerid Int
   enterDate DateTime
   exitDate DateTime?
+}
+
+model WaitGame {
+  id Int @id @default(autoincrement())
+  clubid Int
+  playerid Int
+  point Int
 }

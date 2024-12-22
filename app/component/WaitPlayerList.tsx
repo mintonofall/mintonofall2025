@@ -2,13 +2,18 @@
 import getPlayerList from "@/lib/getPlayerList";
 import { useEffect, useState } from "react";
 import PlayerCard from "./PlayerCard";
+import Link from "next/link";
 
 export default function WaitPlayerList({
     onClose,
     onEnterPlayer,
+    waitPLayerList,
+    clubId,
 }: {
     onClose: () => void;
     onEnterPlayer: (id: number) => void;
+    waitPLayerList: number[];
+    clubId: number;
 }) {
     const [playerList, setPlayerList] = useState<
         {
@@ -23,6 +28,7 @@ export default function WaitPlayerList({
         }[]
     >([]);
     const [searchTerm, setSearchTerm] = useState("");
+    const [playerListMsg, setPlayerListMsg] = useState("");
 
     useEffect(() => {
         async function fetchPlayers() {
@@ -45,18 +51,27 @@ export default function WaitPlayerList({
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-full p-2 mb-4 border border-gray-300 rounded"
             />
-            <button className="w-full mt-4 p-2 bg-blue-500 text-white rounded">
-                선수등록
-            </button>
+            <Link href={`/createPlayer/`}>
+                <button className="w-full mt-4 p-2 bg-blue-500 text-white rounded">
+                    선수등록
+                </button>
+            </Link>
+            <div className="text-red-600">{playerListMsg}</div>
             <ul>
                 {filteredPlayers.map((player) => (
                     <li
                         className="flex p-2"
                         key={player.id}
                         onClick={() => {
-                            console.log("from Comp : ", player.id);
-                            onEnterPlayer(player.id);
-                            onClose();
+                            if (waitPLayerList.includes(player.id)) {
+                                setPlayerListMsg("이미 대기중인 선수입니다.");
+                            } else {
+                                console.log("from Comp : ", player.id);
+                                onEnterPlayer(player.id);
+                                setPlayerListMsg("");
+                                window.location.reload();
+                                onClose();
+                            }
                         }}
                     >
                         <PlayerCard {...player} />
