@@ -1,5 +1,4 @@
 "use client";
-import "@picocss/pico";
 import { handlePlayerCreate, getUploadURL } from "./action";
 import { useActionState } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
@@ -42,18 +41,29 @@ export default function CreatePlayer({ params }: { params: { id: string } }) {
     }
 
     return (
-        <div className="p-7">
-            <h1 className="text-3xl">선수를 등록해 주세요</h1>
+        <div className="p-7 max-w-2xl mx-auto bg-white shadow-md rounded-lg">
+            <h1 className="text-3xl font-bold mb-6 text-center">
+                선수를 등록해 주세요
+            </h1>
             <form className="flex flex-col gap-4" action={action}>
-                <input type="text" name="name" placeholder="선수이름" />
+                <input
+                    type="text"
+                    name="name"
+                    placeholder="선수이름"
+                    className="p-2 border border-gray-300 rounded-md"
+                />
                 <label
                     htmlFor="photo"
-                    className="flex justify-center items-center size-full aspect-square border-dashed border-2 border-gray-300 rounded-lg bg-cover bg-center bg-no-repeat"
+                    className="flex justify-center items-center w-full h-64 border-dashed border-2 border-gray-300 rounded-lg bg-cover bg-center bg-no-repeat cursor-pointer"
                     style={{
                         backgroundImage: `url(${preview})`,
                     }}
                 >
-                    {preview ? "" : <PhotoIcon className="size-48" />}
+                    {preview ? (
+                        ""
+                    ) : (
+                        <PhotoIcon className="w-12 h-12 text-gray-400" />
+                    )}
                 </label>
                 <input
                     className="hidden"
@@ -63,63 +73,103 @@ export default function CreatePlayer({ params }: { params: { id: string } }) {
                     accept="image/*"
                     onChange={handleImageChange}
                 />
-                <div className="flex-row">
-                    <input type="radio" name="age" value={20} id="20" />
-                    <label htmlFor="20"> 20대</label>
-                    <input type="radio" name="age" value={30} id="30" />
-                    <label htmlFor="30"> 30대</label>
-                    <input
-                        type="radio"
-                        name="age"
-                        value={40}
-                        id="40"
-                        defaultChecked
-                    />
-                    <label htmlFor="40"> 40대</label>
-                    <input type="radio" name="age" value={50} id="50" />
-                    <label htmlFor="50"> 50대</label>
-                    <input type="radio" name="age" value={60} id="60" />
-                    <label htmlFor="60"> 60대</label>
+                <div className="flex flex-col gap-2">
+                    <span className="font-semibold">나이</span>
+                    <div className="flex flex-wrap gap-2">
+                        <label className="flex items-center gap-1">
+                            <input type="radio" name="age" value={20} id="20" />
+                            20대
+                        </label>
+                        <label className="flex items-center gap-1">
+                            <input type="radio" name="age" value={30} id="30" />
+                            30대
+                        </label>
+                        <label className="flex items-center gap-1">
+                            <input
+                                type="radio"
+                                name="age"
+                                value={40}
+                                id="40"
+                                defaultChecked
+                            />
+                            40대
+                        </label>
+                        <label className="flex items-center gap-1">
+                            <input type="radio" name="age" value={50} id="50" />
+                            50대
+                        </label>
+                        <label className="flex items-center gap-1">
+                            <input type="radio" name="age" value={60} id="60" />
+                            60대
+                        </label>
+                    </div>
                 </div>
-                <div className="flex flex-row items-center">
-                    <input
-                        type="radio"
-                        name="gender"
-                        value={"man"}
-                        id="man"
-                        defaultChecked
-                    />
-                    <label htmlFor="man">남성</label>
-                    <input
-                        type="radio"
-                        name="gender"
-                        value={"woman"}
-                        id="woman"
-                    />
-                    <label htmlFor="woman">여성</label>
+                <div className="flex flex-col gap-2">
+                    <span className="font-semibold">성별</span>
+                    <div className="flex gap-4">
+                        <label className="flex items-center gap-1">
+                            <input
+                                type="radio"
+                                name="gender"
+                                value={"man"}
+                                id="man"
+                                defaultChecked
+                            />
+                            남성
+                        </label>
+                        <label className="flex items-center gap-1">
+                            <input
+                                type="radio"
+                                name="gender"
+                                value={"woman"}
+                                id="woman"
+                            />
+                            여성
+                        </label>
+                    </div>
                 </div>
-                <div className="flex-row">
-                    <input type="radio" name="grade" value="S" id="S" />
-                    <label htmlFor="S"> S</label>
-                    <input
-                        type="radio"
-                        name="grade"
-                        value="A"
-                        id="A"
-                        defaultChecked
-                    />
-                    <label htmlFor="A"> A</label>
-                    <input type="radio" name="grade" value="B" id="B" />
-                    <label htmlFor="B">B</label>
-                    <input type="radio" name="grade" value="C" id="C" />
-                    <label htmlFor="C">C</label>
-                    <input type="radio" name="grade" value="D" id="D" />
-                    <label htmlFor="D">D</label>
-                    <input type="radio" name="grade" value="E" id="E" />
-                    <label htmlFor="E">E</label>
+                <div className="flex flex-col gap-2">
+                    <span className="font-semibold">등급</span>
+                    <div className="flex flex-wrap gap-2">
+                        <label className="flex items-center gap-1">
+                            <input type="radio" name="grade" value="S" id="S" />
+                            S
+                        </label>
+                        <label className="flex items-center gap-1">
+                            <input
+                                type="radio"
+                                name="grade"
+                                value="A"
+                                id="A"
+                                defaultChecked
+                            />
+                            A
+                        </label>
+                        <label className="flex items-center gap-1">
+                            <input type="radio" name="grade" value="B" id="B" />
+                            B
+                        </label>
+                        <label className="flex items-center gap-1">
+                            <input type="radio" name="grade" value="C" id="C" />
+                            C
+                        </label>
+                        <label className="flex items-center gap-1">
+                            <input type="radio" name="grade" value="D" id="D" />
+                            D
+                        </label>
+                        <label className="flex items-center gap-1">
+                            <input type="radio" name="grade" value="E" id="E" />
+                            E
+                        </label>
+                    </div>
                 </div>
                 <input type="number" value={params.id} name="clubId" hidden />
-                <button type="submit">선수등록</button>
+                <button
+                    type="submit"
+                    className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                >
+                    선수등록
+                </button>
             </form>
         </div>
     );

@@ -17,7 +17,7 @@ export default function PlayerCard(player: Player) {
                 width={80}
                 height={80}
                 alt={player.name}
-                className="rounded-full"
+                className="rounded-3xl"
                 style={{
                     objectFit: "cover",
                     width: "80px",
@@ -27,14 +27,12 @@ export default function PlayerCard(player: Player) {
             <div className="flex flex-col ml-4">
                 <div className="flex flex-row items-center space-x-2 mb-2">
                     <div className="text-lg font-semibold">{player.name}</div>
-                    <div className="text-sm text-gray-500">{player.age}세</div>
+                    <div className="text-sm text-gray-500">{player.age}</div>
                     <div className="text-sm text-gray-500">{player.grade}</div>
                 </div>
                 <div className="text-sm text-gray-700">
                     <div>경기수: {player.games}</div>
-                    <div>
-                        {player.win}승 {player.lose}패
-                    </div>
+                    <div>{player.win}승</div>
                 </div>
             </div>
         </div>

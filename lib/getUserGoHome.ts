@@ -90,6 +90,27 @@ export async function getWaitGames(clubid: number) {
         where: {
             clubid,
         },
+        orderBy: {
+            point: "asc",
+        },
     });
     return waitGames;
 }
+
+export const getClub = async (clubid: number) => {
+    const club = await db.club.findUnique({
+        where: {
+            id: clubid,
+        },
+    });
+    return club;
+};
+
+export const updateWaitGame = async (playerid: number, pointer: number) => {
+    const waitGame = await db.waitGame.updateMany({
+        where: {
+            point: pointer,
+        },
+        data: { playerid },
+    });
+};
