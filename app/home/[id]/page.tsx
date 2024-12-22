@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import WaitPlayerList from "@/app/component/WaitPlayerList";
+import FromIdtoPlayerCard from "@/app/component/FromIdtoPlayerCard";
 import db from "@/lib/db";
 
 export default function GameBoard({ params }: { params: { id: string } }) {
@@ -68,7 +69,23 @@ export default function GameBoard({ params }: { params: { id: string } }) {
             </div>
             {/* 우측 화면 */}
             <div className="w-1/3 bg-gray-400 p-4">
-                <div>{waitPlayerList}</div>
+                <div>
+                    {waitPlayerList.map((id) => {
+                        return (
+                            <div key={id}>{<FromIdtoPlayerCard id={id} />}</div>
+                        );
+                    })}
+                </div>
+                <button
+                    className="bg-red-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
+                    onClick={() => {
+                        if (confirm("Are you sure?")) {
+                            setWaitPlayerList([]);
+                        }
+                    }}
+                >
+                    Clear List
+                </button>
             </div>
             {/* 우측 하단 고정 아이콘 */}
             <div className="fixed bottom-4 right-4">
