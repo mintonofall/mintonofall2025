@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import WaitPlayerList from "@/app/component/WaitPlayerList";
 import FromIdtoPlayerCard from "@/app/component/FromIdtoPlayerCard";
+import GameCourt from "@/app/component/GameCourt";
 // import "@picocss/pico";
 import db from "@/lib/db";
 import {
@@ -217,19 +218,26 @@ export default function GameBoard({ params }: { params: { id: string } }) {
             <div className="flex flex-col w-3/4">
                 {/* GameCourt 3 */}
                 {/* 상단 3 부분 */}
-                <div className="h-1/4 bg-gray-200 p-4">
+                <div className="h-1/4 bg-gray-200 p-0">
                     <div className="flex flex-row justify-between h-full">
                         <div
                             className={`w-1/3 ${
                                 boardPointer == 0
                                     ? "bg-green-500"
                                     : "bg-blue-100"
-                            } p-4`}
+                            } p-0`}
                             onClick={() => {
                                 setBoardPointer(0);
                             }}
                         >
-                            <div>Court 1</div>
+                            <GameCourt
+                                p1={game1?.player1id ?? 12}
+                                p2={game1?.player2id ?? 12}
+                                p3={game1?.player3id ?? 12}
+                                p4={game1?.player4id ?? 12}
+                                clubid={Number(id)}
+                            />
+
                             {game1?.player1id}
                             {game1?.player2id}
                             {game1?.player3id}
@@ -256,7 +264,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
                                 boardPointer == 2
                                     ? "bg-green-500"
                                     : "bg-blue-100"
-                            } p-4`}
+                            } p-0`}
                             onClick={() => {
                                 setBoardPointer(2);
                             }}
@@ -314,26 +322,10 @@ export default function GameBoard({ params }: { params: { id: string } }) {
                             >
                                 +
                             </div>
-                            <div
-                                className="bg-red-200"
-                                onClick={() => {
-                                    inputGame(20, boardPointer);
-                                }}
-                            >
-                                +
-                            </div>
-                            <div
-                                className="bg-blue-200"
-                                onClick={() => {
-                                    inputGame(24, boardPointer);
-                                }}
-                            >
-                                +
-                            </div>
                         </div>
                     </div>
-                    <div className="flex-grow grid grid-cols-4 grid-rows-7 gap-1">
-                        {Array.from({ length: 28 }, (_, index) => (
+                    <div className="flex-grow grid grid-cols-4 gap-1">
+                        {Array.from({ length: 20 }, (_, index) => (
                             <div
                                 key={index}
                                 className={`w-100 ${
@@ -407,7 +399,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
                 </button>
             </div>
             {showPlayerList && (
-                <div className="fixed top-0 right-0 w-1/4 bg-black bg-opacity-50 flex items-center justify-center">
+                <div className="fixed top-0 right-0 w-full bg-black bg-opacity-50 flex flex-wrap items-center justify-center">
                     <button
                         className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg"
                         onClick={togglePlayerList}

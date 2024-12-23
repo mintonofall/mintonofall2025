@@ -43,7 +43,11 @@ export default function WaitPlayerList({
     );
 
     return (
-        <div className="fixed top-12 right-4 bg-white p-4 shadow-lg rounded max-h-[800px] overflow-y-auto">
+        <div
+            className="flex flex-col flex-nowrap fixed top-12 right-4
+             bg-white p-4 h-full shadow-lg rounded overflow-y-scroll w-80 z-10
+               "
+        >
             <input
                 type="text"
                 placeholder="Search players"
@@ -57,27 +61,26 @@ export default function WaitPlayerList({
                 </button>
             </Link>
             <div className="text-red-600">{playerListMsg}</div>
-            <ul>
-                {filteredPlayers.map((player) => (
-                    <li
-                        className="flex p-2"
-                        key={player.id}
-                        onClick={() => {
-                            if (waitPLayerList.includes(player.id)) {
-                                setPlayerListMsg("이미 대기중인 선수입니다.");
-                            } else {
-                                console.log("from Comp : ", player.id);
-                                onEnterPlayer(player.id);
-                                setPlayerListMsg("");
-                                window.location.reload();
-                                onClose();
-                            }
-                        }}
-                    >
-                        <PlayerCard {...player} />
-                    </li>
-                ))}
-            </ul>
+
+            {filteredPlayers.map((player) => (
+                <div
+                    className="flex p-2"
+                    key={player.id}
+                    onClick={() => {
+                        if (waitPLayerList.includes(player.id)) {
+                            setPlayerListMsg("이미 대기중인 선수입니다.");
+                        } else {
+                            console.log("from Comp : ", player.id);
+                            onEnterPlayer(player.id);
+                            setPlayerListMsg("");
+                            window.location.reload();
+                            onClose();
+                        }
+                    }}
+                >
+                    <PlayerCard {...player} />
+                </div>
+            ))}
         </div>
     );
 }

@@ -2,8 +2,24 @@ import { exitPlayer, getPlayer } from "../../lib/getUserGoHome";
 import PlayerCard from "./PlayerCard";
 import { useEffect, useState } from "react";
 
-export default function FromIdtoPlayerCard({ playerid, clubid, which }) {
-    const [player, setPlayer] = useState(null);
+interface Props {
+    playerid: number;
+    clubid: number;
+    which: string;
+}
+
+export default function FromIdtoPlayerCard({ playerid, clubid, which }: Props) {
+    interface Player {
+        name: string;
+        avater: string | null;
+        age: number;
+        grade: string;
+        games: number;
+        win: number;
+        lose: number;
+    }
+
+    const [player, setPlayer] = useState<Player | null>(null);
 
     useEffect(() => {
         async function fetchPlayer() {
