@@ -52,7 +52,6 @@ export default function GameBoard({ params }: { params: { id: string } }) {
             if (id) {
                 try {
                     const response = await getWaitPlayerList(Number(id));
-                    console.log(response);
 
                     const playerIds = response.map((player) => player.Playerid);
 
@@ -70,15 +69,13 @@ export default function GameBoard({ params }: { params: { id: string } }) {
             if (id) {
                 try {
                     const response = await getWaitGames(Number(id));
-                    const newWaitGameListId: GameBoard[] = response.map(
-                        (game) => {
-                            return {
-                                pointer: game.point,
-                                playerid: game.playerid,
-                                clubid: game.clubid,
-                            };
-                        }
-                    );
+                    const newWaitGameListId: GameBoard[] = response.map((game) => {
+                        return {
+                            pointer: game.point,
+                            playerid: game.playerid,
+                            clubid: game.clubid,
+                        };
+                    });
                     setWaitGameListId(newWaitGameListId);
                 } catch (error) {
                     console.error("Failed to fetch wait player list:", error);
@@ -92,13 +89,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
         setShowPlayerList((prev) => !prev);
     };
 
-    const startGame1 = async (
-        p1: number,
-        p2: number,
-        p3: number,
-        p4: number,
-        court: number
-    ) => {
+    const startGame1 = async (p1: number, p2: number, p3: number, p4: number, court: number) => {
         await setGame1({
             court: boardPointer,
             clubid: Number(id),
@@ -107,15 +98,10 @@ export default function GameBoard({ params }: { params: { id: string } }) {
             player3id: p3,
             player4id: p4,
         });
+        console.log(game1);
     };
 
-    const startGame2 = async (
-        p1: number,
-        p2: number,
-        p3: number,
-        p4: number,
-        court: number
-    ) => {
+    const startGame2 = async (p1: number, p2: number, p3: number, p4: number, court: number) => {
         setGame2({
             court: boardPointer,
             clubid: Number(id),
@@ -126,13 +112,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
         });
     };
 
-    const startGame3 = async (
-        p1: number,
-        p2: number,
-        p3: number,
-        p4: number,
-        court: number
-    ) => {
+    const startGame3 = async (p1: number, p2: number, p3: number, p4: number, court: number) => {
         setGame3({
             court: boardPointer,
             clubid: Number(id),
@@ -150,9 +130,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
             clubid: Number(id),
         };
         const copys = [...waitGameListId];
-        const existingPlayerIndex = copys.findIndex(
-            (game) => game.pointer === waitGame.pointer
-        );
+        const existingPlayerIndex = copys.findIndex((game) => game.pointer === waitGame.pointer);
         console.log("Existing player index:", existingPlayerIndex);
         if (existingPlayerIndex !== -1) {
             console.log("Player already in the wait game list");
@@ -165,14 +143,9 @@ export default function GameBoard({ params }: { params: { id: string } }) {
         }
         await copys.push(waitGame);
         setWaitGameListId(copys);
-        console.log(copys);
         const pointer = gamePointer + 1;
         await setGamePointer(pointer);
-        const createWaitGames = createWaitGame(
-            Number(id),
-            playerid,
-            gamePointer
-        );
+        const createWaitGames = createWaitGame(Number(id), playerid, gamePointer);
     };
 
     const closePlayerList = () => {
@@ -221,11 +194,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
                 <div className="h-1/4 bg-gray-200 p-0">
                     <div className="flex flex-row justify-between h-full">
                         <div
-                            className={`w-1/3 ${
-                                boardPointer == 0
-                                    ? "bg-green-500"
-                                    : "bg-blue-100"
-                            } p-0`}
+                            className={`w-1/3 ${boardPointer == 0 ? "bg-green-500" : "bg-blue-100"} p-0`}
                             onClick={() => {
                                 setBoardPointer(0);
                             }}
@@ -236,44 +205,38 @@ export default function GameBoard({ params }: { params: { id: string } }) {
                                 p3={game1?.player3id ?? 12}
                                 p4={game1?.player4id ?? 12}
                                 clubid={Number(id)}
+                                court={1}
                             />
-
-                            {game1?.player1id}
-                            {game1?.player2id}
-                            {game1?.player3id}
-                            {game1?.player4id}
                         </div>
                         <div
-                            className={`w-1/3  ${
-                                boardPointer == 1
-                                    ? "bg-green-500"
-                                    : "bg-blue-100"
-                            }`}
+                            className={`w-1/3  ${boardPointer == 1 ? "bg-green-500" : "bg-blue-100"}`}
                             onClick={() => {
                                 setBoardPointer(1);
                             }}
                         >
-                            <div>Court 2</div>
-                            {game2?.player1id}
-                            {game2?.player2id}
-                            {game2?.player3id}
-                            {game2?.player4id}
+                            <GameCourt
+                                p1={game2?.player1id ?? 12}
+                                p2={game2?.player2id ?? 12}
+                                p3={game2?.player3id ?? 12}
+                                p4={game2?.player4id ?? 12}
+                                clubid={Number(id)}
+                                court={2}
+                            />
                         </div>
                         <div
-                            className={`w-1/3 ${
-                                boardPointer == 2
-                                    ? "bg-green-500"
-                                    : "bg-blue-100"
-                            } p-0`}
+                            className={`w-1/3 ${boardPointer == 2 ? "bg-green-500" : "bg-blue-100"} p-0`}
                             onClick={() => {
                                 setBoardPointer(2);
                             }}
                         >
-                            <div>Court 3</div>
-                            {game3?.player1id}
-                            {game3?.player2id}
-                            {game3?.player3id}
-                            {game3?.player4id}
+                            <GameCourt
+                                p1={game3?.player1id ?? 12}
+                                p2={game3?.player2id ?? 12}
+                                p3={game3?.player3id ?? 12}
+                                p4={game3?.player4id ?? 12}
+                                clubid={Number(id)}
+                                court={3}
+                            />
                         </div>
                     </div>
                 </div>
@@ -328,11 +291,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
                         {Array.from({ length: 20 }, (_, index) => (
                             <div
                                 key={index}
-                                className={`w-100 ${
-                                    gamePointer == index
-                                        ? "bg-red-200"
-                                        : "bg-blue-200"
-                                }`}
+                                className={`w-100 ${gamePointer == index ? "bg-red-200" : "bg-blue-200"}`}
                                 onClick={async (e) => {
                                     await setGamePointer(index);
                                     console.log(gamePointer);
@@ -392,7 +351,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
             {/* 우측 하단 고정 아이콘 */}
             <div className="fixed bottom-4 right-4">
                 <button
-                    className="bg-blue-500 text-white rounded-full w-16 h-16 flex items-center justify-center shadow-lg"
+                    className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg"
                     onClick={togglePlayerList}
                 >
                     <span className="text-3xl">+</span>
