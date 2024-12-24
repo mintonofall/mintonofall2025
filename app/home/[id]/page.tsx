@@ -290,7 +290,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
                     <div className="flex-grow grid grid-cols-4 gap-1">
                         {Array.from({ length: 20 }, (_, index) => (
                             <div
-                                key={index}
+                                key={"game" + index}
                                 className={`w-100 ${gamePointer == index ? "bg-red-200" : "bg-blue-200"}`}
                                 onClick={async (e) => {
                                     await setGamePointer(index);
@@ -300,6 +300,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
                                 {waitGameListId.map((game) => {
                                     return game.pointer == index ? (
                                         <FromIdtoPlayerCard
+                                            key={game.playerid}
                                             playerid={game.playerid}
                                             clubid={Number(id)}
                                             which={"waitGame"}

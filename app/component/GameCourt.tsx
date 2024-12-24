@@ -46,7 +46,7 @@ export default function GameCourt({ p1, p2, p3, p4, clubid, court }: gameplayers
             }
         }
         fetchPlayer();
-    }, [p1]);
+    }, [p1, p2, p3, p4]);
 
     const player1Avatar = player1?.avater ? player1.avater + "/public" : "/guest.png";
     const player2Avatar = player2?.avater ? player2.avater + "/public" : "/guest.png";
@@ -73,7 +73,10 @@ export default function GameCourt({ p1, p2, p3, p4, clubid, court }: gameplayers
                     </div>
                     <div className="ml-3">
                         <div className="text-xs">{player1?.name}</div>
-                        <div> 40 B</div>
+                        <div>
+                            {player1?.age}
+                            {player1?.grade}
+                        </div>
                     </div>
                 </div>
                 <div className="flex flex-row justify-center items-center w-1/2  bg-green-200">
@@ -92,7 +95,10 @@ export default function GameCourt({ p1, p2, p3, p4, clubid, court }: gameplayers
                     </div>
                     <div className="ml-3">
                         <div className="text-xs">{player2?.name}</div>
-                        <div> 40 B</div>
+                        <div>
+                            {player2?.age}
+                            {player2?.grade}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -100,7 +106,7 @@ export default function GameCourt({ p1, p2, p3, p4, clubid, court }: gameplayers
                 <div className="flex flex-row justify-center items-center w-1/2  bg-red-200">
                     <div className="rounded-lg overflow-hidden">
                         <Image
-                            src={player2Avatar}
+                            src={player3Avatar}
                             alt="1"
                             width={50}
                             height={50}
@@ -112,14 +118,17 @@ export default function GameCourt({ p1, p2, p3, p4, clubid, court }: gameplayers
                         />
                     </div>
                     <div className="ml-3">
-                        <div className="text-xs">{player2?.name}</div>
-                        <div> 40 B</div>
+                        <div className="text-xs">{player3?.name}</div>
+                        <div>
+                            {player2?.age}
+                            {player2?.grade}
+                        </div>
                     </div>
                 </div>
                 <div className="flex flex-row justify-center items-center w-1/2  bg-purple-200">
                     <div className="rounded-lg overflow-hidden">
                         <Image
-                            src={player2Avatar}
+                            src={player4Avatar}
                             alt="1"
                             width={50}
                             height={50}
@@ -131,8 +140,11 @@ export default function GameCourt({ p1, p2, p3, p4, clubid, court }: gameplayers
                         />
                     </div>
                     <div className="ml-3">
-                        <div className="text-xs">{player2?.name}</div>
-                        <div> 40 B</div>
+                        <div className="text-xs">{player4?.name}</div>
+                        <div>
+                            {player4?.age}
+                            {player4?.grade}
+                        </div>
                     </div>
                 </div>
             </div>

@@ -40,6 +40,7 @@ export async function pushWaitPlayerList(Playerid: number, clubid: number) {
             exitDate: new Date(new Date().setDate(new Date().getDate() - 1)),
         },
     });
+    console.log(pushPlayer);
 }
 
 export async function getWaitPlayerList(clubid: number) {
@@ -60,22 +61,16 @@ export async function getWaitPlayerList(clubid: number) {
 }
 
 export async function exitPlayer(Playerid: number, clubid: number) {
-    const exitPlayer = await db.waitPlayerList.updateMany({
+    const exitPlayer = await db.waitPlayerList.deleteMany({
         where: {
-            Playerid,
             clubid,
-        },
-        data: {
-            exitDate: new Date(),
+            Playerid,
         },
     });
+    return exitPlayer;
 }
 
-export async function createWaitGame(
-    clubid: number,
-    playerid: number,
-    point: number
-) {
+export async function createWaitGame(clubid: number, playerid: number, point: number) {
     const waitGames = await db.waitGame.create({
         data: {
             clubid,

@@ -68,3 +68,29 @@ model WaitGame {
   playerid Int
   point Int
 }
+
+model Match {
+  id Int @id @default(autoincrement())
+  player1id Int
+  player2id Int
+  player3id Int
+  player4id Int
+  clubid Int
+  winner1id Int
+  winner2id Int
+  startTime DateTime @default(now())
+  endTime DateTime?
+  duration Int
+  score1 Int?
+  score2 Int?
+}
+
+model GameBoard {
+  id Int @id @default(autoincrement())
+  clubid Int
+  CourtNumber Int
+  player1id Int
+  player2id Int
+  player3id Int
+  player4id Int
+}

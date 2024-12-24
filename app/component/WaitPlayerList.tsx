@@ -34,13 +34,12 @@ export default function WaitPlayerList({
         async function fetchPlayers() {
             const players = await getPlayerList();
             setPlayerList(players);
+            console.log(players);
         }
         fetchPlayers();
     }, []);
 
-    const filteredPlayers = playerList.filter((player) =>
-        player.name.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredPlayers = playerList.filter((player) => player.name.toLowerCase().includes(searchTerm.toLowerCase()));
 
     return (
         <div
@@ -56,9 +55,7 @@ export default function WaitPlayerList({
                 className="w-full p-2 mb-4 border border-gray-300 rounded"
             />
             <Link href={`/createPlayer/`}>
-                <button className="w-full mt-4 p-2 bg-blue-500 text-white rounded">
-                    선수등록
-                </button>
+                <button className="w-full mt-4 p-2 bg-blue-500 text-white rounded">선수등록</button>
             </Link>
             <div className="text-red-600">{playerListMsg}</div>
 
