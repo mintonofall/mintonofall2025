@@ -11,6 +11,7 @@ import {
     getWaitGames,
     getWaitPlayerList,
     pushWaitPlayerList,
+    startMatch,
     updateWaitGame,
 } from "@/lib/getUserGoHome";
 interface GameBoard {
@@ -98,7 +99,8 @@ export default function GameBoard({ params }: { params: { id: string } }) {
             player3id: p3,
             player4id: p4,
         });
-        console.log(game1);
+        const match = startMatch(Number(id), p1, p2, p3, p4, 1);
+        console.log(match);
     };
 
     const startGame2 = async (p1: number, p2: number, p3: number, p4: number, court: number) => {
@@ -110,6 +112,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
             player3id: p3,
             player4id: p4,
         });
+        const match = startMatch(Number(id), p1, p2, p3, p4, 2);
     };
 
     const startGame3 = async (p1: number, p2: number, p3: number, p4: number, court: number) => {
@@ -121,6 +124,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
             player3id: p3,
             player4id: p4,
         });
+        const match = startMatch(Number(id), p1, p2, p3, p4, 3);
     };
 
     const enterWaitGame = async (playerid: number) => {

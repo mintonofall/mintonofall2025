@@ -109,3 +109,24 @@ export const updateWaitGame = async (playerid: number, pointer: number) => {
         data: { playerid },
     });
 };
+
+export const startMatch = async (
+    clubid: number,
+    player1id: number,
+    player2id: number,
+    player3id: number,
+    player4id: number,
+    CourtNumber: number
+) => {
+    const match = await db.gameBoard.create({
+        data: {
+            clubid,
+            player1id,
+            player2id,
+            player3id,
+            player4id,
+            CourtNumber,
+        },
+    });
+    return match;
+};
