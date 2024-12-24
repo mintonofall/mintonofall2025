@@ -118,14 +118,16 @@ export const startMatch = async (
     player4id: number,
     CourtNumber: number
 ) => {
-    const match = await db.gameBoard.create({
-        data: {
+    const match = await db.gameBoard.updateMany({
+        where: {
             clubid,
+            CourtNumber,
+        },
+        data: {
             player1id,
             player2id,
             player3id,
             player4id,
-            CourtNumber,
         },
     });
     return match;
