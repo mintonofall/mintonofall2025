@@ -1,12 +1,12 @@
 "use server";
 
-import db from "@/lib/db";
-import bcrypt from "bcrypt";
-import { getIronSession } from "iron-session";
 import { cookies } from "next/headers";
+import { getIronSession } from "iron-session";
+import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
+import db from "../../lib/db";
 
-export default async function handleLogin(prevState: any, formdata: FormData) {
+export default async function handleLogin(prevState: unknown, formdata: FormData) {
     const userName = formdata.get("userName") as string;
     // 해당 유저가 있는지 확인
     const user = await db.user.findFirst({
@@ -28,14 +28,12 @@ export default async function handleLogin(prevState: any, formdata: FormData) {
                 cookieName: "session",
                 password: process.env.COOKIE_PASSWORD!,
             });
-            //@ts-ignore
+            // @ts-expect-error
             cookie.id = user.id;
             await cookie.save();
             redirect("/home");
         } else {
             console.log("비밀번호가 일치하지 않습니다.");
-            return { error: { password: "비밀번호가 일치하지 않습니다." } };
         }
-        // }
     }
 }
