@@ -23,9 +23,6 @@ interface GameBoard {
     playerid: number;
 }
 
-interface PageProps {
-    params: { id: string };
-}
 interface PlayingGameBoard {
     id?: number;
     gameid: number | null;
@@ -37,7 +34,7 @@ interface PlayingGameBoard {
     player4id?: number;
 }
 
-export default function GameBoard({ params }: { params: PageProps }) {
+export default function GameBoard({ params }: { params: Promise<{ id: string }> }) {
     const [showPlayerList, setShowPlayerList] = useState(false);
     const [id, setId] = useState<string | null>(null);
     const [waitPlayerList, setWaitPlayerList] = useState<number[]>([]);
@@ -50,8 +47,8 @@ export default function GameBoard({ params }: { params: PageProps }) {
 
     useEffect(() => {
         async function fetchParams() {
-            const resolvedParams = params;
-            setId(resolvedParams.params.id);
+            const resolvedParams = (await params).id;
+            setId(resolvedParams);
         }
         fetchParams();
     }, [params]);
