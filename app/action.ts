@@ -4,7 +4,7 @@ import { cookies } from "next/headers";
 import { getIronSession } from "iron-session";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
-import db from "../../lib/db";
+import db from "../lib/db";
 
 export default async function handleLogin(prevState: unknown, formdata: FormData) {
     const userName = formdata.get("userName") as string;
