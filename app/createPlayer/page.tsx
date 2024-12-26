@@ -4,20 +4,21 @@ import { useActionState } from "react";
 import React, { useState, useEffect } from "react";
 
 interface PageProps {
-    params: {
-        id: string;
-    };
+    params: Promise<{ id: string }>;
 }
 
 export default function CreatePlayer({ params }: PageProps) {
-    const [, action] = useActionState(InterceptAction, null);
+    const [, action] = useActionState(handlePlayerCreate, null);
     const [preview, setPreview] = useState("");
     const [uploadURL, setUploadURL] = useState("");
     const [imageID, setImageID] = useState("");
 
     useEffect(() => {
-        // params.id를 사용하여 필요한 작업을 수행할 수 있습니다.
-        console.log(params.id);
+        async function fetchParams() {
+            const resolvedParams = await params;
+            console.log(resolvedParams.id);
+        }
+        fetchParams();
     }, [params]);
 
     async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -28,25 +29,6 @@ export default function CreatePlayer({ params }: PageProps) {
         const result = await getUploadURL();
         setUploadURL(result.result.uploadURL);
         setImageID(result.result.id);
-    }
-
-    async function InterceptAction(_: unknown, formData: FormData) {
-        const file = formData.get("photo");
-        if (!file) return;
-        const cloudflare = new FormData();
-        cloudflare.append("file", file);
-        const response = await fetch(uploadURL, {
-            method: "POST",
-            body: cloudflare,
-        });
-        if (response.status !== 200) {
-            console.error("Upload failed");
-            return;
-        }
-        const imageURL = `https://imagedelivery.net/H_vtnjYSM5axKm4PivHM5g/${imageID}`;
-        console.log(imageURL);
-        formData.set("photo", imageURL);
-        return handlePlayerCreate(_, formData);
     }
 
     return (
