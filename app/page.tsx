@@ -1,10 +1,8 @@
 "use client";
 import Image from "next/image";
 import handleLogin from "./action";
-import db from "@/lib/db";
 import Link from "next/link";
 import { useActionState } from "react";
-import { redirect } from "next/navigation";
 import Head from "next/head";
 
 export default function Home() {
@@ -42,7 +40,7 @@ export default function Home() {
                             type="password"
                             className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                         />
-                        <span className="text-red-600 text-xs italic">{state?.error?.password ?? ""}</span>
+                        <span className="text-red-600 text-xs italic"></span>
                     </div>
                     <div className="flex items-center justify-between">
                         <button

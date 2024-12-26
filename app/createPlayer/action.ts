@@ -3,14 +3,14 @@
 import db from "@/lib/db";
 import { redirect } from "next/navigation";
 
-export async function handlePlayerCreate(prevState: any, formdata: FormData) {
+export async function handlePlayerCreate(prevState: unknown, formdata: FormData) {
     const name = formdata.get("name") as string;
     const age = Number(formdata.get("age")) as number;
     const grade = formdata.get("grade") as string;
     const clubId = Number(formdata.get("clubId")) as number;
     const photo = formdata.get("photo") as string;
     console.log(name, age, grade, clubId, photo);
-    const result = await db.player.create({
+    await db.player.create({
         data: {
             name,
             age,

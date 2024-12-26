@@ -28,7 +28,7 @@ export default async function handleLogin(prevState: unknown, formdata: FormData
                 cookieName: "session",
                 password: process.env.COOKIE_PASSWORD!,
             });
-            // @ts-expect-error
+            // @ts-expect-error: Type 'number' is not assignable to type 'string'
             cookie.id = user.id;
             await cookie.save();
             redirect("/home");

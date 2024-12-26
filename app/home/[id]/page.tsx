@@ -167,16 +167,16 @@ export default function GameBoard({ params }: { params: { id: string } }) {
     const startGame2 = async (p1: number, p2: number, p3: number, p4: number, court: number, point: number) => {
         const gameId = await createMatch(Number(id), p1, p2, p3, p4, []);
         await startMatch(Number(id), p1, p2, p3, p4, 2, gameId.id);
-        await deleteWaitGame(Number(id), 0);
-        await pushUpWaitGame(Number(id), 0);
+        await deleteWaitGame(Number(id), point);
+        await pushUpWaitGame(Number(id), point);
         window.location.reload();
     };
 
     const startGame3 = async (p1: number, p2: number, p3: number, p4: number, court: number, point: number) => {
         const gameId = await createMatch(Number(id), p1, p2, p3, p4, []);
         await startMatch(Number(id), p1, p2, p3, p4, 3, gameId.id);
-        await deleteWaitGame(Number(id), 0);
-        await pushUpWaitGame(Number(id), 0);
+        await deleteWaitGame(Number(id), point);
+        await pushUpWaitGame(Number(id), point);
         window.location.reload();
     };
 
@@ -192,17 +192,17 @@ export default function GameBoard({ params }: { params: { id: string } }) {
         if (existingPlayerIndex !== -1) {
             copys[existingPlayerIndex].playerid = waitGame.playerid;
             setWaitGameListId(copys);
-            const updateWaitGams = updateWaitGame(playerid, waitGame.pointer);
+            updateWaitGame(playerid, waitGame.pointer);
             const pointer = gamePointer + 1;
             setGamePointer(pointer);
             return;
         }
-        await copys.push(waitGame);
+        copys.push(waitGame);
         setWaitGameListId(copys);
         const pointer = gamePointer + 1;
-        await setGamePointer(pointer);
-        const createWaitGames = createWaitGame(Number(id), playerid, gamePointer);
-        const game = await gameOneUp(playerid);
+        setGamePointer(pointer);
+        createWaitGame(Number(id), playerid, gamePointer);
+        await gameOneUp(playerid);
         window.location.reload();
     };
 
@@ -367,7 +367,7 @@ export default function GameBoard({ params }: { params: { id: string } }) {
                             <div
                                 key={"game" + index}
                                 className={`h-16 ${gamePointer == index ? "bg-red-200" : "bg-blue-200"}`}
-                                onClick={async (e) => {
+                                onClick={async () => {
                                     await setGamePointer(index);
                                     console.log(gamePointer);
                                 }}
