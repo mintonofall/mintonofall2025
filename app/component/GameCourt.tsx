@@ -3,7 +3,6 @@
 import { endMatch, getPlayer } from "@/lib/getUserGoHome";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { Interface } from "readline";
 
 interface gameplayers {
     p1: number;
