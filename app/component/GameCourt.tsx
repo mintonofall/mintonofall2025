@@ -53,10 +53,10 @@ export default function GameCourt({ p1, p2, p3, p4, clubid, court, gameid, onEnd
         fetchPlayers();
     }, [p1, p2, p3, p4]);
 
-    const player1Avatar = player1?.avater ? player1.avater + "/public" : "/guest.png";
-    const player2Avatar = player2?.avater ? player2.avater + "/public" : "/guest.png";
-    const player3Avatar = player3?.avater ? player3.avater + "/public" : "/guest.png";
-    const player4Avatar = player4?.avater ? player4.avater + "/public" : "/guest.png";
+    const player1Avatar = player1?.avater ? player1.avater + "/avatar" : "/guest.png";
+    const player2Avatar = player2?.avater ? player2.avater + "/avatar" : "/guest.png";
+    const player3Avatar = player3?.avater ? player3.avater + "/avatar" : "/guest.png";
+    const player4Avatar = player4?.avater ? player4.avater + "/avatar" : "/guest.png";
 
     const endMatchFunction = async (gameid: number, winner: number[]) => {
         const endMatchData = await endMatch(gameid, winner);
@@ -85,9 +85,9 @@ export default function GameCourt({ p1, p2, p3, p4, clubid, court, gameid, onEnd
 
     return (
         <>
-            <div className="flex flex-col w-full h-full p-1 space-y-4 z-10">
+            <div className="flex flex-col w-full h-full p-1 space-y-0 z-10">
                 <div className="text-lg font-semibold text-center text-gray-700">Court {court}</div>
-                <div className="flex h-1/2 space-x-4">
+                <div className="flex h-1/2 space-x-0">
                     <div className="flex flex-row justify-center items-center w-1/2 bg-blue-300 p-2 rounded-lg shadow-md">
                         <div className="rounded-full overflow-hidden">
                             <Image
@@ -125,7 +125,7 @@ export default function GameCourt({ p1, p2, p3, p4, clubid, court, gameid, onEnd
                         </div>
                     </div>
                 </div>
-                <div className="flex h-1/2 space-x-4">
+                <div className="flex h-1/2 space-x-0">
                     <div className="flex flex-row justify-center items-center w-1/2 bg-red-200 p-2 rounded-lg shadow-md">
                         <div className="rounded-full overflow-hidden">
                             <Image
@@ -179,15 +179,15 @@ export default function GameCourt({ p1, p2, p3, p4, clubid, court, gameid, onEnd
                 }`}
             >
                 <div
-                    className="relative left-1/2 transform -translate-x-1/2 bg-white p-6 rounded-t-lg shadow-lg
+                    className="relative  left-1/2 transform -translate-x-1/2 bg-white rounded-t-lg shadow-lg
                  space-y-4 w-1/4 max-w-md"
                 >
-                    <div className=" text-center text-lg font-semibold">승리자를 입력하세요</div>
-                    <div className="flex flex-col space-y-2">
-                        <div className="flex flex-row justify-evenly items-center space-x-2">
+                    <div className="text-center text-lg font-semibold">승리자를 입력하세요</div>
+                    <div className="flex flex-col p-0 space-y-0">
+                        <div className="flex flex-row p-0 justify-evenly items-center space-x-0">
                             <div
                                 onClick={selectWinner(1)}
-                                className={`flex flex-col justify-center items-center w-1/2 p-2 rounded-lg ${
+                                className={`flex flex-col justify-center items-center w-1/2 p-0 rounded-lg ${
                                     winnerpoint.includes(1) ? "bg-yellow-300" : ""
                                 }`}
                             >
@@ -202,7 +202,7 @@ export default function GameCourt({ p1, p2, p3, p4, clubid, court, gameid, onEnd
                             </div>
                             <div
                                 onClick={selectWinner(2)}
-                                className={`flex flex-col justify-center items-center w-1/2 p-2 rounded-lg ${
+                                className={`flex flex-col justify-center items-center w-1/2 p-0 rounded-lg ${
                                     winnerpoint.includes(2) ? "bg-yellow-300" : ""
                                 }`}
                             >
@@ -216,10 +216,10 @@ export default function GameCourt({ p1, p2, p3, p4, clubid, court, gameid, onEnd
                                 <div className="text-sm font-medium text-gray-800">{player2?.name}</div>
                             </div>
                         </div>
-                        <div className="flex flex-row justify-between items-center space-x-2">
+                        <div className="flex flex-row justify-between items-center space-x-0">
                             <div
                                 onClick={selectWinner(3)}
-                                className={`flex flex-col justify-center items-center w-1/2 p-2 rounded-lg ${
+                                className={`flex flex-col justify-center items-center w-1/2 p-0 rounded-lg ${
                                     winnerpoint.includes(3) ? "bg-yellow-300" : ""
                                 }`}
                             >
@@ -234,7 +234,7 @@ export default function GameCourt({ p1, p2, p3, p4, clubid, court, gameid, onEnd
                             </div>
                             <div
                                 onClick={selectWinner(4)}
-                                className={`flex flex-col justify-center items-center w-1/2 p-2 rounded-lg ${
+                                className={`flex flex-col justify-center items-center w-1/2 p-0 rounded-lg ${
                                     winnerpoint.includes(4) ? "bg-yellow-300" : ""
                                 }`}
                             >

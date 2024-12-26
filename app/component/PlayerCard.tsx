@@ -14,7 +14,7 @@ export default function PlayerCard(player: Player) {
     return (
         <div className="flex z-10 items-center w-full h-15 p-1 bg-white shadow-md rounded-lg">
             <Image
-                src={`${player.avater}/public`}
+                src={`${player.avater}/avatar`}
                 width={50}
                 height={50}
                 alt={player.name}
