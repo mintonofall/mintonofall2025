@@ -22,6 +22,10 @@ interface GameBoard {
     clubid: number;
     playerid: number;
 }
+
+interface PageProps {
+    params: Promise<{ id: string }>;
+}
 interface PlayingGameBoard {
     id?: number;
     gameid: number | null;
@@ -33,7 +37,7 @@ interface PlayingGameBoard {
     player4id?: number;
 }
 
-export default function GameBoard({ params }: { params: { id: string } }) {
+export default function GameBoard({ params }: { params: PageProps }) {
     const [showPlayerList, setShowPlayerList] = useState(false);
     const [id, setId] = useState<string | null>(null);
     const [waitPlayerList, setWaitPlayerList] = useState<number[]>([]);
