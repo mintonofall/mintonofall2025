@@ -2,13 +2,25 @@
 import { handlePlayerCreate, getUploadURL } from "./action";
 import { useActionState } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
-export default function CreatePlayer({ params }: { params: { id: string } }) {
+interface PageProps {
+    params: {
+        id: string;
+    };
+}
+
+export default function CreatePlayer({ params }: PageProps) {
     const [, action] = useActionState(InterceptAction, null);
     const [preview, setPreview] = useState("");
     const [uploadURL, setUploadURL] = useState("");
     const [imageID, setImageID] = useState("");
+
+    useEffect(() => {
+        // params.id를 사용하여 필요한 작업을 수행할 수 있습니다.
+        console.log(params.id);
+    }, [params]);
+
     async function handleImageChange(event: React.ChangeEvent<HTMLInputElement>) {
         if (!event.target.files) return;
         const file = event.target.files[0];
@@ -39,98 +51,37 @@ export default function CreatePlayer({ params }: { params: { id: string } }) {
     }
 
     return (
-        <div className="p-7 max-w-2xl mx-auto bg-white shadow-md rounded-lg">
-            <h1 className="text-3xl font-bold mb-6 text-center">선수를 등록해 주세요</h1>
-            <form className="flex flex-col gap-4" action={action}>
-                <input
-                    type="text"
-                    name="name"
-                    placeholder="선수이름"
-                    className="p-2 border border-gray-300 rounded-md"
-                />
-                <label
-                    htmlFor="photo"
-                    className="flex justify-center items-center w-full h-64 border-dashed border-2 border-gray-300 rounded-lg bg-cover bg-center bg-no-repeat cursor-pointer"
-                    style={{
-                        backgroundImage: `url(${preview})`,
-                    }}
-                >
-                    {preview ? "" : <PhotoIcon className="w-12 h-12 text-gray-400" />}
-                </label>
-                <input
-                    className="hidden"
-                    type="file"
-                    name="photo"
-                    id="photo"
-                    accept="image/*"
-                    onChange={handleImageChange}
-                />
-                <div className="flex flex-col gap-2">
-                    <span className="font-semibold">나이</span>
-                    <div className="flex flex-wrap gap-2">
-                        <label className="flex items-center gap-1">
-                            <input type="radio" name="age" value={20} id="20" />
-                            20대
-                        </label>
-                        <label className="flex items-center gap-1">
-                            <input type="radio" name="age" value={30} id="30" />
-                            30대
-                        </label>
-                        <label className="flex items-center gap-1">
-                            <input type="radio" name="age" value={40} id="40" defaultChecked />
-                            40대
-                        </label>
-                        <label className="flex items-center gap-1">
-                            <input type="radio" name="age" value={50} id="50" />
-                            50대
-                        </label>
-                        <label className="flex items-center gap-1">
-                            <input type="radio" name="age" value={60} id="60" />
-                            60대
-                        </label>
-                    </div>
-                </div>
-                <div className="flex flex-col gap-2">
-                    <span className="font-semibold">성별</span>
-                    <div className="flex gap-4">
-                        <label className="flex items-center gap-1">
-                            <input type="radio" name="gender" value={"man"} id="man" defaultChecked />
-                            남성
-                        </label>
-                        <label className="flex items-center gap-1">
-                            <input type="radio" name="gender" value={"woman"} id="woman" />
-                            여성
-                        </label>
-                    </div>
-                </div>
-                <div className="flex flex-col gap-2">
-                    <span className="font-semibold">등급</span>
-                    <div className="flex flex-wrap gap-2">
-                        <label className="flex items-center gap-1">
-                            <input type="radio" name="grade" value="S" id="S" />S
-                        </label>
-                        <label className="flex items-center gap-1">
-                            <input type="radio" name="grade" value="A" id="A" defaultChecked />A
-                        </label>
-                        <label className="flex items-center gap-1">
-                            <input type="radio" name="grade" value="B" id="B" />B
-                        </label>
-                        <label className="flex items-center gap-1">
-                            <input type="radio" name="grade" value="C" id="C" />C
-                        </label>
-                        <label className="flex items-center gap-1">
-                            <input type="radio" name="grade" value="D" id="D" />D
-                        </label>
-                        <label className="flex items-center gap-1">
-                            <input type="radio" name="grade" value="E" id="E" />E
-                        </label>
-                    </div>
-                </div>
-                <input type="number" value={params.id} name="clubId" hidden />
-                <button type="submit" className="p-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
-                    선수등록
-                </button>
-            </form>
+        <div className="flex justify-center items-center min-h-screen bg-gray-100">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+                <h2 className="text-2xl font-bold mb-6 text-center">플레이어 생성</h2>
+                <form action={action} className="flex flex-col">
+                    <label htmlFor="playerName" className="mb-2 text-gray-700">
+                        플레이어 이름
+                    </label>
+                    <input
+                        type="text"
+                        id="playerName"
+                        placeholder="플레이어 이름"
+                        name="playerName"
+                        className="mb-4 p-2 border border-gray-300 rounded"
+                    />
+                    <label htmlFor="photo" className="mb-2 text-gray-700">
+                        사진
+                    </label>
+                    <input
+                        type="file"
+                        id="photo"
+                        name="photo"
+                        accept="image/*"
+                        onChange={handleImageChange}
+                        className="mb-4 p-2 border border-gray-300 rounded"
+                    />
+                    {preview && <img src={preview} alt="Preview" className="mb-4 w-full h-auto" />}
+                    <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                        생성
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }
