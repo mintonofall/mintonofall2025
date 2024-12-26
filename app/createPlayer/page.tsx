@@ -28,7 +28,9 @@ export default function CreatePlayer({ params }: PageProps) {
         setPreview(previewURL);
         const result = await getUploadURL();
         setUploadURL(result.result.uploadURL);
+        console.log(uploadURL);
         setImageID(result.result.id);
+        console.log(imageID);
     }
 
     return (
