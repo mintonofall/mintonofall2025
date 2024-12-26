@@ -17,6 +17,7 @@ export default function FromIdtoPlayerCard({ playerid, clubid, which }: Props) {
         games: number;
         win: number;
         lose: number;
+        id: number;
     }
 
     const [player, setPlayer] = useState<Player | null>(null);
