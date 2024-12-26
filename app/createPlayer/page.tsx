@@ -1,7 +1,6 @@
 "use client";
 import { handlePlayerCreate, getUploadURL } from "./action";
 import { useActionState } from "react";
-import { PhotoIcon } from "@heroicons/react/24/solid";
 import React, { useState, useEffect } from "react";
 
 interface PageProps {
