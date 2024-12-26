@@ -24,7 +24,7 @@ interface GameBoard {
 }
 
 interface PageProps {
-    params: Promise<{ id: string }>;
+    params: { id: string };
 }
 interface PlayingGameBoard {
     id?: number;
@@ -50,8 +50,8 @@ export default function GameBoard({ params }: { params: PageProps }) {
 
     useEffect(() => {
         async function fetchParams() {
-            const resolvedParams = await params;
-            setId(resolvedParams.id);
+            const resolvedParams = params;
+            setId(resolvedParams.params.id);
         }
         fetchParams();
     }, [params]);
