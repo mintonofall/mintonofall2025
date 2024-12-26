@@ -4,8 +4,6 @@ import { useState, useEffect } from "react";
 import WaitPlayerList from "@/app/component/WaitPlayerList";
 import FromIdtoPlayerCard from "@/app/component/FromIdtoPlayerCard";
 import GameCourt from "@/app/component/GameCourt";
-// import "@picocss/pico";
-import db from "@/lib/db";
 import {
     createWaitGame,
     getWaitGames,
