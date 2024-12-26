@@ -46,6 +46,7 @@ model Player {
   clubid Int
   club Club @relation(fields: [clubid], references: [id])
   suttlePoint Int @default(10000)
+  waitPlayerLists WaitPlayerList[]
   win Int @default(0)
   lose Int @default(0)
   games Int @default(0)
@@ -58,6 +59,7 @@ model WaitPlayerList {
   id Int @id @default(autoincrement())
   clubid Int
   Playerid Int
+  player Player @relation(fields: [Playerid], references: [id])
   enterDate DateTime
   exitDate DateTime?
 }
@@ -76,17 +78,18 @@ model Match {
   player3id Int
   player4id Int
   clubid Int
-  winner1id Int
-  winner2id Int
+  winner1id Int?
+  winner2id Int?
   startTime DateTime @default(now())
   endTime DateTime?
-  duration Int
+  duration Int?
   score1 Int?
   score2 Int?
 }
 
 model GameBoard {
   id Int @id @default(autoincrement())
+  gameid Int?
   clubid Int
   CourtNumber Int
   player1id Int

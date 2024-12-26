@@ -6,12 +6,13 @@ interface Player {
     games: number;
     win: number;
     lose: number;
+    id: number;
 }
 
 import Image from "next/image";
 export default function PlayerCard(player: Player) {
     return (
-        <div className="flex items-center w-full h-15 p-1 bg-white shadow-md rounded-lg">
+        <div className="flex z-10 items-center w-full h-15 p-1 bg-white shadow-md rounded-lg">
             <Image
                 src={`${player.avater}/public`}
                 width={50}
@@ -32,7 +33,7 @@ export default function PlayerCard(player: Player) {
                 </div>
                 <div className="text-xs text-gray-700">
                     <div>
-                        경기수: {player.games}
+                        <div>경기수: {player.games}</div>
                         {player.win}승
                     </div>
                 </div>
