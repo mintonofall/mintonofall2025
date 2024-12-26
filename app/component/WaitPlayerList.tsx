@@ -8,7 +8,6 @@ export default function WaitPlayerList({
     onClose,
     onEnterPlayer,
     waitPLayerList,
-    clubId,
 }: {
     onClose: () => void;
     onEnterPlayer: (id: number) => void;

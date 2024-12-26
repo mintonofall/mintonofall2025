@@ -1,8 +1,6 @@
 "use server";
-import { redirect } from "next/navigation";
 import db from "./db";
 import getSession from "./session";
-import { NextResponse } from "next/server";
 
 export async function getUser() {
     const session = await getSession();
@@ -111,6 +109,7 @@ export async function createWaitGame(clubid: number, playerid: number, point: nu
             point,
         },
     });
+    return waitGames;
 }
 
 export async function getWaitGames(clubid: number) {
@@ -141,6 +140,7 @@ export const updateWaitGame = async (playerid: number, pointer: number) => {
         },
         data: { playerid },
     });
+    return waitGame;
 };
 
 export const startMatch = async (
@@ -165,6 +165,7 @@ export const startMatch = async (
             gameid,
         },
     });
+    return match;
 };
 
 export const endMatch = async (id: number, winner: number[]) => {
@@ -207,7 +208,7 @@ export const endMatch = async (id: number, winner: number[]) => {
             }
         }
     }
-    const endMatch = await db.match.update({
+    await db.match.update({
         where: {
             id,
         },
@@ -218,7 +219,7 @@ export const endMatch = async (id: number, winner: number[]) => {
             winner2id,
         },
     });
-    const winOneUP = await db.player.update({
+    await db.player.update({
         where: {
             id: winner1id,
         },
@@ -228,7 +229,7 @@ export const endMatch = async (id: number, winner: number[]) => {
             },
         },
     });
-    const winTwoUP = await db.player.update({
+    await db.player.update({
         where: {
             id: winner2id,
         },
@@ -252,7 +253,7 @@ export const getMatch = async (clubid: number, CourtNumber: number) => {
 
 export const deleteWaitGame = async (clubid: number, point: number) => {
     for (let i = point; i < point + 4; i++) {
-        const del = await db.waitGame.deleteMany({
+        await db.waitGame.deleteMany({
             where: {
                 clubid,
                 point: i,
@@ -262,7 +263,7 @@ export const deleteWaitGame = async (clubid: number, point: number) => {
 };
 
 export const pushUpWaitGame = async (clubid: number, point: number) => {
-    const upGame = await db.waitGame.updateMany({
+    await db.waitGame.updateMany({
         where: {
             clubid,
             point: {

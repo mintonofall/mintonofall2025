@@ -26,7 +26,7 @@ interface Player {
     lose: number;
 }
 
-export default function GameCourt({ p1, p2, p3, p4, clubid, court, gameid, onEndMatch }: gameplayers) {
+export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch }: gameplayers) {
     const [player1, setPlayer1] = useState<Player | null>(null);
     const [player2, setPlayer2] = useState<Player | null>(null);
     const [player3, setPlayer3] = useState<Player | null>(null);
@@ -58,7 +58,7 @@ export default function GameCourt({ p1, p2, p3, p4, clubid, court, gameid, onEnd
     const player4Avatar = player4?.avater ? player4.avater + "/avatar" : "/guest.png";
 
     const endMatchFunction = async (gameid: number, winner: number[]) => {
-        const endMatchData = await endMatch(gameid, winner);
+        await endMatch(gameid, winner);
     };
     function selectWinner(winner: number) {
         return function () {
