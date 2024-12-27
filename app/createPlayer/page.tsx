@@ -4,22 +4,18 @@ import { useActionState } from "react";
 import React, { useState, useEffect } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 
-interface PageProps {
-    params: Promise<{ id: string }>;
-}
-
-export default async function CreatePlayer({ params }: PageProps) {
+export default function CreatePlayer({ params }: { params: Promise<{ id: string }> }) {
     const [state, action] = useActionState(handlePlayerCreate, null);
     const [preview, setPreview] = useState("");
     const [uploadURL, setUploadURL] = useState("");
     const [imageID, setImageID] = useState("");
-    const { id } = await params;
-    console.log(id);
+    const [id, setId] = useState<string | null>(null);
 
     useEffect(() => {
         async function fetchParams() {
-            const resolvedParams = await params;
-            console.log(resolvedParams.id);
+            const resolvedParams = (await params).id;
+            setId(resolvedParams);
+            console.log(resolvedParams);
         }
         fetchParams();
     }, [params]);
