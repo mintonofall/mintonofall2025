@@ -43,63 +43,107 @@ export default function CreatePlayer({ params }: PageProps) {
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold mb-6 text-center">플레이어 생성</h2>
-                <form action={action} className="flex flex-col">
-                    <label htmlFor="playerName" className="mb-2 text-gray-700">
-                        플레이어 이름
-                    </label>
-                    <input
-                        type="text"
-                        id="playerName"
-                        placeholder="플레이어 이름"
-                        name="name"
-                        className="mb-4 p-2 border border-gray-300 rounded"
-                    />
-                    <label htmlFor="photo" className="mb-2 text-gray-700">
-                        사진
-                    </label>
-                    <label
-                        htmlFor="photo"
-                        className="flex justify-center items-center size-full aspect-square border-dashed border-2 border-gray-300 rounded-lg bg-cover bg-center bg-no-repeat"
-                        style={{
-                            backgroundImage: `url(${preview})`,
-                        }}
-                    >
-                        {preview ? "" : <PhotoIcon className="size-48" />}
-                    </label>
-                    <input
-                        type="file"
-                        id="photo"
-                        name="photo"
-                        accept="image/*"
-                        onChange={handleImageChange}
-                        className="hidden mb-4 p-2 border border-gray-300 rounded"
-                    />
-                    {preview && <img src={preview} alt="Preview" className="hidden mb-4 w-full h-auto" />}
-                    <div className="flex-row">
-                        <input type="radio" name="age" value={20} id="20" />
-                        <label htmlFor="20"> 20대</label>
-                        <input type="radio" name="age" value={30} id="30" />
-                        <label htmlFor="30"> 30대</label>
-                        <input type="radio" name="age" value={40} id="40" defaultChecked />
-                        <label htmlFor="40"> 40대</label>
-                        <input type="radio" name="age" value={50} id="50" />
-                        <label htmlFor="50"> 50대</label>
-                        <input type="radio" name="age" value={60} id="60" />
-                        <label htmlFor="60"> 60대</label>
+                <form action={action} className="flex flex-col space-y-4">
+                    <div>
+                        <label htmlFor="playerName" className="block mb-2 text-gray-700">
+                            플레이어 이름
+                        </label>
+                        <input
+                            type="text"
+                            id="name"
+                            placeholder="플레이어 이름"
+                            name="name"
+                            className="w-full p-2 border border-gray-300 rounded"
+                        />
                     </div>
-                    <div className="flex-row">
-                        <input type="radio" name="grade" value="S" id="S" />
-                        <label htmlFor="S"> S</label>
-                        <input type="radio" name="grade" value="A" id="A" defaultChecked />
-                        <label htmlFor="A"> A</label>
-                        <input type="radio" name="grade" value="B" id="B" />
-                        <label htmlFor="B">B</label>
-                        <input type="radio" name="grade" value="C" id="C" />
-                        <label htmlFor="C">C</label>
-                        <input type="radio" name="grade" value="D" id="D" />
-                        <label htmlFor="D">D</label>
-                        <input type="radio" name="grade" value="E" id="E" />
-                        <label htmlFor="E">E</label>
+                    <div>
+                        <label htmlFor="photo" className="block mb-2 text-gray-700">
+                            사진
+                        </label>
+                        <label
+                            htmlFor="photo"
+                            className="flex justify-center items-center w-full h-48 border-dashed border-2 border-gray-300 rounded-lg bg-cover bg-center bg-no-repeat cursor-pointer"
+                            style={{
+                                backgroundImage: `url(${preview})`,
+                            }}
+                        >
+                            {preview ? "" : <PhotoIcon className="w-12 h-12 text-gray-400" />}
+                        </label>
+                        <input
+                            type="file"
+                            id="photo"
+                            name="photo"
+                            accept="image/*"
+                            onChange={handleImageChange}
+                            className="hidden"
+                        />
+                    </div>
+                    <div className="flex flex-col space-y-2">
+                        <span className="text-gray-700">성별</span>
+                        <div className="flex space-x-4">
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="gender" value="man" id="man" defaultChecked />
+                                <span>남성</span>
+                            </label>
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="gender" value="woman" id="woman" />
+                                <span>여성</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div className="flex flex-col space-y-2">
+                        <span className="text-gray-700">나이</span>
+                        <div className="flex space-x-4">
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="age" value={20} id="20" />
+                                <span>20대</span>
+                            </label>
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="age" value={30} id="30" />
+                                <span>30대</span>
+                            </label>
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="age" value={40} id="40" defaultChecked />
+                                <span>40대</span>
+                            </label>
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="age" value={50} id="50" />
+                                <span>50대</span>
+                            </label>
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="age" value={60} id="60" />
+                                <span>60대</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div className="flex flex-col space-y-2">
+                        <span className="text-gray-700">등급</span>
+                        <div className="flex space-x-4">
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="grade" value="S" id="S" />
+                                <span>S</span>
+                            </label>
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="grade" value="A" id="A" defaultChecked />
+                                <span>A</span>
+                            </label>
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="grade" value="B" id="B" />
+                                <span>B</span>
+                            </label>
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="grade" value="C" id="C" />
+                                <span>C</span>
+                            </label>
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="grade" value="D" id="D" />
+                                <span>D</span>
+                            </label>
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="grade" value="E" id="E" />
+                                <span>E</span>
+                            </label>
+                        </div>
                     </div>
                     <input type="number" value={Number(id)} name="clubId" hidden />
                     <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
