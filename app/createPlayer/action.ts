@@ -4,12 +4,19 @@ import db from "@/lib/db";
 import { redirect } from "next/navigation";
 
 export async function handlePlayerCreate(prevState: unknown, formdata: FormData) {
-    const name = formdata.get("name") as string;
-    const age = Number(formdata.get("age")) as number;
-    const grade = formdata.get("grade") as string;
-    const clubId = Number(formdata.get("clubId")) as number;
-    const photo = formdata.get("photo") as string;
+    const name = formdata.get("name") as string | null;
+    const age = formdata.get("age") ? Number(formdata.get("age")) : null;
+    const grade = formdata.get("grade") as string | null;
+    const clubId = formdata.get("clubId") ? Number(formdata.get("clubId")) : null;
+    const photo = formdata.get("photo") as string | null;
+
+    if (!name || !age || !grade || !clubId || !photo) {
+        console.error("Invalid form data");
+        return;
+    }
+
     console.log(name, age, grade, clubId, photo);
+
     await db.player.create({
         data: {
             name,
@@ -17,18 +24,16 @@ export async function handlePlayerCreate(prevState: unknown, formdata: FormData)
             grade,
             club: {
                 connect: {
-                    id: 1,
+                    id: clubId,
                 },
             },
             avater: photo,
         },
     });
+
     redirect("/home/1");
-
-    // Save the player to the database
-
-    // Redirect to the home page
 }
+
 export async function getUploadURL() {
     const response = await fetch(
         `https://api.cloudflare.com/client/v4/accounts/${process.env.CF_ACCOUNT_ID}/images/v2/direct_upload`,
