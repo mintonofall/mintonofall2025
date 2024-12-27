@@ -9,7 +9,7 @@ interface PageProps {
 }
 
 export default function CreatePlayer({ params }: PageProps) {
-    const [, action] = useActionState(handlePlayerCreate, null);
+    const [state, action] = useActionState(handlePlayerCreate, null);
     const [preview, setPreview] = useState("");
     const [uploadURL, setUploadURL] = useState("");
     const [imageID, setImageID] = useState("");
