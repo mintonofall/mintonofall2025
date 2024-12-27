@@ -12,8 +12,9 @@ export async function handlePlayerCreate(prevState: unknown, formdata: FormData)
     const gender = formdata.get("genmder") as string | null;
 
     if (!name || !age || !grade || !clubId || !photo || !gender) {
+        console.log(name, age, grade, clubId, gender, photo);
         console.error("Invalid form data");
-        redirect("/home");
+        redirect("/home/1");
     }
 
     console.log(name, age, grade, clubId, photo);

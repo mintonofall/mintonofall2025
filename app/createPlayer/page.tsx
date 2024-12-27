@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 
 interface PageProps {
-    params: Promise<{ id: string }>;
+    params: { id: string };
 }
 
 export default function CreatePlayer({ params }: PageProps) {
@@ -13,14 +13,13 @@ export default function CreatePlayer({ params }: PageProps) {
     const [preview, setPreview] = useState("");
     const [uploadURL, setUploadURL] = useState("");
     const [imageID, setImageID] = useState("");
-    const [id, setId] = useState("");
+    const { id } = params;
+    console.log(id);
 
     useEffect(() => {
         async function fetchParams() {
             const resolvedParams = await params;
             console.log(resolvedParams.id);
-            setId(resolvedParams.id);
-            console.log(id);
         }
         fetchParams();
     }, [params]);
