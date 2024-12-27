@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 
 export default function CreatePlayer({ params }: { params: Promise<{ id: string }> }) {
-    const [state, action] = useActionState(handlePlayerCreate, null);
+    const [state, action] = useActionState(InterceptAction, null);
     const [preview, setPreview] = useState("");
     const [uploadURL, setUploadURL] = useState("");
     const [imageID, setImageID] = useState("");
@@ -34,6 +34,24 @@ export default function CreatePlayer({ params }: { params: Promise<{ id: string 
         if (state) {
             console.log(state);
         }
+    }
+    async function InterceptAction(_: unknown, formData: FormData) {
+        const file = formData.get("photo");
+        if (!file) return;
+        const cloudflare = new FormData();
+        cloudflare.append("file", file);
+        const response = await fetch(uploadURL, {
+            method: "POST",
+            body: cloudflare,
+        });
+        if (response.status !== 200) {
+            console.error("Upload failed");
+            return;
+        }
+        const imageURL = `https://imagedelivery.net/H_vtnjYSM5axKm4PivHM5g/${imageID}`;
+        console.log(imageURL);
+        formData.set("photo", imageURL);
+        return handlePlayerCreate(_, formData);
     }
 
     return (
