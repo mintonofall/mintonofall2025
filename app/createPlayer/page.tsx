@@ -145,7 +145,7 @@ export default function CreatePlayer({ params }: PageProps) {
                             </label>
                         </div>
                     </div>
-                    <input type="number" value={Number(id)} name="clubId" hidden />
+                    <input type="number" value={1} name="clubId" hidden />
                     <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
                         생성
                     </button>
