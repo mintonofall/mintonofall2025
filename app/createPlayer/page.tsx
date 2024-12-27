@@ -15,6 +15,7 @@ export default function CreatePlayer({ params }: { params: Promise<{ id: string 
         async function fetchParams() {
             const resolvedParams = (await params).id;
             setId(resolvedParams);
+            console.log(id);
             console.log(resolvedParams);
         }
         fetchParams();
