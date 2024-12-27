@@ -20,6 +20,7 @@ export default function CreatePlayer({ params }: PageProps) {
             const resolvedParams = await params;
             console.log(resolvedParams.id);
             setId(resolvedParams.id);
+            console.log(id);
         }
         fetchParams();
     }, [params]);
