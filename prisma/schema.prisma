@@ -48,6 +48,7 @@ model Player {
   club Club @relation(fields: [clubid], references: [id])
   suttlePoint Int @default(10000)
   waitPlayerLists WaitPlayerList[]
+  waitGames WaitGame[]
   win Int @default(0)
   lose Int @default(0)
   games Int @default(0)
@@ -69,6 +70,7 @@ model WaitGame {
   id Int @id @default(autoincrement())
   clubid Int
   playerid Int
+  player Player @relation(fields: [playerid], references: [id])
   point Int
 }
 

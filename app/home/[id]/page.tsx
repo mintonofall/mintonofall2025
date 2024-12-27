@@ -16,10 +16,16 @@ import {
     getMatch,
     createMatch,
     gameOneUp,
+    getPlayer,
+    exitPlayer,
 } from "@/lib/getUserGoHome";
-interface GameBoard {
-    pointer: number;
+import { Player } from "@/lib/interface";
+import getPlayerList from "@/lib/getPlayerList";
+import PlayerCard from "@/app/component/PlayerCard";
+interface GameBoardPan {
+    point: number;
     clubid: number;
+    player: Player;
     playerid: number;
 }
 
@@ -37,13 +43,16 @@ interface PlayingGameBoard {
 export default function GameBoard({ params }: { params: Promise<{ id: string }> }) {
     const [showPlayerList, setShowPlayerList] = useState(false);
     const [id, setId] = useState<string | null>(null);
-    const [waitPlayerList, setWaitPlayerList] = useState<number[]>([]);
+    const [waitPlayerList, setWaitPlayerList] = useState<Player[]>([]);
     const [gamePointer, setGamePointer] = useState<number>(0);
-    const [waitGameListId, setWaitGameListId] = useState<GameBoard[]>([]);
+    const [waitGameListId, setWaitGameListId] = useState<GameBoardPan[]>([]);
     const [boardPointer, setBoardPointer] = useState<number>(0);
     const [game1, setGame1] = useState<PlayingGameBoard>();
     const [game2, setGame2] = useState<PlayingGameBoard>();
     const [game3, setGame3] = useState<PlayingGameBoard>();
+    const [playerList, setPlayerList] = useState<Player[]>([]);
+    const [isAdd, setIsAdd] = useState<boolean>(false);
+    const [exitPlayerId, setExitPlayerId] = useState<number>(0);
 
     useEffect(() => {
         async function fetchParams() {
@@ -52,46 +61,44 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         }
         fetchParams();
     }, [params]);
-
     useEffect(() => {
-        async function fetchWaitPlayerList() {
-            if (id) {
-                try {
-                    const response = await getWaitPlayerList(Number(id));
-
-                    const playerIds = response.map((player) => player.Playerid);
-
-                    setWaitPlayerList(playerIds);
-                } catch (error) {
-                    console.error("Failed to fetch wait player list:", error);
-                }
-            }
+        async function fetchPlayerList() {
+            const playerListData = await getPlayerList(Number(id));
+            setPlayerList(playerListData);
+            const waitPlayerList = await getWaitPlayerList(Number(id));
+            console.log("waitPlFromDB : ", waitPlayerList);
+            setWaitPlayerList(waitPlayerList);
+            const waitGameList = await getWaitGames(Number(id));
+            setWaitGameListId(waitGameList);
         }
-        fetchWaitPlayerList();
+        fetchPlayerList();
+        console.log("waitPl : ", waitPlayerList);
     }, [id]);
 
     useEffect(() => {
+        console.log("playerlist : ", playerList);
+    }, [playerList]);
+    useEffect(() => {
+        console.log("waitPlayerList : ", waitPlayerList);
         async function fetchWaitPlayerList() {
-            if (id) {
-                try {
-                    const response = await getWaitGames(Number(id));
-                    const newWaitGameListId: GameBoard[] = response.map((game) => {
-                        return {
-                            pointer: game.point,
-                            playerid: game.playerid,
-                            clubid: game.clubid,
-                        };
-                    });
-                    const newPointer = response.length;
-                    setGamePointer(newPointer);
-                    setWaitGameListId(newWaitGameListId);
-                } catch (error) {
-                    console.error("Failed to fetch wait player list:", error);
-                }
+            if (isAdd) {
+                await pushWaitPlayerList(waitPlayerList[0].id, Number(id));
             }
         }
-        fetchWaitPlayerList();
-    }, [id]);
+    }, [waitPlayerList]);
+
+    useEffect(() => {
+        console.log("waitGameListId : ", waitGameListId);
+        function nextPointer() {
+            const points = waitGameListId.map((game) => game.point);
+            let nextPoint = 0;
+            while (points.includes(nextPoint)) {
+                nextPoint++;
+            }
+            setGamePointer(nextPoint);
+        }
+        nextPointer();
+    }, [waitGameListId]);
 
     useEffect(() => {
         async function fetchGame1() {
@@ -145,57 +152,156 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         setShowPlayerList((prev) => !prev);
     };
     const onEndmatch1 = async () => {
+        setGame1({
+            court: 1,
+            gameid: null,
+            clubid: Number(id),
+            player1id: 12,
+            player2id: 12,
+            player3id: 12,
+            player4id: 12,
+        });
         await startMatch(Number(id), 12, 12, 12, 12, 1, 0);
-        window.location.reload();
     };
     const onEndmatch2 = async () => {
+        setGame1({
+            court: 2,
+            gameid: null,
+            clubid: Number(id),
+            player1id: 12,
+            player2id: 12,
+            player3id: 12,
+            player4id: 12,
+        });
         await startMatch(Number(id), 12, 12, 12, 12, 2, 0);
-        window.location.reload();
     };
     const onEndmatch3 = async () => {
+        setGame1({
+            court: 3,
+            gameid: null,
+            clubid: Number(id),
+            player1id: 12,
+            player2id: 12,
+            player3id: 12,
+            player4id: 12,
+        });
         await startMatch(Number(id), 12, 12, 12, 12, 3, 0);
-        window.location.reload();
     };
 
     const startGame1 = async (p1: number, p2: number, p3: number, p4: number, court: number, point: number) => {
         const gameId = await createMatch(Number(id), p1, p2, p3, p4, []);
+        setGame1({
+            id: gameId.id,
+            gameid: gameId.id,
+            court: court,
+            clubid: gameId.clubid,
+            player1id: gameId.player1id,
+            player2id: gameId.player2id,
+            player3id: gameId.player3id,
+            player4id: gameId.player4id,
+        });
+
         await startMatch(Number(id), p1, p2, p3, p4, 1, gameId.id);
+        const filteredWaitGameListId = waitGameListId.filter(
+            (game) => ![point + 0, point + 1, point + 2, point + 3].includes(game.point)
+        );
+        setWaitGameListId(filteredWaitGameListId);
         await deleteWaitGame(Number(id), point);
+        const updatedWaitGameListId = waitGameListId.map((game) => {
+            if (game.point >= point + 4) {
+                return { ...game, point: game.point - 4 };
+            }
+            return game;
+        });
+        setWaitGameListId(updatedWaitGameListId);
         await pushUpWaitGame(Number(id), point);
-        window.location.reload();
     };
 
     const startGame2 = async (p1: number, p2: number, p3: number, p4: number, court: number, point: number) => {
         const gameId = await createMatch(Number(id), p1, p2, p3, p4, []);
+        setGame2({
+            id: gameId.id,
+            gameid: gameId.id,
+            court: court,
+            clubid: gameId.clubid,
+            player1id: gameId.player1id,
+            player2id: gameId.player2id,
+            player3id: gameId.player3id,
+            player4id: gameId.player4id,
+        });
         await startMatch(Number(id), p1, p2, p3, p4, 2, gameId.id);
+        const filteredWaitGameListId = waitGameListId.filter(
+            (game) => ![point + 0, point + 1, point + 2, point + 3].includes(game.point)
+        );
+        setWaitGameListId(filteredWaitGameListId);
         await deleteWaitGame(Number(id), point);
+        const updatedWaitGameListId = waitGameListId.map((game) => {
+            setWaitGameListId(updatedWaitGameListId);
+            if (game.point >= point + 4) {
+                return { ...game, point: game.point - 4 };
+            }
+            return game;
+        });
         await pushUpWaitGame(Number(id), point);
-        window.location.reload();
     };
 
     const startGame3 = async (p1: number, p2: number, p3: number, p4: number, court: number, point: number) => {
         const gameId = await createMatch(Number(id), p1, p2, p3, p4, []);
         await startMatch(Number(id), p1, p2, p3, p4, 3, gameId.id);
+        const filteredWaitGameListId = waitGameListId.filter(
+            (game) => ![point + 0, point + 1, point + 2, point + 3].includes(game.point)
+        );
+        setWaitGameListId(filteredWaitGameListId);
+        const updatedWaitGameListId = waitGameListId.map((game) => {
+            setWaitGameListId(updatedWaitGameListId);
+            if (game.point >= point + 4) {
+                return { ...game, point: game.point - 4 };
+            }
+            return game;
+        });
         await deleteWaitGame(Number(id), point);
         await pushUpWaitGame(Number(id), point);
-        window.location.reload();
     };
 
+    /**
+     * 플레이어를 대기 게임 목록에 추가하는 과정을 처리합니다.
+     *
+     * @param {number} playerid - 대기 게임에 들어가는 플레이어의 ID입니다.
+     *
+     * 이 함수는 다음 단계를 수행합니다:
+     * 1. 플레이어의 정보와 현재 게임 포인터를 사용하여 `waitGame` 객체를 생성합니다.
+     * 2. 플레이어가 이미 대기 게임 목록에 있는지 확인합니다.
+     * 3. 플레이어가 존재하면 목록에서 플레이어의 ID를 업데이트하고 게임 포인터를 증가시킵니다.
+     * 4. 플레이어가 존재하지 않으면 플레이어를 대기 게임 목록에 추가하고, 게임 포인터를 증가시키며,
+     *    새로운 대기 게임 항목을 생성하고 `gameOneUp`을 호출하여 게임 상태를 업데이트합니다.
+     *
+     * @returns {Promise<void>} 플레이어가 대기 게임 목록에 성공적으로 추가되면 해결되는 약속을 반환합니다.
+     */
     const enterWaitGame = async (playerid: number) => {
-        const waitGame: GameBoard = {
-            pointer: gamePointer,
-            playerid: playerid,
+        const waitGame: GameBoardPan = {
+            point: gamePointer,
+            player: playerList.find((player) => player.id === playerid) as Player,
             clubid: Number(id),
+            playerid: playerid,
         };
         const copys = [...waitGameListId];
-        const existingPlayerIndex = copys.findIndex((game) => game.pointer === waitGame.pointer);
+
+        const existingPlayerIndex = copys.findIndex((game) => game.point === waitGame.point);
+
         console.log("Existing player index:", existingPlayerIndex);
         if (existingPlayerIndex !== -1) {
             copys[existingPlayerIndex].playerid = waitGame.playerid;
+            copys[existingPlayerIndex].player = waitGame.player;
             setWaitGameListId(copys);
-            updateWaitGame(playerid, waitGame.pointer);
-            const pointer = gamePointer + 1;
-            setGamePointer(pointer);
+            updateWaitGame(playerid, waitGame.point);
+            const updatedWaitPlayerList = waitPlayerList.map((player) => {
+                if (player.id === playerid) {
+                    return { ...player, games: player.games + 1 };
+                }
+                return player;
+            });
+            updatedWaitPlayerList.sort((a, b) => a.games - b.games);
+            setWaitPlayerList(updatedWaitPlayerList);
             return;
         }
         copys.push(waitGame);
@@ -203,16 +309,39 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         const pointer = gamePointer + 1;
         setGamePointer(pointer);
         createWaitGame(Number(id), playerid, gamePointer);
+        const updatedWaitPlayerList = waitPlayerList.map((player) => {
+            if (player.id === playerid) {
+                return { ...player, games: player.games + 1 };
+            }
+            return player;
+        });
+        updatedWaitPlayerList.sort((a, b) => a.games - b.games);
+        setWaitPlayerList(updatedWaitPlayerList);
         await gameOneUp(playerid);
-        window.location.reload();
     };
 
     const closePlayerList = () => {
         setShowPlayerList(false);
     };
 
+    const handleExitPlayer = (playerId: number) => {
+        exitPlayer(playerId, Number(id));
+    };
+
     const enterPlayer = (playerId: number) => {
         console.log(playerId);
+        const copyWaitPlayerList = [...waitPlayerList];
+        const existingPlayerIndex = copyWaitPlayerList.findIndex((player) => player.id === playerId);
+        if (existingPlayerIndex !== -1) {
+            return;
+        }
+        const player = playerList.find((player) => player.id === playerId);
+        if (!player) {
+            return;
+        }
+        copyWaitPlayerList.unshift(player);
+        setIsAdd(true);
+        setWaitPlayerList(copyWaitPlayerList);
         pushWaitPlayerList(playerId, Number(id));
     };
 
@@ -364,24 +493,19 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         </div>
                     </div>
                     <div className="flex-grow grid grid-cols-4 gap-1">
-                        {Array.from({ length: 40 }, (_, index) => (
+                        {Array.from({ length: 32 }, (_, index) => (
                             <div
                                 key={"game" + index}
                                 className={`h-16 ${gamePointer == index ? "bg-red-200" : "bg-blue-200"}`}
                                 onClick={async () => {
-                                    await setGamePointer(index);
+                                    setGamePointer(index);
                                     console.log(gamePointer);
                                 }}
                             >
                                 {waitGameListId.map((game) => {
-                                    return game.pointer == index ? (
-                                        <FromIdtoPlayerCard
-                                            key={game.playerid}
-                                            playerid={game.playerid}
-                                            clubid={Number(id)}
-                                            which={"waitGame"}
-                                        />
-                                    ) : null;
+                                    if (game.point == index) {
+                                        return <PlayerCard {...game.player} />;
+                                    }
                                 })}
                             </div>
                         ))}
@@ -391,24 +515,30 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             {/* 우측 화면 */}
             <div className="w-1/4 bg-gray-400 p-4">
                 <div>
-                    {waitPlayerList.map((playerid) => {
+                    {waitPlayerList.map((player, index) => {
                         return (
-                            <div
-                                key={playerid}
-                                className="flex flex-col"
-                                onClick={() => {
-                                    enterWaitGame(playerid);
-                                }}
-                            >
-                                <div key={playerid} className="z-1">
-                                    {
-                                        <FromIdtoPlayerCard
-                                            playerid={playerid}
-                                            clubid={Number(id)}
-                                            which={"waitPlayer"}
-                                        />
-                                    }
+                            <div key={player.id} className="flex flex-col">
+                                <div
+                                    className="flex flex-col"
+                                    onClick={() => {
+                                        enterWaitGame(player.id);
+                                    }}
+                                >
+                                    <div key={player.id} className="flex flex-col z-1">
+                                        {<PlayerCard {...player} />}
+                                    </div>
                                 </div>
+                                <button
+                                    className="absolute right-2 z-10 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg"
+                                    onClick={(e) => {
+                                        const data = [...waitPlayerList];
+                                        data.splice(index, 1);
+                                        setWaitPlayerList(data);
+                                        handleExitPlayer(player.id);
+                                    }}
+                                >
+                                    <span className="text-xs">×</span>
+                                </button>
                             </div>
                         );
                     })}
@@ -455,7 +585,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         onClose={closePlayerList}
                         onEnterPlayer={enterPlayer}
                         waitPLayerList={waitPlayerList}
-                        clubId={Number(id)}
+                        clubid={Number(id)}
                     />
                 </div>
             )}

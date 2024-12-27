@@ -3,6 +3,7 @@ import getPlayerList from "@/lib/getPlayerList";
 import { useEffect, useState } from "react";
 import PlayerCard from "./PlayerCard";
 import Link from "next/link";
+import { Player } from "@/lib/interface";
 
 export default function WaitPlayerList({
     onClose,
@@ -11,27 +12,16 @@ export default function WaitPlayerList({
 }: {
     onClose: () => void;
     onEnterPlayer: (id: number) => void;
-    waitPLayerList: number[];
-    clubId: number;
+    waitPLayerList: Player[];
+    clubid: number;
 }) {
-    const [playerList, setPlayerList] = useState<
-        {
-            id: number;
-            name: string;
-            avater: string | null;
-            age: number;
-            grade: string;
-            games: number;
-            win: number;
-            lose: number;
-        }[]
-    >([]);
+    const [playerList, setPlayerList] = useState<Player[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [playerListMsg, setPlayerListMsg] = useState("");
 
     useEffect(() => {
         async function fetchPlayers() {
-            const players = await getPlayerList();
+            const players = await getPlayerList(1);
             setPlayerList(players);
             console.log(players);
         }
@@ -63,13 +53,12 @@ export default function WaitPlayerList({
                     className="flex p-2"
                     key={player.id}
                     onClick={() => {
-                        if (waitPLayerList.includes(player.id)) {
+                        if (waitPLayerList.find((p) => p.id === player.id)) {
                             setPlayerListMsg("이미 대기중인 선수입니다.");
                         } else {
                             console.log("from Comp : ", player.id);
                             onEnterPlayer(player.id);
                             setPlayerListMsg("");
-                            window.location.reload();
                             onClose();
                         }
                     }}

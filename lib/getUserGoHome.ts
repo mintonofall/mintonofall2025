@@ -63,7 +63,6 @@ export async function pushWaitPlayerList(Playerid: number, clubid: number) {
             clubid,
             Playerid,
             enterDate: new Date(),
-            exitDate: new Date(new Date().setDate(new Date().getDate() - 1)),
         },
     });
     console.log(pushPlayer);
@@ -74,21 +73,33 @@ export async function getWaitPlayerList(clubid: number) {
     const waitPlayerList = await db.waitPlayerList.findMany({
         where: {
             clubid,
-            enterDate: {
-                gte: new Date(new Date().setHours(0, 0, 0, 0)),
-                lt: new Date(new Date().setHours(23, 59, 59, 999)),
-            },
-            exitDate: {
-                lt: today,
-            },
         },
         orderBy: {
             player: {
                 games: "asc",
             },
         },
+        include: {
+            player: true,
+        },
     });
-    return waitPlayerList;
+    return waitPlayerList.map((entry) => entry.player);
+    //     where: { clubid,
+    //         enterDate: {
+    //             gte: new Date(new Date().setHours(0, 0, 0, 0)),
+    //             lt: new Date(new Date().setHours(23, 59, 59, 999)),
+    //         },
+    //         exitDate: {
+    //             lt: today,
+    //         },
+    //     },
+    //     orderBy: {
+    //         player: {
+    //             games: "asc",
+    //         },
+    //     },
+    // });
+    // return waitPlayerList;
 }
 
 export async function exitPlayer(Playerid: number, clubid: number) {
@@ -119,6 +130,9 @@ export async function getWaitGames(clubid: number) {
         },
         orderBy: {
             point: "asc",
+        },
+        include: {
+            player: true,
         },
     });
     return waitGames;

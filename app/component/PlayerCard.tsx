@@ -1,14 +1,4 @@
-interface Player {
-    name: string;
-    avater: string | null;
-    age: number;
-    grade: string;
-    games: number;
-    win: number;
-    lose: number;
-    id: number;
-}
-
+import { Player } from "@/lib/interface";
 import Image from "next/image";
 export default function PlayerCard(player: Player) {
     return (

@@ -1,10 +1,10 @@
 "use server";
 import db from "./db";
 
-async function getPlayerList() {
+async function getPlayerList(id: number) {
     const players = await db.player.findMany({
         where: {
-            clubid: 1,
+            clubid: id,
         },
     });
     return players;
