@@ -9,7 +9,7 @@ export async function handlePlayerCreate(prevState: unknown, formdata: FormData)
     const grade = formdata.get("grade") as string | null;
     const clubId = formdata.get("clubId") ? Number(formdata.get("clubId")) : null;
     const photo = formdata.get("photo") as string | null;
-    const gender = formdata.get("genmder") as string | null;
+    const gender = formdata.get("gender") as string | null;
 
     if (!name || !age || !grade || !clubId || !photo || !gender) {
         console.log(name, age, grade, clubId, gender, photo);
