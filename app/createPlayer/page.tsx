@@ -48,7 +48,7 @@ export default function CreatePlayer({ params }: PageProps) {
                         type="text"
                         id="playerName"
                         placeholder="플레이어 이름"
-                        name="playerName"
+                        name="name"
                         className="mb-4 p-2 border border-gray-300 rounded"
                     />
                     <label htmlFor="photo" className="mb-2 text-gray-700">
