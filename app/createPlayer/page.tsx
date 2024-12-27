@@ -34,6 +34,9 @@ export default function CreatePlayer({ params }: PageProps) {
         console.log(uploadURL);
         setImageID(result.result.id);
         console.log(imageID);
+        if (state) {
+            console.log(state);
+        }
     }
 
     return (
