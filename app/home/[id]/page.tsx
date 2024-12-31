@@ -49,7 +49,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     const [game2, setGame2] = useState<PlayingGameBoard>();
     const [game3, setGame3] = useState<PlayingGameBoard>();
     const [playerList, setPlayerList] = useState<Player[]>([]);
-    const [isAdd, setIsAdd] = useState<boolean>(false);
 
     useEffect(() => {
         async function fetchParams() {
@@ -332,7 +331,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             return;
         }
         copyWaitPlayerList.unshift(player);
-        setIsAdd(true);
         setWaitPlayerList(copyWaitPlayerList);
         pushWaitPlayerList(playerId, Number(id));
     };
@@ -496,7 +494,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             >
                                 {waitGameListId.map((game) => {
                                     if (game.point == index) {
-                                        return <PlayerCard {...game.player} />;
+                                        return <PlayerCard key={game.player.id} {...game.player} />;
                                     }
                                 })}
                             </div>
