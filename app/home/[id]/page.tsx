@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import WaitPlayerList from "@/app/component/WaitPlayerList";
-import FromIdtoPlayerCard from "@/app/component/FromIdtoPlayerCard";
 import GameCourt from "@/app/component/GameCourt";
 import {
     createWaitGame,
@@ -16,7 +15,6 @@ import {
     getMatch,
     createMatch,
     gameOneUp,
-    getPlayer,
     exitPlayer,
 } from "@/lib/getUserGoHome";
 import { Player } from "@/lib/interface";
@@ -52,7 +50,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     const [game3, setGame3] = useState<PlayingGameBoard>();
     const [playerList, setPlayerList] = useState<Player[]>([]);
     const [isAdd, setIsAdd] = useState<boolean>(false);
-    const [exitPlayerId, setExitPlayerId] = useState<number>(0);
 
     useEffect(() => {
         async function fetchParams() {
@@ -80,11 +77,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     }, [playerList]);
     useEffect(() => {
         console.log("waitPlayerList : ", waitPlayerList);
-        async function fetchWaitPlayerList() {
-            if (isAdd) {
-                await pushWaitPlayerList(waitPlayerList[0].id, Number(id));
-            }
-        }
     }, [waitPlayerList]);
 
     useEffect(() => {

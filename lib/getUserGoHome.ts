@@ -69,7 +69,6 @@ export async function pushWaitPlayerList(Playerid: number, clubid: number) {
 }
 
 export async function getWaitPlayerList(clubid: number) {
-    const today = new Date(new Date().setHours(0, 0, 0, 0));
     const waitPlayerList = await db.waitPlayerList.findMany({
         where: {
             clubid,

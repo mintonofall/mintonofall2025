@@ -1,7 +1,7 @@
 import { Player } from "@/lib/interface";
-import { exitPlayer, getPlayer } from "../../lib/getUserGoHome";
+import { exitPlayer } from "../../lib/getUserGoHome";
 import PlayerCard from "./PlayerCard";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface Props {
     key: number;
@@ -11,8 +11,6 @@ interface Props {
 }
 
 export default function FromIdtoPlayerCard({ key, player, clubid, which }: Props) {
-    const [playerState, setPlayerState] = useState<Player | null>(null);
-
     return (
         <div key={key} className="p-1 relative">
             {player ? <PlayerCard {...player} /> : <p>Player not found</p>}
