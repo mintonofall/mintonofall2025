@@ -522,7 +522,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                 </div>
                                 <button
                                     className="absolute right-2 z-10 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg"
-                                    onClick={(e) => {
+                                    onClick={() => {
                                         const data = [...waitPlayerList];
                                         data.splice(index, 1);
                                         setWaitPlayerList(data);

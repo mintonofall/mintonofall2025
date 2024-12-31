@@ -1,7 +1,6 @@
 import { Player } from "@/lib/interface";
 import { exitPlayer } from "../../lib/getUserGoHome";
 import PlayerCard from "./PlayerCard";
-import { useState } from "react";
 
 interface Props {
     key: number;
