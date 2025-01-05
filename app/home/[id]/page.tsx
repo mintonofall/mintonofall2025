@@ -20,8 +20,6 @@ import {
 import { Player } from "@/lib/interface";
 import getPlayerList from "@/lib/getPlayerList";
 import PlayerCard from "@/app/component/PlayerCard";
-import { Play } from "next/font/google";
-import { get } from "http";
 interface WaitGameListCLass {
     point: number;
     clubid: number;
