@@ -4,6 +4,13 @@ import { useEffect, useState } from "react";
 import PlayerCard from "./PlayerCard";
 import Link from "next/link";
 import { Player } from "@/lib/interface";
+interface WaitPlayerListProps {
+    id: number | null;
+    clubid: number;
+    Playerid: number;
+    enterDate: Date;
+    exitDate: Date | null;
+}
 
 export default function WaitPlayerList({
     onClose,
@@ -12,7 +19,7 @@ export default function WaitPlayerList({
 }: {
     onClose: () => void;
     onEnterPlayer: (id: number) => void;
-    waitPLayerList: Player[];
+    waitPLayerList: WaitPlayerListProps[];
     clubid: number;
 }) {
     const [playerList, setPlayerList] = useState<Player[]>([]);

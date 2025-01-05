@@ -53,6 +53,9 @@ model Player {
   lose Int @default(0)
   games Int @default(0)
   mmr Int @default(1000)
+  gameDatas DateTime[]
+  winDatas DateTime[]
+  loseDatas DateTime[]
 
 
 }

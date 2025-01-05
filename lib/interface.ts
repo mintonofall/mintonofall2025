@@ -7,4 +7,7 @@ export interface Player {
     games: number;
     win: number;
     avater: string | null;
+    suttlePoint: number;
+    mmr: number;
+    gameDatas: Date[];
 }

@@ -35,6 +35,9 @@ export async function gameOneUp(id: number) {
             id,
         },
         data: {
+            gameDatas: {
+                push: new Date(),
+            },
             games: {
                 increment: 1,
             },
@@ -78,11 +81,8 @@ export async function getWaitPlayerList(clubid: number) {
                 games: "asc",
             },
         },
-        include: {
-            player: true,
-        },
     });
-    return waitPlayerList.map((entry) => entry.player);
+    return waitPlayerList;
     //     where: { clubid,
     //         enterDate: {
     //             gte: new Date(new Date().setHours(0, 0, 0, 0)),
@@ -129,9 +129,6 @@ export async function getWaitGames(clubid: number) {
         },
         orderBy: {
             point: "asc",
-        },
-        include: {
-            player: true,
         },
     });
     return waitGames;
@@ -254,11 +251,10 @@ export const endMatch = async (id: number, winner: number[]) => {
     });
 };
 
-export const getMatch = async (clubid: number, CourtNumber: number) => {
+export const getMatch = async (clubid: number) => {
     const match = await db.gameBoard.findMany({
         where: {
             clubid,
-            CourtNumber,
         },
     });
     return match;
