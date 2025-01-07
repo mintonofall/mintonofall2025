@@ -10,6 +10,6 @@ export interface Player {
     suttlePoint: number;
     mmr: number;
     gameDatas: Date[];
-    winDatas: String[];
-    loseDatas: String[];
+    winDatas: string[];
+    loseDatas: string[];
 }

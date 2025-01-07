@@ -56,8 +56,8 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     const [game2, setGame2] = useState<PlayingGameBoard>();
     const [game3, setGame3] = useState<PlayingGameBoard>();
     const [playerList, setPlayerList] = useState<Player[]>([]);
-    let isFetch: Boolean = false;
-    let point: number = 0;
+    let isFetch: boolean = false;
+    const point: number = 0;
 
     useEffect(() => {
         async function fetchParams() {
@@ -524,7 +524,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                 }
                                 clubid={Number(id)}
                                 court={1}
-                                gameid={game1?.gameid! ?? "0"}
+                                gameid={game1?.gameid ?? "0"}
                                 onEndMatch={onEndmatch1}
                             />
                         </div>
