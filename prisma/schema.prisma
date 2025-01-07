@@ -54,8 +54,9 @@ model Player {
   games Int @default(0)
   mmr Int @default(1000)
   gameDatas DateTime[]
-  winDatas DateTime[]
-  loseDatas DateTime[]
+  winDatas String[]
+  loseDatas String[]
+  enterDatas DateTime[]
 
 
 }
@@ -79,6 +80,7 @@ model WaitGame {
 
 model Match {
   id Int @id @default(autoincrement())
+  gameid String 
   player1id Int
   player2id Int
   player3id Int
@@ -95,7 +97,7 @@ model Match {
 
 model GameBoard {
   id Int @id @default(autoincrement())
-  gameid Int?
+  gameid String 
   clubid Int
   CourtNumber Int
   player1id Int

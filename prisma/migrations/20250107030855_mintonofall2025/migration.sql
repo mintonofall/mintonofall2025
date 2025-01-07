@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE "Player" ALTER COLUMN "loseDatas" SET DATA TYPE TEXT[],
+ALTER COLUMN "winDatas" SET DATA TYPE TEXT[];

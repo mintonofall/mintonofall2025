@@ -1,64 +1,54 @@
 "use client";
 
-import { endMatch, getPlayer } from "@/lib/getUserGoHome";
+import { endMatch } from "@/lib/getUserGoHome";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { Player } from "@/lib/interface";
 
 interface gameplayers {
-    p1: number;
-    p2: number;
-    p3: number;
-    p4: number;
+    p1: Player;
+    p2: Player;
+    p3: Player;
+    p4: Player;
     clubid: number;
     court: number;
-    gameid: number;
+    gameid: string;
     onEndMatch: () => void;
 }
 
-interface Player {
-    id: number;
-    name: string;
-    avater: string | null;
-    age: number;
-    grade: string;
-    games: number;
-    win: number;
-    lose: number;
-}
-
 export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch }: gameplayers) {
-    const [player1, setPlayer1] = useState<Player | null>(null);
-    const [player2, setPlayer2] = useState<Player | null>(null);
-    const [player3, setPlayer3] = useState<Player | null>(null);
-    const [player4, setPlayer4] = useState<Player | null>(null);
     const [isShowResult, setIsShowResult] = useState(false);
     const [winnerpoint, setWinnerpoint] = useState<number[]>([]);
-    useEffect(() => {
-        async function fetchPlayers() {
-            try {
-                const player1Data = await getPlayer(p1);
-                const player2Data = await getPlayer(p2);
-                const player3Data = await getPlayer(p3);
-                const player4Data = await getPlayer(p4);
+    // useEffect(() => {
+    //     async function fetchPlayers() {
+    //         try {
+    //             const player1Data = await getPlayer(p1);
+    //             const player2Data = await getPlayer(p2);
+    //             const player3Data = await getPlayer(p3);
+    //             const player4Data = await getPlayer(p4);
 
-                setPlayer1(player1Data);
-                setPlayer2(player2Data);
-                setPlayer3(player3Data);
-                setPlayer4(player4Data);
-            } catch (error) {
-                console.error("Failed to fetch player:", error);
-            }
-        }
-        fetchPlayers();
-    }, [p1, p2, p3, p4]);
+    //             setPlayer1(player1Data);
+    //             setPlayer2(player2Data);
+    //             setPlayer3(player3Data);
+    //             setPlayer4(player4Data);
+    //         } catch (error) {
+    //             console.error("Failed to fetch player:", error);
+    //         }
+    //     }
+    //     fetchPlayers();
+    // }, [p1, p2, p3, p4]);
 
-    const player1Avatar = player1?.avater ? player1.avater + "/avatar" : "/guest.png";
-    const player2Avatar = player2?.avater ? player2.avater + "/avatar" : "/guest.png";
-    const player3Avatar = player3?.avater ? player3.avater + "/avatar" : "/guest.png";
-    const player4Avatar = player4?.avater ? player4.avater + "/avatar" : "/guest.png";
+    const player1Avatar = p1?.avater ? p1.avater + "/avatar" : "/guest.png";
+    const player2Avatar = p2?.avater ? p2.avater + "/avatar" : "/guest.png";
+    const player3Avatar = p3?.avater ? p3.avater + "/avatar" : "/guest.png";
+    const player4Avatar = p4?.avater ? p4.avater + "/avatar" : "/guest.png";
 
-    const endMatchFunction = async (gameid: number, winner: number[]) => {
-        await endMatch(gameid, winner);
+    const endMatchFunction = async (gameid: string, winner: number[]) => {
+        const players = [p1, p2, p3, p4];
+        const newwinner1: number = players[winner[0] - 1].id;
+        const newwinner2: number = players[winner[1] - 1].id;
+        const newWinners = [newwinner1, newwinner2];
+        await endMatch(gameid, newWinners);
     };
     function selectWinner(winner: number) {
         return function () {
@@ -98,10 +88,10 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch }:
                             />
                         </div>
                         <div className="ml-3">
-                            <div className="text-sm font-medium text-gray-800">{player1?.name}</div>
+                            <div className="text-sm font-medium text-gray-800">{p1?.name}</div>
                             <div className="text-xs text-gray-600">
-                                {player1?.age}
-                                {player1?.grade}
+                                {p1?.age}
+                                {p1?.grade}
                             </div>
                         </div>
                     </div>
@@ -116,10 +106,10 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch }:
                             />
                         </div>
                         <div className="ml-3">
-                            <div className="text-sm font-medium text-gray-800">{player2?.name}</div>
+                            <div className="text-sm font-medium text-gray-800">{p2?.name}</div>
                             <div className="text-xs text-gray-600">
-                                {player2?.age}
-                                {player2?.grade}
+                                {p2?.age}
+                                {p2?.grade}
                             </div>
                         </div>
                     </div>
@@ -136,10 +126,10 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch }:
                             />
                         </div>
                         <div className="ml-3">
-                            <div className="text-sm font-medium text-gray-800">{player3?.name}</div>
+                            <div className="text-sm font-medium text-gray-800">{p3?.name}</div>
                             <div className="text-xs text-gray-600">
-                                {player3?.age}
-                                {player3?.grade}
+                                {p3?.age}
+                                {p3?.grade}
                             </div>
                         </div>
                     </div>
@@ -154,10 +144,10 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch }:
                             />
                         </div>
                         <div className="ml-3">
-                            <div className="text-sm font-medium text-gray-800">{player4?.name}</div>
+                            <div className="text-sm font-medium text-gray-800">{p4?.name}</div>
                             <div className="text-xs text-gray-600">
-                                {player4?.age}
-                                {player4?.grade}
+                                {p4?.age}
+                                {p4?.grade}
                             </div>
                         </div>
                     </div>
@@ -197,7 +187,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch }:
                                     height={50}
                                     className="object-cover w-12 h-12 rounded-full"
                                 />
-                                <div className="text-sm font-medium text-gray-800">{player1?.name}</div>
+                                <div className="text-sm font-medium text-gray-800">{p1?.name}</div>
                             </div>
                             <div
                                 onClick={selectWinner(2)}
@@ -212,7 +202,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch }:
                                     height={50}
                                     className="object-cover w-12 h-12 rounded-full"
                                 />
-                                <div className="text-sm font-medium text-gray-800">{player2?.name}</div>
+                                <div className="text-sm font-medium text-gray-800">{p2?.name}</div>
                             </div>
                         </div>
                         <div className="flex flex-row justify-between items-center space-x-0">
@@ -229,7 +219,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch }:
                                     height={50}
                                     className="object-cover w-12 h-12 rounded-full"
                                 />
-                                <div className="text-sm font-medium text-gray-800">{player3?.name}</div>
+                                <div className="text-sm font-medium text-gray-800">{p3?.name}</div>
                             </div>
                             <div
                                 onClick={selectWinner(4)}
@@ -244,7 +234,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch }:
                                     height={50}
                                     className="object-cover w-12 h-12 rounded-full"
                                 />
-                                <div className="text-sm font-medium text-gray-800">{player4?.name}</div>
+                                <div className="text-sm font-medium text-gray-800">{p4?.name}</div>
                             </div>
                         </div>
                     </div>

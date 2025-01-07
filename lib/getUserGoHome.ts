@@ -69,6 +69,25 @@ export async function pushWaitPlayerList(Playerid: number, clubid: number) {
         },
     });
     console.log(pushPlayer);
+    const player = await db.player.findUnique({
+        where: {
+            id: Playerid,
+        },
+    });
+    if (player?.enterDatas.some((date) => new Date(date).toDateString() === new Date().toDateString())) {
+        console.log("Player has entered today");
+    } else {
+        await db.player.update({
+            where: {
+                id: Playerid,
+            },
+            data: {
+                enterDatas: {
+                    push: new Date(),
+                },
+            },
+        });
+    }
 }
 
 export async function getWaitPlayerList(clubid: number) {
@@ -160,7 +179,7 @@ export const startMatch = async (
     player3id: number,
     player4id: number,
     CourtNumber: number,
-    gameid: number
+    gameid: string
 ) => {
     const match = await db.gameBoard.updateMany({
         where: {
@@ -178,72 +197,51 @@ export const startMatch = async (
     return match;
 };
 
-export const endMatch = async (id: number, winner: number[]) => {
-    const match = await db.match.findUnique({
+export const endMatch = async (matchId: string, winner: number[]) => {
+    const match = await db.match.findFirst({
         where: {
-            id,
+            gameid: matchId,
         },
     });
-    let winner1id = 12;
-    let winner2id = 12;
-    if (match) {
-        if (winner[0] !== null) {
-            switch (winner[0]) {
-                case 1:
-                    winner1id = match.player1id;
-                    break;
-                case 2:
-                    winner1id = match.player2id;
-                    break;
-                case 3:
-                    winner1id = match.player3id;
-                    break;
-                case 4:
-                    winner1id = match.player4id;
-                    break;
-            }
-            switch (winner[1]) {
-                case 1:
-                    winner2id = match.player1id;
-                    break;
-                case 2:
-                    winner2id = match.player2id;
-                    break;
-                case 3:
-                    winner2id = match.player3id;
-                    break;
-                case 4:
-                    winner2id = match.player4id;
-                    break;
-            }
-        }
+
+    if (!match) {
+        throw new Error(`Match with id ${matchId} not found`);
     }
-    await db.match.update({
+
+    await db.match.updateMany({
         where: {
-            id,
+            gameid: matchId,
         },
         data: {
             endTime: new Date(),
-            duration: new Date().getTime() - match!.startTime.getTime(),
-            winner1id,
-            winner2id,
+            duration: new Date().getTime() - match.startTime.getTime(),
+            winner1id: winner[0],
+            winner2id: winner[1],
         },
     });
+
     await db.player.update({
         where: {
-            id: winner1id,
+            id: winner[0],
         },
         data: {
+            winDatas: {
+                push: matchId,
+            },
             win: {
                 increment: 1,
             },
         },
     });
+
     await db.player.update({
         where: {
-            id: winner2id,
+            id: winner[1],
         },
         data: {
+            winDatas: {
+                push: matchId,
+            },
             win: {
                 increment: 1,
             },
@@ -255,6 +253,9 @@ export const getMatch = async (clubid: number) => {
     const match = await db.gameBoard.findMany({
         where: {
             clubid,
+        },
+        orderBy: {
+            CourtNumber: "asc",
         },
     });
     return match;
@@ -287,9 +288,18 @@ export const pushUpWaitGame = async (clubid: number, point: number) => {
     });
 };
 
-export const createMatch = async (clubid: number, p1: number, p2: number, p3: number, p4: number, winner: number[]) => {
+export const createMatch = async (
+    gameid: string,
+    clubid: number,
+    p1: number,
+    p2: number,
+    p3: number,
+    p4: number,
+    winner: number[]
+) => {
     const match = await db.match.create({
         data: {
+            gameid,
             clubid,
             player1id: p1,
             player2id: p2,

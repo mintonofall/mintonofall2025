@@ -60,7 +60,7 @@ export default function WaitPlayerList({
                     className="flex p-2"
                     key={player.id}
                     onClick={() => {
-                        if (waitPLayerList.find((p) => p.id === player.id)) {
+                        if (waitPLayerList.find((p) => p.Playerid === player.id)) {
                             setPlayerListMsg("이미 대기중인 선수입니다.");
                         } else {
                             console.log("from Comp : ", player.id);

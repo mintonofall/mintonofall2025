@@ -17,7 +17,7 @@ export async function handlePlayerCreate(prevState: unknown, formdata: FormData)
         redirect("/home/1");
     }
 
-    console.log(name, age, grade, clubId, photo);
+    console.log(name, age, grade, clubId, photo, gender);
 
     await db.player.create({
         data: {
@@ -30,10 +30,11 @@ export async function handlePlayerCreate(prevState: unknown, formdata: FormData)
                 },
             },
             avater: photo,
+            gender,
         },
     });
 
-    redirect("/home/1");
+    // redirect("/home/1");
 }
 
 export async function getUploadURL() {
