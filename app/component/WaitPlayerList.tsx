@@ -16,6 +16,7 @@ export default function WaitPlayerList({
     onClose,
     onEnterPlayer,
     waitPLayerList,
+    clubid,
 }: {
     onClose: () => void;
     onEnterPlayer: (id: number) => void;
@@ -28,7 +29,7 @@ export default function WaitPlayerList({
 
     useEffect(() => {
         async function fetchPlayers() {
-            const players = await getPlayerList(1);
+            const players = await getPlayerList(clubid);
             setPlayerList(players);
             console.log(players);
         }
