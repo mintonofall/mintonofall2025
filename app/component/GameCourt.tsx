@@ -2,7 +2,7 @@
 
 import { endMatch } from "@/lib/getUserGoHome";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Player } from "@/lib/interface";
 
 interface gameplayers {
