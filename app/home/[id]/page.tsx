@@ -16,6 +16,7 @@ import {
     createMatch,
     gameOneUp,
     exitPlayer,
+    getClub,
 } from "@/lib/getUserGoHome";
 import { Player } from "@/lib/interface";
 import getPlayerList from "@/lib/getPlayerList";
@@ -55,7 +56,9 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     const [game1, setGame1] = useState<PlayingGameBoard>();
     const [game2, setGame2] = useState<PlayingGameBoard>();
     const [game3, setGame3] = useState<PlayingGameBoard>();
+    const [game4, setGame4] = useState<PlayingGameBoard>();
     const [playerList, setPlayerList] = useState<Player[]>([]);
+    const [howManyCourts, setHowManyCourts] = useState<number>(3);
     let isFetch: boolean = false;
     const point: number = 0;
 
@@ -68,9 +71,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     }, [params]);
 
     useEffect(() => {
-        console.log("game1 : ", game1);
-        console.log("game2 : ", game2);
-        console.log("game3 : ", game3);
+        console.log("Effectgame1 : ", game1);
         async function startGame1Handle() {
             if (game1?.player1id !== 12 && !isFetch) {
                 if (
@@ -107,6 +108,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     }, [game1]);
 
     useEffect(() => {
+        console.log("Effectgame2 : ", game2);
         async function startGame2Handle() {
             if (game2?.player1id !== 12 && !isFetch) {
                 if (
@@ -144,6 +146,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     }, [game2]);
 
     useEffect(() => {
+        console.log("Effectgame3 : ", game3);
         async function startGame3Handle() {
             if (game3?.player1id !== 12 && !isFetch) {
                 if (
@@ -179,12 +182,54 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
 
         startGame3Handle();
     }, [game3]);
+    useEffect(() => {
+        console.log("Effectgame4 : ", game4);
+        async function startGame4Handle() {
+            if (game4?.player1id !== 12 && !isFetch) {
+                if (
+                    game4?.gameid &&
+                    game4?.player1id &&
+                    game4?.player2id &&
+                    game4.player3id &&
+                    game4.player4id !== undefined
+                ) {
+                    const gameId = await createMatch(
+                        game4.gameid,
+                        game4.clubid!,
+                        game4.player1id,
+                        game4.player2id,
+                        game4.player3id,
+                        game4.player4id,
+                        []
+                    );
+                    await startMatch(
+                        Number(id),
+                        game4.player1id,
+                        game4.player2id,
+                        game4.player3id,
+                        game4.player4id,
+                        3,
+                        gameId.gameid
+                    );
+                    await deleteWaitGame(Number(id), point);
+                    await pushUpWaitGame(Number(id), point);
+                }
+            }
+        }
+
+        startGame4Handle();
+    }, [game4]);
 
     useEffect(() => {
         async function fetchPlayerList() {
             const playerListData = await getPlayerList(Number(id));
             console.log("playerListData : ", playerListData);
             setPlayerList(playerListData);
+            const getClubdata = await getClub(Number(id));
+            if (getClubdata) {
+                setHowManyCourts(getClubdata.howManyCourts);
+            }
+            console.log("howManyCourts : ", howManyCourts);
             const consolePlayer = playerListData.find((player) => player.id === 12);
             console.log("consolePlayer : ", consolePlayer);
             const waitPlayerListData = await getWaitPlayerList(Number(id));
@@ -228,6 +273,18 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         player2id: getMatchData[2].player2id,
                         player3id: getMatchData[2].player3id,
                         player4id: getMatchData[2].player4id,
+                    });
+                }
+                if (getMatchData[3]) {
+                    setGame4({
+                        id: getMatchData[3].id,
+                        gameid: getMatchData[3].gameid || null,
+                        court: getMatchData[3].CourtNumber,
+                        clubid: getMatchData[3].clubid,
+                        player1id: getMatchData[3].player1id,
+                        player2id: getMatchData[3].player2id,
+                        player3id: getMatchData[3].player3id,
+                        player4id: getMatchData[3].player4id,
                     });
                 }
             }
@@ -298,6 +355,18 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         });
         await startMatch(Number(id), 12, 12, 12, 12, 3, "0");
     };
+    const onEndmatch4 = async () => {
+        setGame4({
+            court: 4,
+            gameid: null,
+            clubid: Number(id),
+            player1id: 12,
+            player2id: 12,
+            player3id: 12,
+            player4id: 12,
+        });
+        await startMatch(Number(id), 12, 12, 12, 12, 3, "0");
+    };
 
     const startGame1 = async (p1: number, p2: number, p3: number, p4: number, court: number, point: number) => {
         setGame1({
@@ -349,6 +418,28 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
 
     const startGame3 = async (p1: number, p2: number, p3: number, p4: number, court: number, point: number) => {
         setGame3({
+            id: 2,
+            gameid: crypto.randomUUID(),
+            court: court,
+            clubid: Number(id),
+            player1id: p1,
+            player2id: p2,
+            player3id: p3,
+            player4id: p4,
+        });
+        const filteredWaitGameListId = waitGameListId.filter(
+            (game) => ![point + 0, point + 1, point + 2, point + 3].includes(game.point)
+        );
+        const updatedWaitGameListId = filteredWaitGameListId.map((game) => {
+            if (game.point >= point + 4) {
+                return { ...game, point: game.point - 4 };
+            }
+            return game;
+        });
+        setWaitGameListId(updatedWaitGameListId);
+    };
+    const startGame4 = async (p1: number, p2: number, p3: number, p4: number, court: number, point: number) => {
+        setGame4({
             id: 2,
             gameid: crypto.randomUUID(),
             court: court,
@@ -488,6 +579,15 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                 2,
                 point
             );
+        } else if (boardPointer == 3) {
+            startGame4(
+                waitGameListId[point + 0].playerid,
+                waitGameListId[point + 1].playerid,
+                waitGameListId[point + 2].playerid,
+                waitGameListId[point + 3].playerid,
+                3,
+                point
+            );
         }
     };
 
@@ -498,9 +598,9 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                 {/* GameCourt 3 */}
                 {/* 상단 3 부분 */}
                 <div className=" bg-gray-200 p-0">
-                    <div className="flex flex-row justify-between ">
+                    <div className="flex flex-row *:flex-auto">
                         <div
-                            className={`w-1/3 z-20 ${boardPointer == 0 ? "bg-green-500" : "bg-blue-100"} p-0`}
+                            className={`w-1/2 flex-auto z-20 ${boardPointer == 0 ? "bg-green-500" : "bg-blue-100"} p-0`}
                             onClick={() => {
                                 setBoardPointer(0);
                             }}
@@ -529,7 +629,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             />
                         </div>
                         <div
-                            className={`w-1/3 z-20 ${boardPointer == 1 ? "bg-green-500" : "bg-blue-100"}`}
+                            className={`w-1/2 z-20 ${boardPointer == 1 ? "bg-green-500" : "bg-blue-100"}`}
                             onClick={() => {
                                 setBoardPointer(1);
                             }}
@@ -558,7 +658,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             />
                         </div>
                         <div
-                            className={`w-1/3 z-10 ${boardPointer == 2 ? "bg-green-500" : "bg-blue-100"} p-0`}
+                            className={`w-1/2 z-10 ${boardPointer == 2 ? "bg-green-500" : "bg-blue-100"} p-0`}
                             onClick={() => {
                                 setBoardPointer(2);
                             }}
@@ -584,6 +684,37 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                 court={3}
                                 gameid={game3?.gameid ?? "0"}
                                 onEndMatch={onEndmatch3}
+                            />
+                        </div>
+                        <div
+                            className={`${howManyCourts == 3 ? "hidden" : ""} w-1/2 z-10 ${
+                                boardPointer == 3 ? "bg-green-500" : "bg-blue-100"
+                            } p-0`}
+                            onClick={() => {
+                                setBoardPointer(3);
+                            }}
+                        >
+                            <GameCourt
+                                p1={
+                                    playerList.filter((pl) => pl.id == game4?.player1id)[0] ??
+                                    playerList.filter((p) => p.id == 12)
+                                }
+                                p2={
+                                    playerList.filter((pl) => pl.id == game4?.player2id)[0] ??
+                                    playerList.filter((p) => p.id == 12)
+                                }
+                                p3={
+                                    playerList.filter((pl) => pl.id == game4?.player3id)[0] ??
+                                    playerList.filter((p) => p.id == 12)
+                                }
+                                p4={
+                                    playerList.filter((pl) => pl.id == game4?.player4id)[0] ??
+                                    playerList.filter((p) => p.id == 12)
+                                }
+                                clubid={Number(id)}
+                                court={4}
+                                gameid={game4?.gameid ?? "0"}
+                                onEndMatch={onEndmatch4}
                             />
                         </div>
                     </div>
@@ -676,6 +807,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             </div>
             {/* 우측 화면 */}
             <div className="w-1/4 bg-gray-400 p-4">
+                {waitPlayerList.length} 명
                 <div>
                     {waitPlayerList.map((waitPlayer, index) => {
                         const playerData: Player | undefined = playerList.find(
@@ -731,7 +863,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                 </button> */}
             </div>
             {/* 우측 하단 고정 아이콘 */}
-            <div className="fixed bottom-4 right-4">
+            <div className="fixed z-50 bottom-4 right-4">
                 <button
                     className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg"
                     onClick={togglePlayerList}

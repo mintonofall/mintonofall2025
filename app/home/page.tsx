@@ -27,9 +27,12 @@ export default async function Home() {
             </button>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {club?.clubs.map((club) => (
-                    <div key={club.id} className="bg-white shadow-md rounded p-4">
+                    <div key={club.id} className="bg-white shadow-md rounded p-4 flex justify-between w-full">
                         <Link href={`/home/${club.id}`}>
                             <h2 className="text-xl font-semibold">{club.clubName}</h2>
+                        </Link>
+                        <Link href={`createPlayer/${club.id}`}>
+                            <span>선수등록</span>
                         </Link>
                     </div>
                 ))}

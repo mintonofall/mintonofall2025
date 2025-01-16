@@ -4,7 +4,7 @@ import { useActionState } from "react";
 import React, { useState, useEffect } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 
-export default function CreatePlayer({ params }: { params: Promise<{ id: string }> }) {
+export default function CreatePlayer({ params }: { params: Promise<{ clubid: string }> }) {
     const [state, action] = useActionState(InterceptAction, null);
     const [preview, setPreview] = useState("");
     const [uploadURL, setUploadURL] = useState("");
@@ -13,7 +13,7 @@ export default function CreatePlayer({ params }: { params: Promise<{ id: string 
 
     useEffect(() => {
         async function fetchParams() {
-            const resolvedParams = (await params).id;
+            const resolvedParams = (await params).clubid;
             setId(resolvedParams);
             console.log(id);
             console.log(resolvedParams);
@@ -51,6 +51,7 @@ export default function CreatePlayer({ params }: { params: Promise<{ id: string 
         const imageURL = `https://imagedelivery.net/H_vtnjYSM5axKm4PivHM5g/${imageID}`;
         console.log(imageURL);
         formData.set("photo", imageURL);
+        setPreview("");
         return handlePlayerCreate(_, formData);
     }
 
@@ -68,6 +69,7 @@ export default function CreatePlayer({ params }: { params: Promise<{ id: string 
                             id="name"
                             placeholder="플레이어 이름"
                             name="name"
+                            defaultValue=""
                             className="w-full p-2 border border-gray-300 rounded"
                         />
                     </div>
@@ -160,7 +162,7 @@ export default function CreatePlayer({ params }: { params: Promise<{ id: string 
                             </label>
                         </div>
                     </div>
-                    <input type="number" value={1} name="clubId" hidden />
+                    <input type="number" value={Number(id)} name="clubId" hidden />
                     <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
                         생성
                     </button>

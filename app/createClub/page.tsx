@@ -1,8 +1,11 @@
 "use client";
+import { useSearchParams } from "next/navigation";
 // import handleClubCreate from "./action";
 import handleClubCreate from "./action";
 import { useActionState } from "react";
 export default function CreateClub() {
+    const params = useSearchParams();
+    console.log(params);
     const [, action] = useActionState(handleClubCreate, null);
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -29,6 +32,19 @@ export default function CreateClub() {
                         name="clubLocation"
                         className="mb-4 p-2 border border-gray-300 rounded"
                     />
+                    <div className="flex flex-col space-y-2">
+                        <span className="text-gray-700">코트갯수</span>
+                        <div className="flex space-x-4">
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="howManyCourts" value={3} id="howManyCourts" defaultChecked />
+                                <span>3</span>
+                            </label>
+                            <label className="flex items-center space-x-2">
+                                <input type="radio" name="howManyCourts" value={4} id="howManyCourts" />
+                                <span>4</span>
+                            </label>
+                        </div>
+                    </div>
                     <button
                         type="submit"
                         className="bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"

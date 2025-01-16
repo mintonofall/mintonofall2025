@@ -1,19 +1,16 @@
 "use client";
+import { useSearchParams } from "next/navigation";
 import handleSignUp from "./action";
 import { useActionState } from "react";
 
 export default function CreateUser() {
+    const params = useSearchParams();
+    console.log(params);
     const [state, action] = useActionState(handleSignUp, null);
     return (
-        <form
-            action={action}
-            className="flex flex-col items-center max-w-screen-sm p-4 bg-white shadow-md rounded-lg"
-        >
+        <form action={action} className="flex flex-col items-center max-w-screen-sm p-4 bg-white shadow-md rounded-lg">
             <div className="mb-4 w-full">
-                <label
-                    htmlFor="username"
-                    className="block text-gray-700 font-bold mb-2"
-                >
+                <label htmlFor="username" className="block text-gray-700 font-bold mb-2">
                     유저이름:
                 </label>
                 <input
@@ -24,10 +21,7 @@ export default function CreateUser() {
                 />
             </div>
             <div className="mb-4 w-full">
-                <label
-                    htmlFor="password"
-                    className="block text-gray-700 font-bold mb-2"
-                >
+                <label htmlFor="password" className="block text-gray-700 font-bold mb-2">
                     패스워드:
                 </label>
                 <input
@@ -39,10 +33,7 @@ export default function CreateUser() {
                 />
             </div>
             <div className="mb-4 w-full">
-                <label
-                    htmlFor="passwordconfirm"
-                    className="block text-gray-700 font-bold mb-2"
-                >
+                <label htmlFor="passwordconfirm" className="block text-gray-700 font-bold mb-2">
                     패스워드확인:
                 </label>
                 <input
