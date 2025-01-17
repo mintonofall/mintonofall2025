@@ -14,30 +14,12 @@ interface gameplayers {
     court: number;
     gameid: string;
     onEndMatch: () => void;
+    onWinsUp: (winner: number[]) => void;
 }
 
-export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch }: gameplayers) {
+export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, onWinsUp }: gameplayers) {
     const [isShowResult, setIsShowResult] = useState(false);
     const [winnerpoint, setWinnerpoint] = useState<number[]>([]);
-    // useEffect(() => {
-    //     async function fetchPlayers() {
-    //         try {
-    //             const player1Data = await getPlayer(p1);
-    //             const player2Data = await getPlayer(p2);
-    //             const player3Data = await getPlayer(p3);
-    //             const player4Data = await getPlayer(p4);
-
-    //             setPlayer1(player1Data);
-    //             setPlayer2(player2Data);
-    //             setPlayer3(player3Data);
-    //             setPlayer4(player4Data);
-    //         } catch (error) {
-    //             console.error("Failed to fetch player:", error);
-    //         }
-    //     }
-    //     fetchPlayers();
-    // }, [p1, p2, p3, p4]);
-
     const player1Avatar = p1?.avater ? p1.avater + "/avatar" : "/guest.png";
     const player2Avatar = p2?.avater ? p2.avater + "/avatar" : "/guest.png";
     const player3Avatar = p3?.avater ? p3.avater + "/avatar" : "/guest.png";
@@ -48,6 +30,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch }:
         const newwinner1: number = players[winner[0] - 1].id;
         const newwinner2: number = players[winner[1] - 1].id;
         const newWinners = [newwinner1, newwinner2];
+        onWinsUp(newWinners);
         await endMatch(gameid, newWinners);
     };
     function selectWinner(winner: number) {

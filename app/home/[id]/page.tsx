@@ -529,10 +529,27 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         exitPlayer(playerId, Number(id));
     };
 
+    const handleOnWinsUp = (playerId: number[]): number[] => {
+        const playerIndex1 = playerList.findIndex((player) => player.id === playerId[0]);
+        const playerIndex2 = playerList.findIndex((player) => player.id === playerId[1]);
+        const updatedPlayer = {
+            ...playerList[playerIndex1],
+            wins: playerList[playerIndex1].win + 1,
+        };
+        const updatedPlayer2 = {
+            ...playerList[playerIndex2],
+            wins: playerList[playerIndex2].win + 1,
+        };
+        const updatedPlayerList = [...playerList];
+        updatedPlayerList[playerIndex2] = updatedPlayer;
+        setPlayerList(updatedPlayerList);
+        return [updatedPlayer.id, updatedPlayer2.id];
+    };
+
     const enterPlayer = (playerId: number) => {
         console.log(playerId);
         const copyWaitPlayerList = [...waitPlayerList];
-        const existingPlayerIndex = copyWaitPlayerList.findIndex((player) => player.id === playerId);
+        const existingPlayerIndex = copyWaitPlayerList.findIndex((player) => player.Playerid === playerId);
         if (existingPlayerIndex !== -1) {
             return;
         }
@@ -626,6 +643,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                 court={1}
                                 gameid={game1?.gameid ?? "0"}
                                 onEndMatch={onEndmatch1}
+                                onWinsUp={handleOnWinsUp}
                             />
                         </div>
                         <div
@@ -655,6 +673,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                 court={2}
                                 gameid={game2?.gameid ?? "0"}
                                 onEndMatch={onEndmatch2}
+                                onWinsUp={handleOnWinsUp}
                             />
                         </div>
                         <div
@@ -684,6 +703,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                 court={3}
                                 gameid={game3?.gameid ?? "0"}
                                 onEndMatch={onEndmatch3}
+                                onWinsUp={handleOnWinsUp}
                             />
                         </div>
                         <div
@@ -715,6 +735,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                 court={4}
                                 gameid={game4?.gameid ?? "0"}
                                 onEndMatch={onEndmatch4}
+                                onWinsUp={handleOnWinsUp}
                             />
                         </div>
                     </div>
@@ -727,15 +748,15 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             <div
                                 className="bg-red-200"
                                 onClick={() => {
-                                    // if (
-                                    //     (boardPointer == 0 && game1?.player1id !== 12) ||
-                                    //     (boardPointer == 1 && game2?.player1id !== 12) ||
-                                    //     (boardPointer == 2 && game3?.player1id !== 12)
-                                    // ) {
-                                    //     alert("코트가 비어있지 않습니다.");
-                                    // } else {
-                                    inputGame(0, boardPointer);
-                                    // }
+                                    if (
+                                        (boardPointer == 0 && game1?.player1id !== 12) ||
+                                        (boardPointer == 1 && game2?.player1id !== 12) ||
+                                        (boardPointer == 2 && game3?.player1id !== 12)
+                                    ) {
+                                        alert("코트가 비어있지 않습니다.");
+                                    } else {
+                                        inputGame(0, boardPointer);
+                                    }
                                 }}
                             >
                                 +
@@ -743,7 +764,15 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             <div
                                 className="bg-blue-200"
                                 onClick={() => {
-                                    inputGame(4, boardPointer);
+                                    if (
+                                        (boardPointer == 0 && game1?.player1id !== 12) ||
+                                        (boardPointer == 1 && game2?.player1id !== 12) ||
+                                        (boardPointer == 2 && game3?.player1id !== 12)
+                                    ) {
+                                        alert("코트가 비어있지 않습니다.");
+                                    } else {
+                                        inputGame(4, boardPointer);
+                                    }
                                 }}
                             >
                                 +
@@ -751,7 +780,15 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             <div
                                 className="bg-yellow-200"
                                 onClick={() => {
-                                    inputGame(8, boardPointer);
+                                    if (
+                                        (boardPointer == 0 && game1?.player1id !== 12) ||
+                                        (boardPointer == 1 && game2?.player1id !== 12) ||
+                                        (boardPointer == 2 && game3?.player1id !== 12)
+                                    ) {
+                                        alert("코트가 비어있지 않습니다.");
+                                    } else {
+                                        inputGame(8, boardPointer);
+                                    }
                                 }}
                             >
                                 +
@@ -759,7 +796,15 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             <div
                                 className="bg-purple-200"
                                 onClick={() => {
-                                    inputGame(12, boardPointer);
+                                    if (
+                                        (boardPointer == 0 && game1?.player1id !== 12) ||
+                                        (boardPointer == 1 && game2?.player1id !== 12) ||
+                                        (boardPointer == 2 && game3?.player1id !== 12)
+                                    ) {
+                                        alert("코트가 비어있지 않습니다.");
+                                    } else {
+                                        inputGame(12, boardPointer);
+                                    }
                                 }}
                             >
                                 +
@@ -767,7 +812,15 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             <div
                                 className="bg-pink-200"
                                 onClick={() => {
-                                    inputGame(16, boardPointer);
+                                    if (
+                                        (boardPointer == 0 && game1?.player1id !== 12) ||
+                                        (boardPointer == 1 && game2?.player1id !== 12) ||
+                                        (boardPointer == 2 && game3?.player1id !== 12)
+                                    ) {
+                                        alert("코트가 비어있지 않습니다.");
+                                    } else {
+                                        inputGame(16, boardPointer);
+                                    }
                                 }}
                             >
                                 +
@@ -801,9 +854,9 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         ))}
                     </div>
                 </div>
-                {game1?.gameid}
+                {/* {game1?.gameid}
                 {game2?.gameid}
-                {game3?.gameid}
+                {game3?.gameid} */}
             </div>
             {/* 우측 화면 */}
             <div className="w-1/4 bg-gray-400 p-4">
@@ -814,14 +867,14 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             (player) => player.id === waitPlayer.Playerid
                         );
                         return (
-                            <div key={`wait ${playerData!.id}`} className="flex flex-col">
+                            <div key={`wait ${playerData?.id}`} className="flex flex-col">
                                 <div
                                     className="flex flex-col"
                                     onClick={() => {
                                         enterWaitGame(playerData!.id);
                                     }}
                                 >
-                                    <div key={playerData!.id} className="flex flex-col z-1">
+                                    <div key={playerData?.id} className="flex flex-col z-1">
                                         {playerData && <PlayerCard {...playerData} />}
                                     </div>
                                 </div>

@@ -3,6 +3,8 @@ import { handlePlayerCreate, getUploadURL } from "./action";
 import { useActionState } from "react";
 import React, { useState, useEffect } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
+import { redirect } from "next/navigation";
+import Link from "next/link";
 
 export default function CreatePlayer({ params }: { params: Promise<{ clubid: string }> }) {
     const [state, action] = useActionState(InterceptAction, null);
@@ -162,10 +164,13 @@ export default function CreatePlayer({ params }: { params: Promise<{ clubid: str
                             </label>
                         </div>
                     </div>
-                    <input type="number" value={Number(id)} name="clubId" hidden />
+                    <input type="number" value={Number(id)} name="clubId" hidden readOnly />
                     <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
                         생성
                     </button>
+                    <Link href={`/home/${id}`}>
+                        <div className="bg-blue-500 text-center text-white p-2 rounded hover:bg-blue-600">돌아가기</div>
+                    </Link>
                 </form>
             </div>
         </div>

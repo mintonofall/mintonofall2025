@@ -4,6 +4,7 @@ export interface Player {
     age: number;
     grade: string;
     clubid: number;
+    gender: string;
     games: number;
     win: number;
     avater: string | null;
