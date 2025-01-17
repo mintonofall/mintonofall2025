@@ -3,7 +3,6 @@ import { handlePlayerCreate, getUploadURL } from "./action";
 import { useActionState } from "react";
 import React, { useState, useEffect } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import { redirect } from "next/navigation";
 import Link from "next/link";
 
 export default function CreatePlayer({ params }: { params: Promise<{ clubid: string }> }) {
