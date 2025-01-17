@@ -1,0 +1,47 @@
+import { useActionState } from "react";
+import Link from "next/link";
+import handleSignUp from "./action";
+
+export default function CreateUser() {
+    const [state, action] = useActionState(handleSignUp,null)
+
+
+    return (
+        <div className="flex justify-center items-center min-h-screen bg-gray-100">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+                <h2 className="text-2xl font-bold mb-6 text-center">사용자 생성</h2>
+                <form action={action} className="flex flex-col">
+                    <label htmlFor="userName" className="mb-2 text-gray-700">
+                        사용자 이름
+                    </label>
+                    <input
+                        type="text"
+                        id="userName"
+                        placeholder="사용자 이름"
+                        name="username"
+                        className="mb-4 p-2 border border-gray-300 rounded"
+                    />
+                    <label htmlFor="password" className="mb-2 text-gray-700">
+                        password
+                    </label>
+                    <input
+                        type="password"
+                        id="password"
+                        placeholder="password"
+                        name="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        className="mb-4 p-2 border border-gray-300 rounded"
+                    />
+                    <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                        생성
+                    </button>
+                    <Link href="/">
+                        <div className="bg-blue-500 text-center text-white p-2 rounded hover:bg-blue-600">돌아가기</div>
+                    </Link>
+                </form>
+            </div>
+        </div>
+    );
+}
+
