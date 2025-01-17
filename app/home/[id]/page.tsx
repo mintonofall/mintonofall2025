@@ -17,6 +17,7 @@ import {
     gameOneUp,
     exitPlayer,
     getClub,
+    clearPlayerGamesDb,
 } from "@/lib/getUserGoHome";
 import { Player } from "@/lib/interface";
 import getPlayerList from "@/lib/getPlayerList";
@@ -316,6 +317,9 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         nextPointer();
     }, [waitGameListId]);
 
+    const clearPlayerGames = async (clubid: number) => {
+        await clearPlayerGamesDb(clubid);
+    };
     const togglePlayerList = () => {
         setShowPlayerList((prev) => !prev);
     };
@@ -895,14 +899,14 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                     })}
                 </div>
                 {/* test button */}
-                {/* <button
+                <button
                     className="bg-blue-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
                     onClick={() => {
-                        deleteWaitGame(Number(id), 0);
+                        clearPlayerGames(Number(id));
                     }}
                 >
                     Test
-                </button> */}
+                </button>
                 {/* ClearList Button */}
                 {/* <button
                     className="bg-red-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"

@@ -261,6 +261,23 @@ export const getMatch = async (clubid: number) => {
     return match;
 };
 
+export const clearPlayerGamesDb = async (clubid: number) => {
+    await db.player.updateMany({
+        where: {
+            clubid,
+        },
+        data: {
+            games: 0,
+            win: 0,
+            gameDatas: [],
+            winDatas: [],
+            loseDatas: [],
+            enterDatas: [],
+        },
+    });
+    console.log("Player games cleared");
+};
+
 export const deleteWaitGame = async (clubid: number, point: number) => {
     for (let i = point; i < point + 4; i++) {
         await db.waitGame.deleteMany({
