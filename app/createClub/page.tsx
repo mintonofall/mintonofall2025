@@ -6,7 +6,7 @@ import { useActionState } from "react";
 import Link from "next/link";
 
 export default function CreateClub() {
-    const [_, action] = useActionState(handleClubCreate, null);
+    const [, action] = useActionState(handleClubCreate, null);
     const searchParams = useSearchParams();
     const [clubName, setClubName] = useState("");
     const [location, setLocation] = useState("");
