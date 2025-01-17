@@ -1,8 +1,8 @@
 import handleSignup from "./action";
-import { useFormState } from "react-dom";
+import { useActionState } from "react";
 
 export default function SignupPage() {
-    const [state, action] = useFormState(handleSignup, null);
+    const [state, action] = useActionState(handleSignup, null);
     return (
         <form action={action} className="flex flex-col items-center max-w-screen-sm">
             <div>
