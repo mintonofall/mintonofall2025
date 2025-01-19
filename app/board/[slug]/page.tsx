@@ -1,4 +1,3 @@
-import db from "@/lib/db";
 import getPlayerList from "@/lib/getPlayerList";
 import { getMatch, getWaitGames } from "@/lib/getUserGoHome";
 import { Player } from "@/lib/interface";
