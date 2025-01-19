@@ -1,5 +1,6 @@
 "use server";
 import db from "./db";
+import { WaitGameListCLass } from "./interface";
 import getSession from "./session";
 
 export async function getUser() {
@@ -287,6 +288,18 @@ export const deleteWaitGame = async (clubid: number, point: number) => {
             },
         });
     }
+};
+
+export const resetWaitGames = async (clubid: number, waitGamesId: WaitGameListCLass[]) => {
+    await db.waitGame.deleteMany({
+        where: {
+            clubid,
+        },
+    });
+    const result = await db.waitGame.createMany({
+        data: waitGamesId,
+    });
+    return result;
 };
 
 export const pushUpWaitGame = async (clubid: number, point: number) => {

@@ -14,3 +14,9 @@ export interface Player {
     winDatas: string[];
     loseDatas: string[];
 }
+
+export interface WaitGameListCLass {
+    point: number;
+    clubid: number;
+    playerid: number;
+}

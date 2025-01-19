@@ -18,15 +18,11 @@ import {
     exitPlayer,
     getClub,
     clearPlayerGamesDb,
+    resetWaitGames,
 } from "@/lib/getUserGoHome";
-import { Player } from "@/lib/interface";
+import { Player, WaitGameListCLass } from "@/lib/interface";
 import getPlayerList from "@/lib/getPlayerList";
 import PlayerCard from "@/app/component/PlayerCard";
-interface WaitGameListCLass {
-    point: number;
-    clubid: number;
-    playerid: number;
-}
 
 interface WaitPlayerListCLass {
     id: number | null;
@@ -306,6 +302,9 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
 
     useEffect(() => {
         console.log("waitGameListId : ", waitGameListId);
+        async function resetDB() {
+            await resetWaitGames(Number(id), waitGameListId);
+        }
         function nextPointer() {
             const points = waitGameListId.map((game) => game.point);
             let nextPoint = 0;
@@ -314,7 +313,10 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             }
             setGamePointer(nextPoint);
         }
+
         nextPointer();
+        const result = resetDB();
+        console.log("resetDB : ", result);
     }, [waitGameListId]);
 
     const clearPlayerGames = async (clubid: number) => {
@@ -495,7 +497,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         if (existingPlayerIndex !== -1) {
             copys[existingPlayerIndex].playerid = waitGame.playerid;
             setWaitGameListId(copys);
-            updateWaitGame(playerid, waitGame.point);
             //PlayerList 에서 게임횟수를 1 증가시킨다.
         } else {
             copys.push(waitGame);
@@ -520,7 +521,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         updatedPlayerList[playerIndex] = updatedPlayer;
         setPlayerList(updatedPlayerList);
         const resule = gameOneUp(playerid);
-        createWaitGame(Number(id), playerid, gamePointer);
         console.log("gameOneUp : ", resule);
         return;
     };
