@@ -101,6 +101,7 @@ model GameBoard {
   gameid String 
   clubid Int
   CourtNumber Int
+  updateTime DateTime? @updatedAt
   player1id Int
   player2id Int
   player3id Int
