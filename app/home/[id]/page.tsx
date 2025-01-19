@@ -4,12 +4,10 @@ import { useState, useEffect } from "react";
 import WaitPlayerList from "@/app/component/WaitPlayerList";
 import GameCourt from "@/app/component/GameCourt";
 import {
-    createWaitGame,
     getWaitGames,
     getWaitPlayerList,
     pushWaitPlayerList,
     startMatch,
-    updateWaitGame,
     deleteWaitGame,
     pushUpWaitGame,
     getMatch,
