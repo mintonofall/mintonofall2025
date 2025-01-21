@@ -19,7 +19,7 @@ import {
 import { Player, WaitGameListCLass } from "@/lib/interface";
 import getPlayerList from "@/lib/getPlayerList";
 import PlayerCard from "@/app/component/PlayerCard";
-import { makePlayer } from "@/lib/makePlayer";
+// import { makePlayer } from "@/lib/makePlayer";
 
 interface WaitPlayerListCLass {
     id: number | null;
@@ -54,7 +54,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     const [playerList, setPlayerList] = useState<Player[]>([]);
     const [howManyCourts, setHowManyCourts] = useState<number>(3);
     let isFetch: boolean = false;
-    const point: number = 0;
+    // const point: number = 0;
 
     useEffect(() => {
         async function fetchParams() {
@@ -199,10 +199,10 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         3,
                         gameId.gameid
                     );
-                    startGame4Handle();
                 }
             }
         }
+        startGame4Handle();
     }, [game4]);
 
     useEffect(() => {
