@@ -302,9 +302,9 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         console.log("resetDB : ", result);
     }, [waitGameListId]);
 
-    const clearPlayerGames = async (clubid: number) => {
-        await clearPlayerGamesDb(clubid);
-    };
+    // const clearPlayerGames = async (clubid: number) => {
+    //     await clearPlayerGamesDb(clubid);
+    // };
     const togglePlayerList = () => {
         setShowPlayerList((prev) => !prev);
     };
