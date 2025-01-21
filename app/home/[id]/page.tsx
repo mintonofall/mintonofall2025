@@ -8,8 +8,6 @@ import {
     getWaitPlayerList,
     pushWaitPlayerList,
     startMatch,
-    deleteWaitGame,
-    pushUpWaitGame,
     getMatch,
     createMatch,
     gameOneUp,
@@ -21,6 +19,7 @@ import {
 import { Player, WaitGameListCLass } from "@/lib/interface";
 import getPlayerList from "@/lib/getPlayerList";
 import PlayerCard from "@/app/component/PlayerCard";
+import { makePlayer } from "@/lib/makePlayer";
 
 interface WaitPlayerListCLass {
     id: number | null;
@@ -94,8 +93,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         1,
                         gameId.gameid
                     );
-                    await deleteWaitGame(Number(id), point);
-                    await pushUpWaitGame(Number(id), point);
                 }
             }
         }
@@ -131,8 +128,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         2,
                         gameId.gameid
                     );
-                    await deleteWaitGame(Number(id), point);
-                    await pushUpWaitGame(Number(id), point);
                 }
             }
         }
@@ -169,8 +164,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         2,
                         gameId.gameid
                     );
-                    await deleteWaitGame(Number(id), point);
-                    await pushUpWaitGame(Number(id), point);
                 }
             }
         }
@@ -206,13 +199,10 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         3,
                         gameId.gameid
                     );
-                    await deleteWaitGame(Number(id), point);
-                    await pushUpWaitGame(Number(id), point);
+                    startGame4Handle();
                 }
             }
         }
-
-        startGame4Handle();
     }, [game4]);
 
     useEffect(() => {
@@ -286,17 +276,12 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         }
         isFetch = true;
         fetchPlayerList();
-        console.log("UUID : ", crypto.randomUUID());
-        console.log("waitPl : ", waitPlayerList);
         isFetch = false;
     }, [id]);
 
     useEffect(() => {
         console.log("playerlist : ", playerList);
     }, [playerList]);
-    useEffect(() => {
-        console.log("waitPlayerList : ", waitPlayerList);
-    }, [waitPlayerList]);
 
     useEffect(() => {
         console.log("waitGameListId : ", waitGameListId);
@@ -387,6 +372,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         const filteredWaitGameListId = waitGameListId.filter(
             (game) => ![point + 0, point + 1, point + 2, point + 3].includes(game.point)
         );
+        console.log("filteredWaitGameListId : ", filteredWaitGameListId);
         //밑에서부터 대기열을 올린다.
         const updatedWaitGameListId = filteredWaitGameListId.map((game) => {
             if (game.point >= point + 4) {
@@ -493,7 +479,14 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         console.log("Existing point index:", existingPlayerIndex);
         // 플레이어가 이미 대기 게임 목록에 있는지 확인합니다.
         if (existingPlayerIndex !== -1) {
+            const downGamePlayerId = copys[existingPlayerIndex].playerid;
+            const dawnGamePlayerIndex = playerList.findIndex((player) => player.id === downGamePlayerId);
+            const copyPlayerList = [...playerList];
+            copyPlayerList[dawnGamePlayerIndex].games = copyPlayerList[dawnGamePlayerIndex].games - 1;
+            setPlayerList(copyPlayerList);
+
             copys[existingPlayerIndex].playerid = waitGame.playerid;
+
             setWaitGameListId(copys);
             //PlayerList 에서 게임횟수를 1 증가시킨다.
         } else {
@@ -503,12 +496,13 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             const pointer = gamePointer + 1;
             setGamePointer(pointer);
         }
-        const sortedWaitPlayerList = [...waitPlayerList].sort((a, b) => {
-            const playerA = playerList.find((player) => player.id === a.Playerid);
-            const playerB = playerList.find((player) => player.id === b.Playerid);
-            return (playerA?.games || 0) - (playerB?.games || 0);
-        });
-        setWaitPlayerList(sortedWaitPlayerList);
+
+        // const sortedWaitPlayerList = [...waitPlayerList].sort((a, b) => {
+        //     const playerA = playerList.find((player) => player.id === a.Playerid);
+        //     const playerB = playerList.find((player) => player.id === b.Playerid);
+        //     return (playerA?.games || 0) - (playerB?.games || 0);
+        // });
+        // setWaitPlayerList(sortedWaitPlayerList);
         const updatedPlayer = {
             ...playerList[playerIndex],
             games: playerList[playerIndex].games + 1,
@@ -543,7 +537,8 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             wins: playerList[playerIndex2].win + 1,
         };
         const updatedPlayerList = [...playerList];
-        updatedPlayerList[playerIndex2] = updatedPlayer;
+        updatedPlayerList[playerIndex1] = updatedPlayer;
+        updatedPlayerList[playerIndex2] = updatedPlayer2;
         setPlayerList(updatedPlayerList);
         return [updatedPlayer.id, updatedPlayer2.id];
     };
@@ -839,15 +834,17 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                     console.log(gamePointer);
                                 }}
                             >
-                                {waitGameListId.map((game) => {
+                                {waitGameListId.map((game, idx) => {
                                     if (game.point == index) {
                                         const player: Player | undefined = playerList.find(
                                             (player) => player.id === game.playerid
                                         );
                                         if (player) {
-                                            if (player) {
-                                                return <PlayerCard key={game.playerid} {...player} />;
-                                            }
+                                            return (
+                                                <div key={idx} className="flex flex-col z-1">
+                                                    <PlayerCard {...player} />
+                                                </div>
+                                            );
                                             return null;
                                         }
                                     }
@@ -856,6 +853,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         ))}
                     </div>
                 </div>
+                {/* {gamePointer} */}
                 {/* {game1?.gameid}
                 {game2?.gameid}
                 {game3?.gameid} */}
@@ -886,8 +884,9 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                         const data = [...waitPlayerList];
                                         const playerid = data[index].Playerid;
                                         data.splice(index, 1);
+                                        const result = handleExitPlayer(playerid);
+                                        console.log("handleExitPlayer : ", result);
                                         setWaitPlayerList(data);
-                                        handleExitPlayer(playerid);
                                     }}
                                 >
                                     <span className="text-xs">×</span>
@@ -900,7 +899,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                 <button
                     className="bg-blue-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
                     onClick={() => {
-                        clearPlayerGames(Number(id));
+                        // makePlayer(1, 6);
                     }}
                 >
                     Test

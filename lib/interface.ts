@@ -7,12 +7,15 @@ export interface Player {
     gender: string;
     games: number;
     win: number;
+    lose: number;
+
     avater: string | null;
     suttlePoint: number;
     mmr: number;
     gameDatas: Date[];
     winDatas: string[];
     loseDatas: string[];
+    enterDatas: Date[];
 }
 
 export interface WaitGameListCLass {

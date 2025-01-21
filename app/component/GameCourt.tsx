@@ -27,6 +27,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
 
     const endMatchFunction = async (gameid: string, winner: number[]) => {
         const players = [p1, p2, p3, p4];
+        console.log("endMatchFunction", players);
         const newwinner1: number = players[winner[0] - 1].id;
         const newwinner2: number = players[winner[1] - 1].id;
         const newWinners = [newwinner1, newwinner2];
@@ -231,7 +232,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                                     setIsShowResult(false);
                                     setWinnerpoint([]);
                                 }
-                                if (winnerpoint.length !== 2) {
+                                if (winnerpoint.length === 1) {
                                     alert("승리자를 두명 선택해주세요.");
                                 }
                                 if (winnerpoint.length === 2) {
