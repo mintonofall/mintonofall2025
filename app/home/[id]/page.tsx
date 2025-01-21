@@ -13,7 +13,6 @@ import {
     gameOneUp,
     exitPlayer,
     getClub,
-    clearPlayerGamesDb,
     resetWaitGames,
 } from "@/lib/getUserGoHome";
 import { Player, WaitGameListCLass } from "@/lib/interface";
