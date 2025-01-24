@@ -274,6 +274,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         }
         isFetch = true;
         fetchPlayerList();
+        sortWaitPlayerByGames();
         isFetch = false;
     }, [id]);
 
