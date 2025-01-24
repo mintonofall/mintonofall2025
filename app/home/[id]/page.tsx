@@ -304,6 +304,12 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
 
         nextPointer();
         const result = resetDB();
+        if (howSort == "games") {
+            sortWaitPlayerByGames();
+        }
+        if (howSort == "name") {
+            sortWaitPlayerByNames();
+        }
         console.log("resetDB : ", result);
     }, [waitGameListId]);
 
