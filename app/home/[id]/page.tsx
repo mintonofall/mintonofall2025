@@ -604,6 +604,11 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         }
     };
 
+    const howManyGame = (playerId: number) => {
+        const howMany = waitGameListId.filter((game) => game.playerid === playerId).length;
+        return howMany;
+    };
+
     return (
         <div className="flex ">
             {/* 좌측 화면 */}
@@ -866,7 +871,12 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             (player) => player.id === waitPlayer.Playerid
                         );
                         return (
-                            <div key={`wait ${playerData?.id}`} className="flex flex-col">
+                            <div
+                                key={`wait ${playerData?.id}`}
+                                className={`flex flex-col border-2 ${
+                                    howManyGame(playerData!.id) === 1 ? "border-green-400" : null
+                                }`}
+                            >
                                 <div
                                     className="flex flex-col"
                                     onClick={() => {
