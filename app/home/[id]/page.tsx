@@ -52,6 +52,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     const [game4, setGame4] = useState<PlayingGameBoard>();
     const [playerList, setPlayerList] = useState<Player[]>([]);
     const [howManyCourts, setHowManyCourts] = useState<number>(3);
+    const [howSort, setHowSort] = useState("games");
     let isFetch: boolean = false;
     // const point: number = 0;
 
@@ -278,6 +279,12 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
 
     useEffect(() => {
         console.log("playerlist : ", playerList);
+        if (howSort == "games") {
+            sortWaitPlayerByGames();
+        }
+        if (howSort == "name") {
+            sortWaitPlayerByNames();
+        }
     }, [playerList]);
 
     useEffect(() => {
@@ -302,6 +309,57 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     // const clearPlayerGames = async (clubid: number) => {
     //     await clearPlayerGamesDb(clubid);
     // };
+    const sortWaitPlayerByGames = () => {
+        const waitGroupNoGames = waitPlayerList.filter((player) => {
+            if (howManyGame(player.Playerid) == 0) {
+                return player;
+            }
+        });
+
+        const waitGroupOneGames = waitPlayerList.filter((player) => {
+            if (howManyGame(player.Playerid) >= 1) {
+                return player;
+            }
+        });
+        waitGroupNoGames.sort((a, b) => {
+            const playerA = playerList.find((player) => player.id === a.Playerid);
+            const playerB = playerList.find((player) => player.id === b.Playerid);
+            return (playerA?.games || 0) - (playerB?.games || 0);
+        });
+        waitGroupOneGames.sort((a, b) => {
+            const playerA = playerList.find((player) => player.id === a.Playerid);
+            const playerB = playerList.find((player) => player.id === b.Playerid);
+            return (playerA?.games || 0) - (playerB?.games || 0);
+        });
+        const sumGroup = [...waitGroupNoGames, ...waitGroupOneGames];
+        setWaitPlayerList(sumGroup);
+    };
+
+    const sortWaitPlayerByNames = () => {
+        const waitGroupNoGames = waitPlayerList.filter((player) => {
+            if (howManyGame(player.Playerid) == 0) {
+                return player;
+            }
+        });
+
+        const waitGroupOneGames = waitPlayerList.filter((player) => {
+            if (howManyGame(player.Playerid) >= 1) {
+                return player;
+            }
+        });
+        waitGroupNoGames.sort((a, b) => {
+            const playerA = playerList.find((player) => player.id === a.Playerid);
+            const playerB = playerList.find((player) => player.id === b.Playerid);
+            return (playerA?.name || "").localeCompare(playerB?.name || "");
+        });
+        waitGroupOneGames.sort((a, b) => {
+            const playerA = playerList.find((player) => player.id === a.Playerid);
+            const playerB = playerList.find((player) => player.id === b.Playerid);
+            return (playerA?.name || "").localeCompare(playerB?.name || "");
+        });
+        setWaitPlayerList([...waitGroupNoGames, ...waitGroupOneGames]);
+    };
+
     const togglePlayerList = () => {
         setShowPlayerList((prev) => !prev);
     };
@@ -474,7 +532,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         const playerIndex = playerList.findIndex((player) => player.id === playerid);
 
         console.log("Existing point index:", existingPlayerIndex);
-        // 플레이어가 이미 대기 게임 목록에 있는지 확인합니다.
+        // 대기 게임 목록에 플레이어가 있는지 확인합니다.
         if (existingPlayerIndex !== -1) {
             const downGamePlayerId = copys[existingPlayerIndex].playerid;
             const dawnGamePlayerIndex = playerList.findIndex((player) => player.id === downGamePlayerId);
@@ -836,7 +894,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                 className={`h-16 ${gamePointer == index ? "bg-red-200" : "bg-blue-200"}`}
                                 onClick={async () => {
                                     setGamePointer(index);
-                                    console.log(gamePointer);
                                 }}
                             >
                                 {waitGameListId.map((game, idx) => {
@@ -867,6 +924,24 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             <div className="w-1/4 bg-gray-400 p-4">
                 {waitPlayerList.length} 명
                 <div>
+                    <div className="flex flex-row *:w-1/2 *:flex *:text-center *:justify-center *:items-center *:bg-blue-500 *:rounded-lg gap-1 my-2 *:shadow-lg *:text-white h-8 *:cursor-pointer">
+                        <div
+                            onClick={() => {
+                                setHowSort("games");
+                                sortWaitPlayerByGames();
+                            }}
+                        >
+                            경기수
+                        </div>
+                        <div
+                            onClick={() => {
+                                setHowSort("name");
+                                sortWaitPlayerByNames();
+                            }}
+                        >
+                            이름순
+                        </div>
+                    </div>
                     {waitPlayerList.map((waitPlayer, index) => {
                         const playerData: Player | undefined = playerList.find(
                             (player) => player.id === waitPlayer.Playerid
@@ -875,7 +950,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             <div
                                 key={`wait ${playerData?.id}`}
                                 className={`flex flex-col border-2 ${
-                                    howManyGame(playerData!.id) === 1 ? "border-green-400" : null
+                                    howManyGame(playerData!.id) >= 1 ? "border-green-400" : null
                                 }`}
                             >
                                 <div
