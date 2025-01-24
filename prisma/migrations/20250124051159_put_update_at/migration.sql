@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Player" ADD COLUMN     "createat" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "WaitGame" ADD COLUMN     "updateTime" TIMESTAMP(3);

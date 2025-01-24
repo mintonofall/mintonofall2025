@@ -58,6 +58,7 @@ model Player {
   winDatas String[]
   loseDatas String[]
   enterDatas DateTime[]
+  createat DateTime @default(now())
 
 
 }
@@ -77,6 +78,7 @@ model WaitGame {
   playerid Int
   player Player @relation(fields: [playerid], references: [id])
   point Int
+  updateTime DateTime? @updatedAt
 }
 
 model Match {

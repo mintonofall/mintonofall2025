@@ -28,9 +28,12 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
     const endMatchFunction = async (gameid: string, winner: number[]) => {
         const players = [p1, p2, p3, p4];
         console.log("endMatchFunction", players);
-        const newwinner1: number = players[winner[0] - 1].id;
-        const newwinner2: number = players[winner[1] - 1].id;
-        const newWinners = [newwinner1, newwinner2];
+        let newWinners: number[] = [];
+        if (winner.length !== 0) {
+            const newwinner1: number = players[winner[0] - 1].id;
+            const newwinner2: number = players[winner[1] - 1].id;
+            newWinners = [newwinner1, newwinner2];
+        }
         onWinsUp(newWinners);
         await endMatch(gameid, newWinners);
     };

@@ -95,30 +95,13 @@ export async function getWaitPlayerList(clubid: number) {
     const waitPlayerList = await db.waitPlayerList.findMany({
         where: {
             clubid,
-        },
-        orderBy: {
-            player: {
-                games: "asc",
+            enterDate: {
+                gte: new Date(new Date().setHours(0, 0, 0, 0)),
+                lt: new Date(new Date().setHours(23, 59, 59, 999)),
             },
         },
     });
     return waitPlayerList;
-    //     where: { clubid,
-    //         enterDate: {
-    //             gte: new Date(new Date().setHours(0, 0, 0, 0)),
-    //             lt: new Date(new Date().setHours(23, 59, 59, 999)),
-    //         },
-    //         exitDate: {
-    //             lt: today,
-    //         },
-    //     },
-    //     orderBy: {
-    //         player: {
-    //             games: "asc",
-    //         },
-    //     },
-    // });
-    // return waitPlayerList;
 }
 
 export async function exitPlayer(Playerid: number, clubid: number) {
@@ -146,6 +129,10 @@ export async function getWaitGames(clubid: number) {
     const waitGames = await db.waitGame.findMany({
         where: {
             clubid,
+            updateTime: {
+                gte: new Date(new Date().setHours(0, 0, 0, 0)),
+                lt: new Date(new Date().setHours(23, 59, 59, 999)),
+            },
         },
         orderBy: {
             point: "asc",
@@ -220,34 +207,35 @@ export const endMatch = async (matchId: string, winner: number[]) => {
             winner2id: winner[1],
         },
     });
+    if (winner[0]) {
+        await db.player.update({
+            where: {
+                id: winner[0],
+            },
+            data: {
+                winDatas: {
+                    push: matchId,
+                },
+                win: {
+                    increment: 1,
+                },
+            },
+        });
 
-    await db.player.update({
-        where: {
-            id: winner[0],
-        },
-        data: {
-            winDatas: {
-                push: matchId,
+        await db.player.update({
+            where: {
+                id: winner[1],
             },
-            win: {
-                increment: 1,
+            data: {
+                winDatas: {
+                    push: matchId,
+                },
+                win: {
+                    increment: 1,
+                },
             },
-        },
-    });
-
-    await db.player.update({
-        where: {
-            id: winner[1],
-        },
-        data: {
-            winDatas: {
-                push: matchId,
-            },
-            win: {
-                increment: 1,
-            },
-        },
-    });
+        });
+    }
 };
 
 export const getMatch = async (clubid: number) => {
@@ -259,7 +247,35 @@ export const getMatch = async (clubid: number) => {
             CourtNumber: "asc",
         },
     });
-    return match;
+    console.log("matchFromDB : ", match);
+    match.map(async (m) => {
+        if (m.updateTime === null || m.updateTime < new Date(new Date().setHours(0, 0, 0, 0))) {
+            console.log("m : ", m);
+            const result = await db.gameBoard.update({
+                where: {
+                    id: m.id,
+                },
+                data: {
+                    player1id: 12,
+                    player2id: 12,
+                    player3id: 12,
+                    player4id: 12,
+                    gameid: "0",
+                },
+            });
+            console.log("result : ", result);
+        }
+    });
+    const copy = await db.gameBoard.findMany({
+        where: {
+            clubid,
+        },
+        orderBy: {
+            CourtNumber: "asc",
+        },
+    });
+    console.table(copy);
+    return copy;
 };
 
 export const clearPlayerGamesDb = async (clubid: number) => {

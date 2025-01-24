@@ -96,7 +96,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             }
         }
         startGame1Handle();
-    }, [game1]);
+    }, [game1, id, isFetch]);
 
     useEffect(() => {
         console.log("Effectgame2 : ", game2);
@@ -132,7 +132,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         }
 
         startGame2Handle();
-    }, [game2]);
+    }, [game2, id, isFetch]);
 
     useEffect(() => {
         console.log("Effectgame3 : ", game3);
@@ -168,7 +168,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         }
 
         startGame3Handle();
-    }, [game3]);
+    }, [game3, id, isFetch]);
     useEffect(() => {
         console.log("Effectgame4 : ", game4);
         async function startGame4Handle() {
@@ -202,7 +202,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             }
         }
         startGame4Handle();
-    }, [game4]);
+    }, [game4, id, isFetch]);
 
     useEffect(() => {
         async function fetchPlayerList() {
@@ -214,8 +214,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                 setHowManyCourts(getClubdata.howManyCourts);
             }
             console.log("howManyCourts : ", howManyCourts);
-            const consolePlayer = playerListData.find((player) => player.id === 12);
-            console.log("consolePlayer : ", consolePlayer);
             const waitPlayerListData = await getWaitPlayerList(Number(id));
             setWaitPlayerList(waitPlayerListData);
             const waitGameListData = await getWaitGames(Number(id));
@@ -525,6 +523,9 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     };
 
     const handleOnWinsUp = (playerId: number[]): number[] => {
+        if (playerId.length !== 2) {
+            return [];
+        }
         const playerIndex1 = playerList.findIndex((player) => player.id === playerId[0]);
         const playerIndex2 = playerList.findIndex((player) => player.id === playerId[1]);
         const updatedPlayer = {
