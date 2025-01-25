@@ -2,6 +2,43 @@
 import db from "./db";
 import { WaitGameListCLass } from "./interface";
 import getSession from "./session";
+import { createClient } from "@supabase/supabase-js";
+
+const SUPABASE_URL = "https://nwpgfukfmivuzadqxewe.supabase.co";
+const SUPABASE_KEY =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53cGdmdWtmbWl2dXphZHF4ZXdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc3ODI5MjYsImV4cCI6MjA1MzM1ODkyNn0.1OMI0m8oKEhN-b5FbMrrycqNvC98j5dzf8WPvA4TT8Y";
+
+const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+export async function sendMessage(payload: string) {
+    console.log("sendMessage");
+    // Join a room/topic. Can be anything except for 'realtime'.
+    const channelB = supabase.channel("room-1");
+
+    const channelSubscribed = await new Promise<typeof channelB>((resolve, reject) => {
+        channelB.subscribe((status) => {
+            if (status === "SUBSCRIBED") {
+                resolve(channelB);
+            } else {
+                reject("Could not subscribe to channel");
+            }
+        });
+    });
+    if (payload === "waitGames") {
+        channelSubscribed.send({
+            type: "broadcast",
+            event: "waitGames",
+            payload,
+        });
+    }
+    if (payload === "gameboards") {
+        channelSubscribed.send({
+            type: "broadcast",
+            event: "gameboards",
+            payload,
+        });
+    }
+}
 
 export async function getUser() {
     const session = await getSession();
@@ -315,6 +352,7 @@ export const resetWaitGames = async (clubid: number, waitGamesId: WaitGameListCL
     const result = await db.waitGame.createMany({
         data: waitGamesId,
     });
+    sendMessage("waitGames");
     return result;
 };
 

@@ -14,6 +14,7 @@ import {
     exitPlayer,
     getClub,
     resetWaitGames,
+    sendMessage,
 } from "@/lib/getUserGoHome";
 import { Player, WaitGameListCLass } from "@/lib/interface";
 import getPlayerList from "@/lib/getPlayerList";
@@ -97,6 +98,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             }
         }
         startGame1Handle();
+        sendMessage("gameboards");
     }, [game1, id, isFetch]);
 
     useEffect(() => {
@@ -133,6 +135,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         }
 
         startGame2Handle();
+        sendMessage("gameboards");
     }, [game2, id, isFetch]);
 
     useEffect(() => {
@@ -169,6 +172,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         }
 
         startGame3Handle();
+        sendMessage("gameboards");
     }, [game3, id, isFetch]);
     useEffect(() => {
         console.log("Effectgame4 : ", game4);
@@ -203,6 +207,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             }
         }
         startGame4Handle();
+        sendMessage("gameboards");
     }, [game4, id, isFetch]);
 
     useEffect(() => {
@@ -1000,6 +1005,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                     className="bg-blue-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
                     onClick={() => {
                         // makePlayer(1, 6);
+                        sendMessage("hellow from server");
                     }}
                 >
                     Test
