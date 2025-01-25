@@ -55,7 +55,7 @@ export default function WaitGames(props: { waitGames: WaitGameListCLass[]; playe
         return game;
     };
     return (
-        <div className="grid grid-cols-4 gap-2 mt-3">
+        <div className="grid grid-cols-4 gap-2 mt-1">
             {Array.from({ length: 16 }).map((_, idx) => {
                 const playerId = getWaitGamePlayerId(idx);
                 const player = getPlayer(playerId);

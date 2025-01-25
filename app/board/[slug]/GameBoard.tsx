@@ -52,7 +52,7 @@ export default function GameBoard(props: { gameboards: GameBoardProps[]; players
         <div className="flex flex-col justify-center gap-2">
             {gameboards.map((gameboard, idx) => (
                 <li key={idx} className="bg-gray-100 p-1 rounded-lg shadow-md">
-                    <h2 className="text-xl font-semibold mb-4 text-center">Court {idx + 1}</h2>
+                    <h2 className="text-xl font-semibold mb-2 text-center">Court {idx + 1}</h2>
                     <div className="flex justify-around items-center">
                         {[gameboard.player1id, gameboard.player2id, gameboard.player3id, gameboard.player4id].map(
                             (playerId, index) => {
