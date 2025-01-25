@@ -161,7 +161,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         game3.player2id,
                         game3.player3id,
                         game3.player4id,
-                        2,
+                        3,
                         gameId.gameid
                     );
                 }
@@ -196,7 +196,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         game4.player2id,
                         game4.player3id,
                         game4.player4id,
-                        3,
+                        4,
                         gameId.gameid
                     );
                 }
@@ -953,6 +953,14 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         const playerData: Player | undefined = playerList.find(
                             (player) => player.id === waitPlayer.Playerid
                         );
+                        if (!playerData) {
+                            return (
+                                <div key={index}>
+                                    <p>데이터베이스 동기화가 필요합니다.</p>
+                                    <p>새로고침을 한번 눌러주세요</p>
+                                </div>
+                            );
+                        }
                         return (
                             <div
                                 key={`wait ${playerData?.id}`}

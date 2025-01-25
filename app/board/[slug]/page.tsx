@@ -33,11 +33,10 @@ export default async function Board({ params }: { params: Promise<{ slug: string
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-6 text-center">Board</h1>
             <ul className="space-y-4">
                 {gameboards.map((gameboard, idx) => (
-                    <li key={idx} className="bg-gray-100 p-6 rounded-lg shadow-md">
-                        <h2 className="text-2xl font-semibold mb-4 text-center">Court {idx + 1}</h2>
+                    <li key={idx} className="bg-gray-100 p-1 rounded-lg shadow-md">
+                        <h2 className="text-xl font-semibold mb-4 text-center">Court {idx + 1}</h2>
                         <div className="flex justify-around items-center">
                             {[gameboard.player1id, gameboard.player2id, gameboard.player3id, gameboard.player4id].map(
                                 (playerId, index) => {
@@ -48,8 +47,13 @@ export default async function Board({ params }: { params: Promise<{ slug: string
                                                 src={`${player.avater}/avatar`}
                                                 width={50}
                                                 height={50}
+                                                style={{
+                                                    objectFit: "cover",
+                                                    width: "50px",
+                                                    height: "50px",
+                                                }}
                                                 alt=""
-                                                className="rounded-full"
+                                                className="rounded"
                                             />
                                             <span className="mt-2 text-sm font-medium">{player.name}</span>
                                         </div>
@@ -60,7 +64,10 @@ export default async function Board({ params }: { params: Promise<{ slug: string
                     </li>
                 ))}
             </ul>
-            <div className="grid grid-cols-4 gap-2 mt-8">
+
+            <h2 className="text-xl font-semibold mb-4 text-center pt-5">대기 게임</h2>
+
+            <div className="grid grid-cols-4 gap-2 mt-3">
                 {Array.from({ length: 16 }).map((_, idx) => {
                     const playerId = getWaitGamePlayerId(idx);
                     const player = getPlayer(playerId);
@@ -71,8 +78,13 @@ export default async function Board({ params }: { params: Promise<{ slug: string
                                 src={`${player.avater}/avatar`}
                                 width={50}
                                 height={50}
+                                style={{
+                                    objectFit: "cover",
+                                    width: "50px",
+                                    height: "50px",
+                                }}
                                 alt=""
-                                className="rounded-full"
+                                className="rounded"
                             />
                         </div>
                     );
