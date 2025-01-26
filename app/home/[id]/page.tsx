@@ -452,7 +452,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
 
     const startGame2 = async (p1: number, p2: number, p3: number, p4: number, court: number, point: number) => {
         setGame2({
-            id: 1,
             gameid: crypto.randomUUID(),
             court: court,
             clubid: Number(id),
@@ -475,7 +474,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
 
     const startGame3 = async (p1: number, p2: number, p3: number, p4: number, court: number, point: number) => {
         setGame3({
-            id: 2,
             gameid: crypto.randomUUID(),
             court: court,
             clubid: Number(id),
@@ -497,7 +495,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     };
     const startGame4 = async (p1: number, p2: number, p3: number, p4: number, court: number, point: number) => {
         setGame4({
-            id: 2,
             gameid: crypto.randomUUID(),
             court: court,
             clubid: Number(id),
@@ -636,39 +633,48 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     };
 
     const inputGame = (point: number, boardPointer: number) => {
+        if (
+            waitGameListId[waitGameListId.findIndex((game) => game.point === point)] === undefined ||
+            waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 1] === undefined ||
+            waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 2] === undefined ||
+            waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 3] === undefined
+        ) {
+            alert("4명의 플레이어를 선택해주세요.");
+            return;
+        }
         if (boardPointer == 0) {
             startGame1(
-                waitGameListId[point].playerid,
-                waitGameListId[point + 1].playerid,
-                waitGameListId[point + 2].playerid,
-                waitGameListId[point + 3].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 1].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 2].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 3].playerid,
                 0,
                 point
             );
         } else if (boardPointer == 1) {
             startGame2(
-                waitGameListId[point + 0].playerid,
-                waitGameListId[point + 1].playerid,
-                waitGameListId[point + 2].playerid,
-                waitGameListId[point + 3].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 1].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 2].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 3].playerid,
                 1,
                 point
             );
         } else if (boardPointer == 2) {
             startGame3(
-                waitGameListId[point + 0].playerid,
-                waitGameListId[point + 1].playerid,
-                waitGameListId[point + 2].playerid,
-                waitGameListId[point + 3].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 1].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 2].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 3].playerid,
                 2,
                 point
             );
         } else if (boardPointer == 3) {
             startGame4(
-                waitGameListId[point + 0].playerid,
-                waitGameListId[point + 1].playerid,
-                waitGameListId[point + 2].playerid,
-                waitGameListId[point + 3].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 1].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 2].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 3].playerid,
                 3,
                 point
             );
@@ -815,7 +821,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
 
                 <div className="flex flex-row p-4">
                     {/* 하단 7 부분 */}
-                    <div className="flex flex-row w-10 justify-center bg-green-200 ">
+                    <div className="flex flex-row w-12 justify-center bg-green-200 ">
                         <div className="flex flex-col mt-1 h-full gap-1 *:flex *:justify-center *:items-center *:text-2xl *:h-16">
                             <div
                                 className="bg-red-200"
@@ -831,7 +837,10 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                     }
                                 }}
                             >
-                                +
+                                <div>
+                                    <span className="flex text-base">게임</span>
+                                    <span className="flex text-base">시작</span>
+                                </div>
                             </div>
                             <div
                                 className="bg-blue-200"
@@ -847,7 +856,10 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                     }
                                 }}
                             >
-                                +
+                                <div>
+                                    <span className="flex text-base">게임</span>
+                                    <span className="flex text-base">시작</span>
+                                </div>
                             </div>
                             <div
                                 className="bg-yellow-200"
@@ -863,7 +875,10 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                     }
                                 }}
                             >
-                                +
+                                <div>
+                                    <span className="flex text-base">게임</span>
+                                    <span className="flex text-base">시작</span>
+                                </div>
                             </div>
                             <div
                                 className="bg-purple-200"
@@ -879,7 +894,10 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                     }
                                 }}
                             >
-                                +
+                                <div>
+                                    <span className="flex text-base">게임</span>
+                                    <span className="flex text-base">시작</span>
+                                </div>
                             </div>
                             <div
                                 className="bg-pink-200"
@@ -895,7 +913,10 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                     }
                                 }}
                             >
-                                +
+                                <div>
+                                    <span className="flex text-base">게임</span>
+                                    <span className="flex text-base">시작</span>
+                                </div>
                             </div>
                         </div>
                     </div>
