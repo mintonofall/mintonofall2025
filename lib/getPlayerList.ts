@@ -16,8 +16,17 @@ async function getPlayerList(id: number) {
         });
         return gameToday.length;
     });
+    const calWinToday = players.map((player) => {
+        const gameDatas = player.gameDatas;
+        const today = new Date().getDate();
+        const winToday = gameDatas.filter((game) => {
+            return game.getDate() === today;
+        });
+        return winToday.length;
+    });
     players.map((player, index) => {
         player.games = calGameTaday[index];
+        player.win = calWinToday[index];
     });
     return players;
 }

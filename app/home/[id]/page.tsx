@@ -996,7 +996,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         return (
                             <div
                                 key={`wait ${playerData?.id}`}
-                                className={`flex flex-col rounded-lg border-2 ${
+                                className={`flex flex-col rounded-xl border-2 ${
                                     howManyGame(playerData!.id) >= 1 ? "border-green-400" : null
                                 }`}
                             >
