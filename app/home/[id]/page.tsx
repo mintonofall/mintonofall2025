@@ -687,7 +687,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     };
 
     return (
-        <div className="flex ">
+        <div className="flex max-h-screen ">
             {/* 좌측 화면 */}
             <div className="flex flex-col w-3/4">
                 {/* GameCourt 3 */}
@@ -954,7 +954,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                 {game3?.gameid} */}
             </div>
             {/* 우측 화면 */}
-            <div className="w-1/4 bg-gray-400 p-4">
+            <div className="w-1/4 bg-gray-400 p-4 h-screen overflow-y-auto">
                 {waitPlayerList.length} 명
                 <div>
                     <div className="flex flex-row *:w-1/2 *:flex *:text-center *:justify-center *:items-center *:bg-blue-500 *:rounded-lg gap-1 my-2 *:shadow-lg *:text-white h-8 *:cursor-pointer">

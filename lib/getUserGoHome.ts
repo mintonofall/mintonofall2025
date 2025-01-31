@@ -284,8 +284,7 @@ export const getMatch = async (clubid: number) => {
             CourtNumber: "asc",
         },
     });
-    console.log("matchFromDB : ", match);
-    const data = match.map(async (m) => {
+    match.map(async (m) => {
         if (m.updateTime === null || m.updateTime < new Date(new Date().setHours(0, 0, 0, 0))) {
             console.log("m : ", m);
             m.player1id = 12;
@@ -293,17 +292,16 @@ export const getMatch = async (clubid: number) => {
             m.player3id = 12;
             m.player4id = 12;
             m.gameid = "0";
-            const result = await db.gameBoard.update({
+            m.updateTime = new Date();
+            await db.gameBoard.update({
                 where: {
                     id: m.id,
                 },
 
                 data: m,
             });
-            console.log("result : ", result);
         }
     });
-    console.log("data : ", data);
     const copy = await db.gameBoard.findMany({
         where: {
             clubid,
@@ -312,7 +310,6 @@ export const getMatch = async (clubid: number) => {
             CourtNumber: "asc",
         },
     });
-    console.table(copy);
     return copy;
 };
 
