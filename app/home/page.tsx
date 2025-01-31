@@ -49,7 +49,7 @@ export default async function Home() {
                     {clubsList.map((club) => {
                         return (
                             <div key={club.id} className="bg-white shadow-md rounded p-4">
-                                <Link href={"/board/" + club.id}>
+                                <Link href={club.id + "/board/"}>
                                     <h1 className="text-xl font-semibold text-blue-500 hover:underline">
                                         {club.clubName}
                                     </h1>
