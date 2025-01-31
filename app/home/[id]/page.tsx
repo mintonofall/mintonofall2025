@@ -682,7 +682,13 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     };
 
     const howManyGame = (playerId: number) => {
-        const howMany = waitGameListId.filter((game) => game.playerid === playerId).length;
+        const howMany1 = waitGameListId.filter((game) => game.playerid === playerId).length;
+        const houmanyInGameboard = [game1, game2, game3, game4].filter((game) => {
+            if (game?.player1id === playerId || game?.player2id === playerId || game?.player3id === playerId) {
+                return game;
+            }
+        }).length;
+        const howMany = howMany1 + houmanyInGameboard;
         return howMany;
     };
 
@@ -990,7 +996,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         return (
                             <div
                                 key={`wait ${playerData?.id}`}
-                                className={`flex flex-col border-2 ${
+                                className={`flex flex-col rounded-lg border-2 ${
                                     howManyGame(playerData!.id) >= 1 ? "border-green-400" : null
                                 }`}
                             >
