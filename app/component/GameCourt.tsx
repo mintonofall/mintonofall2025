@@ -64,7 +64,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
             <div className="flex flex-col w-full h-full p-1 space-y-0 z-10">
                 <div className="text-lg font-semibold text-center text-gray-700">Court {court}</div>
                 <div className="flex h-1/2 space-x-0">
-                    <div className="flex flex-row justify-center items-center w-1/2 bg-blue-300 p-2 rounded-lg shadow-md">
+                    <div className="flex flex-row justify-center items-center w-1/2 bg-blue-300 p-0 rounded-lg shadow-md">
                         <div className="rounded-full overflow-hidden">
                             <Image
                                 src={player1Avatar}
@@ -74,15 +74,15 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                                 className="object-cover w-12 h-12"
                             />
                         </div>
-                        <div className="ml-3">
-                            <div className="text-sm font-medium text-gray-800">{p1?.name}</div>
+                        <div className="ml-0">
+                            <div className="text-sm  font-medium text-gray-800">{p1?.name}</div>
                             <div className="text-xs text-gray-600">
                                 {p1?.age}
                                 {p1?.grade}
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-row justify-center items-center w-1/2 bg-green-200 p-2 rounded-lg shadow-md">
+                    <div className="flex flex-row justify-center items-center w-1/2 bg-green-200 p-0 rounded-lg shadow-md">
                         <div className="rounded-full overflow-hidden">
                             <Image
                                 src={player2Avatar}
@@ -92,7 +92,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                                 className="object-cover w-12 h-12"
                             />
                         </div>
-                        <div className="ml-3">
+                        <div className="ml-0">
                             <div className="text-sm font-medium text-gray-800">{p2?.name}</div>
                             <div className="text-xs text-gray-600">
                                 {p2?.age}
@@ -102,7 +102,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                     </div>
                 </div>
                 <div className="flex h-1/2 space-x-0">
-                    <div className="flex flex-row justify-center items-center w-1/2 bg-red-200 p-2 rounded-lg shadow-md">
+                    <div className="flex flex-row justify-center items-center w-1/2 bg-red-200 p-0 rounded-lg shadow-md">
                         <div className="rounded-full overflow-hidden">
                             <Image
                                 src={player3Avatar}
@@ -112,7 +112,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                                 className="object-cover w-12 h-12"
                             />
                         </div>
-                        <div className="ml-3">
+                        <div className="ml-0">
                             <div className="text-sm font-medium text-gray-800">{p3?.name}</div>
                             <div className="text-xs text-gray-600">
                                 {p3?.age}
@@ -120,7 +120,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-row justify-center items-center w-1/2 bg-purple-200 p-2 rounded-lg shadow-md">
+                    <div className="flex flex-row justify-center items-center w-1/2 bg-purple-200 p-0 rounded-lg shadow-md">
                         <div className="rounded-full overflow-hidden">
                             <Image
                                 src={player4Avatar}
@@ -130,7 +130,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                                 className="object-cover w-12 h-12"
                             />
                         </div>
-                        <div className="ml-3">
+                        <div className="ml-0">
                             <div className="text-sm font-medium text-gray-800">{p4?.name}</div>
                             <div className="text-xs text-gray-600">
                                 {p4?.age}

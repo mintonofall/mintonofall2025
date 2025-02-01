@@ -162,6 +162,32 @@ export async function createWaitGame(clubid: number, playerid: number, point: nu
     return waitGames;
 }
 
+export async function oneGameDown(id: number) {
+    const player = await db.player.findUnique({
+        where: { id },
+        select: { games: true, gameDatas: true },
+    });
+
+    if (!player || !player.gameDatas || player.gameDatas.length === 0) {
+        throw new Error("No game data found for this player");
+    }
+    console.log(id, player.gameDatas);
+    const updateGameDatas = player.gameDatas.slice(0, -1);
+    console.log(id, updateGameDatas);
+
+    await db.player.update({
+        where: {
+            id,
+        },
+        data: {
+            games: {
+                decrement: 1,
+            },
+            gameDatas: updateGameDatas,
+        },
+    });
+}
+
 export async function getWaitGames(clubid: number) {
     const waitGames = await db.waitGame.findMany({
         where: {

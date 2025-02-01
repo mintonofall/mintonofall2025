@@ -15,6 +15,7 @@ import {
     getClub,
     resetWaitGames,
     sendMessage,
+    oneGameDown,
 } from "@/lib/getUserGoHome";
 import { Player, WaitGameListCLass } from "@/lib/interface";
 import getPlayerList from "@/lib/getPlayerList";
@@ -932,6 +933,20 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                 key={"game" + index}
                                 className={`h-16 ${gamePointer == index ? "bg-red-200" : "bg-blue-200"}`}
                                 onClick={async () => {
+                                    const playerIndex = waitGameListId.findIndex((player) => player.point === index);
+                                    if (playerIndex !== -1) {
+                                        const copyPlayer = [...playerList];
+                                        const copyPlayerIndex = copyPlayer.findIndex(
+                                            (player) => player.id === waitGameListId[playerIndex].playerid
+                                        );
+                                        oneGameDown(copyPlayer[copyPlayerIndex].id);
+                                        copyPlayer[copyPlayerIndex].games = copyPlayer[copyPlayerIndex].games - 1;
+                                        setPlayerList(copyPlayer);
+                                        const copyWaitGames = [...waitGameListId];
+                                        copyWaitGames.splice(playerIndex, 1);
+                                        setWaitGameListId(copyWaitGames);
+                                    }
+
                                     setGamePointer(index);
                                 }}
                             >
