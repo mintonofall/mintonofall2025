@@ -1011,7 +1011,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         return (
                             <div
                                 key={`wait ${playerData?.id}`}
-                                className={`flex flex-col rounded-xl border-2 ${
+                                className={`flex flex-col relative rounded-xl border-2 ${
                                     howManyGame(playerData!.id) >= 1 ? "border-green-400" : null
                                 }`}
                             >
@@ -1026,7 +1026,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                     </div>
                                 </div>
                                 <button
-                                    className="absolute right-2 z-10 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg"
+                                    className="absolute -right-3 -top-3 z-10 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg"
                                     onClick={() => {
                                         const data = [...waitPlayerList];
                                         const playerid = data[index].Playerid;
