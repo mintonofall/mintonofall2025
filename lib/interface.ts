@@ -1,7 +1,7 @@
 export interface Player {
     id: number;
     name: string;
-    age: number;
+    age: number | null;
     grade: string;
     clubid: number;
     gender: string;

@@ -43,7 +43,7 @@ model Player {
   name String 
   grade String
   gender String @default("man")
-  age Int
+  age Int?
   avater String?
   clubid Int
   club Club @relation(fields: [clubid], references: [id])

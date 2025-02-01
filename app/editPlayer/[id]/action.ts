@@ -12,10 +12,10 @@ export async function handlePlayerEdit(prevState: unknown, formdata: FormData) {
     const gender = formdata.get("gender") as string | null;
     const playerId = formdata.get("playerId") ? Number(formdata.get("playerId")) : undefined;
 
-    if (!name || !age || !grade || !clubId || !photo || !gender) {
+    if (!name || !grade || !clubId || !photo || !gender) {
         console.log(name, age, grade, clubId, gender, photo);
         console.error("Invalid form data");
-        redirect("/home/1");
+        redirect(`/home/${clubId}`);
     }
 
     console.log(name, age, grade, clubId, photo, gender, playerId);

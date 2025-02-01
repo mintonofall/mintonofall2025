@@ -58,11 +58,18 @@ export default function CreatePlayer({ params }: { params: Promise<{ clubid: str
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
-            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+            <div className="bg-white relative p-8 rounded-lg shadow-lg w-full max-w-md">
+                <div className="absolute top-5 right-5 w-20 h-4 ">
+                    <Link href={"/createPlayer/" + id + "/createPlayerMany"}>
+                        <button className="absolute rounded p-2 top-0 left-0 bg-blue-500 text-white z-0">
+                            여러선수등록
+                        </button>
+                    </Link>
+                </div>
                 <h2 className="text-2xl font-bold mb-6 text-center">플레이어 생성</h2>
                 <form action={action} className="flex flex-col space-y-4">
                     <div>
-                        <label htmlFor="playerName" className="block mb-2 text-gray-700">
+                        <label htmlFor="name" className="block mb-2 text-gray-700">
                             플레이어 이름
                         </label>
                         <input
