@@ -55,7 +55,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     const [playerList, setPlayerList] = useState<Player[]>([]);
     const [howManyCourts, setHowManyCourts] = useState<number>(3);
     const [howSort, setHowSort] = useState("games");
-    let isFetch: boolean = false;
     // const point: number = 0;
 
     useEffect(() => {
@@ -69,7 +68,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     useEffect(() => {
         console.log("Effectgame1 : ", game1);
         async function startGame1Handle() {
-            if (game1?.player1id !== 12 && !isFetch) {
+            if (game1?.player1id !== 12) {
                 if (
                     game1?.gameid &&
                     game1?.player1id &&
@@ -100,12 +99,12 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         }
         startGame1Handle();
         sendMessage("gameboards");
-    }, [game1, id, isFetch]);
+    }, [game1, id]);
 
     useEffect(() => {
         console.log("Effectgame2 : ", game2);
         async function startGame2Handle() {
-            if (game2?.player1id !== 12 && !isFetch) {
+            if (game2?.player1id !== 12) {
                 if (
                     game2?.gameid &&
                     game2?.player1id &&
@@ -137,12 +136,12 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
 
         startGame2Handle();
         sendMessage("gameboards");
-    }, [game2, id, isFetch]);
+    }, [game2, id]);
 
     useEffect(() => {
         console.log("Effectgame3 : ", game3);
         async function startGame3Handle() {
-            if (game3?.player1id !== 12 && !isFetch) {
+            if (game3?.player1id !== 12) {
                 if (
                     game3?.gameid &&
                     game3?.player1id &&
@@ -174,11 +173,11 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
 
         startGame3Handle();
         sendMessage("gameboards");
-    }, [game3, id, isFetch]);
+    }, [game3, id]);
     useEffect(() => {
         console.log("Effectgame4 : ", game4);
         async function startGame4Handle() {
-            if (game4?.player1id !== 12 && !isFetch) {
+            if (game4?.player1id !== 12) {
                 if (
                     game4?.gameid &&
                     game4?.player1id &&
@@ -209,21 +208,22 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         }
         startGame4Handle();
         sendMessage("gameboards");
-    }, [game4, id, isFetch]);
+    }, [game4, id]);
 
     useEffect(() => {
         async function fetchPlayerList() {
-            const playerListData = await getPlayerList(Number(id));
-            console.log("playerListData : ", playerListData);
+            const [playerListData, getClubdata, waitPlayerListData, waitGameListData] = await Promise.all([
+                getPlayerList(Number(id)),
+                getClub(Number(id)),
+                getWaitPlayerList(Number(id)),
+                getWaitGames(Number(id)),
+            ]);
             setPlayerList(playerListData);
-            const getClubdata = await getClub(Number(id));
             if (getClubdata) {
                 setHowManyCourts(getClubdata.howManyCourts);
             }
             console.log("howManyCourts : ", howManyCourts);
-            const waitPlayerListData = await getWaitPlayerList(Number(id));
             setWaitPlayerList(waitPlayerListData);
-            const waitGameListData = await getWaitGames(Number(id));
             setWaitGameListId(waitGameListData);
             if (id) {
                 const getMatchData = await getMatch(Number(id));
@@ -278,10 +278,8 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                 }
             }
         }
-        isFetch = true;
         fetchPlayerList();
         sortWaitPlayerByGames();
-        isFetch = false;
     }, [id]);
 
     useEffect(() => {

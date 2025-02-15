@@ -37,8 +37,8 @@ export default async function Home() {
                         <Link href={`/home/${club.id}`}>
                             <h2 className="text-xl font-semibold">{club.clubName}</h2>
                         </Link>
-                        <Link href={`createPlayer/${club.id}`} className="text-blue-500 hover:underline">
-                            <span>선수등록</span>
+                        <Link href={`playerList/${club.id}`} className="text-blue-500 hover:underline">
+                            <span>선수목록</span>
                         </Link>
                     </div>
                 ))}

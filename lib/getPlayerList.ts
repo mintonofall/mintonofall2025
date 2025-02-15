@@ -1,7 +1,7 @@
 "use server";
 import db from "./db";
 
-async function getPlayerList(id: number) {
+async function getPlayerList(id: number, sort?: string) {
     const players = await db.player.findMany({
         where: {
             clubid: id,
@@ -28,6 +28,11 @@ async function getPlayerList(id: number) {
         player.games = calGameTaday[index];
         player.win = calWinToday[index];
     });
+    if (sort === "name") {
+        players.sort((a, b) => {
+            return a.name.localeCompare(b.name);
+        });
+    }
     return players;
 }
 

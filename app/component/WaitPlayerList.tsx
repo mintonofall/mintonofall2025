@@ -29,7 +29,7 @@ export default function WaitPlayerList({
 
     useEffect(() => {
         async function fetchPlayers() {
-            const players = await getPlayerList(clubid);
+            const players = await getPlayerList(clubid, "name");
             setPlayerList(players);
             console.log(players);
         }

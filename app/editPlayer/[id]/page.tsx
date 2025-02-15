@@ -17,6 +17,7 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
     const [age, setAge] = useState<number | null>(null);
     const [grade, setGrade] = useState("");
     const [gender, setGender] = useState("");
+    let pastPhoto = "";
 
     useEffect(() => {
         async function fetchParams() {
@@ -34,8 +35,10 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
             console.log("player fetch start");
             if (!id) return;
             const playerData = await getPlayer(id);
+            console.log(playerData);
             if (!playerData) return;
             if (!playerData.avater) return;
+            pastPhoto = playerData.avater;
             setPlayer(playerData);
             setPlayerName(playerData.name);
             setAge(playerData.age);
@@ -63,7 +66,13 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
     }
     async function InterceptAction(_: unknown, formData: FormData) {
         const file = formData.get("photo");
-        if (!file) return;
+        if (!file) {
+            if (preview) {
+                console.log(pastPhoto);
+                formData.set("photo", pastPhoto);
+            }
+            return handlePlayerEdit(_, formData);
+        }
         const cloudflare = new FormData();
         cloudflare.append("file", file);
         const response = await fetch(uploadURL, {
@@ -74,9 +83,16 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
             console.error("Upload failed");
             return;
         }
-        const imageURL = `https://imagedelivery.net/H_vtnjYSM5axKm4PivHM5g/${imageID}`;
-        console.log(imageURL);
-        formData.set("photo", imageURL);
+        if (!imageID) {
+            const imageURL = preview.slice(0, -7);
+            formData.set("photo", imageURL);
+            console.log(imageURL);
+        }
+        if (imageID) {
+            const imageURL = `https://imagedelivery.net/H_vtnjYSM5axKm4PivHM5g/${imageID}`;
+            formData.set("photo", imageURL);
+            console.log(imageURL);
+        }
         setPreview("");
         return handlePlayerEdit(_, formData);
     }
