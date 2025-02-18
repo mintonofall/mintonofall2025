@@ -103,7 +103,7 @@ export default function NewPlayerForm({ clubid, name }: Props) {
                     </label>
                     <label
                         htmlFor="photo"
-                        className="flex justify-center items-center h-52 w-52 mx-auto border-dashed border-2 border-gray-300 rounded-lg bg-inherit bg-center bg-no-repeat cursor-pointer"
+                        className="flex justify-center items-center h-52 w-52 mx-auto border-dashed border-2 border-gray-300 rounded-lg bg-cover bg-inherit bg-center bg-no-repeat cursor-pointer"
                         style={{
                             backgroundImage: `url(${preview})`,
                         }}
