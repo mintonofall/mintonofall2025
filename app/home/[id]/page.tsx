@@ -420,7 +420,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             player3id: 12,
             player4id: 12,
         });
-        await startMatch(Number(id), 12, 12, 12, 12, 3, "0");
+        await startMatch(Number(id), 12, 12, 12, 12, 4, "0");
     };
 
     const startGame1 = async (p1: number, p2: number, p3: number, p4: number, court: number, point: number) => {
@@ -634,9 +634,9 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     const inputGame = (point: number, boardPointer: number) => {
         if (
             waitGameListId[waitGameListId.findIndex((game) => game.point === point)] === undefined ||
-            waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 1] === undefined ||
-            waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 2] === undefined ||
-            waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 3] === undefined
+            waitGameListId[waitGameListId.findIndex((game) => game.point === point + 1)] === undefined ||
+            waitGameListId[waitGameListId.findIndex((game) => game.point === point + 2)] === undefined ||
+            waitGameListId[waitGameListId.findIndex((game) => game.point === point + 3)] === undefined
         ) {
             alert("4명의 플레이어를 선택해주세요.");
             return;
@@ -644,36 +644,36 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         if (boardPointer == 0) {
             startGame1(
                 waitGameListId[waitGameListId.findIndex((game) => game.point === point)].playerid,
-                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 1].playerid,
-                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 2].playerid,
-                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 3].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 1)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 2)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 3)].playerid,
                 0,
                 point
             );
         } else if (boardPointer == 1) {
             startGame2(
                 waitGameListId[waitGameListId.findIndex((game) => game.point === point)].playerid,
-                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 1].playerid,
-                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 2].playerid,
-                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 3].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 1)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 2)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 3)].playerid,
                 1,
                 point
             );
         } else if (boardPointer == 2) {
             startGame3(
                 waitGameListId[waitGameListId.findIndex((game) => game.point === point)].playerid,
-                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 1].playerid,
-                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 2].playerid,
-                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 3].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 1)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 2)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 3)].playerid,
                 2,
                 point
             );
         } else if (boardPointer == 3) {
             startGame4(
                 waitGameListId[waitGameListId.findIndex((game) => game.point === point)].playerid,
-                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 1].playerid,
-                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 2].playerid,
-                waitGameListId[waitGameListId.findIndex((game) => game.point === point) + 3].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 1)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 2)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 3)].playerid,
                 3,
                 point
             );
@@ -931,7 +931,9 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                 key={"game" + index}
                                 className={`h-16 ${gamePointer == index ? "bg-red-200" : "bg-blue-200"}`}
                                 onClick={async () => {
+                                    console.log("before : ", waitGameListId);
                                     const playerIndex = waitGameListId.findIndex((player) => player.point === index);
+                                    console.log("playerIndex : ", playerIndex);
                                     if (playerIndex !== -1) {
                                         const copyPlayer = [...playerList];
                                         const copyPlayerIndex = copyPlayer.findIndex(
@@ -943,6 +945,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                         const copyWaitGames = [...waitGameListId];
                                         copyWaitGames.splice(playerIndex, 1);
                                         setWaitGameListId(copyWaitGames);
+                                        console.log("after : ", copyWaitGames);
                                     }
 
                                     setGamePointer(index);
@@ -955,7 +958,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                         );
                                         if (player) {
                                             return (
-                                                <div key={idx} className="flex flex-col z-1">
+                                                <div key={idx} className="flex flex-col -z-10">
                                                     <PlayerCard {...player} />
                                                 </div>
                                             );

@@ -151,9 +151,9 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
             </div>
 
             <div
-                className={`fixed z-40 left-0 w-full h-1/2 bg-black bg-opacity-50  ${
+                className={`fixed left-0 w-full h-1/2 bg-black bg-opacity-50  ${
                     isShowResult ? "block" : "hidden"
-                }`}
+                } z-auto`}
             >
                 <div
                     className="relative  left-1/2 transform -translate-x-1/2 bg-white rounded-t-lg shadow-lg

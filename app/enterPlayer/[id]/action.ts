@@ -14,7 +14,7 @@ export async function handlePlayerCreate(prevState: unknown, formdata: FormData)
     if (!name || !age || !grade || !clubId || !photo || !gender) {
         console.log(name, age, grade, clubId, gender, photo);
         console.error("Invalid form data");
-        redirect(`${clubId}/board`);
+        redirect("/home/1");
     }
 
     console.log(name, age, grade, clubId, photo, gender);
@@ -34,7 +34,7 @@ export async function handlePlayerCreate(prevState: unknown, formdata: FormData)
         },
     });
 
-    // redirect("/home/1");
+    redirect(`/${clubId}/board`);
 }
 
 export async function getUploadURL() {
