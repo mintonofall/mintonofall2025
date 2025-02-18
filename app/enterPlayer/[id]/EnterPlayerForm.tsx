@@ -65,12 +65,18 @@ export default function EnterPlayerForm({ id }: { id: number }) {
                                     >
                                         이걸로 입장
                                     </button>
-                                    <button className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600">
+                                    <Link
+                                        href={`/createPlayer/${id}`}
+                                        className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                                    >
                                         새로등록
-                                    </button>
-                                    <button className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600">
+                                    </Link>
+                                    <Link
+                                        href={`/editPlayer/${player.id}`}
+                                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                                    >
                                         수정
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         );

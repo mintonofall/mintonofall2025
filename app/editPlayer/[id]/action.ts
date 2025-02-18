@@ -47,7 +47,7 @@ export async function handlePlayerEdit(prevState: unknown, formdata: FormData) {
         redirect("/home/1");
     }
 
-    redirect(`/playerList/${clubId}`);
+    redirect(`/${clubId}/board`);
 }
 
 export async function getUploadURL() {
