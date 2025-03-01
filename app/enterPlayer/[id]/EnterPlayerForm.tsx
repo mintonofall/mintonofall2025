@@ -85,7 +85,6 @@ export default function EnterPlayerForm({ id }: { id: number }) {
             ) : null}
             {showInput ? (
                 <div className="space-y-4">
-                    <h1 className="text-xl font-semibold">Input Form</h1>
                     <NewPlayerForm clubid={id} name={name} />
                 </div>
             ) : null}
@@ -93,8 +92,8 @@ export default function EnterPlayerForm({ id }: { id: number }) {
                 <div className="space-y-4">
                     <h1 className="text-xl font-semibold">Notice Form</h1>
                     <p>
-                        환영합니다. 모두의민턴 입니다. 아래의 버튼을 누르시면 체육관 현황을 확인하실수 있습니다.
-                        즐거운운동되시길 바랍니다.
+                        환영합니다. 모두의민턴 입니다. 아래의 버튼을 누르시면 체육관 현황을 확인하실수 있습니다. 즐거운
+                        운동되시길 바랍니다.
                     </p>
                     <Link href={`/${id}/board`} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
                         입장하기
