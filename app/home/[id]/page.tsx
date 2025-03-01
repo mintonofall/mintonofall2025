@@ -20,6 +20,8 @@ import {
 import { Player, WaitGameListCLass } from "@/lib/interface";
 import getPlayerList from "@/lib/getPlayerList";
 import PlayerCard from "@/app/component/PlayerCard";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
+import Link from "next/link";
 // import { makePlayer } from "@/lib/makePlayer";
 
 interface WaitPlayerListCLass {
@@ -55,6 +57,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     const [playerList, setPlayerList] = useState<Player[]>([]);
     const [howManyCourts, setHowManyCourts] = useState<number>(3);
     const [howSort, setHowSort] = useState("games");
+    const [showEdit, setShowEdit] = useState(false);
     // const point: number = 0;
 
     useEffect(() => {
@@ -977,7 +980,15 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             </div>
             {/* 우측 화면 */}
             <div className="w-1/4 bg-gray-400 p-4 h-screen overflow-y-auto">
-                {waitPlayerList.length} 명
+                <div className="flex flex-row justify-between items-center">
+                    <div>{waitPlayerList.length} 명</div>
+                    <EllipsisVerticalIcon
+                        onClick={() => {
+                            setShowEdit(!showEdit);
+                        }}
+                        className="w-6 h-6"
+                    ></EllipsisVerticalIcon>
+                </div>
                 <div>
                     <div className="flex flex-row *:w-1/2 *:flex *:text-center *:justify-center *:items-center *:bg-blue-500 *:rounded-lg gap-1 my-2 *:shadow-lg *:text-white h-8 *:cursor-pointer">
                         <div
@@ -1088,6 +1099,15 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         waitPLayerList={waitPlayerList}
                         clubid={Number(id)}
                     />
+                </div>
+            )}
+            {showEdit && (
+                <div className="fixed top-10 right-4 bg-white shadow-lg rounded-lg p-4">
+                    <div className="text-center">
+                        <Link href={`/editClub/${id}`} className="text-blue-500 hover:text-blue-700">
+                            클럽 정보 수정
+                        </Link>
+                    </div>
                 </div>
             )}
         </div>

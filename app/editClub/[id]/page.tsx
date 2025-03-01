@@ -4,12 +4,14 @@ import { useSearchParams } from "next/navigation";
 import handleClubCreate from "./action";
 import { useActionState } from "react";
 import Link from "next/link";
+import { getClub } from "@/lib/getUserGoHome";
 
-function CreateClubContent() {
+function CreateClubContent({ params }: { params: Promise<{ id: string }> }) {
     const [, action] = useActionState(handleClubCreate, null);
     const searchParams = useSearchParams();
     const [clubName, setClubName] = useState("");
     const [location, setLocation] = useState("");
+    const [id, setId] = useState<string | null>(null);
 
     useEffect(() => {
         const name = searchParams.get("name");
@@ -18,10 +20,33 @@ function CreateClubContent() {
         if (loc) setLocation(loc);
     }, [searchParams]);
 
+    useEffect(() => {
+        async function fetchParams() {
+            const resolvedParams = (await params).id;
+            setId(resolvedParams);
+            console.log(resolvedParams);
+        }
+        fetchParams();
+    }, [params]);
+
+    useEffect(() => {
+        async function fetchParams() {
+            if (id) {
+                const data = await getClub(Number(id));
+                if (data) {
+                    console.log(data);
+                    setClubName(data.clubName || "");
+                    setLocation(data.clubLocation || "");
+                }
+            }
+        }
+        fetchParams();
+    }, [id]);
+
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-                <h2 className="text-2xl font-bold mb-6 text-center">클럽 생성</h2>
+                <h2 className="text-2xl font-bold mb-6 text-center">클럽 수정</h2>
                 <form action={action} className="flex flex-col">
                     <label htmlFor="clubName" className="mb-2 text-gray-700">
                         클럽 이름
@@ -42,7 +67,7 @@ function CreateClubContent() {
                         type="text"
                         id="location"
                         placeholder="위치"
-                        name="location"
+                        name="clubLocation"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
                         className="mb-4 p-2 border border-gray-300 rounded"
@@ -73,10 +98,11 @@ function CreateClubContent() {
                             </label>
                         </div>
                     </div>
+                    <input type="hidden" name="id" value={id ?? ""} />
                     <button type="submit" className="bg-blue-500 text-white p-2 mb-2 rounded hover:bg-blue-600">
-                        생성
+                        수정
                     </button>
-                    <Link href="/home">
+                    <Link href={`/home/${id}`}>
                         <div className="bg-blue-500 text-center text-white p-2 rounded hover:bg-blue-600">돌아가기</div>
                     </Link>
                 </form>
@@ -85,10 +111,10 @@ function CreateClubContent() {
     );
 }
 
-export default function CreateClub() {
+export default function CreateClub({ params }: { params: Promise<{ id: string }> }) {
     return (
         <Suspense fallback={<div>Loading...</div>}>
-            <CreateClubContent />
+            <CreateClubContent params={params} />
         </Suspense>
     );
 }

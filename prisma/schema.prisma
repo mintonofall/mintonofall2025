@@ -31,7 +31,7 @@ model Club {
   clubDescription String?
   clubLocation String?
   users User[] @relation("UserClubs")
-  howManyCourts Int @default(3)
+  howManyCourts Int @default(4)
   players Player[]
 
   
@@ -46,7 +46,7 @@ model Player {
   age Int?
   avater String?
   clubid Int
-  club Club @relation(fields: [clubid], references: [id])
+  club Club @relation(fields: [clubid], references: [id], onDelete: Cascade)
   suttlePoint Int @default(10000)
   waitPlayerLists WaitPlayerList[]
   waitGames WaitGame[]
@@ -67,7 +67,7 @@ model WaitPlayerList {
   id Int @id @default(autoincrement())
   clubid Int
   Playerid Int
-  player Player @relation(fields: [Playerid], references: [id])
+  player Player @relation(fields: [Playerid], references: [id], onDelete: Cascade)
   enterDate DateTime
   exitDate DateTime?
 }
