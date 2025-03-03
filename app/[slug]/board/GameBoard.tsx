@@ -50,6 +50,7 @@ export default function GameBoard(props: { gameboards: GameBoardProps[]; players
     }
     return (
         <div className="flex flex-col justify-center gap-2">
+            <p>혹시 모르니 화면을 아래로 당겨 새로고침을 해주세요</p>
             {gameboards.map((gameboard, idx) => (
                 <li key={idx} className="bg-gray-100 p-1 rounded-lg shadow-md">
                     <h2 className="text-xl font-semibold mb-2 text-center">Court {idx + 1}</h2>
