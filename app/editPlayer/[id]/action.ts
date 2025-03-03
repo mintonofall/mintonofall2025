@@ -1,6 +1,7 @@
 "use server";
 
 import db from "@/lib/db";
+import { pushWaitPlayerList } from "@/lib/getUserGoHome";
 import { redirect } from "next/navigation";
 
 export async function handlePlayerEdit(prevState: unknown, formdata: FormData) {
@@ -11,6 +12,7 @@ export async function handlePlayerEdit(prevState: unknown, formdata: FormData) {
     const photo = formdata.get("photo") as string | null;
     const gender = formdata.get("gender") as string | null;
     const playerId = formdata.get("playerId") ? Number(formdata.get("playerId")) : undefined;
+    const from = formdata.get("from") as string | null;
 
     if (!name || !grade || !clubId || !photo || !gender) {
         console.log(name, age, grade, clubId, gender, photo);
@@ -45,6 +47,10 @@ export async function handlePlayerEdit(prevState: unknown, formdata: FormData) {
     } else {
         console.error("Invalid player ID");
         redirect("/home/1");
+    }
+    if (from === "enterPlayer") {
+        pushWaitPlayerList(playerId, clubId);
+        redirect(`/${clubId}/board`);
     }
 
     redirect(`/${clubId}/board`);

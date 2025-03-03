@@ -223,6 +223,28 @@ export const updateWaitGame = async (playerid: number, pointer: number) => {
     return waitGame;
 };
 
+export const refreshWaitPlayer = async (clubid: number) => {
+    const waitPlayerList = await db.waitPlayerList.findMany({
+        where: {
+            clubid,
+            enterDate: {
+                gte: new Date(new Date().setHours(0, 0, 0, 0)),
+                lt: new Date(new Date().setHours(23, 59, 59, 999)),
+            },
+        },
+    });
+    return waitPlayerList;
+};
+
+export const refreshPlayer = async (clubid: number) => {
+    const player = await db.player.findMany({
+        where: {
+            clubid,
+        },
+    });
+    return player;
+};
+
 export const startMatch = async (
     clubid: number,
     player1id: number,

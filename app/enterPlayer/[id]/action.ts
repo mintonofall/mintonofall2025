@@ -1,6 +1,7 @@
 "use server";
 
 import db from "@/lib/db";
+import { pushWaitPlayerList } from "@/lib/getUserGoHome";
 import { redirect } from "next/navigation";
 
 export async function handlePlayerCreate(prevState: unknown, formdata: FormData) {
@@ -19,7 +20,7 @@ export async function handlePlayerCreate(prevState: unknown, formdata: FormData)
 
     console.log(name, age, grade, clubId, photo, gender);
 
-    await db.player.create({
+    const newPlayer = await db.player.create({
         data: {
             name,
             age,
@@ -33,6 +34,7 @@ export async function handlePlayerCreate(prevState: unknown, formdata: FormData)
             gender,
         },
     });
+    pushWaitPlayerList(newPlayer.id, clubId);
 
     redirect(`/${clubId}/board`);
 }

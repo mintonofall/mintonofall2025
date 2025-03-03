@@ -9,6 +9,7 @@ import { checkName } from "./utility";
 import PlayerCard from "@/app/component/PlayerCard";
 import Link from "next/link";
 import NewPlayerForm from "./newPlayerForm";
+import { pushWaitPlayerList } from "@/lib/getUserGoHome";
 
 export default function EnterPlayerForm({ id }: { id: number }) {
     const [showNameForm, setShowNameForm] = useState(true);
@@ -60,6 +61,7 @@ export default function EnterPlayerForm({ id }: { id: number }) {
                                         onClick={() => {
                                             setShowCheck(false);
                                             setShowNotice(true);
+                                            pushWaitPlayerList(player.id, id);
                                         }}
                                         className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
                                     >
@@ -72,7 +74,10 @@ export default function EnterPlayerForm({ id }: { id: number }) {
                                         새로등록
                                     </Link>
                                     <Link
-                                        href={`/editPlayer/${player.id}`}
+                                        href={{
+                                            pathname: `/editPlayer/${player.id}`,
+                                            query: { from: "enterPlayer" },
+                                        }}
                                         className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                                     >
                                         수정

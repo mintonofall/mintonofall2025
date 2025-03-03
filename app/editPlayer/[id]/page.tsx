@@ -5,8 +5,11 @@ import React, { useState, useEffect } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
 import { getPlayer } from "@/lib/getUserGoHome";
 import { Player } from "@/lib/interface";
+import { useSearchParams } from "next/navigation";
 
 export default function EditPlayer({ params }: { params: Promise<{ id: string }> }) {
+    const searchParams = useSearchParams();
+
     const [state, action] = useActionState(InterceptAction, null);
     const [preview, setPreview] = useState("");
     const [uploadURL, setUploadURL] = useState("");
@@ -18,6 +21,7 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
     const [grade, setGrade] = useState("");
     const [gender, setGender] = useState("");
     let pastPhoto = "";
+    const from = searchParams.get("from");
 
     useEffect(() => {
         async function fetchParams() {
@@ -300,6 +304,7 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
                         </div>
                     </div>
                     <input type="number" value={player?.clubid} name="clubId" hidden readOnly />
+                    <input type="text" value={from ?? ""} name="from" hidden readOnly />
                     {player && <input type="number" value={player.id} name="playerId" hidden readOnly />}
                     <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
                         수정

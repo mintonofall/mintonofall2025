@@ -213,6 +213,15 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         sendMessage("gameboards");
     }, [game4, id]);
 
+    async function resetPlayer(id: number) {
+        const resetPlayer = await getPlayerList(id);
+        const resetWaitPlayer = await getWaitPlayerList(id);
+        console.log("resetPlayer : ", resetPlayer);
+        console.log("resetWaitPlayer : ", resetWaitPlayer);
+        setPlayerList(resetPlayer);
+        setWaitPlayerList(resetWaitPlayer);
+    }
+
     useEffect(() => {
         async function fetchPlayerList() {
             const [playerListData, getClubdata, waitPlayerListData, waitGameListData] = await Promise.all([
@@ -1060,9 +1069,10 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                     onClick={() => {
                         // makePlayer(1, 6);
                         sendMessage("hellow from server");
+                        resetPlayer(Number(id));
                     }}
                 >
-                    Test
+                    DB 동기화
                 </button>
                 {/* ClearList Button */}
                 {/* <button
