@@ -58,6 +58,8 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     const [howManyCourts, setHowManyCourts] = useState<number>(3);
     const [howSort, setHowSort] = useState("games");
     const [showEdit, setShowEdit] = useState(false);
+    const [isResetPending, setIsResetPending] = useState(false);
+    const [isPending, setIsPending] = useState(false);
     // const point: number = 0;
 
     useEffect(() => {
@@ -71,6 +73,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     useEffect(() => {
         console.log("Effectgame1 : ", game1);
         async function startGame1Handle() {
+            setIsPending(true);
             if (game1?.player1id !== 12) {
                 if (
                     game1?.gameid &&
@@ -99,6 +102,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                     );
                 }
             }
+            setIsPending(false);
         }
         startGame1Handle();
         sendMessage("gameboards");
@@ -107,6 +111,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     useEffect(() => {
         console.log("Effectgame2 : ", game2);
         async function startGame2Handle() {
+            setIsPending(true);
             if (game2?.player1id !== 12) {
                 if (
                     game2?.gameid &&
@@ -135,6 +140,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                     );
                 }
             }
+            setIsPending(false);
         }
 
         startGame2Handle();
@@ -144,6 +150,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     useEffect(() => {
         console.log("Effectgame3 : ", game3);
         async function startGame3Handle() {
+            setIsPending(true);
             if (game3?.player1id !== 12) {
                 if (
                     game3?.gameid &&
@@ -172,6 +179,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                     );
                 }
             }
+            setIsPending(false);
         }
 
         startGame3Handle();
@@ -180,6 +188,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     useEffect(() => {
         console.log("Effectgame4 : ", game4);
         async function startGame4Handle() {
+            setIsPending(true);
             if (game4?.player1id !== 12) {
                 if (
                     game4?.gameid &&
@@ -208,22 +217,26 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                     );
                 }
             }
+            setIsPending(false);
         }
         startGame4Handle();
         sendMessage("gameboards");
     }, [game4, id]);
 
     async function resetPlayer(id: number) {
+        setIsResetPending(true);
         const resetPlayer = await getPlayerList(id);
         const resetWaitPlayer = await getWaitPlayerList(id);
         console.log("resetPlayer : ", resetPlayer);
         console.log("resetWaitPlayer : ", resetWaitPlayer);
         setPlayerList(resetPlayer);
         setWaitPlayerList(resetWaitPlayer);
+        setIsResetPending(false);
     }
 
     useEffect(() => {
         async function fetchPlayerList() {
+            setIsPending(true);
             const [playerListData, getClubdata, waitPlayerListData, waitGameListData] = await Promise.all([
                 getPlayerList(Number(id)),
                 getClub(Number(id)),
@@ -289,6 +302,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                     });
                 }
             }
+            setIsPending(false);
         }
         fetchPlayerList();
         sortWaitPlayerByGames();
@@ -991,6 +1005,31 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             <div className="w-1/4 bg-gray-400 p-4 h-screen overflow-y-auto">
                 <div className="flex flex-row justify-between items-center">
                     <div>{waitPlayerList.length} 명</div>
+                    {isPending && (
+                        <div className="flex items-center justify-center">
+                            <svg
+                                className="animate-spin h-5 w-5 mr-3 text-white"
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                            >
+                                <circle
+                                    className="opacity-25"
+                                    cx="12"
+                                    cy="12"
+                                    r="10"
+                                    stroke="currentColor"
+                                    strokeWidth="4"
+                                ></circle>
+                                <path
+                                    className="opacity-75"
+                                    fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                                ></path>
+                            </svg>
+                            로딩중...
+                        </div>
+                    )}
                     <EllipsisVerticalIcon
                         onClick={() => {
                             setShowEdit(!showEdit);
@@ -1025,7 +1064,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             return (
                                 <div key={index}>
                                     <p>데이터베이스 동기화가 필요합니다.</p>
-                                    <p>새로고침을 한번 눌러주세요</p>
+                                    <p>DB 연동을 눌러주세요</p>
                                 </div>
                             );
                         }
@@ -1064,16 +1103,46 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                     })}
                 </div>
                 {/* test button */}
-                <button
-                    className="bg-blue-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
-                    onClick={() => {
-                        // makePlayer(1, 6);
-                        sendMessage("hellow from server");
-                        resetPlayer(Number(id));
-                    }}
-                >
-                    DB 동기화
-                </button>
+                {!isResetPending && (
+                    <button
+                        className="bg-blue-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
+                        onClick={() => {
+                            // makePlayer(1, 6);
+                            sendMessage("hellow from server");
+                            resetPlayer(Number(id));
+                        }}
+                    >
+                        DB 동기화
+                    </button>
+                )}
+                {isResetPending && (
+                    <button
+                        className="bg-blue-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
+                        disabled
+                    >
+                        <svg
+                            className="animate-spin h-5 w-5 mr-3 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <circle
+                                className="opacity-25"
+                                cx="12"
+                                cy="12"
+                                r="10"
+                                stroke="currentColor"
+                                strokeWidth="4"
+                            ></circle>
+                            <path
+                                className="opacity-75"
+                                fill="currentColor"
+                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                        </svg>
+                        로딩중...
+                    </button>
+                )}
                 {/* ClearList Button */}
                 {/* <button
                     className="bg-red-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"

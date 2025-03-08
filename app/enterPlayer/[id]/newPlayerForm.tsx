@@ -2,7 +2,7 @@ import Link from "next/link";
 import { getUploadURL, handlePlayerCreate } from "./action";
 import { useActionState, useEffect, useState } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import Image from "next/image";
+// import Image from "next/image";
 
 interface Props {
     clubid: number;
@@ -114,7 +114,8 @@ export default function NewPlayerForm({ clubid, name }: Props) {
                             <div className="flex flex-col items-center">
                                 <PhotoIcon className="w-12 h-12 text-gray-400" />
                                 <p className="m-2 text-center text-gray-500">
-                                    여기를 눌러 사진을 등록하거나 원하시지 않는다면 아래의 사진을 선택하세요
+                                    원할한 게임진행을 위해 여기를 눌러 얼굴이 잘 보이게 등록해 주세요, 혹은 오늘의
+                                    착샷을 찍어주세요
                                 </p>
                             </div>
                         )}
@@ -127,7 +128,7 @@ export default function NewPlayerForm({ clubid, name }: Props) {
                         onChange={handleImageChange}
                         className="hidden"
                     />
-                    <div className="grid grid-cols-4 gap-4 mt-4">
+                    {/* <div className="grid grid-cols-4 gap-4 mt-4">
                         <Image
                             src="/man1.png"
                             className="rounded-lg cursor-pointer hover:opacity-75"
@@ -232,7 +233,7 @@ export default function NewPlayerForm({ clubid, name }: Props) {
                                 )
                             }
                         />
-                    </div>
+                    </div> */}
                 </div>
                 <div className="flex flex-col space-y-2">
                     <span className="text-lg font-medium text-gray-700">성별</span>

@@ -99,6 +99,21 @@ export async function gameWinUp(id: number) {
 }
 
 export async function pushWaitPlayerList(Playerid: number, clubid: number) {
+    const isEntered = await db.waitPlayerList.findFirst({
+        where: {
+            clubid,
+            Playerid,
+            enterDate: {
+                gte: new Date(new Date().setHours(0, 0, 0, 0)),
+                lt: new Date(new Date().setHours(23, 59, 59, 999)),
+            },
+        },
+    });
+    if (isEntered) {
+        console.log("Player has entered today");
+        return;
+    }
+
     const pushPlayer = await db.waitPlayerList.create({
         data: {
             clubid,
