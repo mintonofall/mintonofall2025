@@ -24,7 +24,7 @@ export default function PlayerCard(player: Player) {
                 <div className="text-xs text-gray-700">
                     <div>
                         <div>경기수: {player.games}</div>
-                        {player.win}승
+                        {/* {player.win}승 */}
                     </div>
                 </div>
             </div>
