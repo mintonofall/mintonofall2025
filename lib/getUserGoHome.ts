@@ -152,6 +152,9 @@ export async function getWaitPlayerList(clubid: number) {
                 lt: new Date(new Date().setHours(23, 59, 59, 999)),
             },
         },
+        include: {
+            player: true,
+        },
     });
     return waitPlayerList;
 }

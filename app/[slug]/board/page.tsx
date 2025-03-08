@@ -28,7 +28,7 @@ export default async function Board({ params }: { params: Promise<{ slug: string
     // console.log("gameboards : " + gameboards);
 
     return (
-        <div className="container mx-auto p-1">
+        <div className="container mx-auto mb-48 p-1">
             <ul className="space-y-1">
                 <GameBoard gameboards={gameboards} players={players} clubid={clubid} />
             </ul>
@@ -36,15 +36,15 @@ export default async function Board({ params }: { params: Promise<{ slug: string
             <h2 className="text-xl font-semibold mb-4 text-center pt-5">대기 게임</h2>
             <WaitGames waitGames={waitGames} players={players} clubid={clubid} />
 
-            <div className="mt-2 flex justify-center">
+            <div className="fixed bottom-20 mt-2 w-full flex justify-center">
                 <iframe
-                    src="https://ads-partners.coupang.com/widgets.html?id=832777&template=carousel&trackingCode=AF4491570&subId=&width=380&height=100&tsource="
-                    width="380"
+                    src="https://ads-partners.coupang.com/widgets.html?id=845610&template=carousel&trackingCode=AF4491570&subId=&width=380&height=100&tsource="
+                    width="100%"
                     height="100"
                     frameBorder="0"
                     scrolling="no"
                     referrerPolicy="unsafe-url"
-                    className="border rounded-lg shadow-md"
+                    className="border rounded-lg shadow-md w-full"
                 ></iframe>
             </div>
         </div>
