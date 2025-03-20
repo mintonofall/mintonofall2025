@@ -2,7 +2,7 @@ import { Player } from "@/lib/interface";
 import Image from "next/image";
 export default function PlayerCard(player: Player) {
     return (
-        <div key={player.id} className="flex items-center w-full h-15 p-1 bg-white shadow-md rounded-lg">
+        <div key={player.id} className="flex items-center w-auto h-15 p-1 bg-white shadow-md rounded-lg">
             <Image
                 src={`${player.avater}/avatar`}
                 width={50}

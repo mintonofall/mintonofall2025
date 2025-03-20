@@ -31,7 +31,7 @@ export default async function handleLogin(prevState: unknown, formdata: FormData
             // @ts-expect-error: Type 'number' is not assignable to type 'string'
             cookie.id = user.id;
             await cookie.save();
-            redirect("/home");
+            redirect("/index");
         } else {
             console.log("비밀번호가 일치하지 않습니다.");
         }

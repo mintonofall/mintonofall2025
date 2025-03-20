@@ -3,8 +3,14 @@ import { getMatch, getWaitGames, getWaitPlayerList } from "@/lib/getUserGoHome";
 import { getPlayer as gP } from "@/lib/getUserGoHome";
 import GameBoard from "./GameBoard";
 import WaitGames from "./WaitGames";
+import getSession from "@/lib/session";
+import { logout } from "@/lib/logout";
+import Login from "./LoginComponent";
 
 export default async function Board({ params }: { params: Promise<{ slug: string }> }) {
+    const session = await getSession();
+    const userId = session.id;
+    console.log("user : " + JSON.stringify(session));
     const clubid = Number((await params).slug);
     console.log("clubid : " + clubid);
 
@@ -29,8 +35,20 @@ export default async function Board({ params }: { params: Promise<{ slug: string
 
     return (
         <div className="container mx-auto mb-48 p-1">
+            {userId ? (
+                <div>
+                    <div>{userId} 님</div>
+                    <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded mb-4">
+                        Logout
+                    </button>
+                </div>
+            ) : (
+                <Login />
+            )}
+            <p>혹시 모르니 화면을 아래로 당겨 새로고침을 해주세요</p>
+
             <ul className="space-y-1">
-                <GameBoard gameboards={gameboards} players={players} clubid={clubid} />
+                <GameBoard gameboards={gameboards} players={players} clubid={clubid} userId={userId} />
             </ul>
 
             <h2 className="text-xl font-semibold mb-4 text-center pt-5">대기 게임</h2>

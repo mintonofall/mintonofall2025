@@ -1,5 +1,6 @@
 "use server";
 import db from "./db";
+import { getKoreaMidnight } from "./getKoreaTime";
 import { WaitGameListCLass } from "./interface";
 import getSession from "./session";
 import { createClient } from "@supabase/supabase-js";
@@ -350,6 +351,8 @@ export const getMatch = async (clubid: number) => {
             CourtNumber: "asc",
         },
     });
+    console.log("mTime :", match[0].updateTime);
+    console.log("NTime : ", new Date(getKoreaMidnight()));
     match.map(async (m) => {
         if (m.updateTime === null || m.updateTime < new Date(new Date().setHours(0, 0, 0, 0))) {
             console.log("m : ", m);
@@ -368,15 +371,15 @@ export const getMatch = async (clubid: number) => {
             });
         }
     });
-    const copy = await db.gameBoard.findMany({
-        where: {
-            clubid,
-        },
-        orderBy: {
-            CourtNumber: "asc",
-        },
-    });
-    return copy;
+    // const copy = await db.gameBoard.findMany({
+    //     where: {
+    //         clubid,
+    //     },
+    //     orderBy: {
+    //         CourtNumber: "asc",
+    //     },
+    // });
+    return match;
 };
 
 export const clearPlayerGamesDb = async (clubid: number) => {

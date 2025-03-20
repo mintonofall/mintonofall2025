@@ -20,6 +20,7 @@ model User {
   password String
   point Int @default(10000)
   clubs Club[] @relation("UserClubs")
+  clubDiaries ClubDiary[]
 
 
 }
@@ -36,6 +37,44 @@ model Club {
 
   
 
+}
+
+model ClubDiary {
+  id Int @id @default(autoincrement())
+  clubName String
+  userid Int
+  players PlayerDiary[]
+  matches MatchDiary[]
+  user User @relation(fields: [userid], references: [id])
+
+}
+
+model PlayerDiary {
+  id Int @id @default(autoincrement())
+  name String
+  grade String?
+  gender String?
+  age Int?
+  avater String?
+  clubid Int
+  club ClubDiary @relation(fields: [clubid], references: [id])
+  mmr Int @default(1000)
+  isMe Boolean @default(false)
+}
+
+model MatchDiary {
+  id Int @id @default(autoincrement())
+  gameid String 
+  players Int[]
+  club ClubDiary @relation(fields: [clubid], references: [id])
+  clubid Int
+  winner1id Int?
+  winner2id Int?
+  startTime DateTime?
+  endTime DateTime?
+  duration Int?
+  score1 Int?
+  score2 Int?
 }
 
 model Player {
