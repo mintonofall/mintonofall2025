@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-export default function index() {
+export default function Index() {
     return (
         <div className="flex flex-col items-center space-y-4 p-4">
             <Link href={"/home/"} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">

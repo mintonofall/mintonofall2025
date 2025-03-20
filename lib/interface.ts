@@ -23,3 +23,21 @@ export interface WaitGameListCLass {
     clubid: number;
     playerid: number;
 }
+
+export interface ClubDiary {
+    id: number;
+    clubName: string;
+    userid: number;
+}
+
+export interface PlayerDiary {
+    id: number;
+    name: string;
+    grade: string | null;
+    gender: string | null;
+    age: number | null;
+    avater: string | null;
+    clubid: number;
+    mmr: number;
+    isMe: boolean;
+}
