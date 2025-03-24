@@ -5,7 +5,6 @@ import { useEffect, useState } from "react";
 
 export default function Result(params: Promise<{ clubid: number }>) {
     const [user, setUser] = useState(0);
-    const [matchList, setMatchList] = useState([]);
 
     useEffect(() => {
         async function fetchParams() {
