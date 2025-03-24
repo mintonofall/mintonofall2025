@@ -11,6 +11,7 @@ export async function getClubDiary(clubid: number) {
 }
 
 export async function getPlayersFromClub(clubid: number) {
+    console.log("clubID from server : ", clubid);
     const data = await db.playerDiary.findMany({
         where: {
             clubid: clubid,
@@ -28,6 +29,35 @@ export async function getPlayersFromClub(clubid: number) {
         },
         orderBy: {
             isMe: "desc",
+        },
+    });
+    return data;
+}
+
+export async function makeMatch(
+    players: number[],
+    userid: number,
+    clubid: number,
+    winner1id?: number,
+    winner2id?: number,
+    score1?: number,
+    score2?: number,
+    startTime?: Date,
+    endTime?: Date
+) {
+    console.log(players, userid, clubid, winner1id, winner2id, score1, score2, startTime, endTime);
+    console.log("makeMatch");
+    const data = await db.matchDiary.create({
+        data: {
+            clubid,
+            userid,
+            players,
+            winner1id,
+            winner2id,
+            score1,
+            score2,
+            startTime,
+            endTime,
         },
     });
     return data;

@@ -21,6 +21,7 @@ model User {
   point Int @default(10000)
   clubs Club[] @relation("UserClubs")
   clubDiaries ClubDiary[]
+  createat DateTime? @default(now())
 
 
 }
@@ -46,11 +47,13 @@ model ClubDiary {
   players PlayerDiary[]
   matches MatchDiary[]
   user User @relation(fields: [userid], references: [id])
+  createat DateTime? @default(now())
 
 }
 
 model PlayerDiary {
   id Int @id @default(autoincrement())
+  userid Int?
   name String
   grade String?
   gender String?
@@ -60,11 +63,13 @@ model PlayerDiary {
   club ClubDiary @relation(fields: [clubid], references: [id])
   mmr Int @default(1000)
   isMe Boolean @default(false)
+  createat DateTime? @default(now())
 }
 
 model MatchDiary {
   id Int @id @default(autoincrement())
-  gameid String 
+  userid Int?
+  gameid String? 
   players Int[]
   club ClubDiary @relation(fields: [clubid], references: [id])
   clubid Int
@@ -75,6 +80,7 @@ model MatchDiary {
   duration Int?
   score1 Int?
   score2 Int?
+  createat DateTime @default(now())
 }
 
 model Player {

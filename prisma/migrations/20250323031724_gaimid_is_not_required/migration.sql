@@ -1,0 +1,11 @@
+-- AlterTable
+ALTER TABLE "ClubDiary" ADD COLUMN     "createat" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "MatchDiary" ALTER COLUMN "gameid" DROP NOT NULL;
+
+-- AlterTable
+ALTER TABLE "PlayerDiary" ADD COLUMN     "createat" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "User" ADD COLUMN     "createat" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP;
