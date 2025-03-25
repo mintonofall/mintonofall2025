@@ -3,7 +3,7 @@
 import getSessionClient from "@/lib/sessionClient";
 import { useEffect, useState } from "react";
 
-export default function Result(params: Promise<{ clubid: string }>) {
+export default function Result({ params }: { params: Promise<{ clubid: string }> }) {
     const [user, setUser] = useState(0);
 
     useEffect(() => {
