@@ -51,7 +51,7 @@ export default function Diary({ params }: { params: Promise<{ clubid: number }> 
     }
 
     return (
-        <div>
+        <div className="mb-16">
             <h1 className="text-3xl font-bold mb-4 text-center">Diary {clubid}</h1>
             <div className="flex h-1/2 flex-row gap-4">
                 <div className="flex flex-col w-3/5 p-4 bg-white shadow-md rounded-lg">
@@ -116,8 +116,71 @@ export default function Diary({ params }: { params: Promise<{ clubid: number }> 
                         <h2 className="text-xl font-semibold">Player 4</h2>
                         <div className="text-gray-700">{playerList[3] ? playerList[3].name : "No player selected"}</div>
                     </div>
+                    <div className="flex justify-center gap-4">
+                        <button
+                            onClick={() => {
+                                handleMakeMatch();
+                                console.log(playerList);
+                                console.log(score1);
+                                console.log(score2);
+                                console.log("clubid : ", clubidlet);
+                                let winner1;
+                                let winner2;
+                                if (score1 === score2) {
+                                    alert("무승부는 입력할 수 없습니다.");
+                                    return;
+                                }
+                                if (score1 > score2) {
+                                    winner1 = playerList[0].id;
+                                    winner2 = playerList[1].id;
+                                    console.log(winner1, winner2);
+                                }
+                                if (score1 < score2) {
+                                    winner1 = playerList[2].id;
+                                    winner2 = playerList[3].id;
+                                    console.log(winner1, winner2);
+                                }
+                                console.log(
+                                    [playerList[0].id, playerList[1].id, playerList[2].id, playerList[3].id],
+
+                                    clubid,
+                                    winner1,
+                                    winner2,
+                                    score1,
+                                    score2
+                                );
+
+                                const result = makeMatch(
+                                    [playerList[0].id, playerList[1].id, playerList[2].id, playerList[3].id],
+                                    userid,
+                                    clubid,
+                                    winner1,
+                                    winner2,
+                                    score1,
+                                    score2
+                                );
+                                console.log(result);
+                                setPlayerList([]);
+                                setScore1(25);
+                                setScore2(25);
+                            }}
+                            className="mt-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                        >
+                            결과입력
+                        </button>
+                        <button
+                            onClick={() => {
+                                const copy = [...playerList];
+                                copy.pop();
+                                setPlayerList(copy);
+                            }}
+                            className="mt-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                        >
+                            UNDO
+                        </button>
+                    </div>
                 </div>
-                <div className="flex flex-col w-2/5 p-4 bg-gray-100 shadow-md rounded-lg overflow-auto">
+                <div className="flex flex-col w-2/5 p-4 pb-16 bg-gray-100 shadow-md rounded-lg overflow-scroll ">
                     {waitPlayerList.map((player) => (
                         <div
                             className="flex justify-between items-center p-2 mb-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-200"
@@ -145,54 +208,6 @@ export default function Diary({ params }: { params: Promise<{ clubid: number }> 
                     </Link>
                 </div>
             </div>
-            <button
-                onClick={() => {
-                    handleMakeMatch();
-                    console.log(playerList);
-                    console.log(score1);
-                    console.log(score2);
-                    console.log("clubid : ", clubidlet);
-                    let winner1;
-                    let winner2;
-                    if (score1 === score2) {
-                        alert("무승부는 입력할 수 없습니다.");
-                        return;
-                    }
-                    if (score1 > score2) {
-                        winner1 = playerList[0].id;
-                        winner2 = playerList[1].id;
-                        console.log(winner1, winner2);
-                    }
-                    if (score1 < score2) {
-                        winner1 = playerList[2].id;
-                        winner2 = playerList[3].id;
-                        console.log(winner1, winner2);
-                    }
-                    console.log(
-                        [playerList[0].id, playerList[1].id, playerList[2].id, playerList[3].id],
-
-                        clubid,
-                        winner1,
-                        winner2,
-                        score1,
-                        score2
-                    );
-
-                    const result = makeMatch(
-                        [playerList[0].id, playerList[1].id, playerList[2].id, playerList[3].id],
-                        userid,
-                        clubid,
-                        winner1,
-                        winner2,
-                        score1,
-                        score2
-                    );
-                    console.log(result);
-                }}
-                className="mt-4 px-4 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
-            >
-                결과입력
-            </button>
         </div>
     );
 }

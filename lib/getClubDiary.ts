@@ -62,3 +62,79 @@ export async function makeMatch(
     });
     return data;
 }
+
+export async function getMatch(userid: number) {
+    console.log("userid : ", userid);
+    const datas = await db.matchDiary.findMany({
+        where: {
+            userid: userid,
+        },
+    });
+    const result = await Promise.all(
+        datas.map(async (data) => {
+            const players = await Promise.all(
+                data.players.map(async (playerId) => {
+                    return await db.playerDiary.findFirst({
+                        where: {
+                            id: playerId,
+                        },
+                    });
+                })
+            );
+
+            const winner1 =
+                data.winner1id !== null
+                    ? await db.playerDiary.findFirst({
+                          where: {
+                              id: data.winner1id,
+                          },
+                      })
+                    : null;
+
+            const winner2 =
+                data.winner2id !== null
+                    ? await db.playerDiary.findFirst({
+                          where: {
+                              id: data.winner2id,
+                          },
+                      })
+                    : null;
+
+            return {
+                ...data,
+                players,
+                winner1,
+                winner2,
+            };
+        })
+    );
+
+    return result;
+    // const result = (await datas).map(async (data) => {
+    //     const player1 = await db.playerDiary.findFirst({
+    //         where: {
+    //             id: data.players[0],
+    //         }});
+    //      const player2 = await db.playerDiary.findFirst({
+    //         where: {
+    //             id: data.players[1],
+    //         }});
+    //     const player3 = await db.playerDiary.findFirst({
+    //         where: {
+    //             id: data.players[2],
+    //         }});
+    //     const player4 = await db.playerDiary.findFirst({
+    //         where: {
+    //             id: data.players[3],
+    //         }});
+    //     const winner1 = data.winner1id !== null ? await db.playerDiary.findFirst({
+    //         where: {
+    //             id: data.winner1id,
+    //         }}) : null;
+    //     const winner2 = data.winner2id !== null ? await db.playerDiary.findFirst({
+    //         where: {
+    //             id: data.winner2id,
+    //         }}) : null;
+
+    //     })
+}
