@@ -54,6 +54,8 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     const [game2, setGame2] = useState<PlayingGameBoard>();
     const [game3, setGame3] = useState<PlayingGameBoard>();
     const [game4, setGame4] = useState<PlayingGameBoard>();
+    const [game5, setGame5] = useState<PlayingGameBoard>();
+    const [game6, setGame6] = useState<PlayingGameBoard>();
     const [playerList, setPlayerList] = useState<Player[]>([]);
     const [howManyCourts, setHowManyCourts] = useState<number>(3);
     const [howSort, setHowSort] = useState("games");
@@ -222,6 +224,80 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         startGame4Handle();
         sendMessage("gameboards");
     }, [game4, id]);
+    useEffect(() => {
+        console.log("Effectgame5 : ", game5);
+        async function startGame5Handle() {
+            setIsPending(true);
+            if (game5?.player1id !== 12) {
+                if (
+                    game5?.gameid &&
+                    game5?.player1id &&
+                    game5?.player2id &&
+                    game5.player3id &&
+                    game5.player4id !== undefined
+                ) {
+                    const gameId = await createMatch(
+                        game5.gameid,
+                        game5.clubid!,
+                        game5.player1id,
+                        game5.player2id,
+                        game5.player3id,
+                        game5.player4id,
+                        []
+                    );
+                    await startMatch(
+                        Number(id),
+                        game5.player1id,
+                        game5.player2id,
+                        game5.player3id,
+                        game5.player4id,
+                        5,
+                        gameId.gameid
+                    );
+                }
+            }
+            setIsPending(false);
+        }
+        startGame5Handle();
+        sendMessage("gameboards");
+    }, [game5, id]);
+    useEffect(() => {
+        console.log("Effectgame6 : ", game6);
+        async function startGame6Handle() {
+            setIsPending(true);
+            if (game6?.player1id !== 12) {
+                if (
+                    game6?.gameid &&
+                    game6?.player1id &&
+                    game6?.player2id &&
+                    game6.player3id &&
+                    game6.player4id !== undefined
+                ) {
+                    const gameId = await createMatch(
+                        game6.gameid,
+                        game6.clubid!,
+                        game6.player1id,
+                        game6.player2id,
+                        game6.player3id,
+                        game6.player4id,
+                        []
+                    );
+                    await startMatch(
+                        Number(id),
+                        game6.player1id,
+                        game6.player2id,
+                        game6.player3id,
+                        game6.player4id,
+                        6,
+                        gameId.gameid
+                    );
+                }
+            }
+            setIsPending(false);
+        }
+        startGame6Handle();
+        sendMessage("gameboards");
+    }, [game6, id]);
 
     async function resetPlayer(id: number) {
         setIsResetPending(true);
@@ -299,6 +375,30 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         player2id: getMatchData[3].player2id,
                         player3id: getMatchData[3].player3id,
                         player4id: getMatchData[3].player4id,
+                    });
+                }
+                if (getMatchData[4]) {
+                    setGame5({
+                        id: getMatchData[4].id,
+                        gameid: getMatchData[4].gameid || null,
+                        court: getMatchData[4].CourtNumber,
+                        clubid: getMatchData[4].clubid,
+                        player1id: getMatchData[4].player1id,
+                        player2id: getMatchData[4].player2id,
+                        player3id: getMatchData[4].player3id,
+                        player4id: getMatchData[4].player4id,
+                    });
+                }
+                if (getMatchData[5]) {
+                    setGame6({
+                        id: getMatchData[5].id,
+                        gameid: getMatchData[5].gameid || null,
+                        court: getMatchData[5].CourtNumber,
+                        clubid: getMatchData[5].clubid,
+                        player1id: getMatchData[5].player1id,
+                        player2id: getMatchData[5].player2id,
+                        player3id: getMatchData[5].player3id,
+                        player4id: getMatchData[5].player4id,
                     });
                 }
             }
@@ -448,6 +548,30 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         });
         await startMatch(Number(id), 12, 12, 12, 12, 4, "0");
     };
+    const onEndmatch5 = async () => {
+        setGame5({
+            court: 5,
+            gameid: null,
+            clubid: Number(id),
+            player1id: 12,
+            player2id: 12,
+            player3id: 12,
+            player4id: 12,
+        });
+        await startMatch(Number(id), 12, 12, 12, 12, 5, "0");
+    };
+    const onEndmatch6 = async () => {
+        setGame6({
+            court: 6,
+            gameid: null,
+            clubid: Number(id),
+            player1id: 12,
+            player2id: 12,
+            player3id: 12,
+            player4id: 12,
+        });
+        await startMatch(Number(id), 12, 12, 12, 12, 4, "6");
+    };
 
     const startGame1 = async (p1: number, p2: number, p3: number, p4: number, court: number, point: number) => {
         setGame1({
@@ -531,6 +655,56 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         const filteredWaitGameListId = waitGameListId.filter(
             (game) => ![point + 0, point + 1, point + 2, point + 3].includes(game.point)
         );
+        const updatedWaitGameListId = filteredWaitGameListId.map((game) => {
+            if (game.point >= point + 4) {
+                return { ...game, point: game.point - 4 };
+            }
+            return game;
+        });
+        setWaitGameListId(updatedWaitGameListId);
+    };
+    const startGame5 = async (p1: number, p2: number, p3: number, p4: number, court: number, point: number) => {
+        setGame5({
+            gameid: crypto.randomUUID(),
+            court: court,
+            clubid: Number(id),
+            player1id: p1,
+            player2id: p2,
+            player3id: p3,
+            player4id: p4,
+        });
+
+        // 선택된 4명을 배열에서 제외한다
+        const filteredWaitGameListId = waitGameListId.filter(
+            (game) => ![point + 0, point + 1, point + 2, point + 3].includes(game.point)
+        );
+        console.log("filteredWaitGameListId : ", filteredWaitGameListId);
+        //밑에서부터 대기열을 올린다.
+        const updatedWaitGameListId = filteredWaitGameListId.map((game) => {
+            if (game.point >= point + 4) {
+                return { ...game, point: game.point - 4 };
+            }
+            return game;
+        });
+        setWaitGameListId(updatedWaitGameListId);
+    };
+    const startGame6 = async (p1: number, p2: number, p3: number, p4: number, court: number, point: number) => {
+        setGame6({
+            gameid: crypto.randomUUID(),
+            court: court,
+            clubid: Number(id),
+            player1id: p1,
+            player2id: p2,
+            player3id: p3,
+            player4id: p4,
+        });
+
+        // 선택된 4명을 배열에서 제외한다
+        const filteredWaitGameListId = waitGameListId.filter(
+            (game) => ![point + 0, point + 1, point + 2, point + 3].includes(game.point)
+        );
+        console.log("filteredWaitGameListId : ", filteredWaitGameListId);
+        //밑에서부터 대기열을 올린다.
         const updatedWaitGameListId = filteredWaitGameListId.map((game) => {
             if (game.point >= point + 4) {
                 return { ...game, point: game.point - 4 };
@@ -703,6 +877,24 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                 3,
                 point
             );
+        } else if (boardPointer == 4) {
+            startGame5(
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 1)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 2)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 3)].playerid,
+                4,
+                point
+            );
+        } else if (boardPointer == 5) {
+            startGame6(
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 1)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 2)].playerid,
+                waitGameListId[waitGameListId.findIndex((game) => game.point === point + 3)].playerid,
+                5,
+                point
+            );
         }
     };
 
@@ -726,7 +918,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                 <div className=" bg-gray-200 p-0">
                     <div className="flex flex-row *:flex-auto">
                         <div
-                            className={`w-1/2 flex-auto z-20 ${boardPointer == 0 ? "bg-green-500" : "bg-blue-100"} p-0`}
+                            className={`w-1/2 flex-auto z-0 ${boardPointer == 0 ? "bg-green-500" : "bg-blue-100"} p-0`}
                             onClick={() => {
                                 setBoardPointer(0);
                             }}
@@ -756,7 +948,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             />
                         </div>
                         <div
-                            className={`w-1/2 z-20 ${boardPointer == 1 ? "bg-green-500" : "bg-blue-100"}`}
+                            className={`w-1/2 z-0 ${boardPointer == 1 ? "bg-green-500" : "bg-blue-100"}`}
                             onClick={() => {
                                 setBoardPointer(1);
                             }}
@@ -786,7 +978,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             />
                         </div>
                         <div
-                            className={`w-1/2 z-10 ${boardPointer == 2 ? "bg-green-500" : "bg-blue-100"} p-0`}
+                            className={`w-1/2 z-0 ${boardPointer == 2 ? "bg-green-500" : "bg-blue-100"} p-0`}
                             onClick={() => {
                                 setBoardPointer(2);
                             }}
@@ -816,7 +1008,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             />
                         </div>
                         <div
-                            className={`${howManyCourts == 3 ? "hidden" : ""} w-1/2 z-10 ${
+                            className={`${howManyCourts == 4 ? "" : "hidden"} w-1/2 z-0 ${
                                 boardPointer == 3 ? "bg-green-500" : "bg-blue-100"
                             } p-0`}
                             onClick={() => {
@@ -844,6 +1036,99 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                 court={4}
                                 gameid={game4?.gameid ?? "0"}
                                 onEndMatch={onEndmatch4}
+                                onWinsUp={handleOnWinsUp}
+                            />
+                        </div>
+                    </div>
+                    {/* this is Second row */}
+                    <div className={`${howManyCourts == 6 ? "" : "hidden"} flex flex-row *:flex-auto`}>
+                        <div
+                            className={`w-1/2 flex-auto z-0 ${boardPointer == 3 ? "bg-green-500" : "bg-blue-100"} p-0`}
+                            onClick={() => {
+                                setBoardPointer(3);
+                            }}
+                        >
+                            <GameCourt
+                                p1={
+                                    playerList.find((pl) => pl.id == game4?.player1id) ??
+                                    playerList.find((pl) => pl.id == 12)!
+                                }
+                                p2={
+                                    playerList.find((pl) => pl.id == game4?.player2id) ??
+                                    playerList.find((pl) => pl.id == 12)!
+                                }
+                                p3={
+                                    playerList.find((pl) => pl.id == game4?.player3id) ??
+                                    playerList.find((pl) => pl.id == 12)!
+                                }
+                                p4={
+                                    playerList.find((pl) => pl.id == game4?.player4id) ??
+                                    playerList.find((pl) => pl.id == 12)!
+                                }
+                                clubid={Number(id)}
+                                court={4}
+                                gameid={game4?.gameid ?? "0"}
+                                onEndMatch={onEndmatch4}
+                                onWinsUp={handleOnWinsUp}
+                            />
+                        </div>
+                        <div
+                            className={`w-1/2 z-0 ${boardPointer == 4 ? "bg-green-500" : "bg-blue-100"}`}
+                            onClick={() => {
+                                setBoardPointer(4);
+                            }}
+                        >
+                            <GameCourt
+                                p1={
+                                    playerList.filter((pl) => pl.id == game5?.player1id)[0] ??
+                                    playerList.filter((p) => p.id == 12)
+                                }
+                                p2={
+                                    playerList.filter((pl) => pl.id == game5?.player2id)[0] ??
+                                    playerList.filter((p) => p.id == 12)
+                                }
+                                p3={
+                                    playerList.filter((pl) => pl.id == game5?.player3id)[0] ??
+                                    playerList.filter((p) => p.id == 12)
+                                }
+                                p4={
+                                    playerList.filter((pl) => pl.id == game5?.player4id)[0] ??
+                                    playerList.filter((p) => p.id == 12)
+                                }
+                                clubid={Number(id)}
+                                court={5}
+                                gameid={game5?.gameid ?? "0"}
+                                onEndMatch={onEndmatch5}
+                                onWinsUp={handleOnWinsUp}
+                            />
+                        </div>
+                        <div
+                            className={`w-1/2 z-0 ${boardPointer == 5 ? "bg-green-500" : "bg-blue-100"} p-0`}
+                            onClick={() => {
+                                setBoardPointer(5);
+                            }}
+                        >
+                            <GameCourt
+                                p1={
+                                    playerList.filter((pl) => pl.id == game6?.player1id)[0] ??
+                                    playerList.filter((p) => p.id == 12)
+                                }
+                                p2={
+                                    playerList.filter((pl) => pl.id == game6?.player2id)[0] ??
+                                    playerList.filter((p) => p.id == 12)
+                                }
+                                p3={
+                                    playerList.filter((pl) => pl.id == game6?.player3id)[0] ??
+                                    playerList.filter((p) => p.id == 12)
+                                }
+                                p4={
+                                    playerList.filter((pl) => pl.id == game6?.player4id)[0] ??
+                                    playerList.filter((p) => p.id == 12)
+                                }
+                                clubid={Number(id)}
+                                court={6}
+                                gameid={game6?.gameid ?? "0"}
+                                onEndMatch={onEndmatch6}
                                 onWinsUp={handleOnWinsUp}
                             />
                         </div>
@@ -1056,51 +1341,53 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             이름순
                         </div>
                     </div>
-                    {waitPlayerList.map((waitPlayer, index) => {
-                        const playerData: Player | undefined = playerList.find(
-                            (player) => player.id === waitPlayer.Playerid
-                        );
-                        if (!playerData) {
+                    <div className="flex flex-row flex-wrap gap-2">
+                        {waitPlayerList.map((waitPlayer, index) => {
+                            const playerData: Player | undefined = playerList.find(
+                                (player) => player.id === waitPlayer.Playerid
+                            );
+                            if (!playerData) {
+                                return (
+                                    <div key={index}>
+                                        <p>데이터베이스 동기화가 필요합니다.</p>
+                                        <p>DB 연동을 눌러주세요</p>
+                                    </div>
+                                );
+                            }
                             return (
-                                <div key={index}>
-                                    <p>데이터베이스 동기화가 필요합니다.</p>
-                                    <p>DB 연동을 눌러주세요</p>
+                                <div
+                                    key={`wait ${playerData?.id}`}
+                                    className={`flex flex-col w-auto relative rounded-xl border-2 ${
+                                        howManyGame(playerData!.id) >= 1 ? "border-green-400" : null
+                                    }`}
+                                >
+                                    <div
+                                        className="flex flex-col"
+                                        onClick={() => {
+                                            enterWaitGame(playerData!.id);
+                                        }}
+                                    >
+                                        <div key={playerData?.id} className="flex flex-col z-1">
+                                            {playerData && <PlayerCard {...playerData} />}
+                                        </div>
+                                    </div>
+                                    <button
+                                        className="absolute -right-3 -top-3 z-10 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg"
+                                        onClick={() => {
+                                            const data = [...waitPlayerList];
+                                            const playerid = data[index].Playerid;
+                                            data.splice(index, 1);
+                                            const result = handleExitPlayer(playerid);
+                                            console.log("handleExitPlayer : ", result);
+                                            setWaitPlayerList(data);
+                                        }}
+                                    >
+                                        <span className="text-xs">×</span>
+                                    </button>
                                 </div>
                             );
-                        }
-                        return (
-                            <div
-                                key={`wait ${playerData?.id}`}
-                                className={`flex flex-col relative rounded-xl border-2 ${
-                                    howManyGame(playerData!.id) >= 1 ? "border-green-400" : null
-                                }`}
-                            >
-                                <div
-                                    className="flex flex-col"
-                                    onClick={() => {
-                                        enterWaitGame(playerData!.id);
-                                    }}
-                                >
-                                    <div key={playerData?.id} className="flex flex-col z-1">
-                                        {playerData && <PlayerCard {...playerData} />}
-                                    </div>
-                                </div>
-                                <button
-                                    className="absolute -right-3 -top-3 z-10 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg"
-                                    onClick={() => {
-                                        const data = [...waitPlayerList];
-                                        const playerid = data[index].Playerid;
-                                        data.splice(index, 1);
-                                        const result = handleExitPlayer(playerid);
-                                        console.log("handleExitPlayer : ", result);
-                                        setWaitPlayerList(data);
-                                    }}
-                                >
-                                    <span className="text-xs">×</span>
-                                </button>
-                            </div>
-                        );
-                    })}
+                        })}
+                    </div>
                 </div>
                 {/* test button */}
                 {!isResetPending && (

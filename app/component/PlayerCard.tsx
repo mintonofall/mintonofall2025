@@ -2,7 +2,7 @@ import { Player } from "@/lib/interface";
 import Image from "next/image";
 export default function PlayerCard(player: Player) {
     return (
-        <div key={player.id} className="flex items-center w-auto h-15 p-1 bg-white shadow-md rounded-lg">
+        <div key={player.id} className="flex items-center w-full h-15 p-1 bg-white shadow-md rounded-lg">
             <Image
                 src={`${player.avater}/avatar`}
                 width={50}
@@ -15,13 +15,15 @@ export default function PlayerCard(player: Player) {
                     height: "50px",
                 }}
             />
-            <div className="flex flex-col ml-2">
-                <div className="flex flex-row items-center space-x-1">
+            <div className="flex flex-col w-full ml-1">
+                <div className="flex flex-col items-center space-x-1">
                     <div className="text-sm font-semibold">{player.name}</div>
-                    <div className="text-xs text-gray-500">{player.age}</div>
-                    <div className="text-xs text-gray-500">{player.grade}</div>
+                    <div className="flex space-x-1">
+                        <div className="text-xs text-gray-500">{player.age}</div>
+                        <div className="text-xs text-gray-500">{player.grade}</div>
+                    </div>
                 </div>
-                <div className="text-xs text-gray-700">
+                <div className="text-xs text-center w-full text-gray-700">
                     <div>
                         <div>경기수: {player.games}</div>
                         {/* {player.win}승 */}

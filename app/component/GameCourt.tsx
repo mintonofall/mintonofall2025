@@ -62,7 +62,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
 
     return (
         <>
-            <div className="flex flex-col w-full h-full p-1 space-y-0 z-10">
+            <div className="flex flex-col w-full h-full p-1 space-y-0 z-0">
                 {/* <div className="text-lg font-semibold text-center text-gray-700">Court {court}</div> */}
                 <div className="flex h-1/2 space-x-0">
                     <div className="flex flex-row justify-center items-center w-1/2 bg-blue-300 p-0 rounded-lg shadow-md">
@@ -151,9 +151,9 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
             </div>
 
             <div
-                className={`fixed left-0 w-full h-1/2 bg-black bg-opacity-50  ${
+                className={`fixed left-0 top-72 w-full h-full bg-black bg-opacity-50  ${
                     isShowResult ? "block" : "hidden"
-                } z-auto`}
+                } z-50`}
             >
                 <div
                     className="relative  left-1/2 transform -translate-x-1/2 bg-white rounded-t-lg shadow-lg

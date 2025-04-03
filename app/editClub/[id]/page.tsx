@@ -96,6 +96,16 @@ function CreateClubContent({ params }: { params: Promise<{ id: string }> }) {
                                 />
                                 4
                             </label>
+                            <label className="flex items-center">
+                                <input
+                                    type="radio"
+                                    id="howManyCourts4"
+                                    name="howManyCourts"
+                                    value="6"
+                                    className="mr-2"
+                                />
+                                6
+                            </label>
                         </div>
                     </div>
                     <input type="hidden" name="id" value={id ?? ""} />

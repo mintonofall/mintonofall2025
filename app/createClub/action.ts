@@ -71,6 +71,24 @@ export default async function handleClubCreate(
                 player3id: 12,
                 player4id: 12,
             },
+            {
+                gameid: "0",
+                clubid: newClub.id,
+                CourtNumber: 5,
+                player1id: 12,
+                player2id: 12,
+                player3id: 12,
+                player4id: 12,
+            },
+            {
+                gameid: "0",
+                clubid: newClub.id,
+                CourtNumber: 6,
+                player1id: 12,
+                player2id: 12,
+                player3id: 12,
+                player4id: 12,
+            },
         ],
     });
     redirect("/home");

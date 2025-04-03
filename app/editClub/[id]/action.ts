@@ -18,6 +18,7 @@ export default async function handleClubCreate(
     formdata: FormData
 ) {
     const user = await getUser();
+    console.log(user);
     const clubName = formdata.get("clubName") as string;
     const clubLocation = formdata.get("clubLocation") as string;
     const howManyCourts = Number(formdata.get("howManyCourts"));
@@ -29,11 +30,11 @@ export default async function handleClubCreate(
             clubName,
             clubLocation,
             howManyCourts,
-            users: {
-                connect: {
-                    id: user!.id,
-                },
-            },
+            // users: {
+            //     connect: {
+            //         id: user!.id,
+            //     },
+            // },
         },
     });
     redirect(`/home/${newClub.id}`);

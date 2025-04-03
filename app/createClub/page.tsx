@@ -71,6 +71,16 @@ function CreateClubContent() {
                                 />
                                 4
                             </label>
+                            <label className="flex items-center">
+                                <input
+                                    type="radio"
+                                    id="howManyCourts4"
+                                    name="howManyCourts"
+                                    value="6"
+                                    className="mr-2"
+                                />
+                                6
+                            </label>
                         </div>
                     </div>
                     <button type="submit" className="bg-blue-500 text-white p-2 mb-2 rounded hover:bg-blue-600">
