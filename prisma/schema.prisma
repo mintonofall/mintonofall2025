@@ -63,6 +63,7 @@ model PlayerDiary {
   club ClubDiary @relation(fields: [clubid], references: [id])
   mmr Int @default(1000)
   isMe Boolean @default(false)
+  lastGameDate DateTime?
   createat DateTime? @default(now())
 }
 

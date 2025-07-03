@@ -15,6 +15,7 @@
         "@supabase/supabase-js": "^2.48.1",
         "bcrypt": "^5.1.1",
         "iron-session": "^8.0.4",
+        "korean-lunar-calendar": "^0.3.6",
         "next": "^15.1.2",
         "prisma": "^6.1.0",
         "react": "^19.0.0",

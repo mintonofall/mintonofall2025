@@ -26,6 +26,7 @@ export async function getPlayersFromClub(clubid: number) {
             mmr: true,
             clubid: true,
             isMe: true,
+            lastGameDate: true,
         },
         orderBy: {
             isMe: "desc",
@@ -60,6 +61,18 @@ export async function makeMatch(
             endTime,
         },
     });
+
+    await Promise.all(
+        players.map(async (playerId) => {
+            await db.playerDiary.update({
+                where: {
+                    id: playerId,
+                },
+                data: { lastGameDate: new Date() },
+            });
+        })
+    );
+
     return data;
 }
 
@@ -68,6 +81,9 @@ export async function getMatch(userid: number) {
     const datas = await db.matchDiary.findMany({
         where: {
             userid: userid,
+        },
+        orderBy: {
+            createat: "desc",
         },
     });
     const result = await Promise.all(

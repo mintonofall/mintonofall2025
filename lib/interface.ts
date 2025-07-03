@@ -40,4 +40,18 @@ export interface PlayerDiary {
     clubid: number;
     mmr: number;
     isMe: boolean;
+    lastGameDate: Date | null;
+}
+
+export interface MatchDiary {
+    id: number;
+    clubid: number;
+    userid: number;
+    players: number[];
+    winner1id: number | null;
+    winner2id: number | null;
+    score1: number | null;
+    score2: number | null;
+    startTime: Date | null;
+    endTime: Date | null;
 }
