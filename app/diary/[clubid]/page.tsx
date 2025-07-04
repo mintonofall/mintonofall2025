@@ -150,7 +150,7 @@ export default function Diary({ params }: { params: Promise<{ clubid: number }> 
     return (
         // --- 렌더링 (Rendering) ---
         <div className="mb-16">
-            <h1 className="text-3xl font-bold mb-4 text-center">Diary {clubid}</h1>
+            <h1 className="text-3xl font-bold mb-4 text-center">게임 결과 입력</h1>
             <div className="flex h-1/2 flex-row gap-4">
                 <div className="flex flex-col w-3/5 p-4 bg-white shadow-md rounded-lg">
                     <div className="mb-4">

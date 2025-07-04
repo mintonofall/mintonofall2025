@@ -59,7 +59,7 @@ export default function Result({ params }: { params: Promise<{ clubid: string }>
     return (
         <div>
             <div>
-                <h1 className="text-2xl font-bold text-center my-4">Result {user}</h1>
+                <h1 className="text-2xl font-bold text-center my-4">게임결과</h1>
                 {matchs.length > 0 && (
                     <div>
                         {matchs.map((match) => (
