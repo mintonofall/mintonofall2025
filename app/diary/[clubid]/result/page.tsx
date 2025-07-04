@@ -42,6 +42,7 @@ export default function Result({ params }: { params: Promise<{ clubid: string }>
             console.log("session : ", session);
             if (session) {
                 setUser(Number(session.id));
+                console.log(user);
                 const data = await getMatch(Number(session.id));
                 console.log("data : ", data);
                 const filteredData = data.map((match) => ({
