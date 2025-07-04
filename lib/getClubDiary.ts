@@ -28,10 +28,19 @@ export async function getPlayersFromClub(clubid: number) {
             isMe: true,
             lastGameDate: true,
         },
-        orderBy: {
-            isMe: "desc",
-        },
+        orderBy: [
+            {
+                isMe: "desc",
+            },
+            {
+                lastGameDate: {
+                    sort: "desc",
+                    nulls: "last",
+                },
+            },
+        ],
     });
+
     return data;
 }
 

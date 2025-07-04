@@ -198,7 +198,7 @@ export default function Diary({ params }: { params: Promise<{ clubid: number }> 
                         </button>
                     </div>
                 </div>
-                <div className="flex flex-col w-2/5 p-4 pb-16 bg-gray-100 shadow-md rounded-lg overflow-scroll ">
+                <div className="flex flex-col w-2/5 p-4 bg-gray-100 shadow-md rounded-lg overflow-y-auto h-[calc(100vh-100px)]">
                     <input
                         className="p-2 m-2"
                         type="text"
