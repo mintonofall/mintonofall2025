@@ -11,7 +11,8 @@ export async function handleForm(_: unknown, formData: FormData) {
         const gender = formData.get(`gender${i + 1}`) as string;
         const grade = formData.get(`grade${i + 1}`) as string;
         let avater = "";
-        const clubid = Number(formData.get("clubid"));
+        const userid = Number(formData.get("userid"));
+        const clubid = 1;
         if (name !== "") {
             if (gender === "man") {
                 avater = "https://imagedelivery.net/H_vtnjYSM5axKm4PivHM5g/be6818b4-85e3-41cb-e560-65f15f60a900";
@@ -20,7 +21,7 @@ export async function handleForm(_: unknown, formData: FormData) {
                 avater = "https://imagedelivery.net/H_vtnjYSM5axKm4PivHM5g/82dae85a-dfe6-4a3c-c6ec-c184046f0500";
             }
             if (name) {
-                pushData.push({ name, age, gender, grade, avater, clubid });
+                pushData.push({ name, age, gender, grade, avater, userid, clubid });
             }
         }
     }

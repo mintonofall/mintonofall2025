@@ -9,12 +9,12 @@ import getSessionClient from "@/lib/sessionClient";
 import Link from "next/link";
 /**
  * 경기 결과를 기록하는 다이어리 페이지 컴포넌트입니다.
- * URL에서 clubid를 파라미터로 받아 해당 클럽의 선수 목록을 표시하고,
+ * URL에서 userid를 파라미터로 받아 해당 클럽의 선수 목록을 표시하고,
  * 경기 결과를 입력하고 저장하는 기능을 제공합니다.
  * @param {object} params - 페이지 파라미터
- * @param {Promise<{ clubid: number }>} params.params - 클럽 ID를 포함하는 Promise 객체
+ * @param {Promise<{ userid: number }>} params.params - 클럽 ID를 포함하는 Promise 객체
  */
-export default function Diary({ params }: { params: Promise<{ clubid: number }> }) {
+export default function Diary({ params }: { params: Promise<{ userid: number }> }) {
     // --- 상태 관리 (State Management) ---
     /** @type {PlayerDiary[]} 대기 선수 목록. 경기에 참여할 수 있는 전체 선수 리스트입니다. */
     const [waitPlayerList, setWaitPlayerList] = useState<PlayerDiary[]>([]);
@@ -35,7 +35,7 @@ export default function Diary({ params }: { params: Promise<{ clubid: number }> 
      */
     useEffect(() => {
         async function fetchParams() {
-            const resolvedParams = (await params).clubid;
+            const resolvedParams = (await params).userid;
             const session = await getSessionClient();
             setUserid(Number(session!.id));
             setClubId(Number(resolvedParams));
@@ -44,18 +44,18 @@ export default function Diary({ params }: { params: Promise<{ clubid: number }> 
     }, [params]);
 
     /**
-     * clubid가 설정되면 해당 클럽의 선수 목록을 불러옵니다.
+     * userid가 설정되면 해당 클럽의 선수 목록을 불러옵니다.
      */
     useEffect(() => {
         async function fetchPlayers() {
-            if (clubid === 0) return; // clubid가 설정될 때까지 API 호출을 방지합니다.
-            const players = await getPlayersFromClub(clubid);
-            console.log("clubid : ", clubid);
+            if (userid === 0) return; // clubid가 설정될 때까지 API 호출을 방지합니다.
+            const players = await getPlayersFromClub(userid);
+            console.log("userid : ", userid);
             setWaitPlayerList(players);
             setFirstWaitPlayerList(players);
         }
         fetchPlayers();
-    }, [clubid]);
+    }, [userid]);
 
     // --- 이벤트 핸들러 (Event Handlers) ---
 
@@ -85,8 +85,8 @@ export default function Diary({ params }: { params: Promise<{ clubid: number }> 
      * 선택된 선수, 점수, 클럽 ID 등을 사용하여 경기 결과를 생성합니다.
      */
     async function handleSubmitMatch() {
-        // userid와 clubid가 유효한지 확인합니다.
-        if (!userid || !clubid) {
+        // userid와 userid가 유효한지 확인합니다.
+        if (!userid || !userid) {
             alert("사용자 또는 클럽 정보가 아직 로드되지 않았습니다.");
             return;
         }
@@ -130,7 +130,7 @@ export default function Diary({ params }: { params: Promise<{ clubid: number }> 
             score2,
         });
 
-        const result = await makeMatch(allPlayerIds, userid, clubid, winner1, winner2, score1, score2);
+        const result = await makeMatch(allPlayerIds, userid, userid, winner1, winner2, score1, score2);
         console.log("Match submission result:", result);
 
         // allPlayerIds의 숫자를 waitPlayerList의 id와 매치하여 lastGameDate에 현재시간을 입력함
@@ -236,7 +236,7 @@ export default function Diary({ params }: { params: Promise<{ clubid: number }> 
                     ))}
                     <Link
                         href={{
-                            pathname: `/diary/${clubid}/create`,
+                            pathname: `/diary/${userid}/create`,
                             query: { userid: userid },
                         }}
                     >

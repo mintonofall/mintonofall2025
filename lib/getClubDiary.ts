@@ -14,7 +14,7 @@ export async function getPlayersFromClub(clubid: number) {
     console.log("clubID from server : ", clubid);
     const data = await db.playerDiary.findMany({
         where: {
-            clubid: clubid,
+            userid: clubid,
         },
         select: {
             name: true,

@@ -3,16 +3,17 @@
 import Link from "next/link";
 import { useActionState, useEffect, useState } from "react";
 import { handleForm } from "./action";
+import { useSearchParams } from "next/navigation";
 
-export default function CreatePlayerMany({ params }: { params: Promise<{ clubid: string }> }) {
+export default function CreatePlayerMany({ params }: { params: Promise<{ userid: string }> }) {
     const [id, setId] = useState<number | null>(null);
     const [, action] = useActionState(handleForm, null);
+    const querys = useSearchParams();
+
     useEffect(() => {
         async function fetchParams() {
-            const resolvedParams = (await params).clubid;
-            setId(parseInt(resolvedParams));
-            console.log(id);
-            console.log(resolvedParams);
+            setId(Number(querys.get("userid")));
+            console.log("User ID from params:", querys.get("userid"));
         }
         fetchParams();
     }, [params, id]);
@@ -110,11 +111,11 @@ export default function CreatePlayerMany({ params }: { params: Promise<{ clubid:
                         </div>
                     </div>
                 ))}
-                <input type="hidden" name="clubid" value={String(id)} />
+                <input type="hidden" name="userid" value={String(id)} />
                 <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
                     선수등록
                 </button>
-                <Link href={`/home/${id}`}>
+                <Link href={`/diary/${id}`}>
                     <div className="mt-4 bg-gray-500 text-center text-white p-2 rounded hover:bg-gray-600">
                         돌아가기
                     </div>
