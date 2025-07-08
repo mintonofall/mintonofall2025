@@ -22,7 +22,7 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
     /** @type {number} 현재 로그인된 사용자의 ID. */
     const [userid, setUserid] = useState(0);
     /** @type {number} 현재 페이지의 클럽 ID. */
-    const [clubid, setClubId] = useState(0);
+    const [, setClubId] = useState(0);
     /** @type {PlayerDiary[]} 현재 경기에 선택된 선수 목록 (최대 4명). */
     const [playerList, setPlayerList] = useState<PlayerDiary[]>([]);
     const [score1, setScore1] = useState<number>(25); // ScoreInput으로 이동
@@ -123,14 +123,14 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
         console.log("Submitting match with:", {
             allPlayerIds,
             userid,
-            clubid,
+            clubid: 1,
             winner1,
             winner2,
             score1,
             score2,
         });
 
-        const result = await makeMatch(allPlayerIds, userid, userid, winner1, winner2, score1, score2);
+        const result = await makeMatch(allPlayerIds, userid, 1, winner1, winner2, score1, score2);
         console.log("Match submission result:", result);
 
         // allPlayerIds의 숫자를 waitPlayerList의 id와 매치하여 lastGameDate에 현재시간을 입력함
