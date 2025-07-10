@@ -85,6 +85,59 @@ export async function makeMatch(
     return data;
 }
 
+export async function getWin(userid: number) {
+    const datas = await db.matchDiary.findMany({
+        where: {
+            userid: userid,
+        },
+    });
+    let [wins, loses, point, loss] = [0, 0, 0, 0];
+    const meid = await db.playerDiary.findFirst({
+        where: {
+            userid: userid,
+            isMe: true,
+        },
+        select: {
+            id: true,
+        },
+    });
+
+    if (!meid) {
+        return [0, 0];
+    }
+    if (meid) {
+        datas.forEach((data) => {
+            //승패 계산기
+            if (data.winner1id == meid.id || data.winner2id == meid.id) {
+                wins = wins + 1;
+                if (data.players[0] == meid.id || data.players[1] == meid.id) {
+                    if (data.score1) {
+                        point = point + data.score1;
+                    }
+                } else {
+                    if (data.score2) {
+                        point = point + data.score2;
+                    }
+                }
+            } else if (data.players.includes(meid.id)) {
+                loses = loses + 1;
+                if (data.players[0] == meid.id || data.players[1] == meid.id) {
+                    if (data.score1) {
+                        loss = loss + data.score1;
+                    }
+                } else {
+                    if (data.score2) {
+                        loss = loss + data.score2;
+                    }
+                }
+            }
+        });
+    }
+
+    const result = [wins, loses, point, loss];
+    return result;
+}
+
 export async function getMatch(userid: number) {
     console.log("userid : ", userid);
     const datas = await db.matchDiary.findMany({
