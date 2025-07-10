@@ -111,23 +111,27 @@ export async function getWin(userid: number) {
             if (data.winner1id == meid.id || data.winner2id == meid.id) {
                 wins = wins + 1;
                 if (data.players[0] == meid.id || data.players[1] == meid.id) {
-                    if (data.score1) {
+                    if (data.score1 && data.score2) {
                         point = point + data.score1;
+                        loss = loss + data.score2;
                     }
                 } else {
-                    if (data.score2) {
+                    if (data.score2 && data.score1) {
                         point = point + data.score2;
+                        loss = loss + data.score1;
                     }
                 }
             } else if (data.players.includes(meid.id)) {
                 loses = loses + 1;
                 if (data.players[0] == meid.id || data.players[1] == meid.id) {
-                    if (data.score1) {
+                    if (data.score1 && data.score2) {
                         loss = loss + data.score1;
+                        point = point + data.score2;
                     }
                 } else {
-                    if (data.score2) {
+                    if (data.score2 && data.score1) {
                         loss = loss + data.score2;
+                        point = point + data.score1;
                     }
                 }
             }
