@@ -56,42 +56,30 @@ export async function makeMatch(
     endTime?: Date
 ) {
     console.log(players, userid, clubid, winner1id, winner2id, score1, score2, startTime, endTime);
-    console.log("makeMatch");
     const data = await db.matchDiary.create({
         data: {
             clubid,
             userid,
             players,
-            winner1id,
-            winner2id,
-            score1,
-            score2,
-            startTime,
-            endTime,
+            ...{ winner1id, winner2id, score1, score2, startTime, endTime },
         },
     });
-
-    await Promise.all(
-        players.map(async (playerId) => {
-            await db.playerDiary.update({
-                where: {
-                    id: playerId,
-                },
-                data: { lastGameDate: new Date() },
-            });
-        })
-    );
+    // 한번의 쿼리로 여러 플레이어의 마지막 게임 날짜를 업데이트합니다.
+    await db.playerDiary.updateMany({
+        where: {
+            id: {
+                in: players,
+            },
+        },
+        data: {
+            lastGameDate: new Date(),
+        },
+    });
 
     return data;
 }
 
 export async function getWin(userid: number) {
-    const datas = await db.matchDiary.findMany({
-        where: {
-            userid: userid,
-        },
-    });
-    let [wins, loses, point, loss] = [0, 0, 0, 0];
     const meid = await db.playerDiary.findFirst({
         where: {
             userid: userid,
@@ -102,48 +90,55 @@ export async function getWin(userid: number) {
         },
     });
 
-    if (!meid) {
-        return [0, 0];
-    }
-    if (meid) {
-        datas.forEach((data) => {
-            //승패 계산기
-            if (data.winner1id == meid.id || data.winner2id == meid.id) {
-                wins = wins + 1;
-                if (data.players[0] == meid.id || data.players[1] == meid.id) {
-                    if (data.score1 && data.score2) {
-                        point = point + data.score1;
-                        loss = loss + data.score2;
-                    }
-                } else {
-                    if (data.score2 && data.score1) {
-                        point = point + data.score2;
-                        loss = loss + data.score1;
-                    }
-                }
-            } else if (data.players.includes(meid.id)) {
-                loses = loses + 1;
-                if (data.players[0] == meid.id || data.players[1] == meid.id) {
-                    if (data.score1 && data.score2) {
-                        loss = loss + data.score1;
-                        point = point + data.score2;
-                    }
-                } else {
-                    if (data.score2 && data.score1) {
-                        loss = loss + data.score2;
-                        point = point + data.score1;
-                    }
-                }
-            }
-        });
-    }
+    if (!meid) return [0, 0, 0, 0];
 
-    const result = [wins, loses, point, loss];
-    return result;
+    // 데이터베이스에서 직접 승리 횟수를 계산합니다.
+    const wins = await db.matchDiary.count({
+        where: {
+            userid: userid,
+            OR: [{ winner1id: meid.id }, { winner2id: meid.id }],
+        },
+    });
+
+    // 데이터베이스에서 직접 패배 횟수를 계산합니다.
+    const loses = await db.matchDiary.count({
+        where: {
+            userid: userid,
+            players: { has: meid.id },
+            NOT: {
+                OR: [{ winner1id: meid.id }, { winner2id: meid.id }],
+            },
+        },
+    });
+
+    // 득점과 실점을 계산하기 위해 모든 관련 경기를 가져옵니다.
+    // 이 부분도 더 최적화할 수 있지만, 일단 승/패 계산부터 개선합니다.
+    const matches = await db.matchDiary.findMany({
+        where: {
+            userid: userid,
+            players: { has: meid.id },
+            score1: { not: null },
+            score2: { not: null },
+        },
+    });
+
+    let point = 0;
+    let loss = 0;
+    matches.forEach((match) => {
+        const isTeam1 = match.players[0] === meid.id || match.players[1] === meid.id;
+        if (isTeam1) {
+            point += match.score1!;
+            loss += match.score2!;
+        } else {
+            point += match.score2!;
+            loss += match.score1!;
+        }
+    });
+
+    return [wins, loses, point, loss];
 }
 
 export async function getMatch(userid: number) {
-    console.log("userid : ", userid);
     const datas = await db.matchDiary.findMany({
         where: {
             userid: userid,
@@ -152,71 +147,36 @@ export async function getMatch(userid: number) {
             createat: "desc",
         },
     });
-    const result = await Promise.all(
-        datas.map(async (data) => {
-            const players = await Promise.all(
-                data.players.map(async (playerId) => {
-                    return await db.playerDiary.findFirst({
-                        where: {
-                            id: playerId,
-                        },
-                    });
-                })
-            );
 
-            const winner1 =
-                data.winner1id !== null
-                    ? await db.playerDiary.findFirst({
-                          where: {
-                              id: data.winner1id,
-                          },
-                      })
-                    : null;
+    if (datas.length === 0) {
+        return [];
+    }
 
-            const winner2 =
-                data.winner2id !== null
-                    ? await db.playerDiary.findFirst({
-                          where: {
-                              id: data.winner2id,
-                          },
-                      })
-                    : null;
+    // 모든 경기에 포함된 모든 선수 ID를 중복 없이 수집합니다.
+    const playerIds = new Set<number>();
+    datas.forEach((data) => {
+        data.players.forEach((id) => playerIds.add(id));
+        if (data.winner1id) playerIds.add(data.winner1id);
+        if (data.winner2id) playerIds.add(data.winner2id);
+    });
 
-            return {
-                ...data,
-                players,
-                winner1,
-                winner2,
-            };
-        })
-    );
+    // 단 한 번의 쿼리로 모든 선수 정보를 가져옵니다.
+    const playersData = await db.playerDiary.findMany({
+        where: {
+            id: {
+                in: Array.from(playerIds),
+            },
+        },
+    });
 
-    return result;
-    // const result = (await datas).map(async (data) => {
-    //     const player1 = await db.playerDiary.findFirst({
-    //         where: {
-    //             id: data.players[0],
-    //         }});
-    //      const player2 = await db.playerDiary.findFirst({
-    //         where: {
-    //             id: data.players[1],
-    //         }});
-    //     const player3 = await db.playerDiary.findFirst({
-    //         where: {
-    //             id: data.players[2],
-    //         }});
-    //     const player4 = await db.playerDiary.findFirst({
-    //         where: {
-    //             id: data.players[3],
-    //         }});
-    //     const winner1 = data.winner1id !== null ? await db.playerDiary.findFirst({
-    //         where: {
-    //             id: data.winner1id,
-    //         }}) : null;
-    //     const winner2 = data.winner2id !== null ? await db.playerDiary.findFirst({
-    //         where: {
-    //             id: data.winner2id,
-    //         }}) : null;
+    // 선수 ID를 키로 하는 맵을 만들어 쉽게 찾을 수 있도록 합니다.
+    const playersMap = new Map(playersData.map((p) => [p.id, p]));
 
-    //     })
+    // 메모리에서 데이터를 조합하여 최종 결과를 만듭니다.
+    return datas.map((data) => ({
+        ...data,
+        players: data.players.map((id) => playersMap.get(id)).filter(Boolean), // filter(Boolean) to remove undefined
+        winner1: data.winner1id ? playersMap.get(data.winner1id) ?? null : null,
+        winner2: data.winner2id ? playersMap.get(data.winner2id) ?? null : null,
+    }));
 }
