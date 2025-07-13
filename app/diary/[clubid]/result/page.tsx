@@ -4,52 +4,53 @@ import { getMatch } from "@/lib/getClubDiary";
 import getSessionClient from "@/lib/sessionClient";
 import { useEffect, useState } from "react";
 
+type Player = {
+    id: number;
+    userid: number | null;
+    name: string;
+    grade: string | null;
+    gender: string | null;
+    age: number | null;
+    avater: string | null;
+    clubid: number;
+    mmr: number;
+    isMe: boolean;
+    createat: Date | null;
+    lastGameDate: Date | null;
+};
+
+type Match = {
+    id: number;
+    userid: number | null;
+    gameid: string | null;
+    players: Player[];
+    clubid: number;
+    winner1id: number | null;
+    winner2id: number | null;
+    winner1: Player | null;
+    winner2: Player | null;
+    startTime: Date | null;
+    endTime: Date | null;
+    duration: number | null;
+    score1: number | null;
+    score2: number | null;
+    createat: Date;
+};
+
 export default function Result({ params }: { params: Promise<{ clubid: string }> }) {
-    const [user, setUser] = useState(0);
-    const [matchs, setMatchs] = useState<
-        {
-            id: number;
-            userid: number | null;
-            gameid: string | null;
-            players: {
-                id: number;
-                userid: number | null;
-                name: string;
-                grade: string | null;
-                gender: string | null;
-                age: number | null;
-                avater: string | null;
-                clubid: number;
-                mmr: number;
-                isMe: boolean;
-                createat: Date | null;
-            }[];
-            clubid: number;
-            winner1id: number | null;
-            winner2id: number | null;
-            startTime: Date | null;
-            endTime: Date | null;
-            duration: number | null;
-            score1: number | null;
-            score2: number | null;
-            createat: Date;
-        }[]
-    >([]);
+    const [matchs, setMatchs] = useState<Match[]>([]);
 
     useEffect(() => {
         async function fetchParams() {
             const session = await getSessionClient();
-            console.log("session : ", session);
             if (session) {
-                setUser(Number(session.id));
-                console.log(user);
                 const data = await getMatch(Number(session.id));
-                console.log("data : ", data);
-                const filteredData = data.map((match) => ({
+                // 'any' 대신 명확한 타입을 사용하고, getMatch에서 반환된 데이터가 null을 포함할 수 있으므로 필터링합니다.
+                const validData = data.map((match) => ({
                     ...match,
-                    players: match.players.filter((player) => player !== null),
+                    players: match.players.filter((player): player is Player => player !== null),
                 }));
-                setMatchs(filteredData);
+                setMatchs(validData);
             }
             const resolvedParams = (await params).clubid;
             console.log("clubid : ", resolvedParams);
