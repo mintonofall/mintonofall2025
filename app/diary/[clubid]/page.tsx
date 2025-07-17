@@ -27,6 +27,8 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
     const [playerList, setPlayerList] = useState<PlayerDiary[]>([]);
     const [score1, setScore1] = useState<number>(25); // ScoreInput으로 이동
     const [score2, setScore2] = useState<number>(25); // ScoreInput으로 이동
+    /** @type {string} 선수 검색어. */
+    const [searchTerm, setSearchTerm] = useState("");
     const [data, setData] = useState<number[]>([0, 0, 0, 0]);
 
     // --- 데이터 로딩 및 초기화 (Data Loading & Initialization) ---
@@ -142,7 +144,6 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                 .map((p) => (allPlayerIds.includes(p.id) ? { ...p, lastGameDate: new Date() } : p))
                 .sort((a, b) => (b.lastGameDate?.getTime() || 0) - (a.lastGameDate?.getTime() || 0))
         );
-        setFirstWaitPlayerList(waitPlayerList);
 
         const datas = await getWinToday(userid);
         setData(datas);
@@ -151,6 +152,8 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
         setPlayerList([]);
         setScore1(25);
         setScore2(25);
+        setSearchTerm("");
+        setWaitPlayerList(firstWaitPlayerList); // 검색 필터 및 선수 목록 초기화
     }
 
     return (
@@ -209,18 +212,16 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                         className="p-2 m-2"
                         type="text"
                         placeholder="이름을 입력하세요"
+                        value={searchTerm}
                         onChange={(e) => {
-                            console.log(e.target.value);
-                            const copy = [...waitPlayerList];
-                            console.log("copy is", copy);
-                            if (e.target.value == "") {
+                            const term = e.target.value;
+                            setSearchTerm(term);
+                            if (term === "") {
                                 setWaitPlayerList(firstWaitPlayerList);
-                            }
-                            if (e.target.value !== "") {
+                            } else {
                                 const filteredPlayers = firstWaitPlayerList.filter((player) =>
-                                    player.name.includes(e.target.value)
+                                    player.name.includes(term)
                                 );
-                                console.log(filteredPlayers);
                                 setWaitPlayerList(filteredPlayers);
                             }
                         }}
