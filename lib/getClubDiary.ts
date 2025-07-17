@@ -1,5 +1,6 @@
 "use server";
 import db from "./db";
+import { getKoreaMidnight } from "./getKoreaTime";
 
 export async function getClubDiary(clubid: number) {
     const data = await db.clubDiary.findMany({
@@ -77,6 +78,79 @@ export async function makeMatch(
     });
 
     return data;
+}
+
+export async function getWinToday(userid: number) {
+    const meid = await db.playerDiary.findFirst({
+        where: {
+            userid: userid,
+            isMe: true,
+        },
+        select: {
+            id: true,
+        },
+    });
+
+    if (!meid) return [0, 0, 0, 0];
+    const todayStart = getKoreaMidnight();
+    const todayEnd = new Date(todayStart);
+    todayEnd.setDate(todayEnd.getDate() + 1);
+
+    const wins = await db.matchDiary.count({
+        where: {
+            userid: userid,
+            createat: {
+                gte: todayStart,
+                lt: todayEnd,
+            },
+            OR: [{ winner1id: meid.id }, { winner2id: meid.id }],
+        },
+    });
+
+    // 데이터베이스에서 직접 패배 횟수를 계산합니다.
+    const loses = await db.matchDiary.count({
+        where: {
+            userid: userid,
+            createat: {
+                gte: todayStart,
+                lt: todayEnd,
+            },
+            players: { has: meid.id },
+            NOT: {
+                OR: [{ winner1id: meid.id }, { winner2id: meid.id }],
+            },
+        },
+    });
+
+    // 득점과 실점을 계산하기 위해 모든 관련 경기를 가져옵니다.
+    // 이 부분도 더 최적화할 수 있지만, 일단 승/패 계산부터 개선합니다.
+    const matches = await db.matchDiary.findMany({
+        where: {
+            userid: userid,
+            createat: {
+                gte: todayStart,
+                lt: todayEnd,
+            },
+            players: { has: meid.id },
+            score1: { not: null },
+            score2: { not: null },
+        },
+    });
+
+    let point = 0;
+    let loss = 0;
+    matches.forEach((match) => {
+        const isTeam1 = match.players[0] === meid.id || match.players[1] === meid.id;
+        if (isTeam1) {
+            point += match.score1!;
+            loss += match.score2!;
+        } else {
+            point += match.score2!;
+            loss += match.score1!;
+        }
+    });
+
+    return [wins, loses, point, loss];
 }
 
 export async function getWin(userid: number) {
