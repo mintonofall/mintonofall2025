@@ -17,13 +17,57 @@ datasource db {
 model User {
   id      Int      @id @default(autoincrement())
   userName String   @unique
+  nickName String @default("")
   password String
   point Int @default(10000)
   clubs Club[] @relation("UserClubs")
   clubDiaries ClubDiary[]
   createat DateTime? @default(now())
+  myTeam        FantasyTeam[]
+}
 
+model FantasyTeam {
+  id     Int  @id @default(autoincrement())
+  userId Int
+  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fantasyLeagueId Int
+  fantasyLeague   FantasyLeague @relation(fields: [fantasyLeagueId], references: [id], onDelete: Cascade)
+}
 
+enum GameEvent {
+  MS
+  WS
+  MD
+  WD
+  XD
+}
+
+model FantasyPlayer {
+  id    Int       @id @default(autoincrement())
+  year  Int
+  name  String
+  photo String
+  event GameEvent
+  ranking Int
+  gamesAsPlayer1 FantasyGame[] @relation("Player1Games")
+  gamesAsPlayer2 FantasyGame[] @relation("Player2Games")
+}
+
+model FantasyGame {
+  id Int @id @default(autoincrement())
+  date DateTime
+  player1Id  Int
+  player1    FantasyPlayer @relation("Player1Games", fields: [player1Id], references: [id], onDelete: Cascade)
+  player2Id  Int
+  player2    FantasyPlayer @relation("Player2Games", fields: [player2Id], references: [id], onDelete: Cascade)
+  gameResult Int[]
+}
+
+model FantasyLeague {
+  id Int @id @default(autoincrement())
+  leagueName String
+  year Int
+  teams      FantasyTeam[]
 }
 
 model Club {
