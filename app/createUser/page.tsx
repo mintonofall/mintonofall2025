@@ -12,12 +12,24 @@ export default function SignupPage() {
                 <form action={action} className="flex flex-col space-y-4">
                     <div>
                         <label htmlFor="username" className="block text-gray-700 mb-2">
-                            유저이름:
+                            ID:
                         </label>
                         <input
                             type="text"
                             id="username"
                             name="username"
+                            className="w-full p-2 border border-gray-300 rounded"
+                            required
+                        />
+                    </div>
+                    <div>
+                        <label htmlFor="nickname" className="block text-gray-700 mb-2">
+                            대화명:
+                        </label>
+                        <input
+                            type="text"
+                            id="nickname"
+                            name="nickName"
                             className="w-full p-2 border border-gray-300 rounded"
                             required
                         />

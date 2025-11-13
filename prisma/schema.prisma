@@ -24,6 +24,7 @@ model User {
   clubDiaries ClubDiary[]
   createat DateTime? @default(now())
   myTeam        FantasyTeam[]
+  fantasyLeagues FantasyLeague[] @relation("FantasyLeagueParticipants")
 }
 
 model FantasyTeam {
@@ -46,7 +47,8 @@ model FantasyPlayer {
   id    Int       @id @default(autoincrement())
   year  Int
   name  String
-  photo String
+  contry String?
+  photo String?
   event GameEvent
   ranking Int
   gamesAsPlayer1 FantasyGame[] @relation("Player1Games")
@@ -68,6 +70,10 @@ model FantasyLeague {
   leagueName String
   year Int
   teams      FantasyTeam[]
+  process String
+  order Int[]
+  currentUser Int?
+  participants User[] @relation("FantasyLeagueParticipants")
 }
 
 model Club {

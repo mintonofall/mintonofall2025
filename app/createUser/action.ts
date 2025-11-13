@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 
 export default async function handleSignUp(pevState: unknown, formdata: FormData) {
     const username = formdata.get("username");
+    const nickName = formdata.get("nickName");
     const password = formdata.get("password");
     // Check if the user already exists
     const user = await db.user.findFirst({
@@ -24,15 +25,18 @@ export default async function handleSignUp(pevState: unknown, formdata: FormData
         return;
     }
     // bcrypt the password
-    if (typeof password === "string") {
-        if (typeof username === "string") {
-            const hashedPassword = await bcrypt.hash(password, 10);
-            await db.user.create({
-                data: {
-                    userName: username,
-                    password: hashedPassword,
-                },
-            });
+    if (typeof nickName === "string") {
+        if (typeof password === "string") {
+            if (typeof username === "string") {
+                const hashedPassword = await bcrypt.hash(password, 10);
+                await db.user.create({
+                    data: {
+                        userName: username,
+                        password: hashedPassword,
+                        nickName,
+                    },
+                });
+            }
         }
     } else {
         console.log("Invalid password");
