@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { Bars3Icon } from "@heroicons/react/24/solid";
 import { getLeagueForOrder, saveDraftOrder } from "./actions";
@@ -17,7 +17,9 @@ type DraftOrderPageProps = {
 };
 
 export default function DraftOrderPage({ params }: DraftOrderPageProps) {
-    const leagueId = Number(params.leagueid);
+    // `params`는 Promise처럼 동작할 수 있으므로 `use` 훅으로 값을 풀어줍니다.
+    // @ts-ignore
+    const leagueId = Number(use(params).leagueid);
     const [league, setLeague] = useState<LeagueData | null>(null);
     const [participants, setParticipants] = useState<Pick<User, "id" | "nickName">[]>([]);
     const [loading, setLoading] = useState(true);
