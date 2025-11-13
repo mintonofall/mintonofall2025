@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, use } from "react";
+import { useEffect, useState } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { Bars3Icon } from "@heroicons/react/24/solid";
 import { getLeagueForOrder, saveDraftOrder } from "./actions";
@@ -13,8 +13,7 @@ type LeagueData = {
 };
 
 export default function DraftOrderPage({ params }: { params: { leagueid: string } }) {
-    const resolvedParams = use(Promise.resolve(params));
-    const leagueId = Number(resolvedParams.leagueid);
+    const leagueId = Number(params.leagueid);
     const [league, setLeague] = useState<LeagueData | null>(null);
     const [participants, setParticipants] = useState<Pick<User, "id" | "nickName">[]>([]);
     const [loading, setLoading] = useState(true);
