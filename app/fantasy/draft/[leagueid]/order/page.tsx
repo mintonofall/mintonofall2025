@@ -18,7 +18,7 @@ type DraftOrderPageProps = {
 
 export default function DraftOrderPage({ params }: DraftOrderPageProps) {
     // `params`는 Promise처럼 동작할 수 있으므로 `use` 훅으로 값을 풀어줍니다.
-    // @ts-expect-error
+    // @ts-expect-error Next.js 15의 `use(params)`에서 발생하는 타입 추론 문제입니다.
     const leagueId = Number(use(params).leagueid);
     const [league, setLeague] = useState<LeagueData | null>(null);
     const [participants, setParticipants] = useState<Pick<User, "id" | "nickName">[]>([]);
