@@ -5,7 +5,6 @@ import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea
 import { Bars3Icon } from "@heroicons/react/24/solid";
 import { getLeagueForOrder, saveDraftOrder } from "./actions";
 import { User } from "@prisma/client";
-import type { PageProps } from "next";
 
 type LeagueData = {
     id: number;
@@ -13,8 +12,8 @@ type LeagueData = {
     participants: Pick<User, "id" | "nickName">[];
 };
 
-export default function DraftOrderPage({ params }: PageProps<{ leagueid: string }>) {
-    const resolvedParams = use(params);
+export default function DraftOrderPage({ params }: { params: { leagueid: string } }) {
+    const resolvedParams = use(Promise.resolve(params));
     const leagueId = Number(resolvedParams.leagueid);
     const [league, setLeague] = useState<LeagueData | null>(null);
     const [participants, setParticipants] = useState<Pick<User, "id" | "nickName">[]>([]);
