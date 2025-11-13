@@ -12,12 +12,11 @@ type LeagueData = {
     participants: Pick<User, "id" | "nickName">[];
 };
 
-type PageProps = {
+type DraftOrderPageProps = {
     params: { leagueid: string };
-    searchParams: { [key: string]: string | string[] | undefined };
 };
 
-export default function DraftOrderPage({ params }: PageProps) {
+export default function DraftOrderPage({ params }: DraftOrderPageProps) {
     const leagueId = Number(params.leagueid);
     const [league, setLeague] = useState<LeagueData | null>(null);
     const [participants, setParticipants] = useState<Pick<User, "id" | "nickName">[]>([]);
