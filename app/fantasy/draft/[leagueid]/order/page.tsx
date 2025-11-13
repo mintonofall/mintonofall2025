@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 import { DragDropContext, Droppable, Draggable, DropResult } from "@hello-pangea/dnd";
 import { Bars3Icon } from "@heroicons/react/24/solid";
 import { getLeagueForOrder, saveDraftOrder } from "./actions";
 import { User } from "@prisma/client";
+import type { PageProps } from "next";
 
 type LeagueData = {
     id: number;
@@ -12,8 +13,9 @@ type LeagueData = {
     participants: Pick<User, "id" | "nickName">[];
 };
 
-export default function DraftOrderPage({ params }: { params: { leagueid: string } }) {
-    const leagueId = Number(params.leagueid);
+export default function DraftOrderPage({ params }: PageProps<{ leagueid: string }>) {
+    const resolvedParams = use(params);
+    const leagueId = Number(resolvedParams.leagueid);
     const [league, setLeague] = useState<LeagueData | null>(null);
     const [participants, setParticipants] = useState<Pick<User, "id" | "nickName">[]>([]);
     const [loading, setLoading] = useState(true);
