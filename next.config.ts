@@ -13,6 +13,9 @@ const nextConfig: NextConfig = {
             {
                 hostname: "extranet.bwf.sport",
             },
+            {
+                hostname: "img.bwfbadminton.com",
+            },
         ],
     },
 };
