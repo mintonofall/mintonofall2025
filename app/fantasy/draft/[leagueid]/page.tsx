@@ -43,19 +43,15 @@ async function getLeagueWithPlayers(leagueId: number) {
     return { league, players };
 }
 
-type DraftPageProps = {
-    params: { leagueid: string };
-};
-
-export default async function DraftPage({ params }: DraftPageProps) {
+export default async function DraftPage({ params }: { params: { leagueid: string } }) {
     const user = await getUser();
-    const leagueid = Number(params.leagueid);
+    const leagueId = Number(params.leagueid);
 
-    if (!user || isNaN(leagueid)) {
+    if (!user || isNaN(leagueId)) {
         return notFound();
     }
 
-    const data = await getLeagueWithPlayers(leagueid);
+    const data = await getLeagueWithPlayers(leagueId);
     const draftCategories = ["MS", "WS", "MD", "WD", "XD", "와일드카드"];
 
     if (!data) {
