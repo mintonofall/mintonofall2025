@@ -32,7 +32,8 @@ export default async function FantasyLeaguesPage() {
         <div className="container mx-auto p-4">
             <div className="flex justify-between items-center mb-6 gap-4">
                 <h1 className="text-2xl font-bold flex-grow">판타지 리그 목록</h1>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-4">
+                    {user && <span className="font-semibold text-lg">{user.nickName}님 환영합니다!</span>}
                     <Link
                         href="/fantasy/createleague"
                         className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
@@ -59,15 +60,19 @@ export default async function FantasyLeaguesPage() {
                                     <span className="font-medium">참가자:</span>{" "}
                                     {league.participants.map((p) => p.nickName).join(", ")}
                                 </div>
+                                <p className="text-sm text-gray-500 mt-1">
+                                    현재 참가자: {league.participants.length} / 4
+                                </p>
                             </Link>
                             {user && !isParticipant && (
                                 <form action={joinLeague} className="mt-4">
                                     <input type="hidden" name="leagueId" value={league.id} />
                                     <button
                                         type="submit"
-                                        className="w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600"
+                                        className="w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                        disabled={league.participants.length >= 4}
                                     >
-                                        참가하기
+                                        {league.participants.length >= 4 ? "참가 불가 (정원 초과)" : "참가하기"}
                                     </button>
                                 </form>
                             )}
@@ -84,7 +89,7 @@ export default async function FantasyLeaguesPage() {
                             {user && isParticipant && league.process === "드래프트 순서정하기" && (
                                 <div className="mt-4">
                                     <Link
-                                        href={`/fantasy/draft/${league.id}/order`}
+                                        href={`/draft/${league.id}/order`}
                                         className="block w-full text-center px-4 py-2 bg-purple-500 text-white rounded-md hover:bg-purple-600"
                                     >
                                         드래프트 순서 정하기
