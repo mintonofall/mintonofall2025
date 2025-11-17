@@ -42,14 +42,12 @@ async function getLeagueWithPlayers(leagueId: number) {
 
     return { league, players };
 }
+type PageParams = Promise<{ leagueid: string }>;
 
-type DraftPageProps = {
-    params: { leagueid: string };
-};
-
-export default async function DraftPage({ params }: DraftPageProps) {
+export default async function DraftPage({ params }: { params: PageParams }) {
+    const { leagueid } = await params;
     const user = await getUser();
-    const leagueId = Number(params.leagueid);
+    const leagueId = Number(leagueid);
 
     if (!user || isNaN(leagueId)) {
         return notFound();
