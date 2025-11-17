@@ -10,7 +10,7 @@ export default function Layout({
     params,
 }: {
     children: React.ReactNode;
-    params: Promise<{ clubid: number }>;
+    params: Promise<{ clubid: string }>;
 }) {
     // const searchParams = useSearchParams();
     const { clubid } = use(params);
