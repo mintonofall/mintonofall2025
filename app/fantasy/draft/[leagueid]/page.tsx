@@ -43,7 +43,11 @@ async function getLeagueWithPlayers(leagueId: number) {
     return { league, players };
 }
 
-export default async function DraftPage({ params }: { params: { leagueid: string } }) {
+type DraftPageProps = {
+    params: { leagueid: string };
+};
+
+export default async function DraftPage({ params }: DraftPageProps) {
     const user = await getUser();
     const leagueId = Number(params.leagueid);
 
