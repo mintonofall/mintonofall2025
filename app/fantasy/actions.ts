@@ -50,6 +50,11 @@ export async function logout() {
     const session = await getIronSession(await cookies(), {
         cookieName: "session",
         password: process.env.COOKIE_PASSWORD!,
+        cookieOptions: {
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "none",
+            path: "/",
+        },
     });
     if (session) {
         session.destroy();

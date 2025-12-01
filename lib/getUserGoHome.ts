@@ -1,8 +1,10 @@
 "use server";
 import db from "./db";
 import { getKoreaMidnight } from "./getKoreaTime";
-import { WaitGameListCLass } from "./interface";
+import { getIronSession } from "iron-session";
+import { cookies } from "next/headers";
 import getSession from "./session";
+import { WaitGameListCLass } from "./interface";
 import { createClient } from "@supabase/supabase-js";
 
 const SUPABASE_URL = "https://nwpgfukfmivuzadqxewe.supabase.co";
@@ -55,8 +57,16 @@ export async function getUser() {
 }
 
 export async function logout() {
-    const session = getSession();
-    (await session).destroy();
+    const session = await getIronSession(await cookies(), {
+        cookieName: "session",
+        password: process.env.COOKIE_PASSWORD!,
+        cookieOptions: {
+            secure: process.env.NODE_ENV === "production",
+            sameSite: "none",
+            path: "/",
+        },
+    });
+    session.destroy();
 }
 
 export async function getPlayer(id: number) {

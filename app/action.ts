@@ -27,6 +27,11 @@ export default async function handleLogin(prevState: unknown, formdata: FormData
             const cookie = await getIronSession(await cookies(), {
                 cookieName: "session",
                 password: process.env.COOKIE_PASSWORD!,
+                cookieOptions: {
+                    secure: process.env.NODE_ENV === "production", // 프로덕션에서는 true
+                    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax", // 프로덕션에서는 none, 개발에서는 lax
+                    path: "/",
+                },
             });
             // @ts-expect-error: Type 'number' is not assignable to type 'string'
             cookie.id = user.id;
