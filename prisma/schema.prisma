@@ -35,21 +35,21 @@ model FantasyTeam {
   userId Int
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   fantasyLeagueId Int
-  fantasyLeague   FantasyLeague @relation(fields: [fantasyLeagueId], references: [id], onDelete: Cascade) 
-  msId Int? @unique
-  wsId Int? @unique
-  mdId Int? @unique
-  wdId Int? @unique
-  xdId Int? @unique
-  wcId Int? @unique
+  fantasyLeague   FantasyLeague @relation(fields: [fantasyLeagueId], references: [id], onDelete: Cascade)
+  msId Int?
+  wsId Int?
+  mdId Int?
+  wdId Int?
+  xdId Int?
+  wcId Int?
+  createdAt DateTime @default(now())
+  updatedAt DateTime?
   ms FantasyPlayer? @relation("FantasyTeamToMSPlayer", fields: [msId], references: [id])
   ws FantasyPlayer? @relation("FantasyTeamToWSPlayer", fields: [wsId], references: [id])
   md FantasyPlayer? @relation("FantasyTeamToMDPlayer", fields: [mdId], references: [id])
   wd FantasyPlayer? @relation("FantasyTeamToWDPlayer", fields: [wdId], references: [id])
   xd FantasyPlayer? @relation("FantasyTeamToXDPlayer", fields: [xdId], references: [id])
   wc FantasyPlayer? @relation("FantasyTeamToWCPlayer", fields: [wcId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime?
 }
 
 enum GameEvent {
@@ -71,12 +71,12 @@ model FantasyPlayer {
   ranking Int
   gamesAsPlayer1 FantasyGame[] @relation("Player1Games")
   gamesAsPlayer2 FantasyGame[] @relation("Player2Games")
-  fantasyTeamAsMS FantasyTeam? @relation("FantasyTeamToMSPlayer")
-  fantasyTeamAsWS FantasyTeam? @relation("FantasyTeamToWSPlayer")
-  fantasyTeamAsMD FantasyTeam? @relation("FantasyTeamToMDPlayer")
-  fantasyTeamAsWD FantasyTeam? @relation("FantasyTeamToWDPlayer")
-  fantasyTeamAsXD FantasyTeam? @relation("FantasyTeamToXDPlayer")
-  fantasyTeamAsWC FantasyTeam? @relation("FantasyTeamToWCPlayer")
+  fantasyTeamAsMS FantasyTeam[] @relation("FantasyTeamToMSPlayer") // 한 선수는 여러 팀의 MS가 될 수 있음
+  fantasyTeamAsWS FantasyTeam[] @relation("FantasyTeamToWSPlayer")
+  fantasyTeamAsMD FantasyTeam[] @relation("FantasyTeamToMDPlayer")
+  fantasyTeamAsWD FantasyTeam[] @relation("FantasyTeamToWDPlayer")
+  fantasyTeamAsXD FantasyTeam[] @relation("FantasyTeamToXDPlayer")
+  fantasyTeamAsWC FantasyTeam[] @relation("FantasyTeamToWCPlayer")
   draftPicks      DraftPick[]
   createdAt DateTime @default(now())
   updatedAt DateTime?
@@ -109,6 +109,7 @@ model FantasyLeague {
   updatedAt DateTime?
 }
 model DraftPick {
+  
   id        Int      @id @default(autoincrement())
   leagueId  Int
   league    FantasyLeague @relation(fields: [leagueId], references: [id], onDelete: Cascade)

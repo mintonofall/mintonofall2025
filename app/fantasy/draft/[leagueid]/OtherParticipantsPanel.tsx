@@ -11,6 +11,7 @@ interface OtherParticipantsPanelProps {
     otherUsers: { id: number; nickName: string | null }[];
     categories: string[];
     currentUser: number | null;
+    leagueId: number;
     drafts: DraftPick[];
 }
 

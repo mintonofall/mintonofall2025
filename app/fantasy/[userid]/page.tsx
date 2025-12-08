@@ -1,7 +1,8 @@
 import db from "@/lib/db";
 import { getUser } from "@/lib/getUserGoHome";
 import Link from "next/link";
-import { joinLeague, logout } from "../actions";
+import { joinLeague } from "../actions";
+import { logout } from "@/lib/logout";
 
 async function getFantasyLeagues() {
     const leagues = await db.fantasyLeague.findMany({

@@ -31,27 +31,30 @@ export default function PlayerListPanel({
 
     const handlePlayerDraft = (player: FantasyPlayer) => {
         if (isCurrentUser && !isPending && !draftedPlayerIds.has(player.id)) {
-            const draftedCategories = myDrafts.map((d) => d.category);
-            const isCategoryTaken = draftedCategories.includes(player.event);
-            const isWildcardTaken = draftedCategories.includes("와일드카드");
+            const confirmMessage = `${player.name} 선수를 정말 픽하시겠습니까?`;
+            if (window.confirm(confirmMessage)) {
+                const draftedCategories = myDrafts.map((d) => d.category);
+                const isCategoryTaken = draftedCategories.includes(player.event);
+                const isWildcardTaken = draftedCategories.includes("와일드카드");
 
-            if (isCategoryTaken) {
-                if (isWildcardTaken) {
-                    alert("해당 종목의 선수를 픽할 수 없습니다. (와일드카드 슬롯도 사용 중)");
-                    return;
-                }
-                const confirmWildcard = window.confirm(
-                    "이미 해당 종목의 선수가 있습니다. 와일드 카드로 픽 하시겠습니까?"
-                );
-                if (confirmWildcard) {
+                if (isCategoryTaken) {
+                    if (isWildcardTaken) {
+                        alert("해당 종목의 선수를 픽할 수 없습니다. (와일드카드 슬롯도 사용 중)");
+                        return;
+                    }
+                    const confirmWildcard = window.confirm(
+                        "이미 해당 종목의 선수가 있습니다. 와일드 카드로 픽 하시겠습니까?"
+                    );
+                    if (confirmWildcard) {
+                        startTransition(async () => {
+                            await draftPlayer(leagueId, player.id, userId, player.event, true);
+                        });
+                    }
+                } else {
                     startTransition(async () => {
-                        await draftPlayer(leagueId, player.id, userId, player.event, true);
+                        await draftPlayer(leagueId, player.id, userId, player.event, false);
                     });
                 }
-            } else {
-                startTransition(async () => {
-                    await draftPlayer(leagueId, player.id, userId, player.event, false);
-                });
             }
         }
     };

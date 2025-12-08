@@ -1,8 +1,6 @@
 "use server";
 
 import db from "@/lib/db";
-import { getIronSession } from "iron-session";
-import { cookies } from "next/headers";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { getUser } from "@/lib/getUserGoHome";
@@ -44,21 +42,4 @@ export async function joinLeague(formData: FormData) {
     });
 
     revalidatePath("/fantasy/[userid]");
-}
-
-export async function logout() {
-    const session = await getIronSession(await cookies(), {
-        cookieName: "session",
-        password: process.env.COOKIE_PASSWORD!,
-        cookieOptions: {
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "none",
-            path: "/",
-        },
-    });
-    if (session) {
-        session.destroy();
-    }
-
-    redirect("/");
 }

@@ -1,4 +1,5 @@
-import { getUser, logout } from "@/lib/getUserGoHome";
+import { getUser } from "@/lib/getUserGoHome";
+import { logout } from "@/lib/logout";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 

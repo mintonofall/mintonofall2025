@@ -1,17 +1,9 @@
 "use server";
 import db from "./db";
 import { getKoreaMidnight } from "./getKoreaTime";
-import { getIronSession } from "iron-session";
-import { cookies } from "next/headers";
 import getSession from "./session";
 import { WaitGameListCLass } from "./interface";
-import { createClient } from "@supabase/supabase-js";
-
-const SUPABASE_URL = "https://nwpgfukfmivuzadqxewe.supabase.co";
-const SUPABASE_KEY =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im53cGdmdWtmbWl2dXphZHF4ZXdlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Mzc3ODI5MjYsImV4cCI6MjA1MzM1ODkyNn0.1OMI0m8oKEhN-b5FbMrrycqNvC98j5dzf8WPvA4TT8Y";
-
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+import { supabase } from "./supabase";
 
 export async function sendMessage(payload: string) {
     console.log("sendMessage");
@@ -43,6 +35,15 @@ export async function sendMessage(payload: string) {
     }
 }
 
+export async function broadcastDraftUpdate(leagueId: number) {
+    const channel = supabase.channel(`draftPick${leagueId}`);
+    await channel.send({
+        type: "broadcast",
+        event: "draft-update",
+        payload: { message: `Draft updated for league ${leagueId}` },
+    });
+}
+
 export async function getUser() {
     const session = await getSession();
     console.log(session);
@@ -54,19 +55,6 @@ export async function getUser() {
         });
         return user;
     }
-}
-
-export async function logout() {
-    const session = await getIronSession(await cookies(), {
-        cookieName: "session",
-        password: process.env.COOKIE_PASSWORD!,
-        cookieOptions: {
-            secure: process.env.NODE_ENV === "production",
-            sameSite: "none",
-            path: "/",
-        },
-    });
-    session.destroy();
 }
 
 export async function getPlayer(id: number) {

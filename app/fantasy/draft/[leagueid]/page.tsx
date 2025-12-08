@@ -4,6 +4,7 @@ import { getUser } from "@/lib/getUserGoHome";
 import MyDraftPanel from "@/app/fantasy/draft/[leagueid]/MyDraftPanel";
 import PlayerListPanel from "@/app/fantasy/draft/[leagueid]/PlayerListPanel";
 import OtherParticipantsPanel from "@/app/fantasy/draft/[leagueid]/OtherParticipantsPanel";
+import RealtimeDraftUpdater from "./RealtimeDraftUpdater";
 /**
  * 특정 리그의 연도에 해당하는 판타지 선수 목록을 가져옵니다.
  * @param leagueId - 판타지 리그의 ID
@@ -111,8 +112,10 @@ export default async function DraftPage({ params }: { params: PageParams }) {
                 otherUsers={otherUsers}
                 categories={draftCategories}
                 currentUser={league.currentUser}
+                leagueId={leagueId}
                 drafts={draftPicks}
             />
+            <RealtimeDraftUpdater leagueId={leagueId} />
         </div>
     );
 }

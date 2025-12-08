@@ -3,6 +3,7 @@
 import db from "@/lib/db";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
+import { broadcastDraftUpdate } from "@/lib/getUserGoHome";
 
 export async function draftPlayer(
     leagueId: number,
@@ -120,4 +121,5 @@ export async function draftPlayer(
     });
 
     revalidatePath(`/fantasy/draft/${leagueId}`);
+    await broadcastDraftUpdate(leagueId);
 }
