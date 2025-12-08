@@ -4,7 +4,7 @@ import Image from "next/image";
 import { getUser } from "@/lib/getUserGoHome";
 import Link from "next/link";
 
-type PageParams = { leagueId: string };
+type PageParams = Promise<{ leagueId: string }>;
 
 async function getLeague(leagueId: number) {
     const data = await db.fantasyLeague.findUnique({
@@ -35,7 +35,7 @@ async function getTeams(leagueId: number) {
     return data;
 }
 export default async function RunningLeague({ params }: { params: PageParams }) {
-    const leagueId = Number(params.leagueId);
+    const leagueId = Number((await params).leagueId);
 
     // 사용자 정보를 가져옵니다.
     const user = await getUser();
