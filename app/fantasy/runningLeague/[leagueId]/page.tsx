@@ -55,35 +55,101 @@ async function getTeams(leagueId: number) {
     return data;
 }
 
-function PlayerInfo({
+function PlayerInfoLeft({
     player,
     event,
+    align = "left",
 }: {
     player: Omit<FantasyPlayer, "id" | "year" | "ranking"> | null;
     event: string;
+    align?: "left" | "right";
 }) {
-    if (!player) return null;
-
+    const isRight = align === "right";
     return (
-        <div>
-            <h2 className="text-xl font-semibold mb-2 mt-4">
-                {event === "와일드카드" ? `${player.event} (WC)` : event}
+        <div className="flex-1">
+            <h2 className={`text-xl font-semibold mb-2 mt-4 ${isRight ? "text-right" : ""}`}>
+                {event === "와일드카드" ? "와일드카드" : event}
             </h2>
-            <div className="flex items-center gap-4">
-                {player.photo && (
-                    <Image
-                        src={player.photo}
-                        alt={player.name}
-                        width={80}
-                        height={80}
-                        className="rounded-full object-cover"
-                    />
-                )}
-                <div>
-                    {player.contry && <Image src={player.contry} alt={player.name} width={40} height={40} />}
-                    <p className="text-lg font-bold">{player.name}</p>
+            {player ? (
+                <div className={`flex items-center gap-4 ${isRight ? "justify-end" : ""}`}>
+                    {isRight && (
+                        <div className="text-right">
+                            {event === "와일드카드" && <p className="text-sm font-semibold">{player.event}</p>}
+                            {player.contry && <Image src={player.contry} alt={player.name} width={40} height={40} />}
+                            <p className="text-lg font-bold">{player.name}</p>
+                        </div>
+                    )}
+                    {player.photo && (
+                        <Image
+                            src={player.photo}
+                            alt={player.name}
+                            width={80}
+                            height={80}
+                            className={`rounded-full object-cover ${isRight ? "order-last" : ""}`}
+                        />
+                    )}
+                    {!isRight && (
+                        <div>
+                            {event === "와일드카드" && <p className="text-sm font-semibold">{player.event}</p>}
+                            {player.contry && <Image src={player.contry} alt={player.name} width={40} height={40} />}
+                            <p className="text-lg font-bold">{player.name}</p>
+                        </div>
+                    )}
                 </div>
-            </div>
+            ) : (
+                <div className={`flex items-center h-24 text-gray-500 ${isRight ? "justify-end" : "justify-center"}`}>
+                    <p>선수 없음</p>
+                </div>
+            )}
+        </div>
+    );
+}
+function PlayerInfoRight({
+    player,
+    event,
+    align = "left",
+}: {
+    player: Omit<FantasyPlayer, "id" | "year" | "ranking"> | null;
+    event: string;
+    align?: "left" | "right";
+}) {
+    const isRight = align === "right";
+    return (
+        <div className="flex-1">
+            <h2 className={`text-xl font-semibold mb-2 mt-4 ${isRight ? "text-right" : ""}`}>
+                {event === "와일드카드" ? "와일드카드" : event}
+            </h2>
+            {player ? (
+                <div className={`flex items-center gap-4 ${isRight ? "justify-end" : ""}`}>
+                    {isRight && (
+                        <div className="text-right">
+                            {event === "와일드카드" && <p className="text-sm font-semibold">{player.event}</p>}
+                            {player.contry && <Image src={player.contry} alt={player.name} width={40} height={40} />}
+                            <p className="text-lg font-bold">{player.name}</p>
+                        </div>
+                    )}
+                    {!isRight && (
+                        <div>
+                            {event === "와일드카드" && <p className="text-sm font-semibold">{player.event}</p>}
+                            {player.contry && <Image src={player.contry} alt={player.name} width={40} height={40} />}
+                            <p className="text-lg font-bold">{player.name}</p>
+                        </div>
+                    )}
+                    {player.photo && (
+                        <Image
+                            src={player.photo}
+                            alt={player.name}
+                            width={80}
+                            height={80}
+                            className={`rounded-full object-cover ${isRight ? "order-last" : ""}`}
+                        />
+                    )}
+                </div>
+            ) : (
+                <div className={`flex items-center h-24 text-gray-500 ${isRight ? "justify-end" : "justify-center"}`}>
+                    <p>선수 없음</p>
+                </div>
+            )}
         </div>
     );
 }
@@ -132,51 +198,59 @@ export default async function RunningLeague({ params }: { params: PageParams }) 
                 <div className="flex gap-8">
                     {/* 왼쪽 섹션 (팀1, 팀2) */}
                     <div className="w-1/2 flex gap-8">
-                        {firstTeam?.ms && (
-                            <div className="w-1/2 border rounded-lg p-4 shadow-md">
+                        {firstTeam && (
+                            <div className="w-1/2 border rounded-lg p-4 shadow-md flex flex-col">
                                 <h3 className="text-lg font-bold text-center mb-2">{firstTeam.user.nickName}의 팀</h3>
-                                <PlayerInfo player={firstTeam.ms} event="MS" />
-                                <PlayerInfo player={firstTeam.ws} event="WS" />
-                                <PlayerInfo player={firstTeam.md} event="MD" />
-                                <PlayerInfo player={firstTeam.wd} event="WD" />
-                                <PlayerInfo player={firstTeam.xd} event="XD" />
-                                <PlayerInfo player={firstTeam.wc} event="와일드카드" />
+                                <div className="flex-1 flex flex-col">
+                                    <PlayerInfoLeft player={firstTeam.ms} event="MS" />
+                                    <PlayerInfoLeft player={firstTeam.ws} event="WS" />
+                                    <PlayerInfoLeft player={firstTeam.md} event="MD" />
+                                    <PlayerInfoLeft player={firstTeam.wd} event="WD" />
+                                    <PlayerInfoLeft player={firstTeam.xd} event="XD" />
+                                    <PlayerInfoLeft player={firstTeam.wc} event="와일드카드" />
+                                </div>
                             </div>
                         )}
                         {secondTeam && (
-                            <div className="w-1/2 border rounded-lg p-4 shadow-md">
+                            <div className="w-1/2 border rounded-lg p-4 shadow-md flex flex-col">
                                 <h3 className="text-lg font-bold text-center mb-2">{secondTeam.user.nickName}의 팀</h3>
-                                <PlayerInfo player={secondTeam.ms} event="MS" />
-                                <PlayerInfo player={secondTeam.ws} event="WS" />
-                                <PlayerInfo player={secondTeam.md} event="MD" />
-                                <PlayerInfo player={secondTeam.wd} event="WD" />
-                                <PlayerInfo player={secondTeam.xd} event="XD" />
-                                <PlayerInfo player={secondTeam.wc} event="와일드카드" />
+                                <div className="flex-1 flex flex-col">
+                                    <PlayerInfoRight player={secondTeam.ms} event="MS" align="right" />
+                                    <PlayerInfoRight player={secondTeam.ws} event="WS" align="right" />
+                                    <PlayerInfoRight player={secondTeam.md} event="MD" align="right" />
+                                    <PlayerInfoRight player={secondTeam.wd} event="WD" align="right" />
+                                    <PlayerInfoRight player={secondTeam.xd} event="XD" align="right" />
+                                    <PlayerInfoRight player={secondTeam.wc} event="와일드카드" align="right" />
+                                </div>
                             </div>
                         )}
                     </div>
                     {/* 오른쪽 섹션 (팀3, 팀4) */}
                     <div className="w-1/2 flex gap-8">
                         {thirdTeam && (
-                            <div className="w-1/2 border rounded-lg p-4 shadow-md">
+                            <div className="w-1/2 border rounded-lg p-4 shadow-md flex flex-col">
                                 <h3 className="text-lg font-bold text-center mb-2">{thirdTeam.user.nickName}의 팀</h3>
-                                <PlayerInfo player={thirdTeam.ms} event="MS" />
-                                <PlayerInfo player={thirdTeam.ws} event="WS" />
-                                <PlayerInfo player={thirdTeam.md} event="MD" />
-                                <PlayerInfo player={thirdTeam.wd} event="WD" />
-                                <PlayerInfo player={thirdTeam.xd} event="XD" />
-                                <PlayerInfo player={thirdTeam.wc} event="와일드카드" />
+                                <div className="flex-1 flex flex-col">
+                                    <PlayerInfoLeft player={thirdTeam.ms} event="MS" />
+                                    <PlayerInfoLeft player={thirdTeam.ws} event="WS" />
+                                    <PlayerInfoLeft player={thirdTeam.md} event="MD" />
+                                    <PlayerInfoLeft player={thirdTeam.wd} event="WD" />
+                                    <PlayerInfoLeft player={thirdTeam.xd} event="XD" />
+                                    <PlayerInfoLeft player={thirdTeam.wc} event="와일드카드" />
+                                </div>
                             </div>
                         )}
                         {fourthTeam && (
-                            <div className="w-1/2 border rounded-lg p-4 shadow-md">
+                            <div className="w-1/2 border rounded-lg p-4 shadow-md flex flex-col">
                                 <h3 className="text-lg font-bold text-center mb-2">{fourthTeam.user.nickName}의 팀</h3>
-                                <PlayerInfo player={fourthTeam.ms} event="MS" />
-                                <PlayerInfo player={fourthTeam.ws} event="WS" />
-                                <PlayerInfo player={fourthTeam.md} event="MD" />
-                                <PlayerInfo player={fourthTeam.wd} event="WD" />
-                                <PlayerInfo player={fourthTeam.xd} event="XD" />
-                                <PlayerInfo player={fourthTeam.wc} event="와일드카드" />
+                                <div className="flex-1 flex flex-col">
+                                    <PlayerInfoRight player={fourthTeam.ms} event="MS" align="right" />
+                                    <PlayerInfoRight player={fourthTeam.ws} event="WS" align="right" />
+                                    <PlayerInfoRight player={fourthTeam.md} event="MD" align="right" />
+                                    <PlayerInfoRight player={fourthTeam.wd} event="WD" align="right" />
+                                    <PlayerInfoRight player={fourthTeam.xd} event="XD" align="right" />
+                                    <PlayerInfoRight player={fourthTeam.wc} event="와일드카드" align="right" />
+                                </div>
                             </div>
                         )}
                     </div>
