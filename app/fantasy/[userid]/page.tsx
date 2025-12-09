@@ -4,8 +4,22 @@ import Link from "next/link";
 import { joinLeague } from "../actions";
 import { logout } from "@/lib/logout";
 
-async function getFantasyLeagues() {
+async function getFantasyLeagues(userId: number) {
     const leagues = await db.fantasyLeague.findMany({
+        where: {
+            OR: [
+                {
+                    participants: {
+                        some: {
+                            id: userId,
+                        },
+                    },
+                },
+                {
+                    process: "멤버 모집중",
+                },
+            ],
+        },
         select: {
             id: true,
             leagueName: true,
@@ -26,8 +40,8 @@ async function getFantasyLeagues() {
 }
 
 export default async function FantasyLeaguesPage() {
-    const leagues = await getFantasyLeagues();
     const user = await getUser();
+    const leagues = await getFantasyLeagues(user.id);
 
     return (
         <div className="container mx-auto p-4">
