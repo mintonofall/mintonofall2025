@@ -41,7 +41,7 @@ async function getFantasyLeagues(userId: number) {
 
 export default async function FantasyLeaguesPage() {
     const user = await getUser();
-    const leagues = await getFantasyLeagues(user.id);
+    const leagues = await getFantasyLeagues(user!.id);
 
     return (
         <div className="container mx-auto p-4">
