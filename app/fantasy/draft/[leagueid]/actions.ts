@@ -66,7 +66,7 @@ export async function draftPlayer(
 
     // 다음 드래프트 순서로 업데이트
 
-    if (totalPicks >= 24) {
+    if (totalPicks >= 23) {
         const allDraftPicks = await db.draftPick.findMany({
             where: { leagueId },
         });

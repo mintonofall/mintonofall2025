@@ -96,12 +96,82 @@ export default async function DraftPage({ params }: { params: PageParams }) {
 
     const draftedPlayerIds = new Set(draftPicks.map((pick) => pick.playerId));
 
+    // 드래프트 순서 표시를 위한 로직
+    const { orderList, currentUser: currentUserIndex } = league;
+    const totalParticipants = orderList.length;
+    const participantsMap = new Map(league.participants.map((p) => [p.id, p]));
+
+    const turnOrderDisplay = [];
+    if (totalParticipants > 0 && currentUserIndex !== null) {
+        if (currentUserIndex >= 14) {
+            // currentUserIndex가 14 이상일 때, 현재부터 마지막 순서까지만 표시
+            for (let i = currentUserIndex; i < totalParticipants; i++) {
+                const userId = orderList[i];
+                const participant = participantsMap.get(userId);
+                if (participant) {
+                    turnOrderDisplay.push({
+                        ...participant,
+                        isCurrent: i === currentUserIndex,
+                    });
+                }
+            }
+            turnOrderDisplay.push({ id: "draft-end", nickName: "드래프트 종료", isCurrent: false });
+        } else {
+            for (let i = -2; i <= 7; i++) {
+                const userIndex = (currentUserIndex + i + totalParticipants) % totalParticipants;
+                const userId = orderList[userIndex];
+                const participant = participantsMap.get(userId);
+                if (participant) {
+                    turnOrderDisplay.push({ ...participant, isCurrent: userIndex === currentUserIndex });
+                }
+            }
+        }
+    }
+
     return (
         <div className="flex flex-col h-screen">
-            <header className="flex justify-between items-center p-4 border-b bg-white z-10 w-full">
+            <header className="flex items-center p-4 border-b bg-white z-10 w-full">
                 <Link href={`/fantasy/${user.id}`} className="flex items-center gap-2">
                     <Image src="/logo512.png" alt="Logo" width={40} height={40} />
                 </Link>
+                <div className="flex-1 flex justify-center items-center space-x-4 overflow-x-auto">
+                    {turnOrderDisplay.map((p, index) => {
+                        if (p.id === "draft-end" && currentUserIndex !== null) {
+                            const isDraftFinished = currentUserIndex === 24;
+                            if (isDraftFinished) {
+                                return (
+                                    <Link
+                                        key={p.id + "-" + index}
+                                        href={`/fantasy/runningLeague/${leagueId}`}
+                                        className="text-center p-2 rounded-md bg-green-500 text-white font-bold hover:bg-green-600"
+                                    >
+                                        <div className="text-sm">{p.nickName}</div>
+                                    </Link>
+                                );
+                            }
+                            return (
+                                <div
+                                    key={p.id + "-" + index}
+                                    className="text-center p-2 rounded-md bg-gray-400 text-white cursor-not-allowed"
+                                >
+                                    <div className="text-sm">{p.nickName}</div>
+                                </div>
+                            );
+                        }
+                        return (
+                            <div
+                                key={p.id + "-" + index}
+                                className={`text-center p-2 rounded-md ${
+                                    p.isCurrent ? "bg-blue-500 text-white font-bold" : "bg-gray-100"
+                                }`}
+                            >
+                                <div className="text-sm">{p.nickName}</div>
+                            </div>
+                        );
+                    })}
+                </div>
+                {/* 로고와 드래프트 순서 표시를 중앙에 정렬하기 위한 빈 공간 (로고와 동일한 너비) */}
+                <div className="w-[40px] h-[40px]"></div>
             </header>
             <div className="flex flex-1 overflow-hidden">
                 <TurnNotifier isCurrentUserTurn={isCurrentUserTurn} />
