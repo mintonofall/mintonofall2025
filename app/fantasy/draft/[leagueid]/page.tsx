@@ -5,6 +5,7 @@ import MyDraftPanel from "@/app/fantasy/draft/[leagueid]/MyDraftPanel";
 import PlayerListPanel from "@/app/fantasy/draft/[leagueid]/PlayerListPanel";
 import OtherParticipantsPanel from "@/app/fantasy/draft/[leagueid]/OtherParticipantsPanel";
 import RealtimeDraftUpdater from "./RealtimeDraftUpdater";
+import TurnNotifier from "./TurnNotifier";
 /**
  * 특정 리그의 연도에 해당하는 판타지 선수 목록을 가져옵니다.
  * @param leagueId - 판타지 리그의 ID
@@ -64,6 +65,7 @@ export default async function DraftPage({ params }: { params: PageParams }) {
     }
 
     const { league, players, draftPicks } = data;
+    const isCurrentUserTurn = league.orderList[league.currentUser!] === user.id;
     const isParticipant = league.participants.some((p) => p.id === user.id);
 
     // 참가자가 아니면 페이지 접근을 막습니다.
@@ -94,15 +96,16 @@ export default async function DraftPage({ params }: { params: PageParams }) {
 
     return (
         <div className="flex h-screen">
+            <TurnNotifier isCurrentUserTurn={isCurrentUserTurn} />
             <MyDraftPanel
                 user={user}
                 categories={draftCategories}
-                isCurrentUser={league.orderList[league.currentUser!] === user.id}
+                isCurrentUser={isCurrentUserTurn}
                 drafts={myDrafts}
             />
             <PlayerListPanel
                 groupedPlayers={groupedPlayers}
-                isCurrentUser={league.orderList[league.currentUser!] === user.id}
+                isCurrentUser={isCurrentUserTurn}
                 leagueId={leagueId}
                 userId={user.id}
                 draftedPlayerIds={draftedPlayerIds}

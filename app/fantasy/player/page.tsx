@@ -4,7 +4,7 @@ import Link from "next/link";
 
 export default async function FantasyPage() {
     // 우선 2024년 선수 명단을 가져오도록 설정했습니다.
-    const players: FantasyPlayer[] = await getFantasyPlayers(2024);
+    const players: FantasyPlayer[] = await getFantasyPlayers(2025);
 
     return (
         <div className="container mx-auto p-4">
