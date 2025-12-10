@@ -6,6 +6,8 @@ import PlayerListPanel from "@/app/fantasy/draft/[leagueid]/PlayerListPanel";
 import OtherParticipantsPanel from "@/app/fantasy/draft/[leagueid]/OtherParticipantsPanel";
 import RealtimeDraftUpdater from "./RealtimeDraftUpdater";
 import TurnNotifier from "./TurnNotifier";
+import Link from "next/link";
+import Image from "next/image";
 /**
  * 특정 리그의 연도에 해당하는 판타지 선수 목록을 가져옵니다.
  * @param leagueId - 판타지 리그의 ID
@@ -95,30 +97,39 @@ export default async function DraftPage({ params }: { params: PageParams }) {
     const draftedPlayerIds = new Set(draftPicks.map((pick) => pick.playerId));
 
     return (
-        <div className="flex h-screen">
-            <TurnNotifier isCurrentUserTurn={isCurrentUserTurn} />
-            <MyDraftPanel
-                user={user}
-                categories={draftCategories}
-                isCurrentUser={isCurrentUserTurn}
-                drafts={myDrafts}
-            />
-            <PlayerListPanel
-                groupedPlayers={groupedPlayers}
-                isCurrentUser={isCurrentUserTurn}
-                leagueId={leagueId}
-                userId={user.id}
-                draftedPlayerIds={draftedPlayerIds}
-                myDrafts={myDrafts}
-            />
-            <OtherParticipantsPanel
-                otherUsers={otherUsers}
-                categories={draftCategories}
-                currentUser={league.currentUser}
-                leagueId={leagueId}
-                drafts={draftPicks}
-            />
-            <RealtimeDraftUpdater leagueId={leagueId} />
+        <div className="flex flex-col h-screen">
+            <header className="flex justify-between items-center p-4 border-b bg-white z-10 w-full">
+                <Link href={`/fantasy/${user.id}`} className="flex items-center gap-2">
+                    <Image src="/logo512.png" alt="Logo" width={40} height={40} />
+                </Link>
+            </header>
+            <div className="flex flex-1 overflow-hidden">
+                <TurnNotifier isCurrentUserTurn={isCurrentUserTurn} />
+                <MyDraftPanel
+                    user={user}
+                    categories={draftCategories}
+                    isCurrentUser={isCurrentUserTurn}
+                    drafts={myDrafts}
+                />
+                <PlayerListPanel
+                    groupedPlayers={groupedPlayers}
+                    isCurrentUser={isCurrentUserTurn}
+                    leagueId={leagueId}
+                    userId={user.id}
+                    draftedPlayerIds={draftedPlayerIds}
+                    myDrafts={myDrafts}
+                />
+                <div className="flex-1 border-l p-4">
+                    <OtherParticipantsPanel
+                        otherUsers={otherUsers}
+                        categories={draftCategories}
+                        currentUser={league.currentUser}
+                        leagueId={leagueId}
+                        drafts={draftPicks}
+                    />
+                </div>
+                <RealtimeDraftUpdater leagueId={leagueId} />
+            </div>
         </div>
     );
 }

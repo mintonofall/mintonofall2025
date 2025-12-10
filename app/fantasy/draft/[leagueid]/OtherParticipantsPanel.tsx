@@ -22,9 +22,9 @@ export default function OtherParticipantsPanel({
     drafts,
 }: OtherParticipantsPanelProps) {
     return (
-        <div className="w-1/5 p-4 border-l border-gray-200 flex flex-col bg-gray-50">
-            <h2 className="text-2xl font-bold mb-4 text-center">다른 참가자</h2>
-            <div className="flex-grow flex flex-col space-y-3">
+        <div className="flex flex-col h-full">
+            <h2 className="text-2xl font-bold mb-4 text-center flex-shrink-0">다른 참가자</h2>
+            <div className="flex-grow flex flex-col space-y-3 overflow-y-auto">
                 {otherUsers.length > 0 ? (
                     otherUsers.map((otherUser) => {
                         const isCurrentUser = otherUser.id === currentUser;

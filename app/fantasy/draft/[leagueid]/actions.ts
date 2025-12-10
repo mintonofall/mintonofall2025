@@ -50,20 +50,21 @@ export async function draftPlayer(
     if (!nextCategory) {
         throw new Error("더 이상 드래프트할 수 있는 슬롯이 없습니다.");
     }
+    const totalPicks = await db.draftPick.count({
+        where: { leagueId },
+    });
 
     await db.draftPick.create({
         data: {
             leagueId,
             userId,
             playerId,
+            pickNumber: totalPicks + 1,
             category: nextCategory,
         },
     });
 
     // 다음 드래프트 순서로 업데이트
-    const totalPicks = await db.draftPick.count({
-        where: { leagueId },
-    });
 
     if (totalPicks >= 24) {
         const allDraftPicks = await db.draftPick.findMany({
@@ -117,7 +118,7 @@ export async function draftPlayer(
 
     await db.fantasyLeague.update({
         where: { id: leagueId },
-        data: { currentUser: totalPicks },
+        data: { currentUser: totalPicks + 1 },
     });
 
     revalidatePath(`/fantasy/draft/${leagueId}`);

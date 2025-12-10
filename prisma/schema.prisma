@@ -118,6 +118,7 @@ model DraftPick {
   playerId  Int
   player    FantasyPlayer @relation(fields: [playerId], references: [id], onDelete: Cascade)
   category  String
+  pickNumber Int?
   createdAt DateTime @default(now())
 }
 

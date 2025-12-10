@@ -22,11 +22,11 @@ export default function MyDraftPanel({ user, categories, isCurrentUser, drafts }
             }`}
         >
             <h2 className="text-2xl font-bold mb-4 text-center">{user?.nickName}님의 드래프트</h2>
-            <div className="flex-grow flex flex-col space-y-3">
+            <div className="flex-grow flex flex-col space-y-3 overflow-y-auto pr-2">
                 {categories.map((category) => {
                     const draft = drafts.find((d) => d.category === category);
                     return (
-                        <div key={category} className="flex-grow p-4 border rounded-lg shadow-sm bg-white">
+                        <div key={category} className="p-4 border rounded-lg shadow-sm bg-white flex-shrink-0">
                             <h3 className="font-semibold text-lg text-gray-800">{category}</h3>
                             {draft ? (
                                 <div className="flex items-center space-x-2 mt-2">
