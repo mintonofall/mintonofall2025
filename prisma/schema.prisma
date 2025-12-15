@@ -36,6 +36,9 @@ model FantasyTeam {
   user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
   fantasyLeagueId Int
   fantasyLeague   FantasyLeague @relation(fields: [fantasyLeagueId], references: [id], onDelete: Cascade)
+  firstRoundResult String?
+  secondRoundResult String?
+  thirdRoundResult String?
   msId Int?
   wsId Int?
   mdId Int?

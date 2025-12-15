@@ -13,6 +13,7 @@ export async function getLeague(leagueId: number) {
         where: { id: leagueId },
         select: {
             id: true,
+            process: true,
             leagueName: true,
             participants: {
                 select: {
