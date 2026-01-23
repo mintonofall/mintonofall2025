@@ -67,91 +67,94 @@ export default function GamePlanClient({ dogPlayers, filterQuery, sort }: GamePl
 
     return (
         <div className="flex flex-col h-screen w-full">
-            {/* 상단 1/2: 게임 테이블 영역 */}
-            <div className="h-1/2 w-full bg-gray-100 p-4 flex flex-col">
-                <h1 className="text-3xl font-bold text-gray-700 mb-2 text-center shrink-0">Game Table</h1>
-                <div className="flex-1 w-full h-full overflow-hidden">
-                    {courts.map((court, courtIdx) => (
-                        <div
-                            key={courtIdx}
-                            className="bg-green-600 p-4 rounded-lg shadow-lg relative w-full h-full flex flex-col"
-                        >
-                            <div className="absolute top-2 left-2 text-white font-bold text-xl opacity-50">
-                                Court {courtIdx + 1}
-                            </div>
-                            <div className="flex flex-col flex-1 gap-4 mt-8">
-                                {/* Team A */}
-                                <div className="flex gap-4 flex-1">
-                                    {[0, 1].map((slotIdx) => (
-                                        <div
-                                            key={slotIdx}
-                                            onClick={() => handleSlotClick(courtIdx, slotIdx)}
-                                            className={`flex-1 bg-white/90 rounded flex flex-col items-center justify-center cursor-pointer relative transition-all
+            <div className="h-[50%] w-full bg-gray-100 flex flex-row">
+                <div className="w-[70%] h-full p-4 flex flex-col">
+                    <h1 className="text-3xl font-bold text-gray-700 mb-2 text-center shrink-0">Game Table</h1>
+                    <div className="flex-1 w-full h-full overflow-hidden">
+                        {courts.map((court, courtIdx) => (
+                            <div
+                                key={courtIdx}
+                                className="bg-green-600 p-4 rounded-lg shadow-lg relative w-full h-full flex flex-col"
+                            >
+                                <div className="absolute top-2 left-2 text-white font-bold text-xl opacity-50">
+                                    Court {courtIdx + 1}
+                                </div>
+                                <div className="flex flex-col flex-1 gap-4 mt-8">
+                                    {/* Team A */}
+                                    <div className="flex gap-4 flex-1">
+                                        {[0, 1].map((slotIdx) => (
+                                            <div
+                                                key={slotIdx}
+                                                onClick={() => handleSlotClick(courtIdx, slotIdx)}
+                                                className={`flex-1 bg-white/90 rounded flex flex-col items-center justify-center cursor-pointer relative transition-all
                                                 ${selectedSlot?.[0] === courtIdx && selectedSlot?.[1] === slotIdx ? "ring-4 ring-yellow-400 scale-105 z-10" : "hover:bg-white"}
                                             `}
-                                        >
-                                            {court[slotIdx] ? (
-                                                <>
-                                                    <span className="font-bold text-gray-800">
-                                                        {court[slotIdx]!.name}
-                                                    </span>
-                                                    <span className="text-xs text-gray-600">
-                                                        {court[slotIdx]!.grade}
-                                                    </span>
-                                                    <button
-                                                        onClick={(e) => handleRemovePlayer(e, courtIdx, slotIdx)}
-                                                        className="absolute top-1 right-1 text-red-500 hover:text-red-700 font-bold px-1"
-                                                    >
-                                                        ×
-                                                    </button>
-                                                </>
-                                            ) : (
-                                                <span className="text-gray-400 text-sm">선택</span>
-                                            )}
-                                        </div>
-                                    ))}
-                                </div>
-                                {/* Net */}
-                                <div className="h-2 bg-white/50 w-full rounded-full shrink-0"></div>
-                                {/* Team B */}
-                                <div className="flex gap-4 flex-1">
-                                    {[2, 3].map((slotIdx) => (
-                                        <div
-                                            key={slotIdx}
-                                            onClick={() => handleSlotClick(courtIdx, slotIdx)}
-                                            className={`flex-1 bg-white/90 rounded flex flex-col items-center justify-center cursor-pointer relative transition-all
+                                            >
+                                                {court[slotIdx] ? (
+                                                    <>
+                                                        <span className="font-bold text-gray-800">
+                                                            {court[slotIdx]!.name}
+                                                        </span>
+                                                        <span className="text-xs text-gray-600">
+                                                            {court[slotIdx]!.grade}
+                                                        </span>
+                                                        <button
+                                                            onClick={(e) => handleRemovePlayer(e, courtIdx, slotIdx)}
+                                                            className="absolute top-1 right-1 text-red-500 hover:text-red-700 font-bold px-1"
+                                                        >
+                                                            ×
+                                                        </button>
+                                                    </>
+                                                ) : (
+                                                    <span className="text-gray-400 text-sm">선택</span>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
+                                    {/* Net */}
+                                    <div className="h-2 bg-white/50 w-full rounded-full shrink-0"></div>
+                                    {/* Team B */}
+                                    <div className="flex gap-4 flex-1">
+                                        {[2, 3].map((slotIdx) => (
+                                            <div
+                                                key={slotIdx}
+                                                onClick={() => handleSlotClick(courtIdx, slotIdx)}
+                                                className={`flex-1 bg-white/90 rounded flex flex-col items-center justify-center cursor-pointer relative transition-all
                                                 ${selectedSlot?.[0] === courtIdx && selectedSlot?.[1] === slotIdx ? "ring-4 ring-yellow-400 scale-105 z-10" : "hover:bg-white"}
                                             `}
-                                        >
-                                            {court[slotIdx] ? (
-                                                <>
-                                                    <span className="font-bold text-gray-800">
-                                                        {court[slotIdx]!.name}
-                                                    </span>
-                                                    <span className="text-xs text-gray-600">
-                                                        {court[slotIdx]!.grade}
-                                                    </span>
-                                                    <button
-                                                        onClick={(e) => handleRemovePlayer(e, courtIdx, slotIdx)}
-                                                        className="absolute top-1 right-1 text-red-500 hover:text-red-700 font-bold px-1"
-                                                    >
-                                                        ×
-                                                    </button>
-                                                </>
-                                            ) : (
-                                                <span className="text-gray-400 text-sm">선택</span>
-                                            )}
-                                        </div>
-                                    ))}
+                                            >
+                                                {court[slotIdx] ? (
+                                                    <>
+                                                        <span className="font-bold text-gray-800">
+                                                            {court[slotIdx]!.name}
+                                                        </span>
+                                                        <span className="text-xs text-gray-600">
+                                                            {court[slotIdx]!.grade}
+                                                        </span>
+                                                        <button
+                                                            onClick={(e) => handleRemovePlayer(e, courtIdx, slotIdx)}
+                                                            className="absolute top-1 right-1 text-red-500 hover:text-red-700 font-bold px-1"
+                                                        >
+                                                            ×
+                                                        </button>
+                                                    </>
+                                                ) : (
+                                                    <span className="text-gray-400 text-sm">선택</span>
+                                                )}
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        ))}
+                    </div>
+                </div>
+                <div className="w-[30%] h-full border-l border-gray-300 bg-white p-4">
+                    {/* Game Info Placeholder */}
                 </div>
             </div>
 
-            {/* 하단 1/2: DogPlayers 목록 영역 */}
-            <div className="h-1/2 w-full bg-white p-4 border-t-2 border-gray-300 flex flex-col">
+            <div className="h-[50%] w-full bg-white p-4 border-t-2 border-gray-300 flex flex-col">
                 <div className="flex justify-between items-center mb-4">
                     <div className="flex space-x-2 text-sm items-center">
                         <GradeSelector />
