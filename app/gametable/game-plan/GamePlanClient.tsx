@@ -56,7 +56,7 @@ export default function GamePlanClient({ dogPlayers, filterQuery, sort }: GamePl
         }
     };
 
-    // 코트에서 선수 제거
+    // 코트에서 선수 제
     const handleRemovePlayer = (e: React.MouseEvent, courtIdx: number, slotIdx: number) => {
         e.stopPropagation(); // 슬롯 선택 이벤트 방지
         const newCourts = [...courts];
@@ -162,7 +162,7 @@ export default function GamePlanClient({ dogPlayers, filterQuery, sort }: GamePl
                             href={`?sort=name${filterQuery}`}
                             className={`px-3 py-1 rounded-md border ${!sort || sort === "name" ? "bg-blue-500 text-white border-blue-500" : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"}`}
                         >
-                            이름
+                            name
                         </Link>
                         <Link
                             href={`?sort=grade${filterQuery}`}
