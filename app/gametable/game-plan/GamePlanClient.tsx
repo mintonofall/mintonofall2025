@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import GradeSelector from "./GradeSelector";
 import { useRouter } from "next/navigation";
-import { createDogGame } from "./actions";
+import { createDogGame, getTodayGames } from "./actions";
 
 type DogPlayer = {
     id: number;
@@ -21,7 +21,7 @@ interface GamePlanClientProps {
     sort?: string;
 }
 
-export default function GamePlanClient({ dogPlayers, filterQuery, sort }: GamePlanClientProps) {
+export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: GamePlanClientProps) {
     const router = useRouter();
     // 1개의 코트, 각 코트는 4명의 선수 슬롯을 가짐 (null은 빈자리)
     const [courts, setCourts] = useState<(DogPlayer | null)[][]>(
@@ -33,10 +33,35 @@ export default function GamePlanClient({ dogPlayers, filterQuery, sort }: GamePl
     // 현재 선택된 슬롯 위치 [코트인덱스, 슬롯인덱스]
     const [selectedSlot, setSelectedSlot] = useState<[number, number] | null>(null);
     const [isCreating, setIsCreating] = useState(false);
+    const [focusedPlayerInfo, setFocusedPlayerInfo] = useState<{
+        name: string;
+        games: { id: number; players: string[]; createdAt: Date }[];
+    } | null>(null);
+
+    const fetchPlayerGames = async (targetPlayer: DogPlayer, courtPlayers: DogPlayer[]) => {
+        let playersToFetch = [targetPlayer.id];
+        let titleName = targetPlayer.name;
+
+        if (courtPlayers.length > 1) {
+            playersToFetch = courtPlayers.map((p) => p.id);
+            titleName = courtPlayers.map((p) => p.name).join(", ");
+        }
+
+        const games = await getTodayGames(playersToFetch);
+        setFocusedPlayerInfo({
+            name: titleName,
+            games,
+        });
+    };
 
     // 코트의 슬롯을 클릭했을 때
     const handleSlotClick = (courtIdx: number, slotIdx: number) => {
         setSelectedSlot([courtIdx, slotIdx]);
+        const player = courts[courtIdx][slotIdx];
+        if (player) {
+            const activePlayers = courts[courtIdx].filter((p): p is DogPlayer => p !== null);
+            fetchPlayerGames(player, activePlayers);
+        }
     };
 
     // 하단 목록에서 선수를 클릭했을 때
@@ -68,6 +93,9 @@ export default function GamePlanClient({ dogPlayers, filterQuery, sort }: GamePl
         newCourts[targetCourtIdx][targetSlotIdx] = player;
         setCourts(newCourts);
 
+        const activePlayers = newCourts[targetCourtIdx].filter((p): p is DogPlayer => p !== null);
+        fetchPlayerGames(player, activePlayers);
+
         // 다음 슬롯으로 자동 이동 (편의성)
         if (targetSlotIdx < 3) {
             setSelectedSlot([targetCourtIdx, targetSlotIdx + 1]);
@@ -83,6 +111,14 @@ export default function GamePlanClient({ dogPlayers, filterQuery, sort }: GamePl
         newCourts[courtIdx] = [...newCourts[courtIdx]];
         newCourts[courtIdx][slotIdx] = null;
         setCourts(newCourts);
+        setSelectedSlot([courtIdx, slotIdx]);
+
+        const activePlayers = newCourts[courtIdx].filter((p): p is DogPlayer => p !== null);
+        if (activePlayers.length > 0) {
+            fetchPlayerGames(activePlayers[0], activePlayers);
+        } else {
+            setFocusedPlayerInfo(null);
+        }
     };
 
     return (
@@ -202,7 +238,52 @@ export default function GamePlanClient({ dogPlayers, filterQuery, sort }: GamePl
                     </button>
                 </div>
                 <div className="w-[30%] h-full border-l border-gray-300 bg-white p-4">
-                    {/* Game Info Placeholder */}
+                    {focusedPlayerInfo ? (
+                        <div className="h-full flex flex-col">
+                            <div className="flex-1 overflow-y-auto">
+                                {focusedPlayerInfo.games.length > 0 ? (
+                                    <div className="space-y-3">
+                                        {focusedPlayerInfo.games.map((game) => (
+                                            <div
+                                                key={game.id}
+                                                className="bg-gray-50 p-1 rounded border border-gray-200"
+                                            >
+                                                <div className="flex justify-between px-1 mb-1">
+                                                    <span className="text-xs text-gray-500 font-bold">#{game.id}</span>
+                                                    <span className="text-xs text-gray-400">
+                                                        {new Date(game.createdAt).toLocaleTimeString("ko-KR", {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                        })}
+                                                    </span>
+                                                </div>
+                                                <div className="text-sm text-gray-700">
+                                                    <div className="grid grid-cols-1 gap-1">
+                                                        {game.players.map((p, i) => (
+                                                            <span
+                                                                key={i}
+                                                                className="text-center bg-white rounded border border-gray-100 py-0"
+                                                            >
+                                                                {p}
+                                                            </span>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="text-gray-500 text-center mt-10">오늘 진행한 경기가 없습니다.</div>
+                                )}
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="h-full flex items-center justify-center text-gray-400 text-center">
+                            선수를 선택하면
+                            <br />
+                            경기 기록이 표시됩니다.
+                        </div>
+                    )}
                 </div>
             </div>
 
@@ -234,16 +315,16 @@ export default function GamePlanClient({ dogPlayers, filterQuery, sort }: GamePl
                     <table className="min-w-full table-auto text-left">
                         <thead className="bg-gray-100 sticky top-0 z-10">
                             <tr>
-                                <th className="px-2 py-3 text-sm font-bold text-gray-600 uppercase tracking-wider">
+                                <th className="px-2 py-1 text-sm font-bold text-gray-600 uppercase tracking-wider">
                                     이름
                                 </th>
-                                <th className="px-2 py-3 text-sm font-bold text-gray-600 uppercase tracking-wider text-center">
+                                <th className="px-2 py-1 text-sm font-bold text-gray-600 uppercase tracking-wider text-center">
                                     지역
                                 </th>
-                                <th className="px-2 py-3 text-sm font-bold text-gray-600 uppercase tracking-wider text-center">
+                                <th className="px-2 py-1 text-sm font-bold text-gray-600 uppercase tracking-wider text-center">
                                     급수
                                 </th>
-                                <th className="px-2 py-3 text-sm font-bold text-gray-600 uppercase tracking-wider text-center">
+                                <th className="px-2 py-1 text-sm font-bold text-gray-600 uppercase tracking-wider text-center">
                                     게임수
                                 </th>
                             </tr>
@@ -255,16 +336,16 @@ export default function GamePlanClient({ dogPlayers, filterQuery, sort }: GamePl
                                     onClick={() => handlePlayerClick(player)}
                                     className={`cursor-pointer ${player.gender === "man" ? "bg-blue-100" : player.gender === "woman" ? "bg-red-100" : "bg-white"} hover:opacity-80 transition-colors`}
                                 >
-                                    <td className="px-2 py-4 whitespace-nowrap text-lg font-bold text-gray-800">
+                                    <td className="px-2 py-1 whitespace-nowrap text-lg font-bold text-gray-800">
                                         {player.name}
                                     </td>
-                                    <td className="px-2 py-4 whitespace-nowrap text-center text-gray-600 font-medium">
+                                    <td className="px-2 py-1 whitespace-nowrap text-center text-gray-600 font-medium">
                                         {player.where}
                                     </td>
-                                    <td className="px-2 py-4 whitespace-nowrap text-center text-gray-800 font-semibold">
+                                    <td className="px-2 py-1 whitespace-nowrap text-center text-gray-800 font-semibold">
                                         {player.grade}
                                     </td>
-                                    <td className="px-2 py-4 whitespace-nowrap text-center text-blue-600 font-bold">
+                                    <td className="px-2 py-1 whitespace-nowrap text-center text-blue-600 font-bold">
                                         {player.gameNum}G
                                     </td>
                                 </tr>

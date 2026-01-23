@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { getTodayGames } from "../game-plan/actions";
 
 type PlayerWithStats = {
     id: number;
@@ -11,24 +12,31 @@ type PlayerWithStats = {
     where: string | null;
 };
 
+type PlayerBasic = {
+    id: number;
+    name: string;
+    grade: string | null;
+    gender: string | null;
+};
+
 type DuoStat = {
-    player1: { name: string; grade: string | null; gender: string | null } | undefined;
-    player2: { name: string; grade: string | null; gender: string | null } | undefined;
+    player1: PlayerBasic | undefined;
+    player2: PlayerBasic | undefined;
     count: number;
 };
 
 type TrioStat = {
-    player1: { name: string; grade: string | null; gender: string | null } | undefined;
-    player2: { name: string; grade: string | null; gender: string | null } | undefined;
-    player3: { name: string; grade: string | null; gender: string | null } | undefined;
+    player1: PlayerBasic | undefined;
+    player2: PlayerBasic | undefined;
+    player3: PlayerBasic | undefined;
     count: number;
 };
 
 type QuartetStat = {
-    player1: { name: string; grade: string | null; gender: string | null } | undefined;
-    player2: { name: string; grade: string | null; gender: string | null } | undefined;
-    player3: { name: string; grade: string | null; gender: string | null } | undefined;
-    player4: { name: string; grade: string | null; gender: string | null } | undefined;
+    player1: PlayerBasic | undefined;
+    player2: PlayerBasic | undefined;
+    player3: PlayerBasic | undefined;
+    player4: PlayerBasic | undefined;
     count: number;
 };
 
@@ -46,6 +54,31 @@ export default function StatisticsClient({
     const [activeTab, setActiveTab] = useState("게임수");
     const [searchTerm, setSearchTerm] = useState("");
     const tabs = ["게임수", "2인", "3인", "4인"];
+    const [selectedPlayerGames, setSelectedPlayerGames] = useState<
+        { id: number; players: string[]; createdAt: Date }[]
+    >([]);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedPlayerName, setSelectedPlayerName] = useState("");
+
+    const handlePlayerClick = async (player: PlayerWithStats) => {
+        setSelectedPlayerName(player.name);
+        const games = await getTodayGames([player.id]);
+        setSelectedPlayerGames(games);
+        setIsModalOpen(true);
+    };
+
+    const handleCombinationClick = async (players: (PlayerBasic | undefined)[]) => {
+        const validPlayers = players.filter((p): p is PlayerBasic => !!p);
+        if (validPlayers.length === 0) return;
+
+        const names = validPlayers.map((p) => p.name).join(", ");
+        const ids = validPlayers.map((p) => p.id);
+
+        setSelectedPlayerName(names);
+        const games = await getTodayGames(ids);
+        setSelectedPlayerGames(games);
+        setIsModalOpen(true);
+    };
 
     const filteredPlayers = (players || []).filter((p) => p.name.includes(searchTerm));
     const filteredDuoStats = (duoStats || []).filter(
@@ -117,13 +150,14 @@ export default function StatisticsClient({
                                 {filteredPlayers.map((player, index) => (
                                     <tr
                                         key={player.id}
-                                        className={
+                                        onClick={() => handlePlayerClick(player)}
+                                        className={`cursor-pointer hover:opacity-80 transition-opacity ${
                                             player.gender === "man"
                                                 ? "bg-blue-50"
                                                 : player.gender === "woman"
                                                   ? "bg-red-50"
                                                   : ""
-                                        }
+                                        }`}
                                     >
                                         <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-500">
                                             {index + 1}
@@ -160,7 +194,11 @@ export default function StatisticsClient({
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {filteredDuoStats.map((stat, index) => (
-                                    <tr key={index} className="hover:bg-gray-50">
+                                    <tr
+                                        key={index}
+                                        className="hover:bg-gray-50 cursor-pointer"
+                                        onClick={() => handleCombinationClick([stat.player1, stat.player2])}
+                                    >
                                         <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-500">
                                             {index + 1}
                                         </td>
@@ -205,7 +243,13 @@ export default function StatisticsClient({
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {filteredTrioStats.map((stat, index) => (
-                                    <tr key={index} className="hover:bg-gray-50">
+                                    <tr
+                                        key={index}
+                                        className="hover:bg-gray-50 cursor-pointer"
+                                        onClick={() =>
+                                            handleCombinationClick([stat.player1, stat.player2, stat.player3])
+                                        }
+                                    >
                                         <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-500">
                                             {index + 1}
                                         </td>
@@ -256,7 +300,18 @@ export default function StatisticsClient({
                             </thead>
                             <tbody className="bg-white divide-y divide-gray-200">
                                 {filteredQuartetStats.map((stat, index) => (
-                                    <tr key={index} className="hover:bg-gray-50">
+                                    <tr
+                                        key={index}
+                                        className="hover:bg-gray-50 cursor-pointer"
+                                        onClick={() =>
+                                            handleCombinationClick([
+                                                stat.player1,
+                                                stat.player2,
+                                                stat.player3,
+                                                stat.player4,
+                                            ])
+                                        }
+                                    >
                                         <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-500">
                                             {index + 1}
                                         </td>
@@ -301,6 +356,63 @@ export default function StatisticsClient({
                     </div>
                 )}
             </div>
+
+            {isModalOpen && (
+                <div
+                    className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+                    onClick={() => setIsModalOpen(false)}
+                >
+                    <div
+                        className="bg-white rounded-lg p-6 w-full max-w-md max-h-[80vh] overflow-y-auto"
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className="flex justify-between items-center mb-4">
+                            <h2 className="text-xl font-bold">{selectedPlayerName}의 경기 목록</h2>
+                            <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-gray-700">
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth={1.5}
+                                    stroke="currentColor"
+                                    className="w-6 h-6"
+                                >
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div className="space-y-3">
+                            {selectedPlayerGames.length > 0 ? (
+                                selectedPlayerGames.map((game) => (
+                                    <div key={game.id} className="bg-gray-50 p-3 rounded border border-gray-200">
+                                        <div className="flex justify-between items-center mb-2">
+                                            <div className="text-xs font-bold text-gray-500">Game #{game.id}</div>
+                                            <div className="text-xs text-gray-400">
+                                                {new Date(game.createdAt).toLocaleTimeString("ko-KR", {
+                                                    hour: "2-digit",
+                                                    minute: "2-digit",
+                                                })}
+                                            </div>
+                                        </div>
+                                        <div className="grid grid-cols-2 gap-2">
+                                            {game.players.map((p, i) => (
+                                                <span
+                                                    key={i}
+                                                    className="text-center bg-white rounded border border-gray-100 py-1 text-sm"
+                                                >
+                                                    {p}
+                                                </span>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="text-center text-gray-500 py-4">경기 기록이 없습니다.</div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

@@ -79,3 +79,51 @@ export async function deleteDogGame(gameId: number) {
         return { success: false, message: "게임 삭제 중 오류가 발생했습니다." };
     }
 }
+
+export async function getTodayGames(playerIds: number[]) {
+    try {
+        // 한국 시간(KST) 기준 오늘 날짜 범위 계산
+        const now = new Date();
+        const utc = now.getTime();
+        const KST_OFFSET = 9 * 60 * 60 * 1000;
+        const kstTimestamp = utc + KST_OFFSET;
+        const kstDate = new Date(kstTimestamp);
+
+        kstDate.setUTCHours(0, 0, 0, 0);
+        const startOfToday = new Date(kstDate.getTime() - KST_OFFSET);
+
+        kstDate.setUTCHours(23, 59, 59, 999);
+        const endOfToday = new Date(kstDate.getTime() - KST_OFFSET);
+
+        const games = await db.dogGames.findMany({
+            where: {
+                Players: {
+                    hasEvery: playerIds,
+                },
+                createdAt: {
+                    gte: startOfToday,
+                    lte: endOfToday,
+                },
+            },
+            orderBy: {
+                id: "desc",
+            },
+        });
+
+        const allPlayerIds = Array.from(new Set(games.flatMap((g) => g.Players)));
+        const players = await db.dogPlayer.findMany({
+            where: { id: { in: allPlayerIds } },
+            select: { id: true, name: true },
+        });
+        const playerMap = new Map(players.map((p) => [p.id, p.name]));
+
+        return games.map((g) => ({
+            id: g.id,
+            players: g.Players.map((pid) => playerMap.get(pid) || "Unknown") as string[],
+            createdAt: g.createdAt,
+        }));
+    } catch (error) {
+        console.error(error);
+        return [];
+    }
+}
