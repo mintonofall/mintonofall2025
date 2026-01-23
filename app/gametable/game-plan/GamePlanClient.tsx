@@ -35,7 +35,7 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
     const [isCreating, setIsCreating] = useState(false);
     const [focusedPlayerInfo, setFocusedPlayerInfo] = useState<{
         name: string;
-        games: { id: number; players: string[]; createdAt: Date }[];
+        games: { id: number; players: string[]; createdAt: Date | null }[];
     } | null>(null);
 
     const fetchPlayerGames = async (targetPlayer: DogPlayer, courtPlayers: DogPlayer[]) => {
@@ -251,10 +251,12 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
                                                 <div className="flex justify-between px-1 mb-1">
                                                     <span className="text-xs text-gray-500 font-bold">#{game.id}</span>
                                                     <span className="text-xs text-gray-400">
-                                                        {new Date(game.createdAt).toLocaleTimeString("ko-KR", {
-                                                            hour: "2-digit",
-                                                            minute: "2-digit",
-                                                        })}
+                                                        {game.createdAt
+                                                            ? new Date(game.createdAt).toLocaleTimeString("ko-KR", {
+                                                                  hour: "2-digit",
+                                                                  minute: "2-digit",
+                                                              })
+                                                            : "-"}
                                                     </span>
                                                 </div>
                                                 <div className="text-sm text-gray-700">

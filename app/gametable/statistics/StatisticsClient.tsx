@@ -55,7 +55,7 @@ export default function StatisticsClient({
     const [searchTerm, setSearchTerm] = useState("");
     const tabs = ["게임수", "2인", "3인", "4인"];
     const [selectedPlayerGames, setSelectedPlayerGames] = useState<
-        { id: number; players: string[]; createdAt: Date }[]
+        { id: number; players: string[]; createdAt: Date | null }[]
     >([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedPlayerName, setSelectedPlayerName] = useState("");
@@ -388,10 +388,12 @@ export default function StatisticsClient({
                                         <div className="flex justify-between items-center mb-2">
                                             <div className="text-xs font-bold text-gray-500">Game #{game.id}</div>
                                             <div className="text-xs text-gray-400">
-                                                {new Date(game.createdAt).toLocaleTimeString("ko-KR", {
-                                                    hour: "2-digit",
-                                                    minute: "2-digit",
-                                                })}
+                                                {game.createdAt
+                                                    ? new Date(game.createdAt).toLocaleTimeString("ko-KR", {
+                                                          hour: "2-digit",
+                                                          minute: "2-digit",
+                                                      })
+                                                    : "-"}
                                             </div>
                                         </div>
                                         <div className="grid grid-cols-2 gap-2">
