@@ -185,7 +185,7 @@ export default function StatisticsClient({
                                         순위
                                     </th>
                                     <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                        팀 구성
+                                        조합 (2인)
                                     </th>
                                     <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                                         게임수

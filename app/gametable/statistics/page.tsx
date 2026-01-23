@@ -46,18 +46,22 @@ export default async function Statistics() {
 
     todayGames.forEach((game) => {
         if (game.Players.length >= 4) {
-            // Team A (0, 1)
-            const teamA = [game.Players[0], game.Players[1]].sort((a, b) => a - b);
-            const keyA = `${teamA[0]},${teamA[1]}`;
-            duoCounts[keyA] = (duoCounts[keyA] || 0) + 1;
-
-            // Team B (2, 3)
-            const teamB = [game.Players[2], game.Players[3]].sort((a, b) => a - b);
-            const keyB = `${teamB[0]},${teamB[1]}`;
-            duoCounts[keyB] = (duoCounts[keyB] || 0) + 1;
-
-            // 3인 & 4인 통계 (한 게임에 같이 참여한 조합)
+            // 참여한 모든 플레이어 정렬
             const p = [...game.Players].sort((a, b) => a - b);
+
+            // 2인 (Duo) - 4명 중 2명을 뽑는 조합
+            const combos2 = [
+                [p[0], p[1]],
+                [p[0], p[2]],
+                [p[0], p[3]],
+                [p[1], p[2]],
+                [p[1], p[3]],
+                [p[2], p[3]],
+            ];
+            combos2.forEach((c) => {
+                const key2 = c.join(",");
+                duoCounts[key2] = (duoCounts[key2] || 0) + 1;
+            });
 
             // 4인 (Quartet)
             const key4 = p.join(",");
