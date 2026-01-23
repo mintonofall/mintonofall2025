@@ -19,7 +19,7 @@ export default async function GameTable({
         orderBy = { name: "asc" };
     }
 
-    const where: any = {};
+    const where: { grade?: string; gender?: string } = {};
     if (grade && grade !== "all") where.grade = grade;
     if (gender && gender !== "all") where.gender = gender;
 
