@@ -254,3 +254,28 @@ model GameBoard {
   player3id Int
   player4id Int
 }
+model DogPlayer {
+  id Int @id @default(autoincrement())
+  userid Int?
+  name String
+  grade String?
+  gender String?
+  age Int @default(40)
+  where String?
+  avater String?
+  mmr Int @default(1000)
+  games Int[]
+  winGames Int[]
+  gameNum Int @default(0)
+  winNum Int @default(0)
+  lastGameDate DateTime?
+  createat DateTime? @default(now())
+}
+
+model DogGames {
+  id Int @id @default(autoincrement())
+  Players Int[]
+  WinPlayer Int[]
+  createdAt DateTime? @default(now())
+  updatedAt DateTime?
+}

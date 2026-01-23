@@ -1,21 +1,11 @@
 import { getResult } from "@/lib/getResult";
 import Image from "next/image";
-import db from "@/lib/db";
 
-export default async function Result({ params }: { params: Promise<{ leagueId: string }> }) {
-    const { leagueId } = await params;
-    const league = await db.fantasyLeague.findUnique({
-        where: { id: Number(leagueId) },
-        select: { year: true },
-    });
-
-    const targetDate = league?.year === 2025 ? "2025-12-17" : "2024-12-11";
-    const titleDate = league?.year === 2025 ? "2025년 12월 17일" : "2024년 12월 11일";
-
-    const games = await getResult(targetDate);
+export default async function Result() {
+    const games = await getResult("2024-12-12");
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-2xl font-bold mb-6 text-center">{titleDate} 경기 결과</h1>
+            <h1 className="text-2xl font-bold mb-6 text-center">2024년 12월 11일 경기 결과</h1>
             <div className="space-y-4">
                 {games.length === 0 ? (
                     <div className="text-center text-gray-500 py-8">해당 날짜의 경기 결과가 없습니다.</div>

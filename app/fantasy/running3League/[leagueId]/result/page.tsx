@@ -9,8 +9,8 @@ export default async function Result({ params }: { params: Promise<{ leagueId: s
         select: { year: true },
     });
 
-    const targetDate = league?.year === 2025 ? "2025-12-17" : "2024-12-11";
-    const titleDate = league?.year === 2025 ? "2025년 12월 17일" : "2024년 12월 11일";
+    const targetDate = league?.year === 2025 ? "2025-12-19" : "2024-12-13";
+    const titleDate = league?.year === 2025 ? "2025년 12월 19일" : "2024년 12월 13일";
 
     const games = await getResult(targetDate);
     return (

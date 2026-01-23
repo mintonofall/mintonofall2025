@@ -20,12 +20,12 @@ export default async function Layout({
                 </Link>
                 <div className="flex gap-2">
                     <Link href={`/fantasy/runningLeague/${leagueId}`} className="text-center">
-                        <div className="px-3 py-2 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors text-sm">
+                        <div className="px-3 py-2 bg-gray-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors text-sm">
                             1ROUND
                         </div>
                     </Link>
                     <Link href={`/fantasy/running2League/${leagueId}`} className="text-center">
-                        <div className="px-3 py-2 bg-gray-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors text-sm">
+                        <div className="px-3 py-2 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors text-sm">
                             2ROUND
                         </div>
                     </Link>

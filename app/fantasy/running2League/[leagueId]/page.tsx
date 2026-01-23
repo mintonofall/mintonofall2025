@@ -16,7 +16,6 @@ async function getLeague(leagueId: number) {
             id: true,
             leagueName: true,
             process: true,
-            year: true,
             orderList: true,
         },
     });
@@ -127,9 +126,7 @@ async function getTeams(leagueId: number) {
         },
     });
 
-    const league = await getLeague(leagueId);
-    const gameDate = league?.year === 2024 ? "2024-12-11" : "2025-12-17";
-    const games = await getResult(gameDate);
+    const games = await getResult("2024-12-12");
 
     const scoreMsData = data.map((p) => {
         const scores = getDp(p.ms!.id, games);
@@ -350,24 +347,19 @@ async function getTeamStats(team: TeamWithScores | undefined, opponent: TeamWith
         }
     }
     if (round === 2) {
-        const currentTeam = await db.fantasyTeam.findUnique({
-            where: { id: team.id },
-            select: { secondRoundResult: true },
-        });
-
-        if (currentTeam?.secondRoundResult === null && win > lose && win + draw + lose !== 0) {
+        if (team.secondRoundResult === null && win > lose && draw !== 6) {
             await db.fantasyTeam.update({
                 where: { id: team.id },
                 data: { secondRoundResult: "win" },
             });
         }
-        if (currentTeam?.secondRoundResult === null && win < lose && win + draw + lose !== 0) {
+        if (team.secondRoundResult === null && win < lose && draw !== 6) {
             await db.fantasyTeam.update({
                 where: { id: team.id },
                 data: { secondRoundResult: "lose" },
             });
         }
-        if (currentTeam?.secondRoundResult === null && win == lose && win + draw + lose !== 0) {
+        if (team.secondRoundResult === null && win == lose && draw !== 6) {
             await db.fantasyTeam.update({
                 where: { id: team.id },
                 data: { secondRoundResult: "draw" },
@@ -375,24 +367,19 @@ async function getTeamStats(team: TeamWithScores | undefined, opponent: TeamWith
         }
     }
     if (round === 3) {
-        const currentTeam = await db.fantasyTeam.findUnique({
-            where: { id: team.id },
-            select: { thirdRoundResult: true },
-        });
-
-        if (currentTeam?.thirdRoundResult === null && win > lose && win + draw + lose !== 0) {
+        if (team.thirdRoundResult === null && win > lose && draw !== 6) {
             await db.fantasyTeam.update({
                 where: { id: team.id },
                 data: { thirdRoundResult: "win" },
             });
         }
-        if (currentTeam?.thirdRoundResult === null && win < lose && win + draw + lose !== 0) {
+        if (team.thirdRoundResult === null && win < lose && draw !== 6) {
             await db.fantasyTeam.update({
                 where: { id: team.id },
                 data: { thirdRoundResult: "lose" },
             });
         }
-        if (currentTeam?.thirdRoundResult === null && win == lose && win + draw + lose !== 0) {
+        if (team.thirdRoundResult === null && win == lose && draw !== 6) {
             await db.fantasyTeam.update({
                 where: { id: team.id },
                 data: { thirdRoundResult: "draw" },
@@ -427,15 +414,15 @@ export default async function RunningLeague({ params }: { params: PageParams }) 
 
     // 각 userId에 해당하는 팀 찾기
     const firstTeam = teams.find((team) => team.userId === firstUserId);
-    const secondTeam = teams.find((team) => team.userId === secondUserId);
-    const thirdTeam = teams.find((team) => team.userId === thirdUserId);
+    const secondTeam = teams.find((team) => team.userId === thirdUserId);
+    const thirdTeam = teams.find((team) => team.userId === secondUserId);
     const fourthTeam = teams.find((team) => team.userId === fourthUserId);
 
     const [team1Stats, team2Stats, team3Stats, team4Stats] = await Promise.all([
-        getTeamStats(firstTeam, secondTeam, 1),
-        getTeamStats(secondTeam, firstTeam, 1),
-        getTeamStats(thirdTeam, fourthTeam, 1),
-        getTeamStats(fourthTeam, thirdTeam, 1),
+        getTeamStats(firstTeam, secondTeam, 2),
+        getTeamStats(secondTeam, firstTeam, 2),
+        getTeamStats(thirdTeam, fourthTeam, 2),
+        getTeamStats(fourthTeam, thirdTeam, 2),
     ]);
 
     return (

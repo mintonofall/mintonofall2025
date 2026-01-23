@@ -54,6 +54,9 @@ export default function Home() {
                 <Link href={"/createUser"} className="mt-4 text-blue-500 hover:text-blue-700">
                     가입하기
                 </Link>
+                <Link href={"/gametable/game-plan"} className="mt-4 text-blue-500 hover:text-blue-700">
+                    개판 전국모임
+                </Link>
                 {/* <Link href={"/noUserClubList"} className="mt-4 text-blue-500 hover:text-blue-700">
                     비회원으로 이용하기
                 </Link> */}

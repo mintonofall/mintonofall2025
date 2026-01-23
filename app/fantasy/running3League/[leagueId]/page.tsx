@@ -16,7 +16,6 @@ async function getLeague(leagueId: number) {
             id: true,
             leagueName: true,
             process: true,
-            year: true,
             orderList: true,
         },
     });
@@ -127,9 +126,7 @@ async function getTeams(leagueId: number) {
         },
     });
 
-    const league = await getLeague(leagueId);
-    const gameDate = league?.year === 2024 ? "2024-12-11" : "2025-12-17";
-    const games = await getResult(gameDate);
+    const games = await getResult("2024-12-13");
 
     const scoreMsData = data.map((p) => {
         const scores = getDp(p.ms!.id, games);
@@ -301,9 +298,6 @@ type TeamWithScores = {
     wdScore: number;
     xdScore: number;
     wcScore: number;
-    firstRoundResult: string | null;
-    secondRoundResult: string | null;
-    thirdRoundResult: string | null;
 };
 
 async function getTeamStats(team: TeamWithScores | undefined, opponent: TeamWithScores | undefined, round: number) {
@@ -330,19 +324,24 @@ async function getTeamStats(team: TeamWithScores | undefined, opponent: TeamWith
         else draw++;
     });
     if (round === 1) {
-        if (team.firstRoundResult === null && win > lose && draw !== 6) {
+        const currentTeam = await db.fantasyTeam.findUnique({
+            where: { id: team.id },
+            select: { firstRoundResult: true },
+        });
+
+        if (currentTeam?.firstRoundResult === null && win > lose && draw !== 6) {
             await db.fantasyTeam.update({
                 where: { id: team.id },
                 data: { firstRoundResult: "win" },
             });
         }
-        if (team.firstRoundResult === null && win < lose && draw !== 6) {
+        if (currentTeam?.firstRoundResult === null && win < lose && draw !== 6) {
             await db.fantasyTeam.update({
                 where: { id: team.id },
                 data: { firstRoundResult: "lose" },
             });
         }
-        if (team.firstRoundResult === null && win == lose && draw !== 6) {
+        if (currentTeam?.firstRoundResult === null && win == lose && draw !== 6) {
             await db.fantasyTeam.update({
                 where: { id: team.id },
                 data: { firstRoundResult: "draw" },
@@ -355,19 +354,19 @@ async function getTeamStats(team: TeamWithScores | undefined, opponent: TeamWith
             select: { secondRoundResult: true },
         });
 
-        if (currentTeam?.secondRoundResult === null && win > lose && win + draw + lose !== 0) {
+        if (currentTeam?.secondRoundResult === null && win > lose && draw !== 6) {
             await db.fantasyTeam.update({
                 where: { id: team.id },
                 data: { secondRoundResult: "win" },
             });
         }
-        if (currentTeam?.secondRoundResult === null && win < lose && win + draw + lose !== 0) {
+        if (currentTeam?.secondRoundResult === null && win < lose && draw !== 6) {
             await db.fantasyTeam.update({
                 where: { id: team.id },
                 data: { secondRoundResult: "lose" },
             });
         }
-        if (currentTeam?.secondRoundResult === null && win == lose && win + draw + lose !== 0) {
+        if (currentTeam?.secondRoundResult === null && win == lose && draw !== 6) {
             await db.fantasyTeam.update({
                 where: { id: team.id },
                 data: { secondRoundResult: "draw" },
@@ -380,19 +379,19 @@ async function getTeamStats(team: TeamWithScores | undefined, opponent: TeamWith
             select: { thirdRoundResult: true },
         });
 
-        if (currentTeam?.thirdRoundResult === null && win > lose && win + draw + lose !== 0) {
+        if (currentTeam?.thirdRoundResult === null && win > lose && draw !== 6) {
             await db.fantasyTeam.update({
                 where: { id: team.id },
                 data: { thirdRoundResult: "win" },
             });
         }
-        if (currentTeam?.thirdRoundResult === null && win < lose && win + draw + lose !== 0) {
+        if (currentTeam?.thirdRoundResult === null && win < lose && draw !== 6) {
             await db.fantasyTeam.update({
                 where: { id: team.id },
                 data: { thirdRoundResult: "lose" },
             });
         }
-        if (currentTeam?.thirdRoundResult === null && win == lose && win + draw + lose !== 0) {
+        if (currentTeam?.thirdRoundResult === null && win == lose && draw !== 6) {
             await db.fantasyTeam.update({
                 where: { id: team.id },
                 data: { thirdRoundResult: "draw" },
@@ -427,16 +426,14 @@ export default async function RunningLeague({ params }: { params: PageParams }) 
 
     // 각 userId에 해당하는 팀 찾기
     const firstTeam = teams.find((team) => team.userId === firstUserId);
-    const secondTeam = teams.find((team) => team.userId === secondUserId);
-    const thirdTeam = teams.find((team) => team.userId === thirdUserId);
-    const fourthTeam = teams.find((team) => team.userId === fourthUserId);
+    const secondTeam = teams.find((team) => team.userId === fourthUserId);
+    const thirdTeam = teams.find((team) => team.userId === secondUserId);
+    const fourthTeam = teams.find((team) => team.userId === thirdUserId);
 
-    const [team1Stats, team2Stats, team3Stats, team4Stats] = await Promise.all([
-        getTeamStats(firstTeam, secondTeam, 1),
-        getTeamStats(secondTeam, firstTeam, 1),
-        getTeamStats(thirdTeam, fourthTeam, 1),
-        getTeamStats(fourthTeam, thirdTeam, 1),
-    ]);
+    const team1Stats = await getTeamStats(firstTeam, secondTeam, 3);
+    const team2Stats = await getTeamStats(secondTeam, firstTeam, 3);
+    const team3Stats = await getTeamStats(thirdTeam, fourthTeam, 3);
+    const team4Stats = await getTeamStats(fourthTeam, thirdTeam, 3);
 
     return (
         <div>
