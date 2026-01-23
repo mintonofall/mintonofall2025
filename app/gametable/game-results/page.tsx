@@ -78,7 +78,7 @@ export default async function GameResult({ searchParams }: { searchParams: Promi
     const playerMap = new Map(players.map((p) => [p.id, p]));
 
     return (
-        <div className="w-full p-4 bg-gray-50 min-h-screen">
+        <div className="w-full p-4 bg-gray-50 min-h-[90vh]">
             <h1 className="text-3xl font-bold text-gray-700 mb-6 text-center">Game Results</h1>
             <SearchInput />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

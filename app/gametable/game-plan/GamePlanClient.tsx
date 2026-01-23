@@ -86,7 +86,7 @@ export default function GamePlanClient({ dogPlayers, filterQuery, sort }: GamePl
     };
 
     return (
-        <div className="flex flex-col h-[calc(100vh-4rem)] w-full">
+        <div className="flex flex-col h-[calc(90vh-4rem)] w-full">
             <div className="h-[50%] w-full bg-gray-100 flex flex-row">
                 <div className="w-[70%] h-full p-4 flex flex-col">
                     <div className="flex-1 w-full overflow-hidden">

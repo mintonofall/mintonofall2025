@@ -59,7 +59,7 @@ export default function PlayerListClient({ players }: { players: DogPlayer[] }) 
     };
 
     return (
-        <div className="w-full p-4 bg-white min-h-[calc(100vh-4rem)] pb-20">
+        <div className="w-full p-4 bg-white min-h-[calc(90vh-4rem)] pb-20">
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold text-gray-700">Player List</h1>
                 <button
