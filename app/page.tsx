@@ -52,7 +52,7 @@ export default function Home() {
                     </div>
                 </form>
                 <Link href={"/createUser"} className="mt-4 text-blue-500 hover:text-blue-700">
-                    가입하기
+                    가입
                 </Link>
                 <Link href={"/gametable/game-plan"} className="mt-4 text-blue-500 hover:text-blue-700">
                     개판 전국모임
