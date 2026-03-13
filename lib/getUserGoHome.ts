@@ -83,6 +83,59 @@ export async function gameOneUp(id: number) {
     return player;
 }
 
+export async function updatePlayer(player: any) {
+    const { id, name, age, grade, isJoinLeague } = player;
+    const res = await db.player.update({
+        where: {
+            id,
+        },
+        data: {
+            name,
+            age: Number(age),
+            grade,
+            isJoinLeague,
+        },
+    });
+    return res;
+}
+
+export async function getPlayerMatches(playerId: number) {
+    const matches = await db.match.findMany({
+        where: {
+            OR: [{ player1id: playerId }, { player2id: playerId }, { player3id: playerId }, { player4id: playerId }],
+            endTime: {
+                not: null,
+            },
+        },
+        orderBy: {
+            endTime: "desc",
+        },
+    });
+
+    const playerIds = new Set<number>();
+    matches.forEach((m) => {
+        playerIds.add(m.player1id);
+        playerIds.add(m.player2id);
+        playerIds.add(m.player3id);
+        playerIds.add(m.player4id);
+    });
+
+    const players = await db.player.findMany({
+        where: { id: { in: Array.from(playerIds) } },
+        select: { id: true, name: true },
+    });
+
+    const playerMap = new Map(players.map((p) => [p.id, p]));
+
+    return matches.map((m) => ({
+        ...m,
+        player1: playerMap.get(m.player1id),
+        player2: playerMap.get(m.player2id),
+        player3: playerMap.get(m.player3id),
+        player4: playerMap.get(m.player4id),
+    }));
+}
+
 export async function gameWinUp(id: number) {
     const player = await db.player.update({
         where: {
@@ -316,7 +369,7 @@ export const deleteMatch = async (gameid: string) => {
     });
 };
 
-export const endMatch = async (matchId: string, winner: number[]) => {
+export const endMatch = async (matchId: string, winner: number[], isLeagueGame: boolean = false) => {
     const match = await db.match.findFirst({
         where: {
             gameid: matchId,
@@ -336,8 +389,22 @@ export const endMatch = async (matchId: string, winner: number[]) => {
             duration: new Date().getTime() - match.startTime.getTime(),
             winner1id: winner[0],
             winner2id: winner[1],
+            isLeagueGame,
         },
     });
+    await db.gameBoard.updateMany({
+        where: {
+            gameid: matchId,
+        },
+        data: {
+            player1id: 12,
+            player2id: 12,
+            player3id: 12,
+            player4id: 12,
+            gameid: "0",
+        },
+    });
+
     if (winner[0]) {
         await db.player.update({
             where: {
@@ -489,4 +556,22 @@ export const createMatch = async (
         },
     });
     return match;
+};
+
+export const createPlayer = async (player: any) => {
+    const { clubid, name, age, grade, gender, isJoinLeague } = player;
+    const newPlayer = await db.player.create({
+        data: {
+            clubid,
+            name,
+            age: Number(age),
+            grade,
+            gender,
+            isJoinLeague,
+            games: 0,
+            win: 0,
+            avater: gender === "man" ? "/man.png" : "/woman.png",
+        },
+    });
+    return newPlayer;
 };

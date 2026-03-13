@@ -14,11 +14,54 @@ import {
     deleteMatch,
     gameOneUp,
     oneGameDown,
+    endMatch,
+    updatePlayer,
+    getPlayerMatches,
+    createPlayer,
 } from "@/lib/getUserGoHome";
 import LeftTopSection from "./LeftTopSection";
 import LeftBottomSection from "./LeftBottomSection";
 import RightSection from "./RightSection";
 import Loading from "./loading";
+import GameResultModal from "./GameResultModal";
+import EditPlayerModal from "./EditPlayerModal";
+import PlayerHistoryModal from "./PlayerHistoryModal";
+import AddPlayerModal from "./AddPlayerModal";
+
+const CHO_HANGUL = [
+    "ㄱ",
+    "ㄲ",
+    "ㄴ",
+    "ㄷ",
+    "ㄸ",
+    "ㄹ",
+    "ㅁ",
+    "ㅂ",
+    "ㅃ",
+    "ㅅ",
+    "ㅆ",
+    "ㅇ",
+    "ㅈ",
+    "ㅉ",
+    "ㅊ",
+    "ㅋ",
+    "ㅌ",
+    "ㅍ",
+    "ㅎ",
+];
+
+const getChosung = (str: string) => {
+    let result = "";
+    for (let i = 0; i < str.length; i++) {
+        const code = str.charCodeAt(i) - 44032;
+        if (code > -1 && code < 11172) {
+            result += CHO_HANGUL[Math.floor(code / 588)];
+        } else {
+            result += str.charAt(i);
+        }
+    }
+    return result;
+};
 
 export default function TestPage() {
     const [players, setPlayers] = useState<any[]>([]);
@@ -33,82 +76,96 @@ export default function TestPage() {
     const [courts, setCourts] = useState<any[]>([]);
     const [sortCriteria, setSortCriteria] = useState("enterTime");
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+    const [gameResultModal, setGameResultModal] = useState<{ isOpen: boolean; courtIndex: number | null }>({
+        isOpen: false,
+        courtIndex: null,
+    });
+    const [editModal, setEditModal] = useState<{ isOpen: boolean; player: any | null }>({
+        isOpen: false,
+        player: null,
+    });
+    const [historyModal, setHistoryModal] = useState<{ isOpen: boolean; player: any | null }>({
+        isOpen: false,
+        player: null,
+    });
+    const [addModalOpen, setAddModalOpen] = useState(false);
     const clubId = 14;
 
-    useEffect(() => {
-        const fetchData = async () => {
-            console.log("fetched data");
-            const data = await getClub(clubId);
-            const matchData = await getMatch(clubId);
-            setHowManyCourts(data?.howManyCourts || 0);
-            const latestPlayers = data?.players || [];
-            setPlayers(latestPlayers);
+    const fetchData = async () => {
+        console.log("fetched data");
+        const data = await getClub(clubId);
+        const matchData = await getMatch(clubId);
+        setHowManyCourts(data?.howManyCourts || 0);
+        const latestPlayers = data?.players || [];
+        setPlayers(latestPlayers);
 
-            const waitData = await getWaitPlayerList(clubId);
-            const waitGameData = await getWaitGames(clubId);
+        const waitData = await getWaitPlayerList(clubId);
+        const waitGameData = await getWaitGames(clubId);
 
-            setWaitPlayerList(
-                waitData.map((item) => {
-                    const gameData = waitGameData?.find((g: any) => g.playerid === item.Playerid);
-                    return { ...item.player, clickedTime: gameData ? gameData.updateTime : item.enterDate };
-                }),
-            );
+        setWaitPlayerList(
+            waitData.map((item) => {
+                const gameData = waitGameData?.find((g: any) => g.playerid === item.Playerid);
+                return { ...item.player, clickedTime: gameData ? gameData.updateTime : item.enterDate };
+            }),
+        );
 
-            const newGridData = Array(35).fill(null);
-            if (waitGameData && Array.isArray(waitGameData)) {
-                waitGameData.forEach((game: any) => {
-                    if (game.point !== null && game.point >= 0 && game.point < 35) {
-                        const player = latestPlayers.find((p: any) => p.id === game.playerid);
-                        if (player) {
-                            newGridData[game.point] = { ...player, isSaved: true };
-                        }
+        const newGridData = Array(35).fill(null);
+        if (waitGameData && Array.isArray(waitGameData)) {
+            waitGameData.forEach((game: any) => {
+                if (game.point !== null && game.point >= 0 && game.point < 35) {
+                    const player = latestPlayers.find((p: any) => p.id === game.playerid);
+                    if (player) {
+                        newGridData[game.point] = { ...player, isSaved: true };
                     }
-                });
-            }
-            setGridData(newGridData);
-
-            const initialCourts = Array(data?.howManyCourts || 0).fill(null);
-            if (matchData && Array.isArray(matchData)) {
-                matchData.forEach((match: any) => {
-                    if (match.CourtNumber > 0 && match.CourtNumber <= initialCourts.length) {
-                        const p1 = latestPlayers.find((p: any) => p.id === match.player1id);
-                        const p2 = latestPlayers.find((p: any) => p.id === match.player2id);
-                        const p3 = latestPlayers.find((p: any) => p.id === match.player3id);
-                        const p4 = latestPlayers.find((p: any) => p.id === match.player4id);
-
-                        if (match.gameid && p1) {
-                            initialCourts[match.CourtNumber - 1] = {
-                                p1,
-                                p2,
-                                p3,
-                                p4,
-                                gameId: match.gameid,
-                                startTime: match.updateTime,
-                            };
-                        }
-                    }
-                });
-            }
-            setCourts(initialCourts);
-
-            let nextEmptyCourt = 0;
-            for (let i = 0; i < initialCourts.length; i++) {
-                if (!initialCourts[i]) {
-                    nextEmptyCourt = i;
-                    break;
                 }
-            }
-            setCourtPointer(nextEmptyCourt);
+            });
+        }
+        setGridData(newGridData);
 
-            let firstEmptyIndex = 0;
-            while (firstEmptyIndex < 35 && (firstEmptyIndex % 5 === 0 || newGridData[firstEmptyIndex])) {
-                firstEmptyIndex++;
-            }
-            setSelectedCell(firstEmptyIndex < 35 ? firstEmptyIndex : 1);
+        const initialCourts = Array(data?.howManyCourts || 0).fill(null);
+        if (matchData && Array.isArray(matchData)) {
+            matchData.forEach((match: any) => {
+                if (match.CourtNumber > 0 && match.CourtNumber <= initialCourts.length) {
+                    const p1 = latestPlayers.find((p: any) => p.id === match.player1id);
+                    const p2 = latestPlayers.find((p: any) => p.id === match.player2id);
+                    const p3 = latestPlayers.find((p: any) => p.id === match.player3id);
+                    const p4 = latestPlayers.find((p: any) => p.id === match.player4id);
 
-            console.log(data);
-            setIsLoading(false);
-        };
+                    if (match.gameid && p1) {
+                        initialCourts[match.CourtNumber - 1] = {
+                            p1,
+                            p2,
+                            p3,
+                            p4,
+                            gameId: match.gameid,
+                            startTime: match.updateTime,
+                        };
+                    }
+                }
+            });
+        }
+        setCourts(initialCourts);
+
+        let nextEmptyCourt = 0;
+        for (let i = 0; i < initialCourts.length; i++) {
+            if (!initialCourts[i]) {
+                nextEmptyCourt = i;
+                break;
+            }
+        }
+        setCourtPointer(nextEmptyCourt);
+
+        let firstEmptyIndex = 0;
+        while (firstEmptyIndex < 35 && (firstEmptyIndex % 5 === 0 || newGridData[firstEmptyIndex])) {
+            firstEmptyIndex++;
+        }
+        setSelectedCell(firstEmptyIndex < 35 ? firstEmptyIndex : 1);
+
+        console.log(data);
+        setIsLoading(false);
+    };
+
+    useEffect(() => {
         fetchData();
     }, []);
 
@@ -201,7 +258,7 @@ export default function TestPage() {
 
         setWaitPlayerList((prev) => {
             const newList = prev.filter((p) => p.id !== player.id);
-            return [...newList, { ...player, clickedTime: new Date() }];
+            return [{ ...player, clickedTime: new Date() }, ...newList];
         });
 
         let nextCell = selectedCell + 1;
@@ -372,7 +429,7 @@ export default function TestPage() {
     };
 
     const handleGameEnd = async (index: number) => {
-        console.log(`Game ended on court ${index + 1}`);
+        setGameResultModal({ isOpen: true, courtIndex: index });
     };
 
     const handleGameCancel = async (index: number) => {
@@ -413,6 +470,56 @@ export default function TestPage() {
         }
     };
 
+    const handleGameResult = async (winnersKey: string[]) => {
+        const { courtIndex } = gameResultModal;
+        if (courtIndex === null) return;
+
+        const court = courts[courtIndex];
+        if (!court) return;
+
+        const isLeagueGame =
+            court.p1?.isJoinLeague && court.p2?.isJoinLeague && court.p3?.isJoinLeague && court.p4?.isJoinLeague;
+
+        const winnerIds = winnersKey.map((key) => court[key].id);
+
+        setCourts((prev) => {
+            const newCourts = [...prev];
+            newCourts[courtIndex] = null;
+            return newCourts;
+        });
+        setCourtPointer(courtIndex);
+        setGameResultModal({ isOpen: false, courtIndex: null });
+
+        await endMatch(court.gameId, winnerIds, isLeagueGame);
+    };
+
+    const handleUpdatePlayer = async (updatedPlayer: any) => {
+        await updatePlayer(updatedPlayer);
+        setEditModal({ isOpen: false, player: null });
+        fetchData();
+    };
+
+    const handleHistoryClick = (player: any) => {
+        setHistoryModal({ isOpen: true, player });
+    };
+
+    const handleCreatePlayer = async (newPlayer: any) => {
+        try {
+            const createdPlayer = await createPlayer({ ...newPlayer, clubid: clubId });
+            await pushWaitPlayerList(createdPlayer.id, clubId);
+
+            // 대기 명단 맨 위에 추가
+            setWaitPlayerList((prev) => [{ ...createdPlayer, clickedTime: new Date() }, ...prev]);
+            // 전체 선수 목록에도 추가
+            setPlayers((prev) => [...prev, createdPlayer]);
+
+            setAddModalOpen(false);
+            fetchData();
+        } catch (e) {
+            console.error("Failed to create player", e);
+        }
+    };
+
     if (isLoading) {
         return <Loading />;
     }
@@ -444,6 +551,34 @@ export default function TestPage() {
                 courts={courts}
                 onSort={handleSort}
                 currentSort={sortCriteria}
+                onEdit={(player) => setEditModal({ isOpen: true, player })}
+                onHistoryClick={handleHistoryClick}
+            />
+
+            <GameResultModal
+                isOpen={gameResultModal.isOpen}
+                onClose={() => setGameResultModal({ ...gameResultModal, isOpen: false })}
+                players={gameResultModal.courtIndex !== null ? courts[gameResultModal.courtIndex] : null}
+                onConfirm={handleGameResult}
+            />
+
+            <EditPlayerModal
+                isOpen={editModal.isOpen}
+                onClose={() => setEditModal({ ...editModal, isOpen: false })}
+                player={editModal.player}
+                onConfirm={handleUpdatePlayer}
+            />
+
+            <PlayerHistoryModal
+                isOpen={historyModal.isOpen}
+                onClose={() => setHistoryModal({ isOpen: false, player: null })}
+                player={historyModal.player}
+            />
+
+            <AddPlayerModal
+                isOpen={addModalOpen}
+                onClose={() => setAddModalOpen(false)}
+                onConfirm={handleCreatePlayer}
             />
 
             <div className="fixed bottom-4 right-4">
@@ -464,7 +599,18 @@ export default function TestPage() {
                         >
                             <span className="text-2xl">×</span>
                         </button>
-                        <h2 className="text-xl font-bold mb-4">Players List</h2>
+                        <div className="flex justify-between items-center mb-4 pr-6">
+                            <h2 className="text-xl font-bold">Players List</h2>
+                            <button
+                                className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600"
+                                onClick={() => {
+                                    setAddModalOpen(true);
+                                    setShowPlayerList(false);
+                                }}
+                            >
+                                선수 추가
+                            </button>
+                        </div>
                         <input
                             type="text"
                             placeholder="이름 검색"
@@ -474,7 +620,15 @@ export default function TestPage() {
                         />
                         <div className="flex flex-col gap-2">
                             {players
-                                .filter((player) => player.name.toLowerCase().includes(searchTerm.toLowerCase()))
+                                .filter((player) => {
+                                    const name = player.name;
+                                    const search = searchTerm;
+                                    return (
+                                        name.toLowerCase().includes(search.toLowerCase()) ||
+                                        getChosung(name).includes(search)
+                                    );
+                                })
+                                .sort((a, b) => a.name.localeCompare(b.name))
                                 .map((player, index) => (
                                     <div
                                         key={index}
