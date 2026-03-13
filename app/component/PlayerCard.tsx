@@ -1,5 +1,15 @@
+/**
+ * @file /app/component/PlayerCard.tsx
+ * @description 개별 선수의 정보를 간략하게 표시하는 카드 컴포넌트입니다.
+ * @author Treebird
+ * @date 2024-07-16
+ */
 import { Player } from "@/lib/interface";
 import Image from "next/image";
+
+/**
+ * @param {Player} player - 표시할 선수 정보 객체
+ */
 export default function PlayerCard(player: Player) {
     return (
         <div key={player.id} className="flex items-center w-full h-15 p-1 bg-white shadow-md rounded-lg">

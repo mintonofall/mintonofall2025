@@ -1,6 +1,19 @@
+/**
+ * @file /app/home/[id]/PlayerHistoryModal.tsx
+ * @description 특정 선수의 경기 기록을 보여주는 모달 컴포넌트입니다.
+ * @author Treebird
+ * @date 2024-07-16
+ */
 import { useEffect, useState } from "react";
 import { getPlayerMatches } from "@/lib/getUserGoHome";
 
+/**
+ * PlayerHistoryModal 컴포넌트
+ * @param {object} props - 컴포넌트 프로퍼티
+ * @param {boolean} props.isOpen - 모달의 열림/닫힘 상태
+ * @param {() => void} props.onClose - 모달 닫기 함수
+ * @param {any} props.player - 경기 기록을 조회할 선수 정보
+ */
 export default function PlayerHistoryModal({
     isOpen,
     onClose,
@@ -10,9 +23,15 @@ export default function PlayerHistoryModal({
     onClose: () => void;
     player: any;
 }) {
+    /** @type {any[]} 조회된 경기 기록 목록 */
     const [matches, setMatches] = useState<any[]>([]);
+    /** @type {boolean} 데이터 로딩 상태 */
     const [loading, setLoading] = useState(false);
 
+    /**
+     * 모달이 열리고 선수 정보가 있을 때, 해당 선수의 경기 기록을 서버에서 가져옵니다.
+     * @dependency isOpen, player
+     */
     useEffect(() => {
         if (isOpen && player && player.id) {
             setLoading(true);
@@ -28,6 +47,7 @@ export default function PlayerHistoryModal({
         }
     }, [isOpen, player]);
 
+    // 모달이 닫혀있거나 선수 정보가 없으면 아무것도 렌더링하지 않음
     if (!isOpen || !player) return null;
 
     return (
@@ -48,12 +68,14 @@ export default function PlayerHistoryModal({
                     ) : matches.length === 0 ? (
                         <p className="text-center text-gray-500">경기 기록이 없습니다.</p>
                     ) : (
+                        // 경기 기록 목록 렌더링
                         <div className="space-y-3">
                             {matches.map((match) => {
                                 const team1 = [match.player1, match.player2];
                                 const team2 = [match.player3, match.player4];
                                 const isWinnerTeam1 =
                                     match.winner1id === team1[0]?.id || match.winner1id === team1[1]?.id;
+                                // 승자가 없으면 무승부로 간주
                                 const isDraw = !match.winner1id;
 
                                 return (
@@ -62,6 +84,7 @@ export default function PlayerHistoryModal({
                                             {new Date(match.endTime).toLocaleString("ko-KR")}
                                         </p>
                                         <div className="grid grid-cols-4 gap-2 text-center text-sm">
+                                            {/* 4명의 선수 정보를 렌더링하며 승리한 선수는 강조 표시 */}
                                             {[...team1, ...team2].map((p, idx) => {
                                                 const isWinner =
                                                     !isDraw &&

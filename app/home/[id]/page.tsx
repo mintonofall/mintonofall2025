@@ -1,915 +1,903 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import WaitPlayerList from "@/app/component/WaitPlayerList";
-import GameCourt from "@/app/component/GameCourt";
+/**
+ * @file /app/home/[id]/page.tsx
+ * @description 클럽의 메인 대시보드 페이지입니다. 코트 현황, 대기열, 선수 목록 등을 관리합니다.
+ * @author Treebird
+ * @date 2024-07-16
+ */
+import { useEffect, useMemo, useState } from "react";
 import {
-    getWaitGames,
-    getWaitPlayerList,
-    pushWaitPlayerList,
-    startMatch,
-    getMatch,
-    createMatch,
-    gameOneUp,
-    exitPlayer,
     getClub,
+    pushWaitPlayerList,
+    getWaitPlayerList,
+    exitPlayer,
     resetWaitGames,
-    sendMessage,
+    getWaitGames,
+    startMatch,
+    createMatch,
+    getMatchs,
+    deleteMatch,
+    gameOneUp,
     oneGameDown,
+    endMatch,
+    updatePlayer,
+    getPlayerMatches,
+    createPlayer,
 } from "@/lib/getUserGoHome";
-import { Player, WaitGameListCLass } from "@/lib/interface";
-import getPlayerList from "@/lib/getPlayerList";
-import PlayerCard from "@/app/component/PlayerCard";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/solid";
-import Link from "next/link";
-// import { makePlayer } from "@/lib/makePlayer";
+import LeftTopSection from "./LeftTopSection";
+import LeftBottomSection from "./LeftBottomSection";
+import RightSection from "./RightSection";
+import Loading from "./loading";
+import GameResultModal from "./GameResultModal";
+import EditPlayerModal from "./EditPlayerModal";
+import PlayerHistoryModal from "./PlayerHistoryModal";
+import AddPlayerModal from "./AddPlayerModal";
 
-interface WaitPlayerListCLass {
-    id: number | null;
-    clubid: number;
-    Playerid: number;
-    enterDate: Date;
-    exitDate: Date | null;
-}
+/**
+ * 한글 초성을 추출하기 위한 배열
+ */
+const CHO_HANGUL = [
+    "ㄱ",
+    "ㄲ",
+    "ㄴ",
+    "ㄷ",
+    "ㄸ",
+    "ㄹ",
+    "ㅁ",
+    "ㅂ",
+    "ㅃ",
+    "ㅅ",
+    "ㅆ",
+    "ㅇ",
+    "ㅈ",
+    "ㅉ",
+    "ㅊ",
+    "ㅋ",
+    "ㅌ",
+    "ㅍ",
+    "ㅎ",
+];
 
-interface PlayingGameBoard {
-    id?: number;
-    gameid: string | null;
-    court?: number;
-    clubid?: number;
-    player1id?: number;
-    player2id?: number;
-    player3id?: number;
-    player4id?: number;
-}
-
-interface MatchData {
-    id: number;
-    gameid: string | null;
-    CourtNumber: number;
-    clubid: number;
-    player1id: number;
-    player2id: number;
-    player3id: number;
-    player4id: number;
-}
-
-export default function GameBoard({ params }: { params: Promise<{ id: string }> }) {
-    const [showPlayerList, setShowPlayerList] = useState(false);
-    const [id, setId] = useState<string | null>(null);
-    const [waitPlayerList, setWaitPlayerList] = useState<WaitPlayerListCLass[]>([]);
-    const [gamePointer, setGamePointer] = useState<number>(0);
-    const [waitGameListId, setWaitGameListId] = useState<WaitGameListCLass[]>([]);
-    const [boardPointer, setBoardPointer] = useState<number>(0);
-    const [games, setGames] = useState<PlayingGameBoard[]>([]);
-    const [playerList, setPlayerList] = useState<Player[]>([]);
-    const [howManyCourts, setHowManyCourts] = useState<number>(3);
-    const [howSort, setHowSort] = useState("games");
-    const [showEdit, setShowEdit] = useState(false);
-    const [isResetPending, setIsResetPending] = useState(false);
-    const [isPending, setIsPending] = useState(false);
-    // const point: number = 0;
-
-    useEffect(() => {
-        async function fetchData() {
-            const resolvedParams = (await params).id;
-            setId(resolvedParams);
-            const clubId = Number(resolvedParams);
-
-            setIsPending(true);
-            try {
-                const [playerListData, getClubdata, waitPlayerListData, waitGameListData, getMatchData] =
-                    await Promise.all([
-                        getPlayerList(clubId),
-                        getClub(clubId),
-                        getWaitPlayerList(clubId),
-                        getWaitGames(clubId),
-                        getMatch(clubId),
-                    ]);
-
-                setPlayerList(playerListData);
-                setWaitPlayerList(waitPlayerListData);
-                setWaitGameListId(waitGameListData);
-
-                let currentCourts = howManyCourts;
-                if (getClubdata) {
-                    currentCourts = getClubdata.howManyCourts;
-                    setHowManyCourts(currentCourts);
-                }
-
-                const initialGames = getMatchData.slice(0, currentCourts).map((match: MatchData, index: number) => ({
-                    id: match.id || index + 1,
-                    gameid: match.gameid || null,
-                    court: match.CourtNumber,
-                    clubid: match.clubid,
-                    player1id: match.player1id,
-                    player2id: match.player2id,
-                    player3id: match.player3id,
-                    player4id: match.player4id,
-                }));
-                setGames(initialGames);
-            } catch (error) {
-                console.error("Error fetching data:", error);
-            } finally {
-                setIsPending(false);
-            }
+/**
+ * 문자열에서 초성을 추출하는 함수
+ * @param {string} str - 초성을 추출할 문자열
+ * @returns {string} 추출된 초성 문자열
+ */
+const getChosung = (str: string) => {
+    let result = "";
+    for (let i = 0; i < str.length; i++) {
+        const code = str.charCodeAt(i) - 44032;
+        if (code > -1 && code < 11172) {
+            result += CHO_HANGUL[Math.floor(code / 588)];
+        } else {
+            result += str.charAt(i);
         }
-        fetchData();
+    }
+    return result;
+};
+
+/**
+ * 클럽의 메인 대시보드 페이지 컴포넌트
+ * @param {object} props - 컴포넌트 프로퍼티
+ * @param {Promise<{ id: string }>} props.params - URL 파라미터로 전달된 클럽 ID
+ */
+export default function TestPage({ params }: { params: Promise<{ id: string }> }) {
+    // --- 상태 관리 (State Management) ---
+
+    /** @type {any[]} 클럽에 등록된 전체 선수 목록 */
+    const [players, setPlayers] = useState<any[]>([]);
+    /** @type {boolean} 전체 선수 목록 팝업 표시 여부 */
+    const [showPlayerList, setShowPlayerList] = useState(false);
+    /** @type {string} 전체 선수 목록 검색어 */
+    const [searchTerm, setSearchTerm] = useState("");
+    /** @type {any[]} 현재 입장한 대기 선수 목록 */
+    const [waitPlayerList, setWaitPlayerList] = useState<any[]>([]);
+    /** @type {boolean} 데이터 로딩 상태 */
+    const [isLoading, setIsLoading] = useState(true);
+    /** @type {number | null} 대기 게임판에서 선택된 셀의 인덱스 */
+    const [selectedCell, setSelectedCell] = useState<number | null>(1);
+    /** @type {(any | null)[]} 35칸의 대기 게임판 데이터. 각 셀에는 선수 정보 또는 null이 저장됩니다. */
+    const [gridData, setGridData] = useState<(any | null)[]>(Array(35).fill(null));
+    /** @type {number} 클럽의 총 코트 수 */
+    const [howManyCourts, setHowManyCourts] = useState<number>(0);
+    /** @type {number} 다음 게임이 배정될 코트 인덱스 (0-based) */
+    const [courtPointer, setCourtPointer] = useState<number>(0);
+    /** @type {any[]} 현재 게임이 진행 중인 코트 목록 */
+    const [courts, setCourts] = useState<any[]>([]);
+    /** @type {any[]} 클럽의 모든 경기 기록 */
+    const [matches, setMatches] = useState<any[]>([]);
+    /** @type {string} 대기 명단 정렬 기준 */
+    const [sortCriteria, setSortCriteria] = useState("enterTime");
+    /** @type {"asc" | "desc"} 대기 명단 정렬 방향 */
+    const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+    /** @deprecated 현재 사용되지 않는 상태 */
+    const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
+    /** @type {{ isOpen: boolean; courtIndex: number | null }} 경기 결과 입력 모달 상태 */
+    const [gameResultModal, setGameResultModal] = useState<{ isOpen: boolean; courtIndex: number | null }>({
+        isOpen: false,
+        courtIndex: null,
+    });
+    /** @type {{ isOpen: boolean; player: any | null }} 선수 정보 수정 모달 상태 */
+    const [editModal, setEditModal] = useState<{ isOpen: boolean; player: any | null }>({
+        isOpen: false,
+        player: null,
+    });
+    /** @type {{ isOpen: boolean; player: any | null }} 선수 경기 기록 모달 상태 */
+    const [historyModal, setHistoryModal] = useState<{ isOpen: boolean; player: any | null }>({
+        isOpen: false,
+        player: null,
+    });
+    /** @type {boolean} 신규 선수 추가 모달 상태 */
+    const [addModalOpen, setAddModalOpen] = useState(false);
+    /** @type {number} 현재 클럽 ID */
+    const [clubId, setClubId] = useState<number>(0);
+
+    // --- 데이터 로딩 및 초기화 (Data Loading & Initialization) ---
+
+    /**
+     * 컴포넌트 마운트 시 URL 파라미터에서 클럽 ID를 추출하여 상태에 설정합니다.
+     */
+    useEffect(() => {
+        const getParams = async () => {
+            const resolvedParams = await params;
+            setClubId(Number(resolvedParams.id));
+        };
+        getParams();
     }, [params]);
 
-    async function resetPlayer(id: number) {
-        setIsResetPending(true);
-        const resetPlayer = await getPlayerList(id);
-        const resetWaitPlayer = await getWaitPlayerList(id);
-        console.log("resetPlayer : ", resetPlayer);
-        console.log("resetWaitPlayer : ", resetWaitPlayer);
-        setPlayerList(resetPlayer);
-        setWaitPlayerList(resetWaitPlayer);
-        setIsResetPending(false);
-    }
+    /**
+     * clubId가 설정되면 서버로부터 클럽의 모든 데이터를 가져와 상태를 초기화합니다.
+     * (클럽 정보, 선수 목록, 대기열, 코트 현황 등)
+     */
+    const fetchData = async () => {
+        if (!clubId) return;
+        console.log("fetched data");
+
+        // 병렬로 데이터 가져오기
+        const data = await getClub(clubId);
+        const matchData = await getMatchs(clubId);
+        setMatches(Array.isArray(matchData) ? matchData : []);
+
+        // 클럽 기본 정보 설정
+        setHowManyCourts(data?.howManyCourts || 0);
+        const latestPlayers = data?.players || [];
+        setPlayers(latestPlayers);
+
+        // 대기 선수 목록 및 대기 게임판 정보 가져오기
+        const waitData = await getWaitPlayerList(clubId);
+        const waitGameData = await getWaitGames(clubId);
+
+        setWaitPlayerList(
+            waitData.map((item) => {
+                const gameData = waitGameData?.find((g: any) => g.playerid === item.Playerid);
+                return { ...item.player, clickedTime: gameData ? gameData.updateTime : item.enterDate };
+            }),
+        );
+
+        // 대기 게임판(gridData) 상태 설정
+        const newGridData = Array(35).fill(null);
+        if (waitGameData && Array.isArray(waitGameData)) {
+            waitGameData.forEach((game: any) => {
+                if (game.point !== null && game.point >= 0 && game.point < 35) {
+                    const player = latestPlayers.find((p: any) => p.id === game.playerid);
+                    if (player) {
+                        newGridData[game.point] = { ...player, isSaved: true };
+                    }
+                }
+            });
+        }
+        setGridData(newGridData);
+
+        // 코트(courts) 상태 설정
+        const initialCourts = Array(data?.howManyCourts || 0).fill(null);
+        if (matchData && Array.isArray(matchData)) {
+            matchData.forEach((match: any) => {
+                if (match.CourtNumber > 0 && match.CourtNumber <= initialCourts.length) {
+                    const p1 = latestPlayers.find((p: any) => p.id === match.player1id);
+                    const p2 = latestPlayers.find((p: any) => p.id === match.player2id);
+                    const p3 = latestPlayers.find((p: any) => p.id === match.player3id);
+                    const p4 = latestPlayers.find((p: any) => p.id === match.player4id);
+
+                    if (match.gameid && p1) {
+                        initialCourts[match.CourtNumber - 1] = {
+                            p1,
+                            p2,
+                            p3,
+                            p4,
+                            gameId: match.gameid,
+                            startTime: match.updateTime,
+                        };
+                    }
+                }
+            });
+        }
+        setCourts(initialCourts);
+
+        // 다음 게임이 들어갈 코트(courtPointer)와 선택될 셀(selectedCell)의 초기 위치 계산
+        let nextEmptyCourt = 0;
+        for (let i = 0; i < initialCourts.length; i++) {
+            if (!initialCourts[i]) {
+                nextEmptyCourt = i;
+                break;
+            }
+        }
+        setCourtPointer(nextEmptyCourt);
+
+        let firstEmptyIndex = 0;
+        while (firstEmptyIndex < 35 && (firstEmptyIndex % 5 === 0 || newGridData[firstEmptyIndex])) {
+            firstEmptyIndex++;
+        }
+        setSelectedCell(firstEmptyIndex < 35 ? firstEmptyIndex : 1);
+
+        console.log(data);
+        setIsLoading(false);
+    };
 
     useEffect(() => {
-        console.log("playerlist : ", playerList);
-        if (howSort == "games") {
-            sortWaitPlayerByGames();
-        }
-        if (howSort == "name") {
-            sortWaitPlayerByNames();
-        }
-    }, [playerList]);
+        fetchData();
+    }, [clubId]);
 
     useEffect(() => {
-        console.log("waitGameListId : ", waitGameListId);
-        async function resetDB() {
-            await resetWaitGames(Number(id), waitGameListId);
+        // 안드로이드 크롬 등 모바일 브라우저에서 화면을 아래로 당겨서 새로고침하는 동작을 막습니다.
+        document.body.style.overscrollBehaviorY = "none";
+        if (document.documentElement) {
+            document.documentElement.style.overscrollBehaviorY = "none";
         }
-        function nextPointer() {
-            const points = waitGameListId.map((game) => game.point);
-            let nextPoint = 0;
-            while (points.includes(nextPoint)) {
-                nextPoint++;
+        return () => {
+            document.body.style.overscrollBehaviorY = "auto";
+            if (document.documentElement) {
+                document.documentElement.style.overscrollBehaviorY = "auto";
             }
-            setGamePointer(nextPoint);
-        }
-
-        nextPointer();
-        const result = resetDB();
-        if (howSort == "games") {
-            sortWaitPlayerByGames();
-        }
-        if (howSort == "name") {
-            sortWaitPlayerByNames();
-        }
-        console.log("resetDB : ", result);
-    }, [waitGameListId]);
-
-    // const clearPlayerGames = async (clubid: number) => {
-    //     await clearPlayerGamesDb(clubid);
-    // };
-    const sortWaitPlayerByGames = () => {
-        const waitGroupNoGames = waitPlayerList.filter((player) => {
-            if (howManyGame(player.Playerid) == 0) {
-                return player;
-            }
-        });
-
-        const waitGroupOneGames = waitPlayerList.filter((player) => {
-            if (howManyGame(player.Playerid) >= 1) {
-                return player;
-            }
-        });
-        waitGroupNoGames.sort((a, b) => {
-            const playerA = playerList.find((player) => player.id === a.Playerid);
-            const playerB = playerList.find((player) => player.id === b.Playerid);
-            return (playerA?.games || 0) - (playerB?.games || 0);
-        });
-        waitGroupOneGames.sort((a, b) => {
-            const playerA = playerList.find((player) => player.id === a.Playerid);
-            const playerB = playerList.find((player) => player.id === b.Playerid);
-            return (playerA?.games || 0) - (playerB?.games || 0);
-        });
-        const sumGroup = [...waitGroupNoGames, ...waitGroupOneGames];
-        setWaitPlayerList(sumGroup);
-    };
-
-    const sortWaitPlayerByNames = () => {
-        const waitGroupNoGames = waitPlayerList.filter((player) => {
-            if (howManyGame(player.Playerid) == 0) {
-                return player;
-            }
-        });
-
-        const waitGroupOneGames = waitPlayerList.filter((player) => {
-            if (howManyGame(player.Playerid) >= 1) {
-                return player;
-            }
-        });
-        waitGroupNoGames.sort((a, b) => {
-            const playerA = playerList.find((player) => player.id === a.Playerid);
-            const playerB = playerList.find((player) => player.id === b.Playerid);
-            return (playerA?.name || "").localeCompare(playerB?.name || "");
-        });
-        waitGroupOneGames.sort((a, b) => {
-            const playerA = playerList.find((player) => player.id === a.Playerid);
-            const playerB = playerList.find((player) => player.id === b.Playerid);
-            return (playerA?.name || "").localeCompare(playerB?.name || "");
-        });
-        setWaitPlayerList([...waitGroupNoGames, ...waitGroupOneGames]);
-    };
-
-    const togglePlayerList = () => {
-        setShowPlayerList((prev) => !prev);
-    };
-    const onEndMatch = async (courtNumber: number) => {
-        const emptyGame = {
-            court: courtNumber,
-            gameid: null,
-            clubid: Number(id),
-            player1id: 12,
-            player2id: 12,
-            player3id: 12,
-            player4id: 12,
         };
-        setGames((prevGames) =>
-            prevGames.map((game) => (game.court === courtNumber ? { ...game, ...emptyGame } : game)),
-        );
-        await startMatch(Number(id), 12, 12, 12, 12, courtNumber, "0");
-    };
+    }, []);
 
-    const startGame = async (courtNumber: number, p1: number, p2: number, p3: number, p4: number, point: number) => {
-        setIsPending(true);
-        const newGameData = {
-            gameid: crypto.randomUUID(),
-            court: courtNumber,
-            clubid: Number(id),
-            player1id: p1,
-            player2id: p2,
-            player3id: p3,
-            player4id: p4,
-        };
+    // --- 이벤트 핸들러 (Event Handlers) ---
 
-        setGames((prevGames) => {
-            const existingGameIndex = prevGames.findIndex((g) => g.court === courtNumber);
-            const newGames = [...prevGames];
-            if (existingGameIndex > -1) {
-                newGames[existingGameIndex] = { ...newGames[existingGameIndex], ...newGameData };
-            } else {
-                newGames.push({ id: courtNumber, ...newGameData });
-            }
-            return newGames;
-        });
-
-        try {
-            const gameId = await createMatch(newGameData.gameid!, newGameData.clubid!, p1, p2, p3, p4, []);
-            await startMatch(Number(id), p1, p2, p3, p4, courtNumber, gameId.gameid);
-            sendMessage("gameboards");
-        } catch (error) {
-            console.error(`Failed to start game on court ${courtNumber}`, error);
-        } finally {
-            setIsPending(false);
-        }
-
-        const filteredWaitGameListId = waitGameListId.filter(
-            (game) => ![point, point + 1, point + 2, point + 3].includes(game.point),
-        );
-        const updatedWaitGameListId = filteredWaitGameListId.map((game) => {
-            if (game.point >= point + 4) {
-                return { ...game, point: game.point - 4 };
-            }
-            return game;
-        });
-        setWaitGameListId(updatedWaitGameListId);
+    /**
+     * 대기 명단에서 선수를 퇴장시키는 핸들러
+     * @param {number} playerId - 퇴장시킬 선수의 ID
+     */
+    const handleExit = async (playerId: number) => {
+        setWaitPlayerList((prev) => prev.filter((p) => p.id !== playerId));
+        await exitPlayer(playerId, clubId);
     };
 
     /**
-     * 플레이어를 대기 게임 목록에 추가하는 과정을 처리합니다.
-     *
-     * @param {number} playerid - 대기 게임에 들어가는 플레이어의 ID입니다.
-     *
-     * 이 함수는 다음 단계를 수행합니다:
-     * 1. 플레이어의 정보와 현재 게임 포인터를 사용하여 `waitGame` 객체를 생성합니다.
-     * 2. 플레이어가 이미 대기 게임 목록에 있는지 확인합니다.
-     * 3. 플레이어가 존재하면 목록에서 플레이어의 ID를 업데이트하고 게임 포인터를 증가시킵니다.
-     * 4. 플레이어가 존재하지 않으면 플레이어를 대기 게임 목록에 추가하고, 게임 포인터를 증가시키며,
-     *    새로운 대기 게임 항목을 생성하고 `gameOneUp`을 호출하여 게임 상태를 업데이트합니다.
-     *
-     * @returns {Promise<void>} 플레이어가 대기 게임 목록에 성공적으로 추가되면 해결되는 약속을 반환합니다.
+     * 대기 명단의 정렬 기준을 변경하는 핸들러
+     * @param {string} criteria - 정렬 기준 ('name', 'grade', 'games', 'participating', 'enterTime')
      */
-    const enterWaitGame = (playerid: number) => {
-        const waitGame: WaitGameListCLass = {
-            point: gamePointer,
-            playerid,
-            clubid: Number(id),
-        };
-        const copys = [...waitGameListId];
-
-        const existingPlayerIndex = copys.findIndex((game) => game.point === waitGame.point);
-        const playerIndex = playerList.findIndex((player) => player.id === playerid);
-
-        console.log("Existing point index:", existingPlayerIndex);
-        // 대기 게임 목록에 플레이어가 있는지 확인합니다.
-        if (existingPlayerIndex !== -1) {
-            const downGamePlayerId = copys[existingPlayerIndex].playerid;
-            const dawnGamePlayerIndex = playerList.findIndex((player) => player.id === downGamePlayerId);
-            const copyPlayerList = [...playerList];
-            copyPlayerList[dawnGamePlayerIndex].games = copyPlayerList[dawnGamePlayerIndex].games - 1;
-            setPlayerList(copyPlayerList);
-
-            copys[existingPlayerIndex].playerid = waitGame.playerid;
-
-            setWaitGameListId(copys);
-            //PlayerList 에서 게임횟수를 1 증가시킨다.
+    const handleSort = (criteria: string) => {
+        if (criteria === "participating") {
+            setSortCriteria(criteria);
+            return;
+        }
+        if (sortCriteria === criteria) {
+            setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
         } else {
-            copys.push(waitGame);
-            setWaitGameListId(copys);
-            // 대기 게임 목록에서 플레이어 ID를 업데이트하고 게임 포인터를 증가시킵니다.
-            const pointer = gamePointer + 1;
-            setGamePointer(pointer);
+            setSortCriteria(criteria);
+            setSortDirection("asc");
         }
+    };
 
-        // const sortedWaitPlayerList = [...waitPlayerList].sort((a, b) => {
-        //     const playerA = playerList.find((player) => player.id === a.Playerid);
-        //     const playerB = playerList.find((player) => player.id === b.Playerid);
-        //     return (playerA?.games || 0) - (playerB?.games || 0);
-        // });
-        // setWaitPlayerList(sortedWaitPlayerList);
+    /**
+     * 선수의 오늘 경기 수를 계산하는 헬퍼 함수
+     * @param {any[]} gameDatas - 선수의 경기 기록 날짜 배열
+     * @returns {number} 오늘 진행한 경기 수
+     */
+    const getTodayGameCount = (gameDatas: any[]) => {
+        if (!gameDatas || !Array.isArray(gameDatas)) return 0;
+        const today = new Date().toDateString();
+        return gameDatas.filter((date) => new Date(date).toDateString() === today).length;
+    };
+
+    /**
+     * 정렬 기준에 따라 대기 명단을 정렬합니다.
+     * useMemo를 사용하여 waitPlayerList, sortCriteria, sortDirection이 변경될 때만 재계산합니다.
+     * @returns {any[]} 정렬된 대기 선수 목록
+     */
+    const sortedWaitPlayerList = useMemo(() => {
+        const list = [...waitPlayerList];
+        const direction = sortDirection === "asc" ? 1 : -1;
+        switch (sortCriteria) {
+            case "name":
+                return list.sort((a, b) => a.name.localeCompare(b.name) * direction);
+            case "grade":
+                const gradeOrder: { [key: string]: number } = { S: 0, A: 1, B: 2, C: 3, D: 4, E: 5 };
+                return list.sort((a, b) => ((gradeOrder[a.grade] ?? 99) - (gradeOrder[b.grade] ?? 99)) * direction);
+            case "games":
+                return list.sort(
+                    (a, b) => (getTodayGameCount(a.gameDatas) - getTodayGameCount(b.gameDatas)) * direction,
+                );
+            case "participating":
+                return list.sort((a, b) => {
+                    const aInCourt = courts.some(
+                        (c) => c && (c.p1?.id === a.id || c.p2?.id === a.id || c.p3?.id === a.id || c.p4?.id === a.id),
+                    );
+                    const bInCourt = courts.some(
+                        (c) => c && (c.p1?.id === b.id || c.p2?.id === b.id || c.p3?.id === b.id || c.p4?.id === b.id),
+                    );
+                    const aInGrid = gridData.some((p) => p && p.id === a.id);
+                    const bInGrid = gridData.some((p) => p && p.id === b.id);
+
+                    const getScore = (inCourt: boolean, inGrid: boolean) => {
+                        if (inGrid) return 2; // 연한 녹색 (우선순위 높음)
+                        if (inCourt) return 1; // 진한 녹색
+                        return 0; // 배경색 없음
+                    };
+                    return getScore(aInCourt, aInGrid) - getScore(bInCourt, bInGrid);
+                });
+            case "enterTime":
+            default:
+                return list;
+        }
+    }, [waitPlayerList, sortCriteria, sortDirection, courts, gridData]);
+
+    /**
+     * 대기 명단(RightSection)에서 선수를 클릭했을 때, 대기 게임판(LeftBottomSection)에 추가하는 핸들러
+     * @param {any} player - 선택된 선수 정보
+     */
+    const handlePlayerSelect = async (player: any) => {
+        if (selectedCell === null) return;
+
         const updatedPlayer = {
-            ...playerList[playerIndex],
-            games: playerList[playerIndex].games + 1,
-            gameDatas: [...playerList[playerIndex].gameDatas, new Date()],
+            ...player,
+            isSaved: false,
         };
-        console.log(`Updated player: ${JSON.stringify(updatedPlayer)}`);
-        const updatedPlayerList = [...playerList];
-        updatedPlayerList[playerIndex] = updatedPlayer;
-        setPlayerList(updatedPlayerList);
-        const resule = gameOneUp(playerid);
-        console.log("gameOneUp : ", resule);
-        return;
-    };
 
-    const closePlayerList = () => {
-        setShowPlayerList(false);
-    };
+        // 그리드 데이터에 선수 추가
+        const newGridData = [...gridData];
+        newGridData[selectedCell] = updatedPlayer;
+        setGridData(newGridData);
 
-    const handleExitPlayer = (playerId: number) => {
-        exitPlayer(playerId, Number(id));
-    };
+        // 대기 명단에서 선수의 클릭 시간을 업데이트하여 순서를 조정
+        setWaitPlayerList((prev) => {
+            const newList = prev.filter((p) => p.id !== player.id);
+            return [...newList, { ...player, clickedTime: new Date() }];
+        });
 
-    const handleOnWinsUp = (playerId: number[]): number[] => {
-        if (playerId.length !== 2) {
-            return [];
-        }
-        const playerIndex1 = playerList.findIndex((player) => player.id === playerId[0]);
-        const playerIndex2 = playerList.findIndex((player) => player.id === playerId[1]);
-        const updatedPlayer = {
-            ...playerList[playerIndex1],
-            wins: playerList[playerIndex1].win + 1,
-        };
-        const updatedPlayer2 = {
-            ...playerList[playerIndex2],
-            wins: playerList[playerIndex2].win + 1,
-        };
-        const updatedPlayerList = [...playerList];
-        updatedPlayerList[playerIndex1] = updatedPlayer;
-        updatedPlayerList[playerIndex2] = updatedPlayer2;
-        setPlayerList(updatedPlayerList);
-        return [updatedPlayer.id, updatedPlayer2.id];
-    };
-
-    const enterPlayer = (playerId: number) => {
-        console.log(playerId);
-        const copyWaitPlayerList = [...waitPlayerList];
-        const existingPlayerIndex = copyWaitPlayerList.findIndex((player) => player.Playerid === playerId);
-        if (existingPlayerIndex !== -1) {
-            return;
-        }
-        const player: WaitPlayerListCLass = {
-            clubid: Number(id),
-            enterDate: new Date(),
-            exitDate: null,
-            Playerid: playerId,
-            id: null,
-        };
-        if (!player) {
-            return;
-        }
-        copyWaitPlayerList.unshift(player);
-        setWaitPlayerList(copyWaitPlayerList);
-        pushWaitPlayerList(playerId, Number(id));
-    };
-
-    const inputGame = (point: number, boardPointer: number) => {
-        if (
-            waitGameListId[waitGameListId.findIndex((game) => game.point === point)] === undefined ||
-            waitGameListId[waitGameListId.findIndex((game) => game.point === point + 1)] === undefined ||
-            waitGameListId[waitGameListId.findIndex((game) => game.point === point + 2)] === undefined ||
-            waitGameListId[waitGameListId.findIndex((game) => game.point === point + 3)] === undefined
-        ) {
-            alert("4명의 플레이어를 선택해주세요.");
-            return;
+        // 다음 비어있는 셀을 찾아 selectedCell로 설정
+        let nextCell = selectedCell + 1; // 현재 셀 다음부터 탐색 시작
+        while (nextCell < 35 && (nextCell % 5 === 0 || newGridData[nextCell])) {
+            nextCell++;
         }
 
-        const p1 = waitGameListId.find((game) => game.point === point)!.playerid;
-        const p2 = waitGameListId.find((game) => game.point === point + 1)!.playerid;
-        const p3 = waitGameListId.find((game) => game.point === point + 2)!.playerid;
-        const p4 = waitGameListId.find((game) => game.point === point + 3)!.playerid;
-
-        // boardPointer는 0부터 시작하고, 코트 번호는 1부터 시작합니다.
-        startGame(boardPointer + 1, p1, p2, p3, p4, point);
-    };
-
-    const howManyGame = (playerId: number) => {
-        const howMany1 = waitGameListId.filter((game) => game.playerid === playerId).length;
-        const houmanyInGameboard = games.filter((game) => {
-            if (game?.player1id === playerId || game?.player2id === playerId || game?.player3id === playerId) {
-                return game;
+        if (nextCell < 35) {
+            setSelectedCell(nextCell);
+        } else {
+            // 끝까지 탐색했는데 빈 셀이 없으면 처음부터 다시 탐색
+            let nextEmpty = 1;
+            while (nextEmpty < 35 && (nextEmpty % 5 === 0 || newGridData[nextEmpty])) {
+                nextEmpty++;
             }
-        }).length;
-        const howMany = howMany1 + houmanyInGameboard;
-        return howMany;
+            setSelectedCell(nextEmpty < 35 ? nextEmpty : 1);
+        }
+
+        const waitGameList = newGridData
+            .map((p, index) => (p ? { point: index, playerid: p.id, clubid: clubId } : null))
+            .filter((p) => p !== null);
+        // DB에 현재 대기 게임판 상태 저장
+        await resetWaitGames(clubId, waitGameList);
+
+        setGridData((prev) => {
+            const newData = [...prev];
+            // DB 저장 후 isSaved 상태를 true로 변경 (UI에서 삭제 버튼 표시용)
+            if (newData[selectedCell]) {
+                newData[selectedCell] = { ...newData[selectedCell], isSaved: true };
+            }
+            return newData;
+        });
     };
 
-    // 렌더링을 위한 헬퍼 함수 및 변수
-    const getGameForCourt = (courtNumber: number) => {
-        return games.find((g) => g.court === courtNumber);
+    /**
+     * '게임 시작' 버튼 클릭 핸들러
+     * @param {number} startIndex - 게임을 시작할 행의 시작 인덱스 (0, 5, 10, ...)
+     */
+    const handleGameStart = async (startIndex: number) => {
+        const p1 = gridData[startIndex + 1];
+        const p2 = gridData[startIndex + 2];
+        const p3 = gridData[startIndex + 3];
+        const p4 = gridData[startIndex + 4];
+
+        if (!p1 || !p2 || !p3 || !p4) {
+            alert("4명을 채워주세요");
+            return;
+        }
+
+        // 게임에 참여할 선수들이 이미 다른 코트에서 게임 중인지 확인
+        const newPlayers = [p1, p2, p3, p4];
+        for (const player of newPlayers) {
+            const playingCourtIndex = courts.findIndex(
+                (court) =>
+                    court &&
+                    (court.p1?.id === player.id ||
+                        court.p2?.id === player.id ||
+                        court.p3?.id === player.id ||
+                        court.p4?.id === player.id),
+            );
+
+            if (playingCourtIndex !== -1) {
+                alert(`${player.name} 선수가 ${playingCourtIndex + 1}번 코트에 들어가 있습니다.`);
+                return;
+            }
+        }
+
+        // 목표 코트가 비어있는지 확인
+        if (courts[courtPointer]) {
+            alert("해당 코트가 비어있지 않습니다.");
+            return;
+        }
+
+        // 고유한 게임 ID 생성
+        const gameId =
+            typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+                ? crypto.randomUUID()
+                : "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+                      const r = (Math.random() * 16) | 0;
+                      const v = c === "x" ? r : (r & 0x3) | 0x8;
+                      return v.toString(16);
+                  });
+        const targetCourtIndex = courtPointer;
+
+        // UI를 먼저 업데이트 (Optimistic Update)
+        setCourts((prev) => {
+            const newCourts = [...prev];
+            newCourts[targetCourtIndex] = { p1, p2, p3, p4, gameId, isLoading: true, startTime: new Date() };
+
+            let nextEmpty = -1;
+            for (let i = 0; i < newCourts.length; i++) {
+                if (!newCourts[i]) {
+                    nextEmpty = i;
+                    break;
+                }
+            }
+            if (nextEmpty !== -1) {
+                setTimeout(() => setCourtPointer(nextEmpty), 0);
+            }
+            return newCourts;
+        });
+
+        // 게임 시작한 선수들을 대기 게임판에서 제거하고 재정렬
+        const remainingPlayers = [];
+        const indicesToRemove = new Set([startIndex + 1, startIndex + 2, startIndex + 3, startIndex + 4]);
+
+        for (let i = 0; i < 35; i++) {
+            if (i % 5 !== 0 && gridData[i]) {
+                if (!indicesToRemove.has(i)) {
+                    remainingPlayers.push(gridData[i]);
+                }
+            }
+        }
+
+        const newGridData = Array(35).fill(null);
+        let playerIdx = 0;
+        for (let i = 0; i < 35; i++) {
+            if (i % 5 !== 0) {
+                if (playerIdx < remainingPlayers.length) {
+                    newGridData[i] = remainingPlayers[playerIdx];
+                    playerIdx++;
+                }
+            }
+        }
+        setGridData(newGridData);
+
+        // 다음 선택될 셀을 첫 번째 빈 칸으로 설정
+        let firstEmptyIndex = 0;
+        while (firstEmptyIndex < 35 && (firstEmptyIndex % 5 === 0 || newGridData[firstEmptyIndex])) {
+            firstEmptyIndex++;
+        }
+        setSelectedCell(firstEmptyIndex < 35 ? firstEmptyIndex : null);
+
+        try {
+            // DB에 경기 생성 및 시작 정보 기록
+            await createMatch(gameId, clubId, p1.id, p2.id, p3.id, p4.id, []);
+            await startMatch(clubId, p1.id, p2.id, p3.id, p4.id, targetCourtIndex + 1, gameId);
+
+            const playerIds = [p1.id, p2.id, p3.id, p4.id];
+            await Promise.all(playerIds.map((id) => gameOneUp(id)));
+
+            // 로컬 상태(선수 경기 수) 업데이트
+            const updatePlayerState = (p: any) => {
+                if (playerIds.includes(p.id)) {
+                    return {
+                        ...p,
+                        games: (p.games || 0) + 1,
+                        gameDatas: [...(p.gameDatas || []), new Date()],
+                    };
+                }
+                return p;
+            };
+            setWaitPlayerList((prev) => prev.map(updatePlayerState));
+            setPlayers((prev) => prev.map(updatePlayerState));
+
+            // 변경된 대기 게임판 정보를 DB에 저장
+            const waitGameList = newGridData
+                .map((p, index) => (p ? { point: index, playerid: p.id, clubid: clubId } : null))
+                .filter((p) => p !== null);
+            await resetWaitGames(clubId, waitGameList);
+            // DB 작업 완료 후 로딩 상태 해제
+            setCourts((prev) => {
+                const newCourts = [...prev];
+                if (newCourts[targetCourtIndex] && newCourts[targetCourtIndex].gameId === gameId) {
+                    newCourts[targetCourtIndex] = { ...newCourts[targetCourtIndex], isLoading: false };
+                }
+                return newCourts;
+            });
+        } catch (e) {
+            console.error(e);
+            alert("게임 생성 중 오류가 발생했습니다.");
+        }
     };
 
-    const getPlayerForGame = (playerId: number | undefined): Player => {
-        return playerList.find((p) => p.id === playerId) ?? playerList.find((p) => p.id === 12)!;
+    /**
+     * 대기 게임판에서 선수를 제거하는 핸들러
+     * @param {number} index - 제거할 선수가 있는 셀의 인덱스
+     */
+    const handleRemovePlayerFromGrid = async (index: number) => {
+        const newGridData = [...gridData];
+        newGridData[index] = null;
+        setGridData(newGridData);
+        setSelectedCell(index);
+
+        const waitGameList = newGridData
+            .map((p, index) => (p ? { point: index, playerid: p.id, clubid: clubId } : null))
+            .filter((p) => p !== null);
+        await resetWaitGames(clubId, waitGameList);
     };
 
-    const game1 = getGameForCourt(1);
-    const game2 = getGameForCourt(2);
-    const game3 = getGameForCourt(3);
-    const game4 = getGameForCourt(4);
-    const game5 = getGameForCourt(5);
-    const game6 = getGameForCourt(6);
+    /**
+     * '경기 종료' 버튼 클릭 시 결과 입력 모달을 여는 핸들러
+     * @param {number} index - 종료할 경기가 있는 코트의 인덱스
+     */
+    const handleGameEnd = (index: number) => {
+        setGameResultModal({ isOpen: true, courtIndex: index });
+    };
+
+    /**
+     * 진행 중인 경기를 취소하는 핸들러
+     * @param {number} index - 취소할 경기가 있는 코트의 인덱스
+     */
+    const handleGameCancel = async (index: number) => {
+        const courtToCancel = courts[index];
+        if (!courtToCancel || !courtToCancel.gameId) return;
+
+        if (confirm(`${index + 1}번 코트의 경기를 정말 취소하시겠습니까?`)) {
+            // 화면에 먼저 반영 (Optimistic Update)
+            setCourts((prev) => {
+                const newCourts = [...prev];
+                newCourts[index] = null;
+                return newCourts;
+            });
+
+            const playerIds = [courtToCancel.p1.id, courtToCancel.p2.id, courtToCancel.p3.id, courtToCancel.p4.id];
+            const updatePlayerState = (p: any) => {
+                if (playerIds.includes(p.id)) {
+                    return {
+                        ...p,
+                        games: Math.max(0, (p.games || 0) - 1),
+                        gameDatas: p.gameDatas?.slice(0, -1) || [],
+                    };
+                }
+                return p;
+            };
+            setWaitPlayerList((prev) => prev.map(updatePlayerState));
+            setPlayers((prev) => prev.map(updatePlayerState));
+
+            // 백그라운드에서 DB 처리
+            try {
+                await deleteMatch(courtToCancel.gameId);
+                await Promise.all(playerIds.map((id) => oneGameDown(id)));
+            } catch (e) {
+                console.error("게임 취소 실패:", e);
+                alert("게임 취소 중 오류가 발생했습니다.");
+                // 필요시 여기에 UI 롤백 로직을 추가할 수 있습니다.
+            }
+        }
+    };
+
+    /**
+     * 경기 결과 모달에서 승자를 확정하는 핸들러
+     * @param {string[]} winnersKey - 승리한 선수의 키 배열 (e.g., ['p1', 'p3'])
+     */
+    const handleGameResult = async (winnersKey: string[]) => {
+        const { courtIndex } = gameResultModal;
+        if (courtIndex === null) return;
+
+        const court = courts[courtIndex];
+        if (!court) return;
+
+        const isLeagueGame =
+            court.p1?.isJoinLeague && court.p2?.isJoinLeague && court.p3?.isJoinLeague && court.p4?.isJoinLeague;
+
+        const winnerIds = winnersKey.map((key) => court[key].id);
+
+        setCourts((prev) => {
+            const newCourts = [...prev];
+            newCourts[courtIndex] = null;
+            return newCourts;
+        });
+        setCourtPointer(courtIndex);
+        setGameResultModal({ isOpen: false, courtIndex: null });
+
+        await endMatch(court.gameId, winnerIds, isLeagueGame);
+    };
+
+    /**
+     * 선수 정보 수정 모달에서 정보를 저장하는 핸들러
+     * @param {any} updatedPlayer - 수정된 선수 정보
+     */
+    const handleUpdatePlayer = async (updatedPlayer: any) => {
+        await updatePlayer(updatedPlayer);
+        setEditModal({ isOpen: false, player: null });
+        fetchData();
+    };
+
+    /**
+     * 선수의 경기 기록을 보는 모달을 여는 핸들러
+     * @param {any} player - 기록을 볼 선수 정보
+     */
+    const handleHistoryClick = (player: any) => {
+        setHistoryModal({ isOpen: true, player });
+    };
+
+    /**
+     * 신규 선수를 생성하는 핸들러
+     * @param {any} newPlayer - 생성할 선수 정보
+     */
+    const handleCreatePlayer = async (newPlayer: any) => {
+        try {
+            const createdPlayer = await createPlayer({ ...newPlayer, clubid: clubId });
+            await pushWaitPlayerList(createdPlayer.id, clubId);
+
+            // 대기 명단 맨 위에 추가
+            setWaitPlayerList((prev) => [{ ...createdPlayer, clickedTime: new Date() }, ...prev]);
+            // 전체 선수 목록에도 추가
+            setPlayers((prev) => [...prev, createdPlayer]);
+
+            setAddModalOpen(false);
+            fetchData();
+        } catch (e) {
+            console.error("Failed to create player", e);
+        }
+    };
+
+    /**
+     * 특정 셀 인덱스가 속한 행의 4개 플레이어 셀 인덱스를 반환하는 함수
+     * @param {number | null} index - 기준 셀 인덱스
+     * @returns {number[]} 같은 행에 속한 4개 셀의 인덱스 배열
+     */
+    const getRowCells = (index: number | null) => {
+        if (index === null) return [];
+        const start = Math.floor(index / 5) * 5 + 1;
+        return [start, start + 1, start + 2, start + 3];
+    };
+
+    /**
+     * 특정 셀 인덱스가 속한 행의 선수들 이름을 문자열로 반환하는 함수
+     * @param {number | null} index - 기준 셀 인덱스
+     * @returns {string} 쉼표로 구분된 선수 이름 문자열
+     */
+    const getRowPlayerNames = (index: number | null) => {
+        if (index === null) return "없음";
+        const rowCellIndices = getRowCells(index);
+        const playerNames = rowCellIndices
+            .map((cellIndex) => gridData[cellIndex]?.name)
+            .filter((name) => name)
+            .join(", ");
+        return playerNames || "없음";
+    };
+
+    const getRowPlayerIds = (index: number | null) => {
+        if (index === null) return "없음";
+        const rowCellIndices = getRowCells(index);
+        const playerIds = rowCellIndices
+            .map((cellIndex) => gridData[cellIndex]?.id)
+            .filter((id) => id !== undefined && id !== null)
+            .join(", ");
+        return playerIds || "없음";
+    };
+
+    const getRowMatchIds = (index: number | null) => {
+        if (index === null) return "없음";
+        const rowCellIndices = getRowCells(index);
+        const rowPlayers = rowCellIndices.map((i) => gridData[i]).filter((p) => p);
+
+        if (rowPlayers.length === 0) return "선수 없음";
+
+        const rowPlayerIds = rowPlayers.map((p) => p.id);
+        const matchingMatches = matches.filter((match: any) => {
+            const matchPlayerIds = [match.player1id, match.player2id, match.player3id, match.player4id].filter(
+                (id) => id,
+            );
+            // 선택된 행의 모든 선수가 해당 경기에 포함되어 있는지 확인
+            return rowPlayerIds.every((rowPlayerId) => matchPlayerIds.includes(rowPlayerId));
+        });
+
+        if (matchingMatches.length === 0) return "없음";
+        return matchingMatches
+            .map((m: any) => {
+                const names = [m.player1id, m.player2id, m.player3id, m.player4id]
+                    .map((id) => players.find((p) => p.id === id)?.name ?? "?")
+                    .join(",");
+                return `[${names}]`;
+            })
+            .join(", ");
+    };
+
+    /**
+     * 로딩 중일 때 로딩 컴포넌트를 표시합니다.
+     */
+    if (isLoading) {
+        return <Loading />;
+    }
+
+    let displayInfoCell = selectedCell;
+    if (selectedCell !== null) {
+        const rowIndices = getRowCells(selectedCell);
+        const hasPlayers = rowIndices.some((idx) => gridData[idx]);
+        if (!hasPlayers && selectedCell >= 5) {
+            displayInfoCell = selectedCell - 5;
+        }
+    }
 
     return (
-        <div className="flex max-h-screen ">
-            {/* 좌측 화면 */}
-            <div className="flex flex-col w-3/4">
-                {/* GameCourt 3 */}
-                {/* 상단 3 부분 */}
-                <div className=" bg-gray-200 p-0">
-                    <div className="flex flex-row *:flex-auto">
-                        <div
-                            className={`w-1/2 flex-auto z-0 ${boardPointer == 0 ? "bg-green-500" : "bg-blue-100"} p-0`}
-                            onClick={() => {
-                                setBoardPointer(0);
-                            }}
-                        >
-                            <GameCourt
-                                p1={getPlayerForGame(game1?.player1id)}
-                                p2={getPlayerForGame(game1?.player2id)}
-                                p3={getPlayerForGame(game1?.player3id)}
-                                p4={getPlayerForGame(game1?.player4id)}
-                                clubid={Number(id)}
-                                court={1}
-                                gameid={game1?.gameid ?? "0"}
-                                onEndMatch={() => onEndMatch(1)}
-                                onWinsUp={handleOnWinsUp}
-                            />
-                        </div>
-                        <div
-                            className={`w-1/2 z-0 ${boardPointer == 1 ? "bg-green-500" : "bg-blue-100"}`}
-                            onClick={() => {
-                                setBoardPointer(1);
-                            }}
-                        >
-                            <GameCourt
-                                p1={getPlayerForGame(game2?.player1id)}
-                                p2={getPlayerForGame(game2?.player2id)}
-                                p3={getPlayerForGame(game2?.player3id)}
-                                p4={getPlayerForGame(game2?.player4id)}
-                                clubid={Number(id)}
-                                court={2}
-                                gameid={game2?.gameid ?? "0"}
-                                onEndMatch={() => onEndMatch(2)}
-                                onWinsUp={handleOnWinsUp}
-                            />
-                        </div>
-                        <div
-                            className={`w-1/2 z-0 ${boardPointer == 2 ? "bg-green-500" : "bg-blue-100"} p-0`}
-                            onClick={() => {
-                                setBoardPointer(2);
-                            }}
-                        >
-                            <GameCourt
-                                p1={getPlayerForGame(game3?.player1id)}
-                                p2={getPlayerForGame(game3?.player2id)}
-                                p3={getPlayerForGame(game3?.player3id)}
-                                p4={getPlayerForGame(game3?.player4id)}
-                                clubid={Number(id)}
-                                court={3}
-                                gameid={game3?.gameid ?? "0"}
-                                onEndMatch={() => onEndMatch(3)}
-                                onWinsUp={handleOnWinsUp}
-                            />
-                        </div>
-                        <div
-                            className={`${howManyCourts == 4 ? "" : "hidden"} w-1/2 z-0 ${
-                                boardPointer == 3 ? "bg-green-500" : "bg-blue-100"
-                            } p-0`}
-                            onClick={() => {
-                                setBoardPointer(3);
-                            }}
-                        >
-                            <GameCourt
-                                p1={getPlayerForGame(game4?.player1id)}
-                                p2={getPlayerForGame(game4?.player2id)}
-                                p3={getPlayerForGame(game4?.player3id)}
-                                p4={getPlayerForGame(game4?.player4id)}
-                                clubid={Number(id)}
-                                court={4}
-                                gameid={game4?.gameid ?? "0"}
-                                onEndMatch={() => onEndMatch(4)}
-                                onWinsUp={handleOnWinsUp}
-                            />
-                        </div>
-                    </div>
-                    {/* this is Second row */}
-                    <div className={`${howManyCourts == 6 ? "" : "hidden"} flex flex-row *:flex-auto`}>
-                        <div
-                            className={`w-1/2 flex-auto z-0 ${boardPointer == 3 ? "bg-green-500" : "bg-blue-100"} p-0`}
-                            onClick={() => {
-                                setBoardPointer(3);
-                            }}
-                        >
-                            <GameCourt
-                                p1={getPlayerForGame(game4?.player1id)}
-                                p2={getPlayerForGame(game4?.player2id)}
-                                p3={getPlayerForGame(game4?.player3id)}
-                                p4={getPlayerForGame(game4?.player4id)}
-                                clubid={Number(id)}
-                                court={4}
-                                gameid={game4?.gameid ?? "0"}
-                                onEndMatch={() => onEndMatch(4)}
-                                onWinsUp={handleOnWinsUp}
-                            />
-                        </div>
-                        <div
-                            className={`w-1/2 z-0 ${boardPointer == 4 ? "bg-green-500" : "bg-blue-100"}`}
-                            onClick={() => {
-                                setBoardPointer(4);
-                            }}
-                        >
-                            <GameCourt
-                                p1={getPlayerForGame(game5?.player1id)}
-                                p2={getPlayerForGame(game5?.player2id)}
-                                p3={getPlayerForGame(game5?.player3id)}
-                                p4={getPlayerForGame(game5?.player4id)}
-                                clubid={Number(id)}
-                                court={5}
-                                gameid={game5?.gameid ?? "0"}
-                                onEndMatch={() => onEndMatch(5)}
-                                onWinsUp={handleOnWinsUp}
-                            />
-                        </div>
-                        <div
-                            className={`w-1/2 z-0 ${boardPointer == 5 ? "bg-green-500" : "bg-blue-100"} p-0`}
-                            onClick={() => {
-                                setBoardPointer(5);
-                            }}
-                        >
-                            <GameCourt
-                                p1={getPlayerForGame(game6?.player1id)}
-                                p2={getPlayerForGame(game6?.player2id)}
-                                p3={getPlayerForGame(game6?.player3id)}
-                                p4={getPlayerForGame(game6?.player4id)}
-                                clubid={Number(id)}
-                                court={6}
-                                gameid={game6?.gameid ?? "0"}
-                                onEndMatch={() => onEndMatch(6)}
-                                onWinsUp={handleOnWinsUp}
-                            />
-                        </div>
-                    </div>
+        <div className="flex h-screen p-4 gap-4">
+            <div className="w-[70%] flex flex-col gap-4">
+                <LeftTopSection
+                    howManyCourts={howManyCourts}
+                    courtPointer={courtPointer}
+                    setCourtPointer={setCourtPointer}
+                    courts={courts}
+                    onGameEnd={handleGameEnd}
+                    onGameCancel={handleGameCancel}
+                />
+                <div className="flex items-center justify-center p-2 bg-gray-100 border rounded-md text-sm text-gray-700 shadow-sm">
+                    {displayInfoCell !== null ? <span>{getRowMatchIds(displayInfoCell)}</span> : "선택된 셀 없음"}
                 </div>
-
-                <div className="flex flex-row p-4">
-                    {/* 하단 7 부분 */}
-                    <div className="flex flex-row w-12 justify-center bg-green-200 ">
-                        <div className="flex flex-col mt-1 h-full gap-1 *:flex *:justify-center *:items-center *:text-2xl *:h-16">
-                            <div
-                                className="bg-red-200"
-                                onClick={() => {
-                                    const game = getGameForCourt(boardPointer + 1);
-                                    if (game && game.player1id !== 12) {
-                                        alert("코트가 비어있지 않습니다.");
-                                    } else {
-                                        inputGame(0, boardPointer);
-                                    }
-                                }}
-                            >
-                                <div>
-                                    <span className="flex text-base">게임</span>
-                                    <span className="flex text-base">시작</span>
-                                </div>
-                            </div>
-                            <div
-                                className="bg-blue-200"
-                                onClick={() => {
-                                    const game = getGameForCourt(boardPointer + 1);
-                                    if (game && game.player1id !== 12) {
-                                        alert("코트가 비어있지 않습니다.");
-                                    } else {
-                                        inputGame(4, boardPointer);
-                                    }
-                                }}
-                            >
-                                <div>
-                                    <span className="flex text-base">게임</span>
-                                    <span className="flex text-base">시작</span>
-                                </div>
-                            </div>
-                            <div
-                                className="bg-yellow-200"
-                                onClick={() => {
-                                    const game = getGameForCourt(boardPointer + 1);
-                                    if (game && game.player1id !== 12) {
-                                        alert("코트가 비어있지 않습니다.");
-                                    } else {
-                                        inputGame(8, boardPointer);
-                                    }
-                                }}
-                            >
-                                <div>
-                                    <span className="flex text-base">게임</span>
-                                    <span className="flex text-base">시작</span>
-                                </div>
-                            </div>
-                            <div
-                                className="bg-purple-200"
-                                onClick={() => {
-                                    const game = getGameForCourt(boardPointer + 1);
-                                    if (game && game.player1id !== 12) {
-                                        alert("코트가 비어있지 않습니다.");
-                                    } else {
-                                        inputGame(12, boardPointer);
-                                    }
-                                }}
-                            >
-                                <div>
-                                    <span className="flex text-base">게임</span>
-                                    <span className="flex text-base">시작</span>
-                                </div>
-                            </div>
-                            <div
-                                className="bg-pink-200"
-                                onClick={() => {
-                                    const game = getGameForCourt(boardPointer + 1);
-                                    if (game && game.player1id !== 12) {
-                                        alert("코트가 비어있지 않습니다.");
-                                    } else {
-                                        inputGame(16, boardPointer);
-                                    }
-                                }}
-                            >
-                                <div>
-                                    <span className="flex text-base">게임</span>
-                                    <span className="flex text-base">시작</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex-grow grid grid-cols-4 gap-1">
-                        {Array.from({ length: 32 }, (_, index) => (
-                            <div
-                                key={"game" + index}
-                                className={`h-16 ${gamePointer == index ? "bg-red-200" : "bg-blue-200"}`}
-                                onClick={async () => {
-                                    console.log("before : ", waitGameListId);
-                                    const playerIndex = waitGameListId.findIndex((player) => player.point === index);
-                                    console.log("playerIndex : ", playerIndex);
-                                    if (playerIndex !== -1) {
-                                        const copyPlayer = [...playerList];
-                                        const copyPlayerIndex = copyPlayer.findIndex(
-                                            (player) => player.id === waitGameListId[playerIndex].playerid,
-                                        );
-                                        oneGameDown(copyPlayer[copyPlayerIndex].id);
-                                        copyPlayer[copyPlayerIndex].games = copyPlayer[copyPlayerIndex].games - 1;
-                                        setPlayerList(copyPlayer);
-                                        const copyWaitGames = [...waitGameListId];
-                                        copyWaitGames.splice(playerIndex, 1);
-                                        setWaitGameListId(copyWaitGames);
-                                        console.log("after : ", copyWaitGames);
-                                    }
-
-                                    setGamePointer(index);
-                                }}
-                            >
-                                {waitGameListId.map((game, idx) => {
-                                    if (game.point == index) {
-                                        const player: Player | undefined = playerList.find(
-                                            (player) => player.id === game.playerid,
-                                        );
-                                        if (player) {
-                                            return (
-                                                <div key={idx} className="flex flex-col -z-10">
-                                                    <PlayerCard {...player} />
-                                                </div>
-                                            );
-                                            return null;
-                                        }
-                                    }
-                                })}
-                            </div>
-                        ))}
-                    </div>
-                </div>
-                {/* {gamePointer} */}
-                {/* {game1?.gameid}
-                {game2?.gameid}
-                {game3?.gameid} */}
+                <LeftBottomSection
+                    selectedCell={selectedCell}
+                    onCellClick={setSelectedCell}
+                    gridData={gridData}
+                    onRemovePlayer={handleRemovePlayerFromGrid}
+                    onGameStart={handleGameStart}
+                />
             </div>
-            {/* 우측 화면 */}
-            <div className="w-1/4 bg-gray-400 p-4 h-screen overflow-y-auto">
-                <div className="flex flex-row justify-between items-center">
-                    <div>{waitPlayerList.length} 명</div>
-                    {isPending && (
-                        <div className="flex items-center justify-center">
-                            <svg
-                                className="animate-spin h-5 w-5 mr-3 text-white"
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                            >
-                                <circle
-                                    className="opacity-25"
-                                    cx="12"
-                                    cy="12"
-                                    r="10"
-                                    stroke="currentColor"
-                                    strokeWidth="4"
-                                ></circle>
-                                <path
-                                    className="opacity-75"
-                                    fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                ></path>
-                            </svg>
-                            로딩중...
-                        </div>
-                    )}
-                    <EllipsisVerticalIcon
-                        onClick={() => {
-                            setShowEdit(!showEdit);
-                        }}
-                        className="w-6 h-6"
-                    ></EllipsisVerticalIcon>
-                </div>
-                <div>
-                    <div className="flex flex-row *:w-1/2 *:flex *:text-center *:justify-center *:items-center *:bg-blue-500 *:rounded-lg gap-1 my-2 *:shadow-lg *:text-white h-8 *:cursor-pointer">
-                        <div
-                            onClick={() => {
-                                setHowSort("games");
-                                sortWaitPlayerByGames();
-                            }}
-                        >
-                            경기수
-                        </div>
-                        <div
-                            onClick={() => {
-                                setHowSort("name");
-                                sortWaitPlayerByNames();
-                            }}
-                        >
-                            이름순
-                        </div>
-                    </div>
-                    <div className="flex flex-row flex-wrap gap-2">
-                        {waitPlayerList.map((waitPlayer, index) => {
-                            const playerData: Player | undefined = playerList.find(
-                                (player) => player.id === waitPlayer.Playerid,
-                            );
-                            if (!playerData) {
-                                return (
-                                    <div key={index}>
-                                        <p>데이터베이스 동기화가 필요합니다.</p>
-                                        <p>DB 연동을 눌러주세요</p>
-                                    </div>
-                                );
-                            }
-                            return (
-                                <div
-                                    key={`wait ${playerData?.id}`}
-                                    className={`flex flex-col w-auto relative rounded-xl border-2 ${
-                                        howManyGame(playerData!.id) >= 1 ? "border-green-400" : null
-                                    }`}
-                                >
-                                    <div
-                                        className="flex flex-col"
-                                        onClick={() => {
-                                            enterWaitGame(playerData!.id);
-                                        }}
-                                    >
-                                        <div key={playerData?.id} className="flex flex-col z-1">
-                                            {playerData && <PlayerCard {...playerData} />}
-                                        </div>
-                                    </div>
-                                    <button
-                                        className="absolute -right-3 -top-3 z-10 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg"
-                                        onClick={() => {
-                                            const data = [...waitPlayerList];
-                                            const playerid = data[index].Playerid;
-                                            data.splice(index, 1);
-                                            const result = handleExitPlayer(playerid);
-                                            console.log("handleExitPlayer : ", result);
-                                            setWaitPlayerList(data);
-                                        }}
-                                    >
-                                        <span className="text-xs">×</span>
-                                    </button>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-                {/* test button */}
-                {!isResetPending && (
-                    <button
-                        className="bg-blue-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
-                        onClick={() => {
-                            // makePlayer(1, 6);
-                            sendMessage("hellow from server");
-                            resetPlayer(Number(id));
-                        }}
-                    >
-                        DB 동기화
-                    </button>
-                )}
-                {isResetPending && (
-                    <button
-                        className="bg-blue-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
-                        disabled
-                    >
-                        <svg
-                            className="animate-spin h-5 w-5 mr-3 text-white"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                        >
-                            <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                            ></circle>
-                            <path
-                                className="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                        </svg>
-                        로딩중...
-                    </button>
-                )}
-                {/* ClearList Button */}
-                {/* <button
-                    className="bg-red-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
-                    onClick={() => {
-                        if (confirm("Are you sure?")) {
-                            setWaitPlayerList([]);
-                        }
-                    }}
-                >
-                    Clear List
-                </button> */}
-            </div>
-            {/* 우측 하단 고정 아이콘 */}
-            <div className="fixed z-50 bottom-4 right-4">
+            <RightSection
+                waitPlayerList={sortedWaitPlayerList}
+                onExit={handleExit}
+                onPlayerClick={handlePlayerSelect}
+                gridData={gridData}
+                courts={courts}
+                onSort={handleSort}
+                currentSort={sortCriteria}
+                onEdit={(player) => setEditModal({ isOpen: true, player })}
+                onHistoryClick={handleHistoryClick}
+            />
+
+            <GameResultModal
+                isOpen={gameResultModal.isOpen}
+                onClose={() => setGameResultModal({ ...gameResultModal, isOpen: false })}
+                players={gameResultModal.courtIndex !== null ? courts[gameResultModal.courtIndex] : null}
+                onConfirm={handleGameResult}
+            />
+
+            <EditPlayerModal
+                isOpen={editModal.isOpen}
+                onClose={() => setEditModal({ ...editModal, isOpen: false })}
+                player={editModal.player}
+                onConfirm={handleUpdatePlayer}
+            />
+
+            <PlayerHistoryModal
+                isOpen={historyModal.isOpen}
+                onClose={() => setHistoryModal({ isOpen: false, player: null })}
+                player={historyModal.player}
+            />
+
+            <AddPlayerModal
+                isOpen={addModalOpen}
+                onClose={() => setAddModalOpen(false)}
+                onConfirm={handleCreatePlayer}
+            />
+
+            <div className="fixed bottom-4 right-4">
                 <button
-                    className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg"
-                    onClick={togglePlayerList}
+                    className="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors"
+                    onClick={() => setShowPlayerList(true)}
                 >
-                    <span className="text-3xl">+</span>
+                    <span className="text-3xl pb-1">+</span>
                 </button>
             </div>
+
             {showPlayerList && (
-                <div className="fixed top-0 z-50 right-0 w-full bg-black bg-opacity-50 flex flex-wrap items-center justify-center">
-                    <button
-                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg"
-                        onClick={togglePlayerList}
-                    >
-                        <span className="text-xl">×</span>
-                    </button>
-                    <WaitPlayerList
-                        onClose={closePlayerList}
-                        onEnterPlayer={enterPlayer}
-                        waitPLayerList={waitPlayerList}
-                        clubid={Number(id)}
-                    />
-                </div>
-            )}
-            {showEdit && (
-                <div className="fixed top-10 right-4 bg-white shadow-lg rounded-lg p-4">
-                    <div className="text-center">
-                        <Link href={`/editClub/${id}`} className="text-blue-500 hover:text-blue-700">
-                            클럽 정보 수정
-                        </Link>
+                <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
+                    <div className="absolute top-10 right-10 bg-white rounded-lg p-6 w-96 max-h-[80vh] overflow-y-auto">
+                        <button
+                            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                            onClick={() => setShowPlayerList(false)}
+                        >
+                            <span className="text-2xl">×</span>
+                        </button>
+                        <div className="flex justify-between items-center mb-4 pr-6">
+                            <h2 className="text-xl font-bold">Players List</h2>
+                            <button
+                                className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600"
+                                onClick={() => {
+                                    setAddModalOpen(true);
+                                    setShowPlayerList(false);
+                                }}
+                            >
+                                선수 추가
+                            </button>
+                        </div>
+                        <input
+                            type="text"
+                            placeholder="이름 검색"
+                            className="w-full p-2 mb-4 border border-gray-300 rounded"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <div className="flex flex-col gap-2">
+                            {players
+                                .filter((player) => {
+                                    const name = player.name;
+                                    const search = searchTerm;
+                                    return (
+                                        name.toLowerCase().includes(search.toLowerCase()) ||
+                                        getChosung(name).includes(search)
+                                    );
+                                })
+                                .sort((a, b) => a.name.localeCompare(b.name))
+                                .map((player, index) => (
+                                    <div
+                                        key={index}
+                                        className="flex items-center gap-3 p-3 border rounded hover:bg-gray-50 cursor-pointer"
+                                        onClick={() => {
+                                            if (waitPlayerList.some((p) => p.id === player.id)) {
+                                                alert("이미 입장한 선수입니다");
+                                                return;
+                                            }
+                                            setShowPlayerList(false);
+                                            setWaitPlayerList((prev) => [
+                                                { ...player, clickedTime: new Date() },
+                                                ...prev,
+                                            ]);
+                                            pushWaitPlayerList(player.id, clubId);
+                                        }}
+                                    >
+                                        <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+                                            {player.avater ? (
+                                                <img
+                                                    src={
+                                                        player.avater?.startsWith("https://imagedelivery.net/")
+                                                            ? `${player.avater}/avatar`
+                                                            : player.avater
+                                                    }
+                                                    alt={player.name}
+                                                    className="w-full h-full object-cover"
+                                                />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                                                    No Img
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-bold">{player.name}</span>
+                                                {player.isJoinLeague && (
+                                                    <span className="px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs font-bold">
+                                                        리그참가
+                                                    </span>
+                                                )}
+                                            </div>
+                                            <span className="text-sm text-gray-500">
+                                                {player.age} • {player.grade}조
+                                            </span>
+                                        </div>
+                                    </div>
+                                ))}
+                        </div>
                     </div>
                 </div>
             )}

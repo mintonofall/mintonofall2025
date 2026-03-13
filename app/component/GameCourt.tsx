@@ -1,10 +1,23 @@
 "use client";
 
+/**
+ * @file /app/component/GameCourt.tsx
+ * @description 개별 게임 코트의 상태를 표시하고, 경기 종료 및 승자 선택 기능을 제공하는 컴포넌트입니다.
+ * @author Treebird
+ * @date 2024-07-16
+ * @note 현재 메인 대시보드에서는 LeftTopSection 내부의 간소화된 코트 UI를 사용하며, 이 컴포넌트는 다른 페이지나 이전 버전에서 사용될 수 있습니다.
+ */
 import { endMatch } from "@/lib/getUserGoHome";
 import Image from "next/image";
 import { useState } from "react";
 import { Player } from "@/lib/interface";
 
+/**
+ * GameCourt 컴포넌트의 props 인터페이스
+ * @interface gameplayers
+ * @property {Player} p1 - 플레이어 1 정보
+ * ... (p2, p3, p4)
+ */
 interface gameplayers {
     p1: Player;
     p2: Player;
@@ -17,15 +30,35 @@ interface gameplayers {
     onWinsUp: (winner: number[]) => void;
 }
 
+/**
+ * 개별 게임 코트 컴포넌트
+ */
 export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, onWinsUp }: gameplayers) {
+    /** @type {boolean} 경기 결과(승자 선택) 모달 표시 여부 상태 */
     const [isShowResult, setIsShowResult] = useState(false);
+    /** @type {number[]} 승자로 선택된 선수의 인덱스(1-4)를 저장하는 배열 */
     const [winnerpoint, setWinnerpoint] = useState<number[]>([]);
-    const player1Avatar = p1?.avater ? p1.avater + "/avatar" : "/guest.png";
-    const player2Avatar = p2?.avater ? p2.avater + "/avatar" : "/guest.png";
-    const player3Avatar = p3?.avater ? p3.avater + "/avatar" : "/guest.png";
-    const player4Avatar = p4?.avater ? p4.avater + "/avatar" : "/guest.png";
+
+    // 각 플레이어의 아바타 URL 처리 (기본 이미지 포함)
+    const player1Avatar = p1?.avater?.startsWith("https://imagedelivery.net/")
+        ? `${p1.avater}/avatar`
+        : p1?.avater || "/guest.png";
+    const player2Avatar = p2?.avater?.startsWith("https://imagedelivery.net/")
+        ? `${p2.avater}/avatar`
+        : p2?.avater || "/guest.png";
+    const player3Avatar = p3?.avater?.startsWith("https://imagedelivery.net/")
+        ? `${p3.avater}/avatar`
+        : p3?.avater || "/guest.png";
+    const player4Avatar = p4?.avater?.startsWith("https://imagedelivery.net/")
+        ? `${p4.avater}/avatar`
+        : p4?.avater || "/guest.png";
     console.log(court);
 
+    /**
+     * 경기 종료 로직을 처리하는 함수. DB에 경기 결과를 업데이트합니다.
+     * @param {string} gameid - 종료할 경기의 ID
+     * @param {number[]} winner - 승리한 선수의 인덱스(1-4) 배열
+     */
     const endMatchFunction = async (gameid: string, winner: number[]) => {
         const players = [p1, p2, p3, p4];
         console.log("endMatchFunction", players);
@@ -38,6 +71,11 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
         onWinsUp(newWinners);
         await endMatch(gameid, newWinners);
     };
+
+    /**
+     * 승자 선택 모달에서 플레이어를 클릭했을 때 호출되는 함수를 반환하는 고차 함수.
+     * @param {number} winner - 클릭된 플레이어의 인덱스 (1-4)
+     */
     function selectWinner(winner: number) {
         return function () {
             console.log("Winner is:", winner);
@@ -63,7 +101,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
     return (
         <>
             <div className="flex flex-col w-full h-full p-1 space-y-0 z-0">
-                {/* <div className="text-lg font-semibold text-center text-gray-700">Court {court}</div> */}
+                {/* 상단 팀 (플레이어 1, 2) */}
                 <div className="flex h-1/2 space-x-0">
                     <div className="flex flex-row justify-center items-center w-1/2 bg-blue-300 p-0 rounded-lg shadow-md">
                         <div className="rounded-full overflow-hidden">
@@ -102,6 +140,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                         </div>
                     </div>
                 </div>
+                {/* 하단 팀 (플레이어 3, 4) */}
                 <div className="flex h-1/2 space-x-0">
                     <div className="flex flex-row justify-center items-center w-1/2 bg-red-200 p-0 rounded-lg shadow-md">
                         <div className="rounded-full overflow-hidden">
@@ -140,6 +179,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                         </div>
                     </div>
                 </div>
+                {/* 게임 종료 버튼 */}
                 <div className="flex flex-row justify-center items-center space-x-4">
                     <div
                         className="text-center bg-red-500 text-white w-1/2 rounded-full cursor-pointer py-0"
@@ -150,6 +190,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                 </div>
             </div>
 
+            {/* 승자 선택 모달 */}
             <div
                 className={`fixed left-0 top-72 w-full h-full bg-black bg-opacity-50  ${
                     isShowResult ? "block" : "hidden"
@@ -227,6 +268,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                         </div>
                     </div>
                     <div className="flex flex-row justify-center text-center gap-1">
+                        {/* 결과 입력 버튼 */}
                         <button
                             className="bg-blue-500 text-white rounded-lg px-4 py-2"
                             onClick={() => {
@@ -249,6 +291,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                         >
                             결과입력
                         </button>
+                        {/* 취소 버튼 */}
                         <button
                             className="bg-blue-500 text-white rounded-lg px-4 py-2"
                             onClick={() => {

@@ -1,5 +1,24 @@
+/**
+ * @file /app/home/[id]/RightSection.tsx
+ * @description 메인 대시보드의 오른쪽 섹션. 입장한 선수 목록(대기 명단)을 표시하고 관리합니다.
+ * @author Treebird
+ * @date 2024-07-16
+ */
 import { useEffect, useState } from "react";
 
+/**
+ * RightSection 컴포넌트
+ * @param {object} props - 컴포넌트 프로퍼티
+ * @param {any[]} props.waitPlayerList - 대기 선수 목록 배열
+ * @param {(id: number) => void} props.onExit - 선수 퇴장 처리 함수
+ * @param {(player: any) => void} props.onPlayerClick - 선수 클릭(게임판에 추가) 처리 함수
+ * @param {any[]} props.gridData - 현재 게임판 데이터 (선수 상태 표시에 사용)
+ * @param {any[]} props.courts - 현재 코트 데이터 (선수 상태 표시에 사용)
+ * @param {(criteria: string) => void} props.onSort - 정렬 기준 변경 함수
+ * @param {string} props.currentSort - 현재 정렬 기준
+ * @param {(player: any) => void} props.onEdit - 선수 정보 수정 모달 열기 함수
+ * @param {(player: any) => void} props.onHistoryClick - 선수 경기 기록 모달 열기 함수
+ */
 export default function RightSection({
     waitPlayerList = [],
     onExit,
@@ -21,12 +40,18 @@ export default function RightSection({
     onEdit?: (player: any) => void;
     onHistoryClick?: (player: any) => void;
 }) {
+    /** @type {Date} 현재 시간을 저장하는 상태. 1분마다 업데이트되어 경과 시간을 다시 계산합니다. */
     const [now, setNow] = useState(new Date());
 
+    /**
+     * 1분마다 현재 시간을 업데이트하는 `useEffect`
+     */
     useEffect(() => {
         const interval = setInterval(() => {
             setNow(new Date());
         }, 60000);
+
+        // 컴포넌트 언마운트 시 인터벌 정리
         return () => clearInterval(interval);
     }, []);
 
@@ -43,6 +68,11 @@ export default function RightSection({
         return minutes < 1 ? "방금 전" : `${minutes}분 전`;
     };
 
+    /**
+     * 선수의 오늘 경기 횟수를 계산하는 함수
+     * @param {any[]} gameDatas - 선수의 경기 날짜 기록 배열
+     * @returns {number} 오늘 진행한 경기 수
+     */
     const getTodayGameCount = (gameDatas: any[]) => {
         if (!gameDatas || !Array.isArray(gameDatas)) return 0;
         const today = new Date().toDateString();
@@ -82,6 +112,7 @@ export default function RightSection({
             </div>
             <div className="flex flex-col gap-2 mt-4 overflow-y-auto flex-1">
                 {waitPlayerList.map((player, index) => {
+                    // 선수가 현재 코트에서 게임 중인지 확인
                     const isPlaying = courts.some(
                         (court) =>
                             court &&
@@ -94,6 +125,7 @@ export default function RightSection({
                     return (
                         <div
                             key={player.id}
+                            // 선수의 상태(대기판에 있는지, 게임 중인지)에 따라 배경색을 다르게 표시
                             className={`relative p-2 rounded shadow flex justify-between items-center cursor-pointer hover:bg-gray-50 ${
                                 gridData.some((p) => p && p.id === player.id)
                                     ? "bg-green-100"
@@ -104,6 +136,7 @@ export default function RightSection({
                             onClick={() => onPlayerClick?.(player)}
                         >
                             <button
+                                // 퇴장 버튼
                                 className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-gray-200/50 hover:bg-red-100 rounded-full shadow-sm text-gray-500 hover:text-red-600 transition-colors"
                                 onClick={(e) => {
                                     e.stopPropagation();
@@ -113,10 +146,15 @@ export default function RightSection({
                                 <span className="text-xs font-bold">✕</span>
                             </button>
                             <div className="flex items-center gap-3">
+                                {/* 선수 아바타 */}
                                 <div className="w-16 h-16 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
                                     {player.avater ? (
                                         <img
-                                            src={`${player.avater}`}
+                                            src={
+                                                player.avater?.startsWith("https://imagedelivery.net/")
+                                                    ? `${player.avater}/avatar`
+                                                    : player.avater
+                                            }
                                             alt={player.name}
                                             className="w-full h-full object-cover"
                                         />
@@ -126,6 +164,7 @@ export default function RightSection({
                                         </div>
                                     )}
                                 </div>
+                                {/* 선수 정보 (이름, 마지막 게임 시간, 리그 참가 여부 등) */}
                                 <div className="flex flex-col">
                                     <div className="flex items-center gap-2">
                                         <span className="font-bold text-sm ">{player.name}</span>
@@ -143,8 +182,10 @@ export default function RightSection({
                                     </span>
                                 </div>
                             </div>
+                            {/* 선수별 액션 버튼 (기록 보기, 수정) */}
                             <div className="flex flex-row gap-2 items-center justify-center pr-2">
                                 <button
+                                    // 경기 기록 보기 버튼
                                     className="w-8 h-8 flex items-center justify-center bg-white hover:bg-gray-100 rounded-full shadow text-gray-600 transition-colors"
                                     onClick={(e) => {
                                         e.stopPropagation();
@@ -167,6 +208,7 @@ export default function RightSection({
                                     </svg>
                                 </button>
                                 <button
+                                    // 선수 정보 수정 버튼
                                     className="w-8 h-8 flex items-center justify-center bg-white hover:bg-gray-100 rounded-full shadow text-gray-600 transition-colors"
                                     onClick={(e) => {
                                         e.stopPropagation();

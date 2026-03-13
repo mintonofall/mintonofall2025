@@ -436,6 +436,23 @@ export const endMatch = async (matchId: string, winner: number[], isLeagueGame: 
     }
 };
 
+export const getMatchs = async (clubid: number) => {
+    const todayStart = getKoreaMidnight();
+    const todayEnd = new Date(todayStart);
+    todayEnd.setDate(todayEnd.getDate() + 1);
+
+    const matchs = await db.match.findMany({
+        where: {
+            clubid,
+            startTime: {
+                gte: todayStart,
+                lt: todayEnd,
+            },
+        },
+    });
+    return matchs;
+};
+
 export const getMatch = async (clubid: number) => {
     const match = await db.gameBoard.findMany({
         where: {
@@ -447,24 +464,26 @@ export const getMatch = async (clubid: number) => {
     });
     console.log("mTime :", match[0].updateTime);
     console.log("NTime : ", new Date(getKoreaMidnight()));
-    match.map(async (m) => {
-        if (m.updateTime === null || m.updateTime < new Date(new Date().setHours(0, 0, 0, 0))) {
-            console.log("m : ", m);
-            m.player1id = 12;
-            m.player2id = 12;
-            m.player3id = 12;
-            m.player4id = 12;
-            m.gameid = "0";
-            m.updateTime = new Date();
-            await db.gameBoard.update({
-                where: {
-                    id: m.id,
-                },
+    await Promise.all(
+        match.map(async (m) => {
+            if (m.updateTime === null || m.updateTime < new Date(new Date().setHours(0, 0, 0, 0))) {
+                console.log("m : ", m);
+                m.player1id = 12;
+                m.player2id = 12;
+                m.player3id = 12;
+                m.player4id = 12;
+                m.gameid = "0";
+                m.updateTime = new Date();
+                await db.gameBoard.update({
+                    where: {
+                        id: m.id,
+                    },
 
-                data: m,
-            });
-        }
-    });
+                    data: m,
+                });
+            }
+        }),
+    );
     // const copy = await db.gameBoard.findMany({
     //     where: {
     //         clubid,

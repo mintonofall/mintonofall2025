@@ -1,5 +1,13 @@
 "use client";
 
+/**
+ * @file /app/diary/[clubid]/page.tsx
+ * @description 경기 결과를 수동으로 기록하는 페이지 컴포넌트입니다.
+ * URL에서 클럽 ID를 파라미터로 받아 해당 클럽의 선수 목록을 표시하고,
+ * 4명의 선수를 선택하여 경기 결과를 입력하고 저장하는 기능을 제공합니다.
+ * @author Treebird
+ * @date 2024-07-16
+ */
 import { useEffect, useState } from "react";
 import { getPlayersFromClub, getWinToday, makeMatch } from "@/lib/getClubDiary";
 import { PlayerDiary } from "@/lib/interface";
@@ -7,13 +15,6 @@ import ScoreInput from "@/app/component/ScoreInput";
 // import { MinusCircleIcon, PlusCircleIcon } from "@heroicons/react/24/outline"; // ScoreInput으로 이동
 import getSessionClient from "@/lib/sessionClient";
 import Link from "next/link";
-/**
- * 경기 결과를 기록하는 다이어리 페이지 컴포넌트입니다.
- * URL에서 userid를 파라미터로 받아 해당 클럽의 선수 목록을 표시하고,
- * 경기 결과를 입력하고 저장하는 기능을 제공합니다.
- * @param {object} params - 페이지 파라미터
- * @param {Promise<{ userid: number }>} params.params - 클럽 ID를 포함하는 Promise 객체
- */
 export default function Diary({ params }: { params: Promise<{ userid: number }> }) {
     // --- 상태 관리 (State Management) ---
     /** @type {PlayerDiary[]} 대기 선수 목록. 경기에 참여할 수 있는 전체 선수 리스트입니다. */
@@ -81,7 +82,7 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
         // 대기 선수 목록에서 lastGameDate를 현재 시간으로 낙관적 업데이트합니다.
         // 이를 통해 UI에서 선수의 마지막 경기 시간을 즉시 반영할 수 있습니다.
         setWaitPlayerList((currentWaitList) =>
-            currentWaitList.map((p) => (p.id === player.id ? { ...p, lastGameDate: new Date() } : p))
+            currentWaitList.map((p) => (p.id === player.id ? { ...p, lastGameDate: new Date() } : p)),
         );
     }
 
@@ -142,7 +143,7 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
         setWaitPlayerList((currentWaitList) =>
             currentWaitList
                 .map((p) => (allPlayerIds.includes(p.id) ? { ...p, lastGameDate: new Date() } : p))
-                .sort((a, b) => (b.lastGameDate?.getTime() || 0) - (a.lastGameDate?.getTime() || 0))
+                .sort((a, b) => (b.lastGameDate?.getTime() || 0) - (a.lastGameDate?.getTime() || 0)),
         );
 
         const datas = await getWinToday(userid);
@@ -220,7 +221,7 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                                 setWaitPlayerList(firstWaitPlayerList);
                             } else {
                                 const filteredPlayers = firstWaitPlayerList.filter((player) =>
-                                    player.name.includes(term)
+                                    player.name.includes(term),
                                 );
                                 setWaitPlayerList(filteredPlayers);
                             }

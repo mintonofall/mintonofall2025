@@ -1,6 +1,13 @@
+/**
+ * @file /app/component/ScoreInput.tsx
+ * @description 경기 점수를 입력하고 조작하는 UI 컴포넌트입니다.
+ * @author Treebird
+ * @date 2024-07-16
+ */
 import { MinusCircleIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import React from "react";
 
+/** ScoreInput 컴포넌트의 props 인터페이스 */
 interface ScoreInputProps {
     score1: number;
     setScore1: React.Dispatch<React.SetStateAction<number>>;

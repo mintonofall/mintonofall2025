@@ -2,6 +2,11 @@
 import db from "./db";
 import { getKoreaMidnight } from "./getKoreaTime";
 
+/**
+ * 특정 클럽의 다이어리 정보를 가져옵니다.
+ * @param {number} clubid - 클럽 ID
+ * @returns {Promise<any[]>} 클럽 다이어리 데이터 배열
+ */
 export async function getClubDiary(clubid: number) {
     const data = await db.clubDiary.findMany({
         where: {
@@ -11,6 +16,14 @@ export async function getClubDiary(clubid: number) {
     return data;
 }
 
+/**
+ * 특정 클럽에 속한 모든 선수 목록을 가져옵니다.
+ * isMe (본인) 여부와 마지막 게임 날짜를 기준으로 정렬합니다.
+ * @param {number} clubid - 클럽 ID
+ * @returns {Promise<any[]>} 선수 정보 배열
+ * @deprecated 현재 `getUserGoHome.ts`의 `getClub` 함수가 선수 목록을 포함하여 반환하므로, 직접 사용되는 경우는 적을 수 있습니다.
+ * 하지만 `diary` 페이지 등에서 직접 사용될 수 있습니다.
+ */
 export async function getPlayersFromClub(clubid: number) {
     console.log("clubID from server : ", clubid);
     const data = await db.playerDiary.findMany({
@@ -45,6 +58,19 @@ export async function getPlayersFromClub(clubid: number) {
     return data;
 }
 
+/**
+ * 새로운 경기(Match)를 생성하고, 참여한 선수들의 마지막 게임 날짜를 업데이트합니다.
+ * @param {number[]} players - 경기에 참여한 모든 선수의 ID 배열
+ * @param {number} userid - 작업을 수행하는 사용자(클럽 관리자)의 ID
+ * @param {number} clubid - 클럽 ID
+ * @param {number} [winner1id] - 승리팀 선수1 ID
+ * @param {number} [winner2id] - 승리팀 선수2 ID
+ * @param {number} [score1] - 팀1 점수
+ * @param {number} [score2] - 팀2 점수
+ * @param {Date} [startTime] - 경기 시작 시간
+ * @param {Date} [endTime] - 경기 종료 시간
+ * @returns {Promise<any>} 생성된 경기 데이터
+ */
 export async function makeMatch(
     players: number[],
     userid: number,
@@ -80,6 +106,11 @@ export async function makeMatch(
     return data;
 }
 
+/**
+ * 특정 사용자의 오늘 경기 승/패, 득/실점을 계산하여 반환합니다.
+ * @param {number} userid - 사용자(클럽 관리자) ID
+ * @returns {Promise<[number, number, number, number]>} [승, 패, 득점, 실점] 배열
+ */
 export async function getWinToday(userid: number) {
     const meid = await db.playerDiary.findFirst({
         where: {
@@ -153,6 +184,11 @@ export async function getWinToday(userid: number) {
     return [wins, loses, point, loss];
 }
 
+/**
+ * 특정 사용자의 전체 경기 승/패, 득/실점을 계산하여 반환합니다.
+ * @param {number} userid - 사용자(클럽 관리자) ID
+ * @returns {Promise<[number, number, number, number]>} [승, 패, 득점, 실점] 배열
+ */
 export async function getWin(userid: number) {
     const meid = await db.playerDiary.findFirst({
         where: {
@@ -212,6 +248,12 @@ export async function getWin(userid: number) {
     return [wins, loses, point, loss];
 }
 
+/**
+ * 특정 클럽의 모든 경기 기록을 가져옵니다.
+ * N+1 문제를 해결하기 위해, 모든 선수 정보를 한 번의 쿼리로 가져온 후 메모리에서 조합합니다.
+ * @param {number} userid - 사용자(클럽 관리자) ID, 실제로는 클럽 ID로 사용되어야 할 수 있습니다. (현재는 userid로 되어있음)
+ * @returns {Promise<any[]>} 선수 정보가 포함된 경기 기록 배열
+ */
 export async function getMatch(userid: number) {
     const datas = await db.matchDiary.findMany({
         where: {
