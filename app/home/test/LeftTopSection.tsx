@@ -87,7 +87,9 @@ export default function LeftTopSection({
                                         <button
                                             className="mt-3 bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded shadow-sm transition-colors z-10"
                                             onClick={(e) => {
+                                                e.preventDefault();
                                                 e.stopPropagation();
+                                                setCourtPointer(index);
                                                 onGameEnd?.(index);
                                             }}
                                         >

@@ -428,7 +428,7 @@ export default function TestPage() {
         await resetWaitGames(clubId, waitGameList);
     };
 
-    const handleGameEnd = async (index: number) => {
+    const handleGameEnd = (index: number) => {
         setGameResultModal({ isOpen: true, courtIndex: index });
     };
 
