@@ -41,7 +41,7 @@ export async function getPlayersFromClub(clubid: number) {
             },
         ],
     });
-
+    console.log(data);
     return data;
 }
 
@@ -54,7 +54,7 @@ export async function makeMatch(
     score1?: number,
     score2?: number,
     startTime?: Date,
-    endTime?: Date
+    endTime?: Date,
 ) {
     console.log(players, userid, clubid, winner1id, winner2id, score1, score2, startTime, endTime);
     const data = await db.matchDiary.create({
@@ -250,7 +250,7 @@ export async function getMatch(userid: number) {
     return datas.map((data) => ({
         ...data,
         players: data.players.map((id) => playersMap.get(id)).filter(Boolean), // filter(Boolean) to remove undefined
-        winner1: data.winner1id ? playersMap.get(data.winner1id) ?? null : null,
-        winner2: data.winner2id ? playersMap.get(data.winner2id) ?? null : null,
+        winner1: data.winner1id ? (playersMap.get(data.winner1id) ?? null) : null,
+        winner2: data.winner2id ? (playersMap.get(data.winner2id) ?? null) : null,
     }));
 }

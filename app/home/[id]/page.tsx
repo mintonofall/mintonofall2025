@@ -71,11 +71,50 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
     // const point: number = 0;
 
     useEffect(() => {
-        async function fetchParams() {
+        async function fetchData() {
             const resolvedParams = (await params).id;
             setId(resolvedParams);
+            const clubId = Number(resolvedParams);
+
+            setIsPending(true);
+            try {
+                const [playerListData, getClubdata, waitPlayerListData, waitGameListData, getMatchData] =
+                    await Promise.all([
+                        getPlayerList(clubId),
+                        getClub(clubId),
+                        getWaitPlayerList(clubId),
+                        getWaitGames(clubId),
+                        getMatch(clubId),
+                    ]);
+
+                setPlayerList(playerListData);
+                setWaitPlayerList(waitPlayerListData);
+                setWaitGameListId(waitGameListData);
+
+                let currentCourts = howManyCourts;
+                if (getClubdata) {
+                    currentCourts = getClubdata.howManyCourts;
+                    setHowManyCourts(currentCourts);
+                }
+
+                const initialGames = getMatchData.slice(0, currentCourts).map((match: MatchData, index: number) => ({
+                    id: match.id || index + 1,
+                    gameid: match.gameid || null,
+                    court: match.CourtNumber,
+                    clubid: match.clubid,
+                    player1id: match.player1id,
+                    player2id: match.player2id,
+                    player3id: match.player3id,
+                    player4id: match.player4id,
+                }));
+                setGames(initialGames);
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            } finally {
+                setIsPending(false);
+            }
         }
-        fetchParams();
+        fetchData();
     }, [params]);
 
     async function resetPlayer(id: number) {
@@ -88,48 +127,6 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         setWaitPlayerList(resetWaitPlayer);
         setIsResetPending(false);
     }
-
-    useEffect(() => {
-        async function fetchPlayerList() {
-            if (!id) return; // id가 설정될 때까지 API 호출을 방지합니다.
-
-            setIsPending(true);
-            const [playerListData, getClubdata, waitPlayerListData, waitGameListData] = await Promise.all([
-                getPlayerList(Number(id)),
-                getClub(Number(id)),
-                getWaitPlayerList(Number(id)),
-                getWaitGames(Number(id)),
-            ]);
-            setPlayerList(playerListData);
-
-            // 'howManyCourts'의 최신 값을 로컬 변수에 저장하여 비동기 상태 업데이트 문제를 해결합니다.
-            let currentCourts = howManyCourts;
-            if (getClubdata) {
-                currentCourts = getClubdata.howManyCourts;
-                setHowManyCourts(currentCourts);
-            }
-
-            setWaitPlayerList(waitPlayerListData);
-            setWaitGameListId(waitGameListData);
-            const getMatchData = await getMatch(Number(id));
-            const initialGames = getMatchData
-                .slice(0, currentCourts) // 최신 코트 수를 사용합니다.
-                .map((match: MatchData, index: number) => ({
-                    id: match.id || index + 1,
-                    gameid: match.gameid || null,
-                    court: match.CourtNumber,
-                    clubid: match.clubid,
-                    player1id: match.player1id,
-                    player2id: match.player2id,
-                    player3id: match.player3id,
-                    player4id: match.player4id,
-                }));
-            setGames(initialGames);
-            setIsPending(false);
-        }
-        fetchPlayerList();
-        // sortWaitPlayerByGames(); // 이 부분은 데이터 로딩 후에 실행되도록 유지
-    }, [id]);
 
     useEffect(() => {
         console.log("playerlist : ", playerList);
@@ -234,7 +231,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             player4id: 12,
         };
         setGames((prevGames) =>
-            prevGames.map((game) => (game.court === courtNumber ? { ...game, ...emptyGame } : game))
+            prevGames.map((game) => (game.court === courtNumber ? { ...game, ...emptyGame } : game)),
         );
         await startMatch(Number(id), 12, 12, 12, 12, courtNumber, "0");
     };
@@ -273,7 +270,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
         }
 
         const filteredWaitGameListId = waitGameListId.filter(
-            (game) => ![point, point + 1, point + 2, point + 3].includes(game.point)
+            (game) => ![point, point + 1, point + 2, point + 3].includes(game.point),
         );
         const updatedWaitGameListId = filteredWaitGameListId.map((game) => {
             if (game.point >= point + 4) {
@@ -688,7 +685,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                     if (playerIndex !== -1) {
                                         const copyPlayer = [...playerList];
                                         const copyPlayerIndex = copyPlayer.findIndex(
-                                            (player) => player.id === waitGameListId[playerIndex].playerid
+                                            (player) => player.id === waitGameListId[playerIndex].playerid,
                                         );
                                         oneGameDown(copyPlayer[copyPlayerIndex].id);
                                         copyPlayer[copyPlayerIndex].games = copyPlayer[copyPlayerIndex].games - 1;
@@ -705,7 +702,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                 {waitGameListId.map((game, idx) => {
                                     if (game.point == index) {
                                         const player: Player | undefined = playerList.find(
-                                            (player) => player.id === game.playerid
+                                            (player) => player.id === game.playerid,
                                         );
                                         if (player) {
                                             return (
@@ -784,7 +781,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                     <div className="flex flex-row flex-wrap gap-2">
                         {waitPlayerList.map((waitPlayer, index) => {
                             const playerData: Player | undefined = playerList.find(
-                                (player) => player.id === waitPlayer.Playerid
+                                (player) => player.id === waitPlayer.Playerid,
                             );
                             if (!playerData) {
                                 return (

@@ -203,6 +203,7 @@ model Player {
   winDatas String[]
   loseDatas String[]
   enterDatas DateTime[]
+  isJoinLeague Boolean?
   createat DateTime @default(now())
 
 
@@ -233,6 +234,7 @@ model Match {
   player2id Int
   player3id Int
   player4id Int
+  isLeagueGame Boolean?
   clubid Int
   winner1id Int?
   winner2id Int?

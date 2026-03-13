@@ -106,6 +106,7 @@ export async function pushWaitPlayerList(Playerid: number, clubid: number) {
                 gte: new Date(new Date().setHours(0, 0, 0, 0)),
                 lt: new Date(new Date().setHours(23, 59, 59, 999)),
             },
+            exitDate: null,
         },
     });
     if (isEntered) {
@@ -150,6 +151,7 @@ export async function getWaitPlayerList(clubid: number) {
                 gte: new Date(new Date().setHours(0, 0, 0, 0)),
                 lt: new Date(new Date().setHours(23, 59, 59, 999)),
             },
+            exitDate: null,
         },
         include: {
             player: true,
@@ -159,10 +161,14 @@ export async function getWaitPlayerList(clubid: number) {
 }
 
 export async function exitPlayer(Playerid: number, clubid: number) {
-    const exitPlayer = await db.waitPlayerList.deleteMany({
+    const exitPlayer = await db.waitPlayerList.updateMany({
         where: {
             clubid,
             Playerid,
+            exitDate: null,
+        },
+        data: {
+            exitDate: new Date(),
         },
     });
     return exitPlayer;
@@ -226,6 +232,9 @@ export const getClub = async (clubid: number) => {
         where: {
             id: clubid,
         },
+        include: {
+            players: true,
+        },
     });
     return club;
 };
@@ -269,7 +278,7 @@ export const startMatch = async (
     player3id: number,
     player4id: number,
     CourtNumber: number,
-    gameid: string
+    gameid: string,
 ) => {
     const match = await db.gameBoard.updateMany({
         where: {
@@ -285,6 +294,26 @@ export const startMatch = async (
         },
     });
     return match;
+};
+
+export const deleteMatch = async (gameid: string) => {
+    await db.match.deleteMany({
+        where: {
+            gameid,
+        },
+    });
+    await db.gameBoard.updateMany({
+        where: {
+            gameid,
+        },
+        data: {
+            player1id: 12,
+            player2id: 12,
+            player3id: 12,
+            player4id: 12,
+            gameid: "0",
+        },
+    });
 };
 
 export const endMatch = async (matchId: string, winner: number[]) => {
@@ -444,7 +473,7 @@ export const createMatch = async (
     p2: number,
     p3: number,
     p4: number,
-    winner: number[]
+    winner: number[],
 ) => {
     const match = await db.match.create({
         data: {
