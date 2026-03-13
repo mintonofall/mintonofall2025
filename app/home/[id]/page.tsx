@@ -17,6 +17,7 @@ import {
     startMatch,
     createMatch,
     getMatchs,
+    getMatch,
     deleteMatch,
     gameOneUp,
     oneGameDown,
@@ -157,6 +158,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         // 병렬로 데이터 가져오기
         const data = await getClub(clubId);
         const matchData = await getMatchs(clubId);
+        const gameBoardData = await getMatch(clubId);
         setMatches(Array.isArray(matchData) ? matchData : []);
 
         // 클럽 기본 정보 설정
@@ -191,15 +193,15 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
 
         // 코트(courts) 상태 설정
         const initialCourts = Array(data?.howManyCourts || 0).fill(null);
-        if (matchData && Array.isArray(matchData)) {
-            matchData.forEach((match: any) => {
+        if (gameBoardData && Array.isArray(gameBoardData)) {
+            gameBoardData.forEach((match: any) => {
                 if (match.CourtNumber > 0 && match.CourtNumber <= initialCourts.length) {
                     const p1 = latestPlayers.find((p: any) => p.id === match.player1id);
                     const p2 = latestPlayers.find((p: any) => p.id === match.player2id);
                     const p3 = latestPlayers.find((p: any) => p.id === match.player3id);
                     const p4 = latestPlayers.find((p: any) => p.id === match.player4id);
 
-                    if (match.gameid && p1) {
+                    if (match.gameid && match.gameid !== "0" && p1) {
                         initialCourts[match.CourtNumber - 1] = {
                             p1,
                             p2,
