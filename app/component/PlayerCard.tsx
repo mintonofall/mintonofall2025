@@ -5,18 +5,19 @@
  * @date 2024-07-16
  */
 import { Player } from "@/lib/interface";
-import Image from "next/image";
 
 /**
  * @param {Player} player - 표시할 선수 정보 객체
  */
 export default function PlayerCard(player: Player) {
+    const avatarSrc = player.avater?.startsWith("https://imagedelivery.net/")
+        ? `${player.avater}/avatar`
+        : player.avater || "/guest.png";
+
     return (
         <div key={player.id} className="flex items-center w-full h-15 p-1 bg-white shadow-md rounded-lg">
-            <Image
-                src={`${player.avater}/avatar`}
-                width={50}
-                height={50}
+            <img
+                src={avatarSrc}
                 alt={player.name}
                 className="rounded-xl"
                 style={{
