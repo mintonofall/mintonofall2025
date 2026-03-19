@@ -169,12 +169,14 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                 const today = new Date().toDateString();
                 const historyMatches = Array.isArray(matchData) ? matchData : [];
                 setAllMatches(historyMatches);
-                const todaysMatches = historyMatches.filter((m: any) => {
-                    // 승자가 기록되어 있으면 종료된 게임으로 간주
-                    if (!m.winner1id && !m.winner2id) return false;
-                    const matchDate = new Date(m.createat || m.updateTime || new Date()).toDateString();
-                    return matchDate === today;
-                });
+                const todaysMatches = historyMatches
+                    .filter((m: any) => {
+                        const matchDate = new Date(m.createat || m.updateTime || new Date()).toDateString();
+                        return matchDate === today;
+                    })
+                    .sort((a: any, b: any) => {
+                        return (b.id || 0) - (a.id || 0);
+                    });
                 setMatches(todaysMatches);
             } catch (error) {
                 console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);
@@ -600,14 +602,17 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                         key={index}
                                         className="bg-gray-50 p-3 rounded-lg border border-gray-200 shadow-sm"
                                     >
-                                        <div className="text-xs text-gray-500 font-semibold mb-2">
-                                            {match.createat
-                                                ? new Date(match.createat).toLocaleTimeString([], {
-                                                      hour: "2-digit",
-                                                      minute: "2-digit",
-                                                  })
-                                                : `Game ${matches.length - index}`}{" "}
-                                            종료
+                                        <div className="flex justify-between items-center text-xs text-gray-500 font-semibold mb-2">
+                                            <span>
+                                                {match.createat
+                                                    ? new Date(match.createat).toLocaleTimeString([], {
+                                                          hour: "2-digit",
+                                                          minute: "2-digit",
+                                                      })
+                                                    : `Game ${matches.length - index}`}{" "}
+                                                종료
+                                            </span>
+                                            <span>게임 번호: {match.id}</span>
                                         </div>
                                         <div className="grid grid-cols-4 gap-2 text-center">
                                             {renderResultPlayer(p1)}
