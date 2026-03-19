@@ -336,7 +336,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                             )}
                         </form>
                         <Link
-                            href="/createUser"
+                            href={clubId !== null ? `/createUser?clubId=${clubId}` : "/createUser"}
                             className="flex items-center gap-1 p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors flex-shrink-0"
                             title="가입하기"
                         >
