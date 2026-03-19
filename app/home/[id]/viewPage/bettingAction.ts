@@ -10,6 +10,17 @@ export async function placeBet(userId: number, clubId: number, matchId: number, 
             return { success: false, message: "로그인이 필요합니다." };
         }
 
+        // 1. 기존 베팅 내역이 있는지 한 번 더 검증 (중복 베팅 방지)
+        const existingBet = await db.betting.findFirst({
+            where: {
+                userid: userId,
+                gameid: matchId,
+            },
+        });
+        if (existingBet) {
+            return { success: false, message: "이미 베팅한 시합입니다." };
+        }
+
         const user = await db.user.findUnique({ where: { id: userId } });
         console.log("user : ", user);
         if (!user) {

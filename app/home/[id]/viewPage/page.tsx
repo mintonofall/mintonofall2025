@@ -67,6 +67,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
         targetPlayers: any[];
         startTime?: Date;
     }>({ isOpen: false, courtIndex: null, userId: null, matchId: null, amount: 0, targetPlayers: [] });
+    const [isBettingSubmitting, setIsBettingSubmitting] = useState(false);
 
     const handlePlayerClick = (player: any) => {
         if (selectedPlayers.includes(player.id)) {
@@ -771,8 +772,11 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                 취소
                             </button>
                             <button
-                                className="flex-1 px-4 py-2 bg-orange-500 text-white rounded font-bold hover:bg-orange-600 transition-colors"
+                                disabled={isBettingSubmitting}
+                                className={`flex-1 px-4 py-2 text-white rounded font-bold transition-colors ${isBettingSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"}`}
                                 onClick={async () => {
+                                    if (isBettingSubmitting) return;
+
                                     if (bettingModal.startTime) {
                                         const elapsedMs = new Date().getTime() - bettingModal.startTime.getTime();
                                         if (elapsedMs >= 4 * 60 * 1000) {
@@ -788,28 +792,40 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                         return;
                                     }
 
-                                    const playerIds: number[] = bettingModal.targetPlayers.map((p) => p.id);
-                                    const result = await placeBet(
-                                        user.id,
-                                        clubId!,
-                                        bettingModal.matchId!,
-                                        bettingModal.amount,
-                                        playerIds,
-                                    );
-
-                                    if (result.success) {
-                                        alert("베팅이 완료되었습니다.");
-                                        setUser({ ...user, point: user.point - bettingModal.amount }); // 포인트 즉시 반영
-                                        setBettedMatchIds((prev) => [...(prev || []), bettingModal.matchId!]); // 베팅 완료 시 즉시 상태 업데이트
-                                    } else {
-                                        alert(result.message || "베팅 처리에 실패했습니다.");
+                                    if (bettingModal.matchId && bettedMatchIds?.includes(bettingModal.matchId)) {
+                                        alert("이미 베팅한 시합입니다.");
+                                        setBettingModal({ ...bettingModal, isOpen: false });
+                                        setSelectedPlayers([]);
+                                        return;
                                     }
 
-                                    setBettingModal({ ...bettingModal, isOpen: false });
-                                    setSelectedPlayers([]);
+                                    setIsBettingSubmitting(true);
+                                    try {
+                                        const playerIds: number[] = bettingModal.targetPlayers.map((p) => p.id);
+                                        const result = await placeBet(
+                                            user.id,
+                                            clubId!,
+                                            bettingModal.matchId!,
+                                            bettingModal.amount,
+                                            playerIds,
+                                        );
+
+                                        if (result.success) {
+                                            alert("베팅이 완료되었습니다.");
+                                            setUser({ ...user, point: user.point - bettingModal.amount }); // 포인트 즉시 반영
+                                            setBettedMatchIds((prev) => [...(prev || []), bettingModal.matchId!]); // 베팅 완료 시 즉시 상태 업데이트
+                                        } else {
+                                            alert(result.message || "베팅 처리에 실패했습니다.");
+                                        }
+
+                                        setBettingModal({ ...bettingModal, isOpen: false });
+                                        setSelectedPlayers([]);
+                                    } finally {
+                                        setIsBettingSubmitting(false);
+                                    }
                                 }}
                             >
-                                확정
+                                {isBettingSubmitting ? "처리 중..." : "확정"}
                             </button>
                         </div>
                     </div>
