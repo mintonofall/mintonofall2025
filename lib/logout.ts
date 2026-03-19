@@ -17,3 +17,16 @@ export const logout = async () => {
 
     redirect("/");
 };
+
+export const logoutFromViewpage = async (clubId: Number) => {
+    const session = await getSession();
+    session.destroy();
+
+    // Safari 및 다른 개인정보 보호 브라우저와의 호환성을 위해 쿠키를 명시적으로 삭제합니다.
+    (
+        await // Safari 및 다른 개인정보 보호 브라우저와의 호환성을 위해 쿠키를 명시적으로 삭제합니다.
+        cookies()
+    ).set("session", "", {
+        expires: new Date(0),
+    });
+};

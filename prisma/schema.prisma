@@ -28,6 +28,7 @@ model User {
   draftPicks     DraftPick[]
   createdAt DateTime @default(now())
   updatedAt DateTime?
+  Bettings Betting[]
 }
 
 model FantasyTeam {
@@ -134,6 +135,7 @@ model Club {
   users User[] @relation("UserClubs")
   howManyCourts Int @default(4)
   players Player[]
+  bettings Betting[]
 
   
 
@@ -227,6 +229,24 @@ model WaitGame {
   updateTime DateTime? @updatedAt
 }
 
+model Betting {
+  id Int @id @default(autoincrement())
+  userid Int
+  User User @relation(fields: [userid], references: [id], onDelete: Cascade)
+  clubid Int
+  Club Club @relation(fields: [clubid], references: [id], onDelete: Cascade)
+  gameid Int
+  game Match @relation(fields: [gameid], references: [id], onDelete: Cascade)
+  betWinner Int[]
+  WinnerIds Int[]
+  isCorrect Boolean? @default(false)
+  isHit String? @default("betting")
+  isProcess Boolean? @default(false) 
+  betCoast Int
+  createAt DateTime @default(now())
+
+}
+
 model Match {
   id Int @id @default(autoincrement())
   gameid String 
@@ -243,6 +263,7 @@ model Match {
   duration Int?
   score1 Int?
   score2 Int?
+  bettings Betting[]
 }
 
 model GameBoard {

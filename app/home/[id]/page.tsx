@@ -34,6 +34,7 @@ import GameResultModal from "./GameResultModal";
 import EditPlayerModal from "./EditPlayerModal";
 import PlayerHistoryModal from "./PlayerHistoryModal";
 import AddPlayerModal from "./AddPlayerModal";
+import { processBettingResult } from "./processBettingAction";
 
 /**
  * 한글 초성을 추출하기 위한 배열
@@ -133,6 +134,8 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
     const [addModalOpen, setAddModalOpen] = useState(false);
     /** @type {number} 현재 클럽 ID */
     const [clubId, setClubId] = useState<number>(0);
+    /** @type {boolean} QR 코드 모달 표시 여부 */
+    const [showQRModal, setShowQRModal] = useState(false);
 
     // --- 데이터 로딩 및 초기화 (Data Loading & Initialization) ---
 
@@ -158,6 +161,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         // 병렬로 데이터 가져오기
         const data = await getClub(clubId);
         const matchData = await getMatchs(clubId);
+        console.log(matchData);
         const gameBoardData = await getMatch(clubId);
         setMatches(Array.isArray(matchData) ? matchData : []);
 
@@ -611,6 +615,11 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         const isLeagueGame =
             court.p1?.isJoinLeague && court.p2?.isJoinLeague && court.p3?.isJoinLeague && court.p4?.isJoinLeague;
 
+        if (isLeagueGame && winnersKey.length !== 2) {
+            alert("리그게임은 반드시 승리자 2명을 선택해야 합니다.");
+            return;
+        }
+
         const winnerIds = winnersKey.map((key) => court[key].id);
 
         setCourts((prev) => {
@@ -622,6 +631,10 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         setGameResultModal({ isOpen: false, courtIndex: null });
 
         await endMatch(court.gameId, winnerIds, isLeagueGame);
+        console.log("court :", court);
+
+        // 베팅 결과 정산 처리 (승자 확인 및 포인트 지급)
+        await processBettingResult(court.gameId, winnerIds);
     };
 
     /**
@@ -703,7 +716,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         if (index === null) return "없음";
         const rowCellIndices = getRowCells(index);
         const rowPlayers = rowCellIndices.map((i) => gridData[i]).filter((p) => p);
-
+        console.log("rowPlayers : ", rowPlayers);
         if (rowPlayers.length === 0) return "선수 없음";
 
         const rowPlayerIds = rowPlayers.map((p) => p.id);
@@ -753,8 +766,16 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                     onGameEnd={handleGameEnd}
                     onGameCancel={handleGameCancel}
                 />
-                <div className="flex items-center justify-center p-2 bg-gray-100 border rounded-md text-sm text-gray-700 shadow-sm">
-                    {displayInfoCell !== null ? <span>{getRowMatchIds(displayInfoCell)}</span> : "선택된 셀 없음"}
+                <div className="flex items-center justify-between p-2 bg-gray-100 border rounded-md text-sm text-gray-700 shadow-sm relative">
+                    <div className="w-full flex justify-center">
+                        {displayInfoCell !== null ? <span>{getRowMatchIds(displayInfoCell)}</span> : "선택된 셀 없음"}
+                    </div>
+                    <button
+                        className="absolute right-2 px-3 py-1 bg-indigo-500 text-white text-xs rounded hover:bg-indigo-600 transition-colors"
+                        onClick={() => setShowQRModal(true)}
+                    >
+                        QR코드
+                    </button>
                 </div>
                 <LeftBottomSection
                     selectedCell={selectedCell}
@@ -801,6 +822,35 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                 onClose={() => setAddModalOpen(false)}
                 onConfirm={handleCreatePlayer}
             />
+
+            {showQRModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                    <div className="bg-white rounded-lg p-6 flex flex-col items-center gap-4 relative">
+                        <button
+                            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
+                            onClick={() => setShowQRModal(false)}
+                        >
+                            <span className="text-2xl pb-1">×</span>
+                        </button>
+                        <h2 className="text-xl font-bold mt-2">뷰페이지 QR 코드</h2>
+                        <img
+                            src={`https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(
+                                typeof window !== "undefined"
+                                    ? `${window.location.origin}/home/${clubId}/viewPage`
+                                    : "",
+                            )}`}
+                            alt="View Page QR Code"
+                            width={200}
+                            height={200}
+                        />
+                        <p className="text-sm text-gray-500 text-center">
+                            스마트폰 카메라로 스캔하여
+                            <br />
+                            해당 클럽 뷰페이지로 접속하세요.
+                        </p>
+                    </div>
+                </div>
+            )}
 
             <div className="fixed bottom-4 right-4">
                 <button
