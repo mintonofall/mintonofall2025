@@ -19,6 +19,7 @@ model User {
   userName String   @unique
   nickName String @default("")
   password String
+  favoriteClub Int[]
   point Int @default(10000)
   clubs Club[] @relation("UserClubs")
   clubDiaries ClubDiary[]
