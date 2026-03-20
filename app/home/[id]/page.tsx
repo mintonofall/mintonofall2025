@@ -635,6 +635,9 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
 
         // 베팅 결과 정산 처리 (승자 확인 및 포인트 지급)
         await processBettingResult(court.gameId, winnerIds);
+
+        // 경기 종료 후 최신 경기 결과(지난 경기)를 즉시 반영하기 위해 데이터를 다시 불러옵니다.
+        fetchData();
     };
 
     /**
@@ -716,14 +719,15 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         if (index === null) return "없음";
         const rowCellIndices = getRowCells(index);
         const rowPlayers = rowCellIndices.map((i) => gridData[i]).filter((p) => p);
-        console.log("rowPlayers : ", rowPlayers);
         if (rowPlayers.length === 0) return "선수 없음";
 
-        const rowPlayerIds = rowPlayers.map((p) => p.id);
+        // 배포 환경과 로컬 환경 간의 ID 타입 불일치(Number vs String)를 방지하기 위해 모두 String으로 강제 변환합니다.
+        const rowPlayerIds = rowPlayers.map((p) => String(p.id));
         const matchingMatches = matches.filter((match: any) => {
-            const matchPlayerIds = [match.player1id, match.player2id, match.player3id, match.player4id].filter(
-                (id) => id,
-            );
+            const matchPlayerIds = [match.player1id, match.player2id, match.player3id, match.player4id]
+                .filter((id) => id !== null && id !== undefined)
+                .map(String);
+
             // 선택된 행의 모든 선수가 해당 경기에 포함되어 있는지 확인
             return rowPlayerIds.every((rowPlayerId) => matchPlayerIds.includes(rowPlayerId));
         });
@@ -732,8 +736,9 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         return matchingMatches
             .map((m: any) => {
                 const names = [m.player1id, m.player2id, m.player3id, m.player4id]
-                    .map((id) => players.find((p) => p.id === id)?.name ?? "?")
-                    .join(",");
+                    .filter((id) => id !== null && id !== undefined)
+                    .map((id) => players.find((p) => String(p.id) === String(id))?.name ?? "?")
+                    .join(", ");
                 return `[${names}]`;
             })
             .join(", ");
