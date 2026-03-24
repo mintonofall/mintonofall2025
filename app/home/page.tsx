@@ -75,9 +75,14 @@ export default async function Home() {
                         <Link href={`/home/${club.id}`}>
                             <h2 className="text-xl font-semibold">{club.clubName}</h2>
                         </Link>
-                        <Link href={`playerList/${club.id}`} className="text-blue-500 hover:underline">
-                            <span>선수목록</span>
-                        </Link>
+                        <div className="flex items-center gap-4">
+                            <Link href={`/home/${club.id}/gameReview`} className="text-blue-500 hover:underline">
+                                <span>게임리뷰</span>
+                            </Link>
+                            <Link href={`playerList/${club.id}`} className="text-blue-500 hover:underline">
+                                <span>선수목록</span>
+                            </Link>
+                        </div>
                     </div>
                 ))}
             </div>
@@ -96,13 +101,18 @@ export default async function Home() {
                                         {c.clubName}
                                     </h1>
                                 </Link>
-                                <form action={toggleFavorite}>
-                                    <input type="hidden" name="clubId" value={c.id} />
-                                    <input type="hidden" name="isFavorite" value={isFavorite.toString()} />
-                                    <button type="submit" className="text-yellow-500 text-2xl focus:outline-none">
-                                        {isFavorite ? "★" : "☆"}
-                                    </button>
-                                </form>
+                                <div className="flex items-center gap-4">
+                                    <Link href={`/home/${c.id}/gameReview`} className="text-blue-500 hover:underline">
+                                        <span>게임리뷰</span>
+                                    </Link>
+                                    <form action={toggleFavorite}>
+                                        <input type="hidden" name="clubId" value={c.id} />
+                                        <input type="hidden" name="isFavorite" value={isFavorite.toString()} />
+                                        <button type="submit" className="text-yellow-500 text-2xl focus:outline-none">
+                                            {isFavorite ? "★" : "☆"}
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         );
                     })}

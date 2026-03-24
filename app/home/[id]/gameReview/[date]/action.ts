@@ -4,11 +4,11 @@ import { cookies } from "next/headers";
 import { getIronSession } from "iron-session";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
-import db from "../lib/db";
-import { revalidatePath } from "next/cache";
+import db from "@/lib/db";
 
 export default async function handleLogin(prevState: unknown, formdata: FormData) {
     const userName = formdata.get("userName") as string;
+    const clubId = formdata.get("clubId") as string;
     // 해당 유저가 있는지 확인
     const user = await db.user.findFirst({
         where: {
@@ -37,37 +37,9 @@ export default async function handleLogin(prevState: unknown, formdata: FormData
             // @ts-expect-error: Type 'number' is not assignable to type 'string'
             cookie.id = user.id;
             await cookie.save();
-            redirect("/indexPage");
+            redirect(`/home/${clubId}/viewPage`);
         } else {
             console.log("비밀번호가 일치하지 않습니다.");
-        }
-    }
-}
-
-export async function loginAndRevalidate(path: string, formData: FormData) {
-    const userName = formData.get("username") as string;
-    const password = formData.get("password") as string;
-
-    const loginUser = await db.user.findFirst({
-        where: { userName },
-    });
-
-    if (loginUser) {
-        const isPasswordMatch = await bcrypt.compare(password, loginUser.password);
-        if (isPasswordMatch) {
-            const cookie = await getIronSession(await cookies(), {
-                cookieName: "session",
-                password: process.env.COOKIE_PASSWORD!,
-                cookieOptions: {
-                    secure: process.env.NODE_ENV === "production",
-                    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-                    path: "/",
-                },
-            });
-            // @ts-expect-error: Type 'number' is not assignable to type 'string'
-            cookie.id = loginUser.id;
-            await cookie.save();
-            revalidatePath(path);
         }
     }
 }
