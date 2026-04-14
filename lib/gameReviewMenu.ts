@@ -36,4 +36,10 @@ export const Menus: GameReviewMenu[] = [
         url: "/[id]/bettingKing",
         isLogin: false,
     },
+    {
+        title: "리그경기",
+        description: "리그경기 결과",
+        url: "/[id]/leagueGame",
+        isLogin: false,
+    },
 ];

@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { getIronSession } from "iron-session";
 import bcrypt from "bcrypt";
 import { redirect } from "next/navigation";
+import { sendSlackNotification } from "@/lib/slack";
 
 export default async function handleSignUp(pevState: unknown, formdata: FormData) {
     const username = formdata.get("username");
@@ -38,6 +39,7 @@ export default async function handleSignUp(pevState: unknown, formdata: FormData
                         nickName,
                     },
                 });
+                await sendSlackNotification(`🎉 ${newUser.userName} 님이 방금 가입하셨습니다!`);
 
                 // 가입 성공 후 자동 로그인(세션 저장)
                 const cookie = await getIronSession(await cookies(), {
