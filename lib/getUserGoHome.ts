@@ -84,7 +84,7 @@ export async function gameOneUp(id: number) {
 }
 
 export async function updatePlayer(player: any) {
-    const { id, name, age, grade, isJoinLeague } = player;
+    const { id, name, age, grade, isJoinLeague, avater } = player;
     const res = await db.player.update({
         where: {
             id,
@@ -94,6 +94,7 @@ export async function updatePlayer(player: any) {
             age: Number(age),
             grade,
             isJoinLeague,
+            ...(avater && { avater }),
         },
     });
     return res;
@@ -578,7 +579,7 @@ export const createMatch = async (
 };
 
 export const createPlayer = async (player: any) => {
-    const { clubid, name, age, grade, gender, isJoinLeague } = player;
+    const { clubid, name, age, grade, gender, isJoinLeague, avater } = player;
     const newPlayer = await db.player.create({
         data: {
             clubid,
@@ -589,7 +590,7 @@ export const createPlayer = async (player: any) => {
             isJoinLeague,
             games: 0,
             win: 0,
-            avater: gender === "man" ? "/man.png" : "/woman.png",
+            avater: avater && avater !== "" ? avater : gender === "man" ? "/man.png" : "/woman.png",
         },
     });
     return newPlayer;

@@ -5,6 +5,7 @@
  * @date 2024-07-16
  */
 import { useState, useEffect } from "react";
+import { getUploadURL } from "@/app/editPlayer/[id]/action";
 
 /**
  * EditPlayerModal 컴포넌트
@@ -28,13 +29,74 @@ export default function EditPlayerModal({
     /** @type {any | null} 수정 중인 선수 정보를 담는 상태 */
     const [editedPlayer, setEditPlayer] = useState<any>(null);
 
+    /** @type {boolean} 이미지 업로드 진행 상태 */
+    const [isUploading, setIsUploading] = useState(false);
+    /** @type {File | null} 선택된 이미지 파일 */
+    const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    /** @type {string} 로컬 미리보기 URL */
+    const [previewUrl, setPreviewUrl] = useState<string>("");
+
     /**
      * `player` prop이 변경될 때마다 `editedPlayer` 상태를 업데이트합니다.
      * 모달이 열릴 때 전달받은 선수 정보로 폼을 초기화하는 역할을 합니다.
      */
     useEffect(() => {
-        setEditPlayer(player);
-    }, [player]);
+        if (isOpen) {
+            setEditPlayer(player);
+            setSelectedFile(null);
+            setPreviewUrl("");
+            setIsUploading(false);
+        }
+    }, [player, isOpen]);
+
+    /**
+     * 파일 선택 핸들러
+     * 이미지를 선택하면 파일 객체를 상태에 저장하고 미리보기를 제공합니다.
+     */
+    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setSelectedFile(file);
+        setPreviewUrl(URL.createObjectURL(file));
+    };
+
+    /**
+     * 폼 제출 핸들러 (저장 버튼 클릭 시)
+     * 새로운 이미지가 선택되었다면 업로드 후 URL을 받아와 선수 정보에 포함합니다.
+     */
+    const handleSubmit = async () => {
+        if (!editedPlayer) return;
+        let finalPlayer = { ...editedPlayer };
+
+        if (selectedFile) {
+            try {
+                setIsUploading(true);
+                const result = await getUploadURL();
+                const uploadURL = result.result.uploadURL;
+                const imageID = result.result.id;
+
+                const cloudflare = new FormData();
+                cloudflare.append("file", selectedFile);
+
+                const response = await fetch(uploadURL, { method: "POST", body: cloudflare });
+                if (response.status !== 200) {
+                    alert("이미지 업로드에 실패했습니다.");
+                    setIsUploading(false);
+                    return;
+                }
+                finalPlayer.avater = `https://imagedelivery.net/H_vtnjYSM5axKm4PivHM5g/${imageID}`;
+            } catch (error) {
+                console.error("Error uploading image:", error);
+                alert("이미지 업로드 중 오류가 발생했습니다.");
+                setIsUploading(false);
+                return;
+            }
+        }
+
+        onConfirm(finalPlayer);
+        setIsUploading(false);
+    };
 
     // 모달이 닫혀있거나 수정할 선수 정보가 없으면 아무것도 렌더링하지 않음
     if (!isOpen || !editedPlayer) return null;
@@ -74,6 +136,36 @@ export default function EditPlayerModal({
                             onChange={(e) => setEditPlayer({ ...editedPlayer, grade: e.target.value })}
                         />
                     </div>
+                    {/* 사진 파일 업로드 필드 */}
+                    <div>
+                        <label className="block text-sm font-medium text-gray-700">
+                            사진 수정
+                            {isUploading && (
+                                <span className="ml-2 text-blue-500 text-xs font-normal">업로드 중...</span>
+                            )}
+                        </label>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                            onChange={handleFileSelect}
+                            disabled={isUploading}
+                        />
+                        {(previewUrl || editedPlayer.avater) && (
+                            <div className="mt-2 w-16 h-16 rounded-full overflow-hidden border border-gray-200">
+                                <img
+                                    src={
+                                        previewUrl ||
+                                        (editedPlayer.avater?.startsWith("https://imagedelivery.net/")
+                                            ? `${editedPlayer.avater}/avatar`
+                                            : editedPlayer.avater)
+                                    }
+                                    alt="미리보기"
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                        )}
+                    </div>
                     {/* 리그 참가 여부 체크박스 */}
                     <div className="flex items-center">
                         <input
@@ -94,10 +186,11 @@ export default function EditPlayerModal({
                         취소
                     </button>
                     <button
-                        className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-                        onClick={() => onConfirm(editedPlayer)}
+                        className={`px-4 py-2 text-white rounded ${isUploading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
+                        onClick={handleSubmit}
+                        disabled={isUploading}
                     >
-                        저장
+                        {isUploading ? "저장 중..." : "저장"}
                     </button>
                 </div>
             </div>
