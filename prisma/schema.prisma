@@ -9,52 +9,54 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("POSTGRES_PRISMA_URL")
+  provider  = "postgresql"
+  url       = env("POSTGRES_PRISMA_URL")
   directUrl = env("POSTGRES_URL_NON_POOLING")
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  userName String   @unique
-  nickName String @default("")
-  password String
-  favoriteClub Int[]
-  point Int @default(10000)
-  clubs Club[] @relation("UserClubs")
-  clubDiaries ClubDiary[]
-  createat DateTime? @default(now())
-  myTeam        FantasyTeam[]
+  id             Int             @id @default(autoincrement())
+  userName       String          @unique
+  nickName       String          @default("")
+  password       String
+  favoriteClub   Int[]
+  point          Int             @default(10000)
+  clubs          Club[]          @relation("UserClubs")
+  joinedClubs    Club[]          @relation("JoinedClub")
+  pendingClubs   Club[]          @relation("PendingClubs")
+  clubDiaries    ClubDiary[]
+  createat       DateTime?       @default(now())
+  myTeam         FantasyTeam[]
   fantasyLeagues FantasyLeague[] @relation("FantasyLeagueParticipants")
   draftPicks     DraftPick[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime?
-  Bettings Betting[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime?
+  Bettings       Betting[]
 }
 
 model FantasyTeam {
-  id     Int  @id @default(autoincrement())
-  userId Int
-  user   User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  fantasyLeagueId Int
-  fantasyLeague   FantasyLeague @relation(fields: [fantasyLeagueId], references: [id], onDelete: Cascade)
-  firstRoundResult String?
+  id                Int            @id @default(autoincrement())
+  userId            Int
+  user              User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  fantasyLeagueId   Int
+  fantasyLeague     FantasyLeague  @relation(fields: [fantasyLeagueId], references: [id], onDelete: Cascade)
+  firstRoundResult  String?
   secondRoundResult String?
-  thirdRoundResult String?
-  msId Int?
-  wsId Int?
-  mdId Int?
-  wdId Int?
-  xdId Int?
-  wcId Int?
-  createdAt DateTime @default(now())
-  updatedAt DateTime?
-  ms FantasyPlayer? @relation("FantasyTeamToMSPlayer", fields: [msId], references: [id])
-  ws FantasyPlayer? @relation("FantasyTeamToWSPlayer", fields: [wsId], references: [id])
-  md FantasyPlayer? @relation("FantasyTeamToMDPlayer", fields: [mdId], references: [id])
-  wd FantasyPlayer? @relation("FantasyTeamToWDPlayer", fields: [wdId], references: [id])
-  xd FantasyPlayer? @relation("FantasyTeamToXDPlayer", fields: [xdId], references: [id])
-  wc FantasyPlayer? @relation("FantasyTeamToWCPlayer", fields: [wcId], references: [id])
+  thirdRoundResult  String?
+  msId              Int?
+  wsId              Int?
+  mdId              Int?
+  wdId              Int?
+  xdId              Int?
+  wcId              Int?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime?
+  ms                FantasyPlayer? @relation("FantasyTeamToMSPlayer", fields: [msId], references: [id])
+  ws                FantasyPlayer? @relation("FantasyTeamToWSPlayer", fields: [wsId], references: [id])
+  md                FantasyPlayer? @relation("FantasyTeamToMDPlayer", fields: [mdId], references: [id])
+  wd                FantasyPlayer? @relation("FantasyTeamToWDPlayer", fields: [wdId], references: [id])
+  xd                FantasyPlayer? @relation("FantasyTeamToXDPlayer", fields: [xdId], references: [id])
+  wc                FantasyPlayer? @relation("FantasyTeamToWCPlayer", fields: [wcId], references: [id])
 }
 
 enum GameEvent {
@@ -67,15 +69,15 @@ enum GameEvent {
 }
 
 model FantasyPlayer {
-  id    Int       @id @default(autoincrement())
-  year  Int
-  name  String
-  contry String?
-  photo String?
-  event GameEvent
-  ranking Int
-  gamesAsPlayer1 FantasyGame[] @relation("Player1Games")
-  gamesAsPlayer2 FantasyGame[] @relation("Player2Games")
+  id              Int           @id @default(autoincrement())
+  year            Int
+  name            String
+  contry          String?
+  photo           String?
+  event           GameEvent
+  ranking         Int
+  gamesAsPlayer1  FantasyGame[] @relation("Player1Games")
+  gamesAsPlayer2  FantasyGame[] @relation("Player2Games")
   fantasyTeamAsMS FantasyTeam[] @relation("FantasyTeamToMSPlayer") // 한 선수는 여러 팀의 MS가 될 수 있음
   fantasyTeamAsWS FantasyTeam[] @relation("FantasyTeamToWSPlayer")
   fantasyTeamAsMD FantasyTeam[] @relation("FantasyTeamToMDPlayer")
@@ -83,222 +85,218 @@ model FantasyPlayer {
   fantasyTeamAsXD FantasyTeam[] @relation("FantasyTeamToXDPlayer")
   fantasyTeamAsWC FantasyTeam[] @relation("FantasyTeamToWCPlayer")
   draftPicks      DraftPick[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime?
 }
 
 model FantasyGame {
-  id Int @id @default(autoincrement())
-  date DateTime
+  id         Int           @id @default(autoincrement())
+  date       DateTime
   player1Id  Int
   player1    FantasyPlayer @relation("Player1Games", fields: [player1Id], references: [id], onDelete: Cascade)
   player2Id  Int
   player2    FantasyPlayer @relation("Player2Games", fields: [player2Id], references: [id], onDelete: Cascade)
   gameResult Int[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime?
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime?
 }
 
 model FantasyLeague {
-  id Int @id @default(autoincrement())
-  leagueName String
-  year Int
-  teams      FantasyTeam[]
-  process String
-  order Int[]
-  currentUser Int?
-  participants User[] @relation("FantasyLeagueParticipants")
-  orderList Int[]
-  draftPicks DraftPick[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime?
+  id           Int           @id @default(autoincrement())
+  leagueName   String
+  year         Int
+  teams        FantasyTeam[]
+  process      String
+  order        Int[]
+  currentUser  Int?
+  participants User[]        @relation("FantasyLeagueParticipants")
+  orderList    Int[]
+  draftPicks   DraftPick[]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime?
 }
+
 model DraftPick {
-  
-  id        Int      @id @default(autoincrement())
-  leagueId  Int
-  league    FantasyLeague @relation(fields: [leagueId], references: [id], onDelete: Cascade)
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  playerId  Int
-  player    FantasyPlayer @relation(fields: [playerId], references: [id], onDelete: Cascade)
-  category  String
+  id         Int           @id @default(autoincrement())
+  leagueId   Int
+  league     FantasyLeague @relation(fields: [leagueId], references: [id], onDelete: Cascade)
+  userId     Int
+  user       User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  playerId   Int
+  player     FantasyPlayer @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  category   String
   pickNumber Int?
-  createdAt DateTime @default(now())
+  createdAt  DateTime      @default(now())
 }
 
 model Club {
-  id Int @id @default(autoincrement())
-  clubName String @unique
-  clubLogo String?
+  id              Int       @id @default(autoincrement())
+  clubName        String    @unique
+  clubLogo        String?
   clubDescription String?
-  clubLocation String?
-  users User[] @relation("UserClubs")
-  howManyCourts Int @default(4)
-  players Player[]
-  bettings Betting[]
-
-  
-
+  clubLocation    String?
+  users           User[]    @relation("UserClubs")
+  joinedUsers     User[]    @relation("JoinedClub")
+  pendingUsers    User[]    @relation("PendingClubs")
+  howManyCourts   Int       @default(4)
+  players         Player[]
+  bettings        Betting[]
 }
 
 model ClubDiary {
-  id Int @id @default(autoincrement())
+  id       Int           @id @default(autoincrement())
   clubName String
-  userid Int
-  players PlayerDiary[]
-  matches MatchDiary[]
-  user User @relation(fields: [userid], references: [id])
-  createat DateTime? @default(now())
-
+  userid   Int
+  players  PlayerDiary[]
+  matches  MatchDiary[]
+  user     User          @relation(fields: [userid], references: [id])
+  createat DateTime?     @default(now())
 }
 
 model PlayerDiary {
-  id Int @id @default(autoincrement())
-  userid Int?
-  name String
-  grade String?
-  gender String?
-  age Int?
-  avater String?
-  clubid Int
-  club ClubDiary @relation(fields: [clubid], references: [id])
-  mmr Int @default(1000)
-  isMe Boolean @default(false)
+  id           Int       @id @default(autoincrement())
+  userid       Int?
+  name         String
+  grade        String?
+  gender       String?
+  age          Int?
+  avater       String?
+  clubid       Int
+  club         ClubDiary @relation(fields: [clubid], references: [id])
+  mmr          Int       @default(1000)
+  isMe         Boolean   @default(false)
   lastGameDate DateTime?
-  createat DateTime? @default(now())
+  createat     DateTime? @default(now())
 }
 
 model MatchDiary {
-  id Int @id @default(autoincrement())
-  userid Int?
-  gameid String? 
-  players Int[]
-  club ClubDiary @relation(fields: [clubid], references: [id])
-  clubid Int
+  id        Int       @id @default(autoincrement())
+  userid    Int?
+  gameid    String?
+  players   Int[]
+  club      ClubDiary @relation(fields: [clubid], references: [id])
+  clubid    Int
   winner1id Int?
   winner2id Int?
   startTime DateTime?
-  endTime DateTime?
-  duration Int?
-  score1 Int?
-  score2 Int?
-  createat DateTime @default(now())
+  endTime   DateTime?
+  duration  Int?
+  score1    Int?
+  score2    Int?
+  createat  DateTime  @default(now())
 }
 
 model Player {
-  id Int @id @default(autoincrement())
-  name String 
-  grade String
-  gender String @default("man")
-  age Int?
-  avater String?
-  clubid Int
-  club Club @relation(fields: [clubid], references: [id], onDelete: Cascade)
-  suttlePoint Int @default(10000)
+  id              Int              @id @default(autoincrement())
+  name            String
+  grade           String
+  gender          String           @default("man")
+  age             Int?
+  avater          String?
+  clubid          Int
+  club            Club             @relation(fields: [clubid], references: [id], onDelete: Cascade)
+  suttlePoint     Int              @default(10000)
   waitPlayerLists WaitPlayerList[]
-  waitGames WaitGame[]
-  win Int @default(0)
-  lose Int @default(0)
-  games Int @default(0)
-  mmr Int @default(1000)
-  gameDatas DateTime[]
-  winDatas String[]
-  loseDatas String[]
-  enterDatas DateTime[]
-  isJoinLeague Boolean?
-  createat DateTime @default(now())
-
-
+  waitGames       WaitGame[]
+  win             Int              @default(0)
+  lose            Int              @default(0)
+  games           Int              @default(0)
+  mmr             Int              @default(1000)
+  gameDatas       DateTime[]
+  winDatas        String[]
+  loseDatas       String[]
+  enterDatas      DateTime[]
+  isJoinLeague    Boolean?
+  createat        DateTime         @default(now())
 }
 
 model WaitPlayerList {
-  id Int @id @default(autoincrement())
-  clubid Int
-  Playerid Int
-  player Player @relation(fields: [Playerid], references: [id], onDelete: Cascade)
+  id        Int       @id @default(autoincrement())
+  clubid    Int
+  Playerid  Int
+  player    Player    @relation(fields: [Playerid], references: [id], onDelete: Cascade)
   enterDate DateTime
-  exitDate DateTime?
+  exitDate  DateTime?
 }
 
 model WaitGame {
-  id Int @id @default(autoincrement())
-  clubid Int
-  playerid Int
-  player Player @relation(fields: [playerid], references: [id])
-  point Int
+  id         Int       @id @default(autoincrement())
+  clubid     Int
+  playerid   Int
+  player     Player    @relation(fields: [playerid], references: [id])
+  point      Int
   updateTime DateTime? @updatedAt
 }
 
 model Betting {
-  id Int @id @default(autoincrement())
-  userid Int
-  User User @relation(fields: [userid], references: [id], onDelete: Cascade)
-  clubid Int
-  Club Club @relation(fields: [clubid], references: [id], onDelete: Cascade)
-  gameid Int
-  game Match @relation(fields: [gameid], references: [id], onDelete: Cascade)
+  id        Int      @id @default(autoincrement())
+  userid    Int
+  User      User     @relation(fields: [userid], references: [id], onDelete: Cascade)
+  clubid    Int
+  Club      Club     @relation(fields: [clubid], references: [id], onDelete: Cascade)
+  gameid    Int
+  game      Match    @relation(fields: [gameid], references: [id], onDelete: Cascade)
   betWinner Int[]
   WinnerIds Int[]
   isCorrect Boolean? @default(false)
-  isHit String? @default("betting")
-  isProcess Boolean? @default(false) 
-  betCoast Int
-  createAt DateTime @default(now())
-
+  isHit     String?  @default("betting")
+  isProcess Boolean? @default(false)
+  betCoast  Int
+  createAt  DateTime @default(now())
 }
 
 model Match {
-  id Int @id @default(autoincrement())
-  gameid String 
-  player1id Int
-  player2id Int
-  player3id Int
-  player4id Int
+  id           Int       @id @default(autoincrement())
+  gameid       String
+  player1id    Int
+  player2id    Int
+  player3id    Int
+  player4id    Int
   isLeagueGame Boolean?
-  clubid Int
-  winner1id Int?
-  winner2id Int?
-  startTime DateTime @default(now())
-  endTime DateTime?
-  duration Int?
-  score1 Int?
-  score2 Int?
-  bettings Betting[]
+  clubid       Int
+  winner1id    Int?
+  winner2id    Int?
+  startTime    DateTime  @default(now())
+  endTime      DateTime?
+  duration     Int?
+  score1       Int?
+  score2       Int?
+  bettings     Betting[]
 }
 
 model GameBoard {
-  id Int @id @default(autoincrement())
-  gameid String 
-  clubid Int
+  id          Int       @id @default(autoincrement())
+  gameid      String
+  clubid      Int
   CourtNumber Int
-  updateTime DateTime? @updatedAt
-  player1id Int
-  player2id Int
-  player3id Int
-  player4id Int
+  updateTime  DateTime? @updatedAt
+  player1id   Int
+  player2id   Int
+  player3id   Int
+  player4id   Int
 }
+
 model DogPlayer {
-  id Int @id @default(autoincrement())
-  userid Int?
-  name String
-  grade String?
-  gender String?
-  age Int @default(40)
-  where String?
-  avater String?
-  mmr Int @default(1000)
-  games Int[]
-  winGames Int[]
-  gameNum Int @default(0)
-  winNum Int @default(0)
+  id           Int       @id @default(autoincrement())
+  userid       Int?
+  name         String
+  grade        String?
+  gender       String?
+  age          Int       @default(40)
+  where        String?
+  avater       String?
+  mmr          Int       @default(1000)
+  games        Int[]
+  winGames     Int[]
+  gameNum      Int       @default(0)
+  winNum       Int       @default(0)
   lastGameDate DateTime?
-  createat DateTime? @default(now())
+  createat     DateTime? @default(now())
 }
 
 model DogGames {
-  id Int @id @default(autoincrement())
-  Players Int[]
+  id        Int       @id @default(autoincrement())
+  Players   Int[]
   WinPlayer Int[]
   createdAt DateTime? @default(now())
   updatedAt DateTime?

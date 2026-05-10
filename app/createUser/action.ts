@@ -37,6 +37,9 @@ export default async function handleSignUp(pevState: unknown, formdata: FormData
                         userName: username,
                         password: hashedPassword,
                         nickName,
+                        joinedClubs: {
+                            connect: { id: 15 },
+                        },
                     },
                 });
                 await sendSlackNotification(`🎉 ${newUser.userName} 님이 방금 가입하셨습니다!`);
