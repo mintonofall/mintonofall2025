@@ -94,12 +94,25 @@ export default async function Home() {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-4">Home {user?.userName}</h1>
-            <form action={logout}>
-                <button type="submit" className="bg-red-500 text-white px-4 py-2 rounded mb-4">
-                    Logout
-                </button>
-            </form>
+            <div className="flex flex-wrap justify-between items-center mb-6 gap-4">
+                <h1 className="text-3xl font-bold">Home {user?.userName}</h1>
+                <div className="flex items-center gap-3">
+                    <Link
+                        href="/board"
+                        className="bg-indigo-500 hover:bg-indigo-600 text-white px-4 py-2 rounded font-medium transition"
+                    >
+                        자유게시판
+                    </Link>
+                    <form action={logout}>
+                        <button
+                            type="submit"
+                            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded font-medium transition"
+                        >
+                            Logout
+                        </button>
+                    </form>
+                </div>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {club?.clubs.map((club) => (
                     <div key={club.id} className="bg-white shadow-md rounded p-4 flex justify-between items-center">

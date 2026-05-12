@@ -22,6 +22,9 @@ export default async function Index() {
             <Link href={`/diary/${user!.id}`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
                 일지작성
             </Link>
+            <Link href={`/board`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
+                모두의민턴 게시판
+            </Link>
             {/* <Link href={`/gametable/game-plan`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
                 개판 전국모임
             </Link> */}
