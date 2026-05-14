@@ -41,6 +41,7 @@ export async function handlePlayerEdit(prevState: unknown, formdata: FormData) {
                 name,
                 age,
                 grade,
+                gender,
                 avater: photo,
             },
         });
@@ -53,7 +54,7 @@ export async function handlePlayerEdit(prevState: unknown, formdata: FormData) {
         redirect(`/${clubId}/board`);
     }
 
-    redirect(`/${clubId}/board`);
+    redirect(`/playerList/${clubId}`);
 }
 
 export async function getUploadURL() {
@@ -64,9 +65,16 @@ export async function getUploadURL() {
             headers: {
                 Authorization: `Bearer ${process.env.CF_API_TOKEN}`,
             },
-        }
+        },
     );
     const data = await response.json();
     console.log(data);
     return data;
+}
+
+export async function deletePlayerAction(playerId: number, clubId: number) {
+    await db.player.delete({
+        where: { id: playerId },
+    });
+    redirect(`/playerList/${clubId}`);
 }

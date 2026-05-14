@@ -1,5 +1,5 @@
 "use client";
-import { handlePlayerEdit, getUploadURL } from "./action";
+import { handlePlayerEdit, getUploadURL, deletePlayerAction } from "./action";
 import { useActionState } from "react";
 import React, { useState, useEffect } from "react";
 import { PhotoIcon } from "@heroicons/react/24/solid";
@@ -20,7 +20,6 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
     const [age, setAge] = useState<number | null>(null);
     const [grade, setGrade] = useState("");
     const [gender, setGender] = useState("");
-    let pastPhoto = "";
     const from = searchParams.get("from");
 
     useEffect(() => {
@@ -41,15 +40,16 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
             const playerData = await getPlayer(id);
             console.log(playerData);
             if (!playerData) return;
-            if (!playerData.avater) return;
-            pastPhoto = playerData.avater;
+
             setPlayer(playerData);
-            setPlayerName(playerData.name);
-            setAge(playerData.age);
-            setGrade(playerData.grade);
-            setGender(playerData.gender);
+            setPlayerName(playerData.name || "");
+            setAge(playerData.age || null);
+            setGrade(playerData.grade || "");
+            setGender(playerData.gender || "");
             console.log(playerData);
-            setPreview(`${playerData.avater}/avatar`);
+            if (playerData.avater) {
+                setPreview(`${playerData.avater}/avatar`);
+            }
         }
         fetchPlayer();
     }, [id]);
@@ -69,11 +69,13 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
         }
     }
     async function InterceptAction(_: unknown, formData: FormData) {
-        const file = formData.get("photo");
-        if (!file) {
-            if (preview) {
-                console.log(pastPhoto);
-                formData.set("photo", pastPhoto);
+        const file = formData.get("photo") as File | null;
+        if (!file || file.size === 0) {
+            const originalPhoto = formData.get("originalPhoto") as string;
+            if (originalPhoto) {
+                formData.set("photo", originalPhoto);
+            } else {
+                formData.delete("photo");
             }
             return handlePlayerEdit(_, formData);
         }
@@ -100,6 +102,13 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
         setPreview("");
         return handlePlayerEdit(_, formData);
     }
+
+    const handleDelete = async () => {
+        if (!player?.id || !player?.clubid) return;
+        if (confirm("정말 이 플레이어를 삭제하시겠습니까?")) {
+            await deletePlayerAction(player.id, player.clubid);
+        }
+    };
 
     return (
         <div className="flex justify-center items-center min-h-screen bg-gray-100">
@@ -303,12 +312,22 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
                             </label>
                         </div>
                     </div>
-                    <input type="number" value={player?.clubid} name="clubId" hidden readOnly />
-                    <input type="text" value={from ?? ""} name="from" hidden readOnly />
+                    <input type="number" value={player?.clubid || ""} name="clubId" hidden readOnly />
+                    <input type="text" value="playlist" name="from" hidden readOnly />
                     {player && <input type="number" value={player.id} name="playerId" hidden readOnly />}
-                    <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
-                        수정
-                    </button>
+                    <input type="hidden" name="originalPhoto" value={player?.avater || ""} />
+                    <div className="flex gap-2 mt-4">
+                        <button type="submit" className="flex-1 bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                            수정
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleDelete}
+                            className="flex-1 bg-red-500 text-white p-2 rounded hover:bg-red-600"
+                        >
+                            삭제
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>
