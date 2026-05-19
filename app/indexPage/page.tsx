@@ -28,9 +28,11 @@ export default async function Index() {
             {/* <Link href={`/gametable/game-plan`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
                 개판 전국모임
             </Link> */}
-            <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded mb-4">
-                Logout
-            </button>
+            <form action={logout}>
+                <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded mb-4">
+                    Logout
+                </button>
+            </form>
         </div>
     );
 }
