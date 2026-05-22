@@ -143,6 +143,7 @@ model Club {
   howManyCourts   Int       @default(4)
   players         Player[]
   bettings        Betting[]
+  createdAt  DateTime      @default(now())
 }
 
 model ClubDiary {
