@@ -444,8 +444,10 @@ export default function DashBoard() {
                                                         {winnerText}
                                                     </td>
                                                     <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500">
-                                                        {match.createat
-                                                            ? new Date(match.createat).toLocaleDateString("ko-KR")
+                                                        {match.createdAt || match.createat
+                                                            ? new Date(
+                                                                  match.createdAt || match.createat,
+                                                              ).toLocaleDateString("ko-KR")
                                                             : "-"}
                                                     </td>
                                                 </tr>
@@ -603,8 +605,10 @@ export default function DashBoard() {
                                                     )}
                                                 </td>
                                                 <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500">
-                                                    {bet.createdAt
-                                                        ? new Date(bet.createdAt).toLocaleDateString("ko-KR")
+                                                    {bet.createdAt || bet.createat
+                                                        ? new Date(bet.createdAt || bet.createat).toLocaleDateString(
+                                                              "ko-KR",
+                                                          )
                                                         : "-"}
                                                 </td>
                                             </tr>
