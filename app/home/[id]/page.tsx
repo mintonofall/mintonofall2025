@@ -136,6 +136,8 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
     const [clubId, setClubId] = useState<number>(0);
     /** @type {boolean} QR 코드 모달 표시 여부 */
     const [showQRModal, setShowQRModal] = useState(false);
+    /** @type {boolean | null} 화면 가로 해상도 1028 이하 여부 */
+    const [isScreenTooSmall, setIsScreenTooSmall] = useState<boolean | null>(null);
 
     // --- 데이터 로딩 및 초기화 (Data Loading & Initialization) ---
 
@@ -256,6 +258,15 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                 document.documentElement.style.overscrollBehaviorY = "auto";
             }
         };
+    }, []);
+
+    useEffect(() => {
+        const checkScreenSize = () => {
+            setIsScreenTooSmall(window.innerWidth <= 1027);
+        };
+        checkScreenSize();
+        window.addEventListener("resize", checkScreenSize);
+        return () => window.removeEventListener("resize", checkScreenSize);
     }, []);
 
     // --- 이벤트 핸들러 (Event Handlers) ---
@@ -747,8 +758,18 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
     /**
      * 로딩 중일 때 로딩 컴포넌트를 표시합니다.
      */
-    if (isLoading) {
+    if (isScreenTooSmall === null || isLoading) {
         return <Loading />;
+    }
+
+    if (isScreenTooSmall) {
+        return (
+            <div className="flex h-screen items-center justify-center bg-gray-100 p-4 text-center">
+                <h1 className="text-xl md:text-2xl font-bold text-red-500 break-keep">
+                    가로해상도가 1028이 넘는 태블릿이나 모니터를 사용해 주시기 바랍니다
+                </h1>
+            </div>
+        );
     }
 
     let displayInfoCell = selectedCell;
