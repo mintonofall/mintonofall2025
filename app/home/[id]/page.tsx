@@ -7,6 +7,7 @@
  * @date 2024-07-16
  */
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
 import {
     getClub,
     pushWaitPlayerList,
@@ -138,6 +139,8 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
     const [showQRModal, setShowQRModal] = useState(false);
     /** @type {boolean | null} 화면 가로 해상도 1028 이하 여부 */
     const [isScreenTooSmall, setIsScreenTooSmall] = useState<boolean | null>(null);
+    /** @type {boolean} 해상도 경고 무시 여부 */
+    const [forceShowMain, setForceShowMain] = useState(false);
 
     // --- 데이터 로딩 및 초기화 (Data Loading & Initialization) ---
 
@@ -762,12 +765,34 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         return <Loading />;
     }
 
-    if (isScreenTooSmall) {
+    if (isScreenTooSmall && !forceShowMain) {
         return (
             <div className="flex h-screen items-center justify-center bg-gray-100 p-4 text-center">
-                <h1 className="text-xl md:text-2xl font-bold text-red-500 break-keep">
-                    가로해상도가 1028이 넘는 태블릿이나 모니터를 사용해 주시기 바랍니다
-                </h1>
+                <div className="flex flex-col items-center gap-6">
+                    <h1 className="text-xl md:text-2xl font-bold text-red-500 break-keep">
+                        가로해상도가 1028이 넘는 태블릿이나 모니터를 사용해 주시기 바랍니다
+                    </h1>
+                    <div className="flex flex-wrap justify-center gap-4">
+                        <Link
+                            href="/home"
+                            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition shadow-sm"
+                        >
+                            홈으로 돌아가기
+                        </Link>
+                        <Link
+                            href="/board"
+                            className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium transition shadow-sm"
+                        >
+                            자유게시판
+                        </Link>
+                        <button
+                            onClick={() => setForceShowMain(true)}
+                            className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-medium transition shadow-sm"
+                        >
+                            그래도 메인화면 들어가기
+                        </button>
+                    </div>
+                </div>
             </div>
         );
     }
