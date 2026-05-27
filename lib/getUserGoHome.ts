@@ -4,6 +4,7 @@ import { getKoreaMidnight } from "./getKoreaTime";
 import getSession from "./session";
 import { WaitGameListCLass } from "./interface";
 import { supabase } from "./supabase";
+import { sendSlackNotification } from "./slack";
 
 export async function sendMessage(payload: string) {
     console.log("sendMessage");
@@ -562,6 +563,29 @@ export const createMatch = async (
     p4: number,
     winner: number[],
 ) => {
+    const todayStart = getKoreaMidnight();
+    const todayEnd = new Date(todayStart);
+    todayEnd.setDate(todayEnd.getDate() + 1);
+
+    const matchCountToday = await db.match.count({
+        where: {
+            clubid,
+            startTime: {
+                gte: todayStart,
+                lt: todayEnd,
+            },
+        },
+    });
+
+    if (matchCountToday === 0) {
+        const club = await db.club.findUnique({
+            where: { id: clubid },
+            select: { clubName: true },
+        });
+        const clubName = club?.clubName || `${clubid}번`;
+        await sendSlackNotification(`🏸 오늘 ${clubName} 클럽의 첫 경기가 시작되었습니다!`);
+    }
+
     const match = await db.match.create({
         data: {
             gameid,

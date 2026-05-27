@@ -15,7 +15,16 @@ export default async function Home() {
                 id: user.id,
             },
             include: {
-                clubs: true,
+                clubs: {
+                    include: {
+                        _count: {
+                            select: {
+                                joinedUsers: true,
+                                pendingUsers: true,
+                            },
+                        },
+                    },
+                },
                 joinedClubs: true,
                 pendingClubs: true,
             },
@@ -115,20 +124,36 @@ export default async function Home() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {club?.clubs.map((club) => (
-                    <div key={club.id} className="bg-white shadow-md rounded p-4 flex justify-between items-center">
-                        <Link href={`/home/${club.id}`}>
-                            <h2 className="text-xl font-semibold">{club.clubName}</h2>
-                        </Link>
-                        <div className="flex items-center gap-4">
-                            <Link href={`/home/${club.id}/settings`} className="text-blue-500 hover:underline">
-                                <span>클럽설정</span>
+                    <div key={club.id} className="bg-white shadow-md rounded p-4 flex flex-col justify-between gap-3">
+                        <div className="flex justify-between items-start">
+                            <Link href={`/home/${club.id}`}>
+                                <h2 className="text-xl font-semibold hover:text-blue-600 transition">
+                                    {club.clubName}
+                                </h2>
                             </Link>
-                            <Link href={`/home/${club.id}/gameReview`} className="text-blue-500 hover:underline">
-                                <span>게임리뷰</span>
-                            </Link>
-                            <Link href={`playerList/${club.id}`} className="text-blue-500 hover:underline">
-                                <span>선수목록</span>
-                            </Link>
+                        </div>
+                        <div className="flex flex-col gap-2 mt-2">
+                            <div className="flex items-center justify-end gap-4">
+                                <Link href={`/home/${club.id}/settings`} className="text-blue-500 hover:underline">
+                                    <span>클럽설정</span>
+                                </Link>
+                                <Link href={`/home/${club.id}/gameReview`} className="text-blue-500 hover:underline">
+                                    <span>게임리뷰</span>
+                                </Link>
+                                <Link href={`playerList/${club.id}`} className="text-blue-500 hover:underline">
+                                    <span>선수목록</span>
+                                </Link>
+                            </div>
+                            <div className="flex justify-end gap-3 text-sm text-gray-500">
+                                <p>
+                                    가입:{" "}
+                                    <span className="font-bold text-gray-700">{club._count?.joinedUsers || 0}</span>명
+                                </p>
+                                <p>
+                                    대기:{" "}
+                                    <span className="font-bold text-red-500">{club._count?.pendingUsers || 0}</span>명
+                                </p>
+                            </div>
                         </div>
                     </div>
                 ))}
