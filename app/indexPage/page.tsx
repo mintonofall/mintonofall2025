@@ -25,6 +25,14 @@ export default async function Index() {
             <Link href={`/board`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
                 모두의민턴 게시판
             </Link>
+            <Link
+                href="https://iotofall.notion.site/doc"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 hover:text-blue-700 font-semibold text-lg"
+            >
+                사용설명서
+            </Link>
             {/* <Link href={`/gametable/game-plan`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
                 개판 전국모임
             </Link> */}
