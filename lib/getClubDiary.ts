@@ -1,6 +1,15 @@
 "use server";
 import db from "./db";
 import { getKoreaMidnight } from "./getKoreaTime";
+import { MatchDiary, PlayerDiary } from "@prisma/client";
+
+// getMatch 함수의 반환 타입을 명확히 하기 위한 인터페이스
+// Prisma의 MatchDiary에 players, winner1, winner2 필드가 PlayerDiary 객체로 채워진 형태
+export interface MatchDiaryWithPlayers extends MatchDiary {
+    players: PlayerDiary[];
+    winner1: PlayerDiary | null;
+    winner2: PlayerDiary | null;
+}
 
 /**
  * 특정 클럽의 다이어리 정보를 가져옵니다.
@@ -172,7 +181,7 @@ export async function getWinToday(userid: number) {
 
     let point = 0;
     let loss = 0;
-    matches.forEach((match) => {
+    matches.forEach((match: MatchDiary) => {
         const isTeam1 = match.players[0] === meid.id || match.players[1] === meid.id;
         if (isTeam1) {
             point += match.score1!;
@@ -236,7 +245,7 @@ export async function getWin(userid: number) {
 
     let point = 0;
     let loss = 0;
-    matches.forEach((match) => {
+    matches.forEach((match: MatchDiary) => {
         const isTeam1 = match.players[0] === meid.id || match.players[1] === meid.id;
         if (isTeam1) {
             point += match.score1!;
@@ -256,7 +265,7 @@ export async function getWin(userid: number) {
  * @param {number} userid - 사용자(클럽 관리자) ID, 실제로는 클럽 ID로 사용되어야 할 수 있습니다. (현재는 userid로 되어있음)
  * @returns {Promise<any[]>} 선수 정보가 포함된 경기 기록 배열
  */
-export async function getMatch(userid: number) {
+export async function getMatch(userid: number): Promise<MatchDiaryWithPlayers[]> {
     const datas = await db.matchDiary.findMany({
         where: {
             userid: userid,
@@ -272,8 +281,8 @@ export async function getMatch(userid: number) {
 
     // 모든 경기에 포함된 모든 선수 ID를 중복 없이 수집합니다.
     const playerIds = new Set<number>();
-    datas.forEach((data) => {
-        data.players.forEach((id) => playerIds.add(id));
+    datas.forEach((data: MatchDiary) => {
+        data.players.forEach((id: number) => playerIds.add(id));
         if (data.winner1id) playerIds.add(data.winner1id);
         if (data.winner2id) playerIds.add(data.winner2id);
     });
@@ -288,12 +297,12 @@ export async function getMatch(userid: number) {
     });
 
     // 선수 ID를 키로 하는 맵을 만들어 쉽게 찾을 수 있도록 합니다.
-    const playersMap = new Map(playersData.map((p) => [p.id, p]));
+    const playersMap = new Map(playersData.map((p: PlayerDiary) => [p.id, p]));
 
     // 메모리에서 데이터를 조합하여 최종 결과를 만듭니다.
-    return datas.map((data) => ({
+    return datas.map((data: MatchDiary) => ({
         ...data,
-        players: data.players.map((id) => playersMap.get(id)).filter(Boolean), // filter(Boolean) to remove undefined
+        players: data.players.map((id: number) => playersMap.get(id)).filter(Boolean), // filter(Boolean) to remove undefined
         winner1: data.winner1id ? (playersMap.get(data.winner1id) ?? null) : null,
         winner2: data.winner2id ? (playersMap.get(data.winner2id) ?? null) : null,
     }));

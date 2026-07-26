@@ -1,43 +1,29 @@
 "use client";
 
-import { getMatch } from "@/lib/getClubDiary";
+import { getMatch, MatchDiaryWithPlayers } from "@/lib/getClubDiary"; // ':'이(가) 필요합니다.
+import { PlayerDiary } from "@/lib/interface";
 import getSessionClient from "@/lib/sessionClient";
 import { useEffect, useState } from "react";
-
-type Player = {
-    id: number;
-    userid: number | null;
-    name: string;
-    grade: string | null;
-    gender: string | null;
-    age: number | null;
-    avater: string | null;
-    clubid: number;
-    mmr: number;
-    isMe: boolean;
-    createat: Date | null;
-    lastGameDate: Date | null;
-};
 
 type Match = {
     id: number;
     userid: number | null;
     gameid: string | null;
-    players: Player[];
+    players: PlayerDiary[];
     clubid: number;
     winner1id: number | null;
     winner2id: number | null;
-    winner1: Player | null;
-    winner2: Player | null;
+    winner1: PlayerDiary | null;
+    winner2: PlayerDiary | null;
     startTime: Date | null;
     endTime: Date | null;
     duration: number | null;
     score1: number | null;
     score2: number | null;
-    createat: Date;
+    createat: Date; // Prisma 스키마에 맞춰 'createdAt'을 'createat'으로 변경
 };
 
-export default function Result({ params }: { params: Promise<{ clubid: string }> }) {
+export default function Result({ params }: { params: { clubid: string } }) {
     const [matchs, setMatchs] = useState<Match[]>([]);
 
     useEffect(() => {
@@ -46,17 +32,17 @@ export default function Result({ params }: { params: Promise<{ clubid: string }>
             if (session) {
                 const data = await getMatch(Number(session.id));
                 // 'any' 대신 명확한 타입을 사용하고, getMatch에서 반환된 데이터가 null을 포함할 수 있으므로 필터링합니다.
-                const validData = data.map((match) => ({
-                    ...match,
-                    players: match.players.filter((player): player is Player => player !== null),
+                const validData = data.map((match: MatchDiaryWithPlayers) => ({
+                    ...(match as Match), // 명시적으로 Match 타입으로 캐스팅
+                    players: match.players.filter((player): player is PlayerDiary => player !== null),
                 }));
                 setMatchs(validData);
             }
-            const resolvedParams = (await params).clubid;
-            console.log("clubid : ", resolvedParams);
+            // params는 이미 객체이므로 await 할 필요가 없습니다.
+            console.log("clubid : ", params.clubid);
         }
         fetchParams();
-    }, []);
+    }, [params.clubid]); // params.clubid가 변경될 때 fetchParams를 다시 실행하도록 의존성 배열에 추가합니다.
 
     return (
         <div>
