@@ -25,12 +25,12 @@ model User {
   joinedClubs    Club[]          @relation("JoinedClub")
   pendingClubs   Club[]          @relation("PendingClubs")
   clubDiaries    ClubDiary[]
-  createat       DateTime?       @default(now())
+  // createat       DateTime?       @default(now()) // 'createdAt' 필드가 이미 존재하므로 중복될 수 있습니다.
   myTeam         FantasyTeam[]
   fantasyLeagues FantasyLeague[] @relation("FantasyLeagueParticipants")
   draftPicks     DraftPick[]
   createdAt      DateTime        @default(now())
-  updatedAt      DateTime?
+  updatedAt      DateTime        @updatedAt
   Bettings       Betting[]
   posts          Post[]
   comments       Comment[]
@@ -52,7 +52,7 @@ model FantasyTeam {
   xdId              Int?
   wcId              Int?
   createdAt         DateTime       @default(now())
-  updatedAt         DateTime?
+  updatedAt         DateTime       @updatedAt
   ms                FantasyPlayer? @relation("FantasyTeamToMSPlayer", fields: [msId], references: [id])
   ws                FantasyPlayer? @relation("FantasyTeamToWSPlayer", fields: [wsId], references: [id])
   md                FantasyPlayer? @relation("FantasyTeamToMDPlayer", fields: [mdId], references: [id])
@@ -88,7 +88,7 @@ model FantasyPlayer {
   fantasyTeamAsWC FantasyTeam[] @relation("FantasyTeamToWCPlayer")
   draftPicks      DraftPick[]
   createdAt       DateTime      @default(now())
-  updatedAt       DateTime?
+  updatedAt       DateTime      @updatedAt
 }
 
 model FantasyGame {
@@ -100,7 +100,7 @@ model FantasyGame {
   player2    FantasyPlayer @relation("Player2Games", fields: [player2Id], references: [id], onDelete: Cascade)
   gameResult Int[]
   createdAt  DateTime      @default(now())
-  updatedAt  DateTime?
+  updatedAt  DateTime      @updatedAt
 }
 
 model FantasyLeague {
@@ -115,7 +115,7 @@ model FantasyLeague {
   orderList    Int[]
   draftPicks   DraftPick[]
   createdAt    DateTime      @default(now())
-  updatedAt    DateTime?
+  updatedAt    DateTime      @updatedAt
 }
 
 model DraftPick {
@@ -153,7 +153,7 @@ model ClubDiary {
   players  PlayerDiary[]
   matches  MatchDiary[]
   user     User          @relation(fields: [userid], references: [id])
-  createat DateTime?     @default(now())
+  createdAt DateTime      @default(now())
 }
 
 model PlayerDiary {
@@ -169,7 +169,7 @@ model PlayerDiary {
   mmr          Int       @default(1000)
   isMe         Boolean   @default(false)
   lastGameDate DateTime?
-  createat     DateTime? @default(now())
+  createdAt    DateTime  @default(now())
 }
 
 model MatchDiary {
@@ -209,8 +209,8 @@ model Player {
   winDatas        String[]
   loseDatas       String[]
   enterDatas      DateTime[]
-  isJoinLeague    Boolean?
-  createat        DateTime         @default(now())
+  isJoinLeague    Boolean          @default(false)
+  createdAt       DateTime         @default(now())
 }
 
 model WaitPlayerList {
@@ -294,7 +294,7 @@ model DogPlayer {
   gameNum      Int       @default(0)
   winNum       Int       @default(0)
   lastGameDate DateTime?
-  createat     DateTime? @default(now())
+  createdAt    DateTime  @default(now())
 }
 
 model DogGames {
@@ -302,7 +302,7 @@ model DogGames {
   Players   Int[]
   WinPlayer Int[]
   createdAt DateTime? @default(now())
-  updatedAt DateTime?
+  updatedAt DateTime  @updatedAt
 }
 
 model Post {
