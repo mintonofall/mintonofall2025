@@ -4,17 +4,6 @@ import handleLogin from "./action";
 import Link from "next/link";
 import { useActionState } from "react";
 
-export const metadata = {
-    title: "Mintonofall Login", // Consider a more descriptive title
-    description: "Login page for Mintonofall application", // Add a relevant description
-    viewport: {
-        width: "device-width",
-        initialScale: 1.0,
-        maximumScale: 1.0,
-        userScalable: false,
-    },
-};
-
 export default function Home() {
     const [state, action] = useActionState(handleLogin, null);
     return (

@@ -18,6 +18,12 @@ export const metadata: Metadata = {
     icons: {
         icon: "/logo512.png",
     },
+    viewport: {
+        width: "device-width",
+        initialScale: 1.0,
+        maximumScale: 1.0,
+        userScalable: false,
+    },
 };
 
 export default function RootLayout({
