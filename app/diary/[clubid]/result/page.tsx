@@ -1,6 +1,7 @@
 "use client";
 
-import { getMatch, MatchDiaryWithPlayers, PlayerDiary } from "@/lib/getClubDiary";
+import { getMatch } from "@/lib/getClubDiary";
+import type { MatchDiaryWithPlayers, PlayerDiary } from "@/lib/getClubDiary";
 import getSessionClient from "@/lib/sessionClient";
 import { useEffect, useState } from "react";
 
