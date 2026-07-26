@@ -1,7 +1,6 @@
 "use client";
 
-import { getMatch, MatchDiaryWithPlayers } from "@/lib/getClubDiary";
-import { PlayerDiary } from "@/lib/interface";
+import { getMatch, MatchDiaryWithPlayers, PlayerDiary } from "@/lib/getClubDiary";
 import getSessionClient from "@/lib/sessionClient";
 import { useEffect, useState } from "react";
 
@@ -16,7 +15,7 @@ export default function Result({ params }: { params: { clubid: string } }) {
                 // 'any' 대신 명확한 타입을 사용하고, getMatch에서 반환된 데이터가 null을 포함할 수 있으므로 필터링합니다.
                 const validData: MatchDiaryWithPlayers[] = data.map((match: MatchDiaryWithPlayers) => ({
                     ...match,
-                    players: match.players.filter((player): player is PlayerDiary => player !== null),
+                    players: match.players.filter((player: PlayerDiary): player is PlayerDiary => player !== null),
                 }));
                 setMatchs(validData);
             }

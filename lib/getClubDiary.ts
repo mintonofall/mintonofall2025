@@ -3,6 +3,7 @@ import db from "./db";
 import { getKoreaMidnight } from "./getKoreaTime";
 import { MatchDiary, PlayerDiary } from "@prisma/client";
 
+export type { PlayerDiary }; // PlayerDiary 타입을 외부로 export하여 일관성 있게 사용
 // getMatch 함수의 반환 타입을 명확히 하기 위한 인터페이스
 // Prisma의 MatchDiary에 players, winner1, winner2 필드가 PlayerDiary 객체로 채워진 형태
 export interface MatchDiaryWithPlayers extends Omit<MatchDiary, "players"> {
@@ -302,7 +303,9 @@ export async function getMatch(userid: number): Promise<MatchDiaryWithPlayers[]>
     // 메모리에서 데이터를 조합하여 최종 결과를 만듭니다.
     return datas.map((data: MatchDiary) => ({
         ...data,
-        players: data.players.map((id: number) => playersMap.get(id)).filter(Boolean), // filter(Boolean) to remove undefined
+        players: data.players
+            .map((id: number) => playersMap.get(id)) // playersMap.get(id)는 PlayerDiary | undefined를 반환할 수 있습니다.
+            .filter((player: PlayerDiary | undefined): player is PlayerDiary => player !== undefined), // undefined를 제거하고 PlayerDiary[] 타입으로 명시
         winner1: data.winner1id ? (playersMap.get(data.winner1id) ?? null) : null,
         winner2: data.winner2id ? (playersMap.get(data.winner2id) ?? null) : null,
     }));
