@@ -33,6 +33,7 @@ export interface ClubDiary {
 
 export interface PlayerDiary {
     id: number;
+    userid: number | null;
     name: string;
     grade: string | null;
     gender: string | null;

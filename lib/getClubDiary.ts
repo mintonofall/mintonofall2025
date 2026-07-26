@@ -33,6 +33,7 @@ export async function getPlayersFromClub(clubid: number) {
         select: {
             name: true,
             id: true,
+            userid: true,
             grade: true,
             gender: true,
             age: true,
@@ -41,6 +42,7 @@ export async function getPlayersFromClub(clubid: number) {
             clubid: true,
             isMe: true,
             lastGameDate: true,
+            createdAt: true,
         },
         orderBy: [
             {
