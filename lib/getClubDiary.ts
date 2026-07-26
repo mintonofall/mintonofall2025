@@ -5,7 +5,7 @@ import { MatchDiary, PlayerDiary } from "@prisma/client";
 
 // getMatch 함수의 반환 타입을 명확히 하기 위한 인터페이스
 // Prisma의 MatchDiary에 players, winner1, winner2 필드가 PlayerDiary 객체로 채워진 형태
-export interface MatchDiaryWithPlayers extends MatchDiary {
+export interface MatchDiaryWithPlayers extends Omit<MatchDiary, "players"> {
     players: PlayerDiary[];
     winner1: PlayerDiary | null;
     winner2: PlayerDiary | null;

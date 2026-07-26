@@ -1,30 +1,12 @@
 "use client";
 
-import { getMatch, MatchDiaryWithPlayers } from "@/lib/getClubDiary"; // ':'이(가) 필요합니다.
+import { getMatch, MatchDiaryWithPlayers } from "@/lib/getClubDiary";
 import { PlayerDiary } from "@/lib/interface";
 import getSessionClient from "@/lib/sessionClient";
 import { useEffect, useState } from "react";
 
-type Match = {
-    id: number;
-    userid: number | null;
-    gameid: string | null;
-    players: PlayerDiary[];
-    clubid: number;
-    winner1id: number | null;
-    winner2id: number | null;
-    winner1: PlayerDiary | null;
-    winner2: PlayerDiary | null;
-    startTime: Date | null;
-    endTime: Date | null;
-    duration: number | null;
-    score1: number | null;
-    score2: number | null;
-    createat: Date; // Prisma 스키마에 맞춰 'createdAt'을 'createat'으로 변경
-};
-
 export default function Result({ params }: { params: { clubid: string } }) {
-    const [matchs, setMatchs] = useState<Match[]>([]);
+    const [matchs, setMatchs] = useState<MatchDiaryWithPlayers[]>([]);
 
     useEffect(() => {
         async function fetchParams() {
@@ -32,8 +14,8 @@ export default function Result({ params }: { params: { clubid: string } }) {
             if (session) {
                 const data = await getMatch(Number(session.id));
                 // 'any' 대신 명확한 타입을 사용하고, getMatch에서 반환된 데이터가 null을 포함할 수 있으므로 필터링합니다.
-                const validData = data.map((match: MatchDiaryWithPlayers) => ({
-                    ...(match as Match), // 명시적으로 Match 타입으로 캐스팅
+                const validData: MatchDiaryWithPlayers[] = data.map((match: MatchDiaryWithPlayers) => ({
+                    ...match,
                     players: match.players.filter((player): player is PlayerDiary => player !== null),
                 }));
                 setMatchs(validData);
