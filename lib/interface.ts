@@ -16,6 +16,7 @@ export interface Player {
     winDatas: string[];
     loseDatas: string[];
     enterDatas: Date[];
+    createdAt: Date;
 }
 
 export interface WaitGameListCLass {
@@ -41,6 +42,7 @@ export interface PlayerDiary {
     mmr: number;
     isMe: boolean;
     lastGameDate: Date | null;
+    createdAt: Date;
 }
 
 export interface MatchDiary {
