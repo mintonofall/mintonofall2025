@@ -38,6 +38,6 @@
         "@tailwindcss/postcss": "^4.3.3",
         "prisma": "^7.9.0",
         "tailwindcss": "^4.3.3",
-        "typescript": "^7"
+        "typescript": "^5.4.0"
     }
 }
