@@ -3,18 +3,22 @@ import Image from "next/image";
 import handleLogin from "./action";
 import Link from "next/link";
 import { useActionState } from "react";
-import Head from "next/head";
+
+export const metadata = {
+    title: "Mintonofall Login", // Consider a more descriptive title
+    description: "Login page for Mintonofall application", // Add a relevant description
+    viewport: {
+        width: "device-width",
+        initialScale: 1.0,
+        maximumScale: 1.0,
+        userScalable: false,
+    },
+};
 
 export default function Home() {
     const [state, action] = useActionState(handleLogin, null);
     return (
         <>
-            <Head>
-                <meta
-                    name="viewport"
-                    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
-                ></meta>
-            </Head>
             <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100">
                 <Image src="/logo512.png" alt="Mintonofall Logo" width={300} height={300} className="mb-8" />
                 <form action={action} className="w-full max-w-sm bg-white p-8 rounded-lg shadow-md">
