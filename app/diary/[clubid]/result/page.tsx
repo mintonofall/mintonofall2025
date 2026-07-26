@@ -1,7 +1,8 @@
 "use client";
 
 import { getMatch } from "@/lib/getClubDiary";
-import type { MatchDiaryWithPlayers, PlayerDiary } from "@/lib/getClubDiary";
+import type { MatchDiaryWithPlayers } from "@/lib/getClubDiary";
+import type { PlayerDiary } from "@prisma/client"; // PlayerDiary를 @prisma/client에서 직접 임포트
 import getSessionClient from "@/lib/sessionClient";
 import { useEffect, useState } from "react";
 
