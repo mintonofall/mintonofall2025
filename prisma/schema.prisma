@@ -30,7 +30,7 @@ model User {
   fantasyLeagues FantasyLeague[] @relation("FantasyLeagueParticipants")
   draftPicks     DraftPick[]
   createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
+  updatedAt      DateTime?        @updatedAt
   Bettings       Betting[]
   posts          Post[]
   comments       Comment[]
@@ -52,7 +52,7 @@ model FantasyTeam {
   xdId              Int?
   wcId              Int?
   createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+  updatedAt         DateTime?       @updatedAt
   ms                FantasyPlayer? @relation("FantasyTeamToMSPlayer", fields: [msId], references: [id])
   ws                FantasyPlayer? @relation("FantasyTeamToWSPlayer", fields: [wsId], references: [id])
   md                FantasyPlayer? @relation("FantasyTeamToMDPlayer", fields: [mdId], references: [id])
@@ -88,7 +88,7 @@ model FantasyPlayer {
   fantasyTeamAsWC FantasyTeam[] @relation("FantasyTeamToWCPlayer")
   draftPicks      DraftPick[]
   createdAt       DateTime      @default(now())
-  updatedAt       DateTime      @updatedAt
+  updatedAt       DateTime?      @updatedAt
 }
 
 model FantasyGame {
@@ -100,7 +100,7 @@ model FantasyGame {
   player2    FantasyPlayer @relation("Player2Games", fields: [player2Id], references: [id], onDelete: Cascade)
   gameResult Int[]
   createdAt  DateTime      @default(now())
-  updatedAt  DateTime      @updatedAt
+  updatedAt  DateTime?      @updatedAt
 }
 
 model FantasyLeague {
@@ -115,7 +115,7 @@ model FantasyLeague {
   orderList    Int[]
   draftPicks   DraftPick[]
   createdAt    DateTime      @default(now())
-  updatedAt    DateTime      @updatedAt
+  updatedAt    DateTime?      @updatedAt
 }
 
 model DraftPick {
@@ -209,7 +209,7 @@ model Player {
   winDatas        String[]
   loseDatas       String[]
   enterDatas      DateTime[]
-  isJoinLeague    Boolean          @default(false)
+  isJoinLeague    Boolean?          @default(false)
   createdAt       DateTime         @default(now())
 }
 
@@ -302,7 +302,7 @@ model DogGames {
   Players   Int[]
   WinPlayer Int[]
   createdAt DateTime? @default(now())
-  updatedAt DateTime  @updatedAt
+  updatedAt DateTime?  @updatedAt
 }
 
 model Post {
