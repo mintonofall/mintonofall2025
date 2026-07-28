@@ -340,8 +340,8 @@ export default function DashBoard() {
                                                     {player.grade}
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-gray-500">
-                                                    {player.createat
-                                                        ? new Date(player.createat).toLocaleDateString("ko-KR")
+                                                    {player.createdAt
+                                                        ? new Date(player.createdAt).toLocaleDateString("ko-KR")
                                                         : "-"}
                                                 </td>
                                             </tr>
@@ -444,9 +444,9 @@ export default function DashBoard() {
                                                         {winnerText}
                                                     </td>
                                                     <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500">
-                                                        {match.createdAt || match.createat
+                                                        {match.createdAt || match.createdAt
                                                             ? new Date(
-                                                                  match.createdAt || match.createat,
+                                                                  match.createdAt || match.createdAt,
                                                               ).toLocaleDateString("ko-KR")
                                                             : "-"}
                                                     </td>
@@ -605,8 +605,8 @@ export default function DashBoard() {
                                                     )}
                                                 </td>
                                                 <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-gray-500">
-                                                    {bet.createdAt || bet.createat
-                                                        ? new Date(bet.createdAt || bet.createat).toLocaleDateString(
+                                                    {bet.createdAt || bet.createdAt
+                                                        ? new Date(bet.createdAt || bet.createdAt).toLocaleDateString(
                                                               "ko-KR",
                                                           )
                                                         : "-"}

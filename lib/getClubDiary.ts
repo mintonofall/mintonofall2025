@@ -134,7 +134,7 @@ export async function getWinToday(userid: number) {
     const wins = await db.matchDiary.count({
         where: {
             userid: userid,
-            createat: {
+            createdAt: {
                 gte: todayStart,
                 lt: todayEnd,
             },
@@ -146,7 +146,7 @@ export async function getWinToday(userid: number) {
     const loses = await db.matchDiary.count({
         where: {
             userid: userid,
-            createat: {
+            createdAt: {
                 gte: todayStart,
                 lt: todayEnd,
             },
@@ -162,7 +162,7 @@ export async function getWinToday(userid: number) {
     const matches = await db.matchDiary.findMany({
         where: {
             userid: userid,
-            createat: {
+            createdAt: {
                 gte: todayStart,
                 lt: todayEnd,
             },
@@ -264,7 +264,7 @@ export async function getMatch(userid: number): Promise<MatchDiaryWithPlayers[]>
             userid: userid,
         },
         orderBy: {
-            createat: "desc",
+            createdAt: "desc",
         },
     });
 

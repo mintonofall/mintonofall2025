@@ -14,7 +14,7 @@ CREATE TABLE "DogPlayer" (
     "gameNum" INTEGER NOT NULL DEFAULT 0,
     "winNum" INTEGER NOT NULL DEFAULT 0,
     "lastGameDate" TIMESTAMP(3),
-    "createat" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "DogPlayer_pkey" PRIMARY KEY ("id")
 );

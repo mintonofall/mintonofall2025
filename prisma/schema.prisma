@@ -25,7 +25,7 @@ model User {
   joinedClubs    Club[]          @relation("JoinedClub")
   pendingClubs   Club[]          @relation("PendingClubs")
   clubDiaries    ClubDiary[]
-  // createat       DateTime?       @default(now()) // 'createdAt' 필드가 이미 존재하므로 중복될 수 있습니다.
+  // createdAt       DateTime?       @default(now()) // 'createdAt' 필드가 이미 존재하므로 중복될 수 있습니다.
   myTeam         FantasyTeam[]
   fantasyLeagues FantasyLeague[] @relation("FantasyLeagueParticipants")
   draftPicks     DraftPick[]
@@ -186,7 +186,7 @@ model MatchDiary {
   duration  Int?
   score1    Int?
   score2    Int?
-  createat  DateTime  @default(now())
+  createdAt  DateTime  @default(now())
 }
 
 model Player {
@@ -245,7 +245,7 @@ model Betting {
   isHit     String?  @default("betting")
   isProcess Boolean? @default(false)
   betCoast  Int
-  createAt  DateTime @default(now())
+  createdAt  DateTime @default(now())
 }
 
 model Match {

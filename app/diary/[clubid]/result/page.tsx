@@ -48,7 +48,7 @@ export default function Result({ params }: { params: { clubid: string } }) {
                                     <span className="font-semibold text-lg">{match.players[3]?.name}</span>
                                 </div>
                                 <div className="text-right text-sm text-gray-500">
-                                    {match.createat.toLocaleDateString("ko-KR", { month: "long", day: "numeric" })}
+                                    {match.createdAt.toLocaleDateString("ko-KR", { month: "long", day: "numeric" })}
                                 </div>
                             </div>
                         ))}
@@ -68,7 +68,7 @@ export default function Result({ params }: { params: { clubid: string } }) {
                         <span>Duration: {matchs[0].duration}</p>
                         <span>Score 1: {matchs[0].score1}</p>
                         <span>Score 2: {matchs[0].score2}</p>
-                        <span>Created At: {matchs[0].createat.toString()}</spna>
+                        <span>Created At: {matchs[0].createdAt.toString()}</spna>
                     </div>
                 )} */}
             </div>

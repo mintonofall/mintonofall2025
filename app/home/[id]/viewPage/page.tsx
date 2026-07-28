@@ -171,7 +171,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                 setAllMatches(historyMatches);
                 const todaysMatches = historyMatches
                     .filter((m: any) => {
-                        const matchDate = new Date(m.createat || m.updateTime || new Date()).toDateString();
+                        const matchDate = new Date(m.createdAt || m.updateTime || new Date()).toDateString();
                         return matchDate === today;
                     })
                     .sort((a: any, b: any) => {
@@ -604,8 +604,8 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                     >
                                         <div className="flex justify-between items-center text-xs text-gray-500 font-semibold mb-2">
                                             <span>
-                                                {match.createat
-                                                    ? new Date(match.createat).toLocaleTimeString([], {
+                                                {match.createdAt
+                                                    ? new Date(match.createdAt).toLocaleTimeString([], {
                                                           hour: "2-digit",
                                                           minute: "2-digit",
                                                       })
