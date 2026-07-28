@@ -204,10 +204,10 @@ model Player {
   lose            Int              @default(0)
   games           Int              @default(0)
   mmr             Int              @default(1000)
-  gameDatas       DateTime?[]
+  gameDatas       DateTime[]
   winDatas        String[]
   loseDatas       String[]
-  enterDatas      DateTime?[]
+  enterDatas      DateTime[]
   isJoinLeague    Boolean?          @default(false)
   createdAt       DateTime?         @default(now())
 }
