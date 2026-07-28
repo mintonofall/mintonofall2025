@@ -28,8 +28,8 @@ model User {
   myTeam         FantasyTeam[]
   fantasyLeagues FantasyLeague[] @relation("FantasyLeagueParticipants")
   draftPicks     DraftPick[]
-  createdAt      DateTime?        @default(now())
-  updatedAt      DateTime?        @updatedAt
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
   Bettings       Betting[]
   posts          Post[]
   comments       Comment[]
@@ -50,8 +50,8 @@ model FantasyTeam {
   wdId              Int?
   xdId              Int?
   wcId              Int?
-  createdAt         DateTime?       @default(now())
-  updatedAt         DateTime?       @updatedAt
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
   ms                FantasyPlayer? @relation("FantasyTeamToMSPlayer", fields: [msId], references: [id])
   ws                FantasyPlayer? @relation("FantasyTeamToWSPlayer", fields: [wsId], references: [id])
   md                FantasyPlayer? @relation("FantasyTeamToMDPlayer", fields: [mdId], references: [id])
@@ -86,20 +86,20 @@ model FantasyPlayer {
   fantasyTeamAsXD FantasyTeam[] @relation("FantasyTeamToXDPlayer")
   fantasyTeamAsWC FantasyTeam[] @relation("FantasyTeamToWCPlayer")
   draftPicks      DraftPick[]
-  createdAt       DateTime?      @default(now())
-  updatedAt       DateTime?      @updatedAt
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
 }
 
 model FantasyGame {
   id         Int           @id @default(autoincrement())
-  date       DateTime?
+  date       DateTime
   player1Id  Int
   player1    FantasyPlayer @relation("Player1Games", fields: [player1Id], references: [id], onDelete: Cascade)
   player2Id  Int
   player2    FantasyPlayer @relation("Player2Games", fields: [player2Id], references: [id], onDelete: Cascade)
   gameResult Int[]
-  createdAt  DateTime?      @default(now())
-  updatedAt  DateTime?      @updatedAt
+  createdAt  DateTime      @default(now())
+  updatedAt  DateTime      @updatedAt
 }
 
 model FantasyLeague {
@@ -113,8 +113,8 @@ model FantasyLeague {
   participants User[]        @relation("FantasyLeagueParticipants")
   orderList    Int[]
   draftPicks   DraftPick[]
-  createdAt    DateTime?      @default(now())
-  updatedAt    DateTime?      @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
 
 model DraftPick {
@@ -127,7 +127,7 @@ model DraftPick {
   player     FantasyPlayer @relation(fields: [playerId], references: [id], onDelete: Cascade)
   category   String
   pickNumber Int?
-  createdAt  DateTime?      @default(now())
+  createdAt  DateTime      @default(now())
 }
 
 model Club {
@@ -142,7 +142,7 @@ model Club {
   howManyCourts   Int       @default(4)
   players         Player[]
   bettings        Betting[]
-  createdAt  DateTime?      @default(now())
+  createdAt  DateTime      @default(now())
 }
 
 model ClubDiary {
@@ -152,7 +152,7 @@ model ClubDiary {
   players  PlayerDiary[]
   matches  MatchDiary[]
   user     User          @relation(fields: [userid], references: [id])
-  createdAt DateTime?      @default(now())
+  createdAt DateTime      @default(now())
 }
 
 model PlayerDiary {
@@ -167,8 +167,8 @@ model PlayerDiary {
   club         ClubDiary @relation(fields: [clubid], references: [id])
   mmr          Int       @default(1000)
   isMe         Boolean   @default(false)
-  lastGameDate DateTime?
-  createdAt    DateTime?  @default(now())
+  lastGameDate DateTime
+  createdAt    DateTime  @default(now())
 }
 
 model MatchDiary {
@@ -180,12 +180,12 @@ model MatchDiary {
   clubid    Int
   winner1id Int?
   winner2id Int?
-  startTime DateTime?
-  endTime   DateTime?
+  startTime DateTime
+  endTime   DateTime
   duration  Int?
   score1    Int?
   score2    Int?
-  createdAt  DateTime?  @default(now())
+  createdAt  DateTime  @default(now())
 }
 
 model Player {
@@ -209,7 +209,7 @@ model Player {
   loseDatas       String[]
   enterDatas      DateTime[]
   isJoinLeague    Boolean?          @default(false)
-  createdAt       DateTime?         @default(now())
+  createdAt       DateTime         @default(now())
 }
 
 model WaitPlayerList {
@@ -217,8 +217,8 @@ model WaitPlayerList {
   clubid    Int
   Playerid  Int
   player    Player    @relation(fields: [Playerid], references: [id], onDelete: Cascade)
-  enterDate DateTime?
-  exitDate  DateTime?
+  enterDate DateTime
+  exitDate  DateTime
 }
 
 model WaitGame {
@@ -227,7 +227,7 @@ model WaitGame {
   playerid   Int
   player     Player    @relation(fields: [playerid], references: [id])
   point      Int
-  updateTime DateTime? @updatedAt
+  updateTime DateTime @updatedAt
 }
 
 model Betting {
@@ -244,7 +244,7 @@ model Betting {
   isHit     String?  @default("betting")
   isProcess Boolean? @default(false)
   betCoast  Int
-  createdAt  DateTime? @default(now())
+  createdAt  DateTime @default(now())
 }
 
 model Match {
@@ -258,8 +258,8 @@ model Match {
   clubid       Int
   winner1id    Int?
   winner2id    Int?
-  startTime    DateTime?  @default(now())
-  endTime      DateTime?
+  startTime    DateTime  @default(now())
+  endTime      DateTime
   duration     Int?
   score1       Int?
   score2       Int?
@@ -271,7 +271,7 @@ model GameBoard {
   gameid      String
   clubid      Int
   CourtNumber Int
-  updateTime  DateTime? @updatedAt
+  updateTime  DateTime @updatedAt
   player1id   Int
   player2id   Int
   player3id   Int
@@ -292,24 +292,24 @@ model DogPlayer {
   winGames     Int[]
   gameNum      Int       @default(0)
   winNum       Int       @default(0)
-  lastGameDate DateTime?
-  createdAt    DateTime?  @default(now())
+  lastGameDate DateTime
+  createdAt    DateTime  @default(now())
 }
 
 model DogGames {
   id        Int       @id @default(autoincrement())
   Players   Int[]
   WinPlayer Int[]
-  createdAt DateTime? @default(now())
-  updatedAt DateTime?  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Post {
   id        Int       @id @default(autoincrement())
   title     String
   content   String
-  createdAt DateTime?  @default(now())
-  updatedAt DateTime?  @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   authorId  Int
   author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
@@ -319,8 +319,8 @@ model Post {
 model Comment {
   id        Int       @id @default(autoincrement())
   content   String
-  createdAt DateTime?  @default(now())
-  updatedAt DateTime?  @updatedAt
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 
   authorId  Int
   author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
