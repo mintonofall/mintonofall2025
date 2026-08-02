@@ -1,7 +1,7 @@
 "use server";
 import db from "./db";
 import { getKoreaMidnight } from "./getKoreaTime";
-import type { MatchDiary } from "@prisma/client"; // MatchDiary는 여전히 필요
+import type { MatchDiary, Prisma } from "@prisma/client"; // MatchDiary는 여전히 필요, Prisma 타입 추가
 import type { MatchDiaryWithPlayers, PlayerDiary } from "./types"; // 새로 생성한 types.ts에서 임포트
 
 /**
@@ -87,14 +87,30 @@ export async function makeMatch(
     endTime?: Date,
 ) {
     console.log(players, userid, clubid, winner1id, winner2id, score1, score2, startTime, endTime);
-    const data = await db.matchDiary.create({
-        data: {
-            clubid,
-            userid,
-            players,
-            ...{ winner1id, winner2id, score1, score2, startTime, endTime },
+
+    const createData: Prisma.MatchDiaryCreateInput = {
+        club: {
+            connect: {
+                id: clubid,
+            },
         },
+        userid,
+        players,
+        startTime: "",
+        endTime: "",
+    };
+
+    if (winner1id !== undefined) createData.winner1id = winner1id;
+    if (winner2id !== undefined) createData.winner2id = winner2id;
+    if (score1 !== undefined) createData.score1 = score1;
+    if (score2 !== undefined) createData.score2 = score2;
+    if (startTime !== undefined) createData.startTime = startTime;
+    if (endTime !== undefined) createData.endTime = endTime;
+
+    const data = await db.matchDiary.create({
+        data: createData,
     });
+
     // 한번의 쿼리로 여러 플레이어의 마지막 게임 날짜를 업데이트합니다.
     await db.playerDiary.updateMany({
         where: {
