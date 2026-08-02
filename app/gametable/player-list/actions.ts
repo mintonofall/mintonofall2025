@@ -20,6 +20,7 @@ export async function createDogPlayer(formData: FormData) {
                 gender: gender || "man",
                 gameNum: 0,
                 games: [],
+                lastGameDate: new Date(),
             },
         });
         revalidatePath("/gametable/player-list");
