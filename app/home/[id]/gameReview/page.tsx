@@ -39,11 +39,11 @@ export default async function GameReview({ params }: { params: Promise<{ id: str
     const matchDates = Array.from(dateSet);
 
     return (
-        <div className="p-8 flex flex-col items-center min-h-screen bg-gray-50 pt-16">
+        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white pt-16">
             {/* 상단 유저 정보 및 로그아웃 버튼 */}
             {isLoggedIn && (
                 <div className="w-full max-w-4xl flex justify-end items-center mb-4 gap-3">
-                    <span className="font-semibold text-gray-700">{user.nickName || user.userName}님</span>
+                    <span className="font-semibold text-slate-700">{user.nickName || user.userName}님</span>
                     <form
                         action={async () => {
                             "use server";
@@ -52,7 +52,7 @@ export default async function GameReview({ params }: { params: Promise<{ id: str
                     >
                         <button
                             type="submit"
-                            className="bg-red-50 hover:bg-red-500 text-red-500 hover:text-white text-sm font-semibold py-1 px-3 rounded transition-colors"
+                            className="bg-rose-50 hover:bg-rose-500 text-rose-500 hover:text-white text-sm font-semibold py-1 px-3 rounded-lg transition-colors"
                         >
                             로그아웃
                         </button>
@@ -65,7 +65,7 @@ export default async function GameReview({ params }: { params: Promise<{ id: str
                         <li key={index}>
                             <Link
                                 href={item.href}
-                                className="text-gray-600 hover:text-blue-500 font-medium transition-colors"
+                                className="text-slate-600 hover:text-emerald-500 font-medium transition-colors"
                             >
                                 {item.label}
                             </Link>
@@ -73,25 +73,25 @@ export default async function GameReview({ params }: { params: Promise<{ id: str
                     ))}
                 </ul>
             </nav>
-            <h1 className="text-3xl font-bold text-blue-600 mb-8">
+            <h1 className="text-3xl font-bold text-emerald-600 mb-8">
                 {club?.clubName ? `${club.clubName} 환영합니다!` : `${clubId}번 클럽 환영합니다!`}
             </h1>
             <div className="w-full max-w-4xl">
-                <h2 className="text-xl font-semibold mb-4 text-gray-700">경기 기록 (날짜 선택)</h2>
+                <h2 className="text-xl font-semibold mb-4 text-slate-700">경기 기록 (날짜 선택)</h2>
                 {matchDates.length > 0 ? (
                     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                         {matchDates.map((date) => (
                             <Link
                                 key={date}
                                 href={`/home/${clubId}/gameReview/${date}`}
-                                className="bg-white border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow text-center font-bold text-gray-800 hover:text-blue-500"
+                                className="bg-white border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow text-center font-bold text-slate-800 hover:text-emerald-500"
                             >
                                 {date}
                             </Link>
                         ))}
                     </div>
                 ) : (
-                    <div className="text-gray-500 text-center py-8 bg-white rounded-lg border">
+                    <div className="text-slate-500 text-center py-8 bg-white rounded-lg border">
                         진행된 경기 기록이 없습니다.
                     </div>
                 )}

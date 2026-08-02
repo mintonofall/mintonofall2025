@@ -70,7 +70,7 @@ export default function Order() {
     return (
         <div className="container mx-auto p-4 text-center">
             <h1 className="text-3xl font-bold mb-6">드래프트 순서 정하기</h1>
-            <p className="mb-4 text-gray-600">참가자 이름을 드래그하여 순서를 변경할 수 있습니다.</p>
+            <p className="mb-4 text-slate-600">참가자 이름을 드래그하여 순서를 변경할 수 있습니다.</p>
             <div className="max-w-md mx-auto">
                 <DragDropContext onDragEnd={onDragEnd}>
                     <Droppable droppableId="participants">
@@ -87,7 +87,7 @@ export default function Order() {
                                                 ref={provided.innerRef}
                                                 {...provided.draggableProps}
                                                 {...provided.dragHandleProps}
-                                                className="p-3 rounded-md bg-gray-100 cursor-grab active:cursor-grabbing"
+                                                className="p-3 rounded-md bg-slate-100 cursor-grab active:cursor-grabbing"
                                             >
                                                 <span className="font-semibold">{index + 1}순위:</span> {p.nickName}
                                             </li>
@@ -102,14 +102,14 @@ export default function Order() {
                 <div className="flex gap-4">
                     <button
                         onClick={handleShuffle}
-                        className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                        className="w-full px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600"
                     >
                         순서 섞기
                     </button>
                     <button
                         onClick={handleSaveOrder}
                         disabled={!isShuffled || isPending}
-                        className="w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                        className="w-full px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 disabled:bg-slate-400 disabled:cursor-not-allowed"
                     >
                         {isPending ? "저장 중..." : "이 순서로 확정"}
                     </button>

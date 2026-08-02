@@ -78,16 +78,16 @@ export default async function GameResult({ searchParams }: { searchParams: Promi
     const playerMap = new Map(players.map((p) => [p.id, p]));
 
     return (
-        <div className="w-full p-4 bg-gray-50 min-h-[90vh]">
-            <h1 className="text-3xl font-bold text-gray-700 mb-6 text-center">Game Results</h1>
+        <div className="w-full p-4 bg-slate-50 min-h-[90vh]">
+            <h1 className="text-3xl font-bold text-slate-700 mb-6 text-center">Game Results</h1>
             <SearchInput />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {games.map((game) => (
-                    <div key={game.id} className="bg-white rounded-lg shadow-md p-4 border border-gray-200">
+                    <div key={game.id} className="bg-white rounded-lg shadow-md p-4 border border-slate-200">
                         <div className="flex justify-between items-center mb-4">
-                            <span className="font-bold text-gray-500">Game #{game.id}</span>
+                            <span className="font-bold text-slate-500">Game #{game.id}</span>
                             <div className="flex items-center gap-2">
-                                <span className="text-sm text-gray-400">
+                                <span className="text-sm text-slate-400">
                                     {game.createdAt &&
                                         new Date(game.createdAt).toLocaleTimeString("ko-KR", {
                                             hour: "2-digit",
@@ -106,19 +106,19 @@ export default async function GameResult({ searchParams }: { searchParams: Promi
                                         key={playerId}
                                         className={`text-center p-2 rounded-lg ${
                                             player?.gender === "man"
-                                                ? "bg-blue-500"
+                                                ? "bg-emerald-500"
                                                 : player?.gender === "woman"
-                                                  ? "bg-red-100"
-                                                  : "bg-gray-50"
+                                                  ? "bg-rose-100"
+                                                  : "bg-slate-50"
                                         }`}
                                     >
                                         <span
-                                            className={`font-semibold ${player?.gender === "man" ? "text-white" : "text-gray-800"}`}
+                                            className={`font-semibold ${player?.gender === "man" ? "text-white" : "text-slate-800"}`}
                                         >
                                             {player?.name || "Unknown"}
                                         </span>
                                         <span
-                                            className={`text-xs ml-1 ${player?.gender === "man" ? "text-blue-200" : "text-gray-500"}`}
+                                            className={`text-xs ml-1 ${player?.gender === "man" ? "text-emerald-200" : "text-slate-500"}`}
                                         >
                                             {player?.grade}
                                         </span>

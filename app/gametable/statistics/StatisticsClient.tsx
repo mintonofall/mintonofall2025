@@ -99,17 +99,17 @@ export default function StatisticsClient({
     );
 
     return (
-        <div className="flex flex-col h-[calc(90vh-4rem)] w-full bg-gray-50">
-            <div className="bg-white p-4 border-b border-gray-200">
+        <div className="flex flex-col h-[calc(90vh-4rem)] w-full bg-slate-50">
+            <div className="bg-white p-4 border-b border-slate-200">
                 <input
                     type="text"
                     placeholder="선수 이름 검색"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full border border-slate-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
                 />
             </div>
-            <div className="bg-white shadow-sm border-b border-gray-200">
+            <div className="bg-white shadow-sm border-b border-slate-200">
                 <div className="flex">
                     {tabs.map((tab) => (
                         <button
@@ -117,8 +117,8 @@ export default function StatisticsClient({
                             onClick={() => setActiveTab(tab)}
                             className={`flex-1 py-4 text-sm font-bold text-center border-b-2 transition-colors ${
                                 activeTab === tab
-                                    ? "border-blue-600 text-blue-600"
-                                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                                    ? "border-emerald-600 text-emerald-600"
+                                    : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
                             }`}
                         >
                             {tab}
@@ -129,46 +129,46 @@ export default function StatisticsClient({
             <div className="flex-1 p-4 overflow-y-auto">
                 {activeTab === "게임수" ? (
                     <div className="bg-white rounded-lg shadow overflow-hidden">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
+                        <table className="min-w-full divide-y divide-slate-200">
+                            <thead className="bg-slate-50">
                                 <tr>
-                                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         순위
                                     </th>
-                                    <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         이름
                                     </th>
-                                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         급수
                                     </th>
-                                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         게임수
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
+                            <tbody className="bg-white divide-y divide-slate-200">
                                 {filteredPlayers.map((player, index) => (
                                     <tr
                                         key={player.id}
                                         onClick={() => handlePlayerClick(player)}
                                         className={`cursor-pointer hover:opacity-80 transition-opacity ${
                                             player.gender === "man"
-                                                ? "bg-blue-50"
+                                                ? "bg-emerald-50"
                                                 : player.gender === "woman"
-                                                  ? "bg-red-50"
+                                                  ? "bg-rose-50"
                                                   : ""
                                         }`}
                                     >
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-500">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-slate-500">
                                             {index + 1}
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-sm font-bold text-gray-900">
+                                        <td className="px-4 py-3 whitespace-nowrap text-sm font-bold text-slate-900">
                                             {player.name}
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-500">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-slate-500">
                                             {player.grade}
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-blue-600">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-emerald-600">
                                             {player.todayGameNum}
                                         </td>
                                     </tr>
@@ -178,46 +178,46 @@ export default function StatisticsClient({
                     </div>
                 ) : activeTab === "2인" ? (
                     <div className="bg-white rounded-lg shadow overflow-hidden">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
+                        <table className="min-w-full divide-y divide-slate-200">
+                            <thead className="bg-slate-50">
                                 <tr>
-                                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         순위
                                     </th>
-                                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         조합 (2인)
                                     </th>
-                                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         게임수
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
+                            <tbody className="bg-white divide-y divide-slate-200">
                                 {filteredDuoStats.map((stat, index) => (
                                     <tr
                                         key={index}
-                                        className="hover:bg-gray-50 cursor-pointer"
+                                        className="hover:bg-slate-50 cursor-pointer"
                                         onClick={() => handleCombinationClick([stat.player1, stat.player2])}
                                     >
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-500">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-slate-500">
                                             {index + 1}
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-900">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-slate-900">
                                             <div className="flex justify-center items-center gap-2">
                                                 <span
-                                                    className={`font-bold ${stat.player1?.gender === "man" ? "text-blue-600" : stat.player1?.gender === "woman" ? "text-red-600" : "text-gray-800"}`}
+                                                    className={`font-bold ${stat.player1?.gender === "man" ? "text-emerald-600" : stat.player1?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player1?.name}
                                                 </span>
-                                                <span className="text-gray-400">/</span>
+                                                <span className="text-slate-400">/</span>
                                                 <span
-                                                    className={`font-bold ${stat.player2?.gender === "man" ? "text-blue-600" : stat.player2?.gender === "woman" ? "text-red-600" : "text-gray-800"}`}
+                                                    className={`font-bold ${stat.player2?.gender === "man" ? "text-emerald-600" : stat.player2?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player2?.name}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-blue-600">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-emerald-600">
                                             {stat.count}
                                         </td>
                                     </tr>
@@ -227,54 +227,54 @@ export default function StatisticsClient({
                     </div>
                 ) : activeTab === "3인" ? (
                     <div className="bg-white rounded-lg shadow overflow-hidden">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
+                        <table className="min-w-full divide-y divide-slate-200">
+                            <thead className="bg-slate-50">
                                 <tr>
-                                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         순위
                                     </th>
-                                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         조합 (3인)
                                     </th>
-                                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         게임수
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
+                            <tbody className="bg-white divide-y divide-slate-200">
                                 {filteredTrioStats.map((stat, index) => (
                                     <tr
                                         key={index}
-                                        className="hover:bg-gray-50 cursor-pointer"
+                                        className="hover:bg-slate-50 cursor-pointer"
                                         onClick={() =>
                                             handleCombinationClick([stat.player1, stat.player2, stat.player3])
                                         }
                                     >
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-500">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-slate-500">
                                             {index + 1}
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-900">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-slate-900">
                                             <div className="flex justify-center items-center gap-2 flex-wrap">
                                                 <span
-                                                    className={`font-bold ${stat.player1?.gender === "man" ? "text-blue-600" : stat.player1?.gender === "woman" ? "text-red-600" : "text-gray-800"}`}
+                                                    className={`font-bold ${stat.player1?.gender === "man" ? "text-emerald-600" : stat.player1?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player1?.name}
                                                 </span>
-                                                <span className="text-gray-400">/</span>
+                                                <span className="text-slate-400">/</span>
                                                 <span
-                                                    className={`font-bold ${stat.player2?.gender === "man" ? "text-blue-600" : stat.player2?.gender === "woman" ? "text-red-600" : "text-gray-800"}`}
+                                                    className={`font-bold ${stat.player2?.gender === "man" ? "text-emerald-600" : stat.player2?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player2?.name}
                                                 </span>
-                                                <span className="text-gray-400">/</span>
+                                                <span className="text-slate-400">/</span>
                                                 <span
-                                                    className={`font-bold ${stat.player3?.gender === "man" ? "text-blue-600" : stat.player3?.gender === "woman" ? "text-red-600" : "text-gray-800"}`}
+                                                    className={`font-bold ${stat.player3?.gender === "man" ? "text-emerald-600" : stat.player3?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player3?.name}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-blue-600">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-emerald-600">
                                             {stat.count}
                                         </td>
                                     </tr>
@@ -284,25 +284,25 @@ export default function StatisticsClient({
                     </div>
                 ) : activeTab === "4인" ? (
                     <div className="bg-white rounded-lg shadow overflow-hidden">
-                        <table className="min-w-full divide-y divide-gray-200">
-                            <thead className="bg-gray-50">
+                        <table className="min-w-full divide-y divide-slate-200">
+                            <thead className="bg-slate-50">
                                 <tr>
-                                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         순위
                                     </th>
-                                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         조합 (4인)
                                     </th>
-                                    <th className="px-4 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <th className="px-4 py-3 text-center text-xs font-medium text-slate-500 uppercase tracking-wider">
                                         게임수
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody className="bg-white divide-y divide-gray-200">
+                            <tbody className="bg-white divide-y divide-slate-200">
                                 {filteredQuartetStats.map((stat, index) => (
                                     <tr
                                         key={index}
-                                        className="hover:bg-gray-50 cursor-pointer"
+                                        className="hover:bg-slate-50 cursor-pointer"
                                         onClick={() =>
                                             handleCombinationClick([
                                                 stat.player1,
@@ -312,37 +312,37 @@ export default function StatisticsClient({
                                             ])
                                         }
                                     >
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-500">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-slate-500">
                                             {index + 1}
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-gray-900">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-slate-900">
                                             <div className="flex justify-center items-center gap-2 flex-wrap">
                                                 <span
-                                                    className={`font-bold ${stat.player1?.gender === "man" ? "text-blue-600" : stat.player1?.gender === "woman" ? "text-red-600" : "text-gray-800"}`}
+                                                    className={`font-bold ${stat.player1?.gender === "man" ? "text-emerald-600" : stat.player1?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player1?.name}
                                                 </span>
-                                                <span className="text-gray-400">/</span>
+                                                <span className="text-slate-400">/</span>
                                                 <span
-                                                    className={`font-bold ${stat.player2?.gender === "man" ? "text-blue-600" : stat.player2?.gender === "woman" ? "text-red-600" : "text-gray-800"}`}
+                                                    className={`font-bold ${stat.player2?.gender === "man" ? "text-emerald-600" : stat.player2?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player2?.name}
                                                 </span>
-                                                <span className="text-gray-400">/</span>
+                                                <span className="text-slate-400">/</span>
                                                 <span
-                                                    className={`font-bold ${stat.player3?.gender === "man" ? "text-blue-600" : stat.player3?.gender === "woman" ? "text-red-600" : "text-gray-800"}`}
+                                                    className={`font-bold ${stat.player3?.gender === "man" ? "text-emerald-600" : stat.player3?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player3?.name}
                                                 </span>
-                                                <span className="text-gray-400">/</span>
+                                                <span className="text-slate-400">/</span>
                                                 <span
-                                                    className={`font-bold ${stat.player4?.gender === "man" ? "text-blue-600" : stat.player4?.gender === "woman" ? "text-red-600" : "text-gray-800"}`}
+                                                    className={`font-bold ${stat.player4?.gender === "man" ? "text-emerald-600" : stat.player4?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player4?.name}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-blue-600">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-emerald-600">
                                             {stat.count}
                                         </td>
                                     </tr>
@@ -351,7 +351,7 @@ export default function StatisticsClient({
                         </table>
                     </div>
                 ) : (
-                    <div className="flex items-center justify-center h-full text-gray-400">
+                    <div className="flex items-center justify-center h-full text-slate-400">
                         {activeTab} 통계 화면 (준비중)
                     </div>
                 )}
@@ -368,7 +368,7 @@ export default function StatisticsClient({
                     >
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-bold">{selectedPlayerName}의 경기 목록</h2>
-                            <button onClick={() => setIsModalOpen(false)} className="text-gray-500 hover:text-gray-700">
+                            <button onClick={() => setIsModalOpen(false)} className="text-slate-500 hover:text-slate-700">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     fill="none"
@@ -384,10 +384,10 @@ export default function StatisticsClient({
                         <div className="space-y-3">
                             {selectedPlayerGames.length > 0 ? (
                                 selectedPlayerGames.map((game) => (
-                                    <div key={game.id} className="bg-gray-50 p-3 rounded border border-gray-200">
+                                    <div key={game.id} className="bg-slate-50 p-3 rounded-lg border border-slate-200">
                                         <div className="flex justify-between items-center mb-2">
-                                            <div className="text-xs font-bold text-gray-500">Game #{game.id}</div>
-                                            <div className="text-xs text-gray-400">
+                                            <div className="text-xs font-bold text-slate-500">Game #{game.id}</div>
+                                            <div className="text-xs text-slate-400">
                                                 {game.createdAt
                                                     ? new Date(game.createdAt).toLocaleTimeString("ko-KR", {
                                                           hour: "2-digit",
@@ -400,7 +400,7 @@ export default function StatisticsClient({
                                             {game.players.map((p, i) => (
                                                 <span
                                                     key={i}
-                                                    className="text-center bg-white rounded border border-gray-100 py-1 text-sm"
+                                                    className="text-center bg-white rounded-lg border border-slate-100 py-1 text-sm"
                                                 >
                                                     {p}
                                                 </span>
@@ -409,7 +409,7 @@ export default function StatisticsClient({
                                     </div>
                                 ))
                             ) : (
-                                <div className="text-center text-gray-500 py-4">경기 기록이 없습니다.</div>
+                                <div className="text-center text-slate-500 py-4">경기 기록이 없습니다.</div>
                             )}
                         </div>
                     </div>

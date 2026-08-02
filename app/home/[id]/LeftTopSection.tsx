@@ -57,7 +57,7 @@ export default function LeftTopSection({
     };
 
     return (
-        <div className="h-[30%] p-4 bg-gray-50">
+        <div className="h-[30%] p-4 bg-slate-50">
             <div className="flex h-full gap-2">
                 {/* 클럽의 코트 수만큼 코트 컴포넌트를 렌더링 */}
                 {Array.from({ length: howManyCourts }).map((_, index) => {
@@ -74,20 +74,20 @@ export default function LeftTopSection({
                         <div
                             key={index}
                             // courtPointer와 인덱스가 일치하는 코트(다음에 게임이 배정될 코트)는 다른 배경색으로 강조
-                            className={`relative flex-1 flex flex-col items-center justify-center rounded shadow-sm cursor-pointer ${
-                                courtPointer === index ? "bg-green-500" : "bg-white"
+                            className={`relative flex-1 flex flex-col items-center justify-center rounded-lg shadow-sm cursor-pointer ${
+                                courtPointer === index ? "bg-emerald-500" : "bg-white"
                             }`}
                             onClick={() => setCourtPointer(index)}
                         >
                             {/* 리그 게임일 경우 '리그게임' 배지 표시 */}
                             {isLeagueGame && (
-                                <div className="absolute top-2 left-2 px-2 py-1 bg-yellow-400 text-yellow-800 text-xs font-bold rounded z-10">
+                                <div className="absolute top-2 left-2 px-2 py-1 bg-amber-400 text-amber-800 text-xs font-bold rounded-lg z-10">
                                     리그게임
                                 </div>
                             )}
                             <span
                                 // 코트가 비어있으면 'Court N', 게임 중이면 경과 시간 표시
-                                className={`text-xl font-bold ${courtPointer === index ? "text-white" : "text-gray-600"}`}
+                                className={`text-xl font-bold ${courtPointer === index ? "text-white" : "text-slate-600"}`}
                             >
                                 {courtData ? getElapsedTime(courtData.startTime) : `Court ${index + 1}`}
                             </span>
@@ -96,7 +96,7 @@ export default function LeftTopSection({
                                     {!courtData.isLoading && (
                                         // 경기 취소 버튼
                                         <button
-                                            className="absolute top-1 right-1 w-6 h-6 flex items-center justify-center bg-white/80 hover:bg-red-100 rounded-full shadow-sm text-gray-500 hover:text-red-600 transition-colors"
+                                            className="absolute top-1 right-1 w-6 h-6 flex items-center justify-center bg-white/80 hover:bg-rose-100 rounded-full shadow-sm text-slate-500 hover:text-rose-600 transition-colors"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setCourtPointer(index);
@@ -108,7 +108,7 @@ export default function LeftTopSection({
                                     )}
                                     {/* 게임에 참여 중인 선수 이름 표시 */}
                                     <div
-                                        className={`text-lg font-bold mt-2 grid grid-cols-2 gap-x-4 gap-y-2 ${courtPointer === index ? "text-white" : "text-gray-800"}`}
+                                        className={`text-lg font-bold mt-2 grid grid-cols-2 gap-x-4 gap-y-2 ${courtPointer === index ? "text-white" : "text-slate-800"}`}
                                     >
                                         <span>{courtData.p1?.name}</span>
                                         <span>{courtData.p2?.name}</span>
@@ -118,7 +118,7 @@ export default function LeftTopSection({
                                     {!courtData.isLoading && (
                                         // 경기 종료 버튼
                                         <button
-                                            className="mt-3 bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded shadow-sm transition-colors z-10"
+                                            className="mt-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1 rounded-lg shadow-sm transition-colors z-10"
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 e.stopPropagation();

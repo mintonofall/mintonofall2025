@@ -451,10 +451,10 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             <div className="flex flex-col w-3/4">
                 {/* GameCourt 3 */}
                 {/* 상단 3 부분 */}
-                <div className=" bg-gray-200 p-0">
+                <div className=" bg-slate-200 p-0">
                     <div className="flex flex-row *:flex-auto">
                         <div
-                            className={`w-1/2 flex-auto z-0 ${boardPointer == 0 ? "bg-green-500" : "bg-blue-100"} p-0`}
+                            className={`w-1/2 flex-auto z-0 ${boardPointer == 0 ? "bg-emerald-500" : "bg-emerald-100"} p-0`}
                             onClick={() => {
                                 setBoardPointer(0);
                             }}
@@ -472,7 +472,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             />
                         </div>
                         <div
-                            className={`w-1/2 z-0 ${boardPointer == 1 ? "bg-green-500" : "bg-blue-100"}`}
+                            className={`w-1/2 z-0 ${boardPointer == 1 ? "bg-emerald-500" : "bg-emerald-100"}`}
                             onClick={() => {
                                 setBoardPointer(1);
                             }}
@@ -490,7 +490,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             />
                         </div>
                         <div
-                            className={`w-1/2 z-0 ${boardPointer == 2 ? "bg-green-500" : "bg-blue-100"} p-0`}
+                            className={`w-1/2 z-0 ${boardPointer == 2 ? "bg-emerald-500" : "bg-emerald-100"} p-0`}
                             onClick={() => {
                                 setBoardPointer(2);
                             }}
@@ -509,7 +509,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         </div>
                         <div
                             className={`${howManyCourts == 4 ? "" : "hidden"} w-1/2 z-0 ${
-                                boardPointer == 3 ? "bg-green-500" : "bg-blue-100"
+                                boardPointer == 3 ? "bg-emerald-500" : "bg-emerald-100"
                             } p-0`}
                             onClick={() => {
                                 setBoardPointer(3);
@@ -531,7 +531,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                     {/* this is Second row */}
                     <div className={`${howManyCourts == 6 ? "" : "hidden"} flex flex-row *:flex-auto`}>
                         <div
-                            className={`w-1/2 flex-auto z-0 ${boardPointer == 3 ? "bg-green-500" : "bg-blue-100"} p-0`}
+                            className={`w-1/2 flex-auto z-0 ${boardPointer == 3 ? "bg-emerald-500" : "bg-emerald-100"} p-0`}
                             onClick={() => {
                                 setBoardPointer(3);
                             }}
@@ -549,7 +549,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             />
                         </div>
                         <div
-                            className={`w-1/2 z-0 ${boardPointer == 4 ? "bg-green-500" : "bg-blue-100"}`}
+                            className={`w-1/2 z-0 ${boardPointer == 4 ? "bg-emerald-500" : "bg-emerald-100"}`}
                             onClick={() => {
                                 setBoardPointer(4);
                             }}
@@ -567,7 +567,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                             />
                         </div>
                         <div
-                            className={`w-1/2 z-0 ${boardPointer == 5 ? "bg-green-500" : "bg-blue-100"} p-0`}
+                            className={`w-1/2 z-0 ${boardPointer == 5 ? "bg-emerald-500" : "bg-emerald-100"} p-0`}
                             onClick={() => {
                                 setBoardPointer(5);
                             }}
@@ -589,10 +589,10 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
 
                 <div className="flex flex-row p-4">
                     {/* 하단 7 부분 */}
-                    <div className="flex flex-row w-12 justify-center bg-green-200 ">
+                    <div className="flex flex-row w-12 justify-center bg-emerald-200 ">
                         <div className="flex flex-col mt-1 h-full gap-1 *:flex *:justify-center *:items-center *:text-2xl *:h-16">
                             <div
-                                className="bg-red-200"
+                                className="bg-rose-200"
                                 onClick={() => {
                                     const game = getGameForCourt(boardPointer + 1);
                                     if (game && game.player1id !== 12) {
@@ -608,7 +608,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                 </div>
                             </div>
                             <div
-                                className="bg-blue-200"
+                                className="bg-emerald-200"
                                 onClick={() => {
                                     const game = getGameForCourt(boardPointer + 1);
                                     if (game && game.player1id !== 12) {
@@ -624,7 +624,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                 </div>
                             </div>
                             <div
-                                className="bg-yellow-200"
+                                className="bg-amber-200"
                                 onClick={() => {
                                     const game = getGameForCourt(boardPointer + 1);
                                     if (game && game.player1id !== 12) {
@@ -677,7 +677,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                         {Array.from({ length: 32 }, (_, index) => (
                             <div
                                 key={"game" + index}
-                                className={`h-16 ${gamePointer == index ? "bg-red-200" : "bg-blue-200"}`}
+                                className={`h-16 ${gamePointer == index ? "bg-rose-200" : "bg-emerald-200"}`}
                                 onClick={async () => {
                                     console.log("before : ", waitGameListId);
                                     const playerIndex = waitGameListId.findIndex((player) => player.point === index);
@@ -724,7 +724,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                 {game3?.gameid} */}
             </div>
             {/* 우측 화면 */}
-            <div className="w-1/4 bg-gray-400 p-4 h-screen overflow-y-auto">
+            <div className="w-1/4 bg-slate-400 p-4 h-screen overflow-y-auto">
                 <div className="flex flex-row justify-between items-center">
                     <div>{waitPlayerList.length} 명</div>
                     {isPending && (
@@ -760,7 +760,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                     ></EllipsisVerticalIcon>
                 </div>
                 <div>
-                    <div className="flex flex-row *:w-1/2 *:flex *:text-center *:justify-center *:items-center *:bg-blue-500 *:rounded-lg gap-1 my-2 *:shadow-lg *:text-white h-8 *:cursor-pointer">
+                    <div className="flex flex-row *:w-1/2 *:flex *:text-center *:justify-center *:items-center *:bg-emerald-500 *:rounded-lg gap-1 my-2 *:shadow-lg *:text-white h-8 *:cursor-pointer">
                         <div
                             onClick={() => {
                                 setHowSort("games");
@@ -795,7 +795,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                 <div
                                     key={`wait ${playerData?.id}`}
                                     className={`flex flex-col w-auto relative rounded-xl border-2 ${
-                                        howManyGame(playerData!.id) >= 1 ? "border-green-400" : null
+                                        howManyGame(playerData!.id) >= 1 ? "border-emerald-400" : null
                                     }`}
                                 >
                                     <div
@@ -809,7 +809,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                                         </div>
                                     </div>
                                     <button
-                                        className="absolute -right-3 -top-3 z-10 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg"
+                                        className="absolute -right-3 -top-3 z-10 bg-rose-500 text-white rounded-full w-6 h-6 flex items-center justify-center shadow-lg"
                                         onClick={() => {
                                             const data = [...waitPlayerList];
                                             const playerid = data[index].Playerid;
@@ -829,7 +829,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                 {/* test button */}
                 {!isResetPending && (
                     <button
-                        className="bg-blue-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
+                        className="bg-emerald-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
                         onClick={() => {
                             // makePlayer(1, 6);
                             sendMessage("hellow from server");
@@ -841,7 +841,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                 )}
                 {isResetPending && (
                     <button
-                        className="bg-blue-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
+                        className="bg-emerald-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
                         disabled
                     >
                         <svg
@@ -869,7 +869,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                 )}
                 {/* ClearList Button */}
                 {/* <button
-                    className="bg-red-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
+                    className="bg-rose-500 text-white rounded-xl w-32 h-12 flex items-center justify-center shadow-lg mt-4"
                     onClick={() => {
                         if (confirm("Are you sure?")) {
                             setWaitPlayerList([]);
@@ -882,7 +882,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             {/* 우측 하단 고정 아이콘 */}
             <div className="fixed z-50 bottom-4 right-4">
                 <button
-                    className="bg-blue-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg"
+                    className="bg-emerald-500 text-white rounded-full w-10 h-10 flex items-center justify-center shadow-lg"
                     onClick={togglePlayerList}
                 >
                     <span className="text-3xl">+</span>
@@ -891,7 +891,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             {showPlayerList && (
                 <div className="fixed top-0 z-50 right-0 w-full bg-black/50 bg-opacity-50 flex flex-wrap items-center justify-center">
                     <button
-                        className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg"
+                        className="absolute top-2 right-2 bg-rose-500 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg"
                         onClick={togglePlayerList}
                     >
                         <span className="text-xl">×</span>
@@ -907,7 +907,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
             {showEdit && (
                 <div className="fixed top-10 right-4 bg-white shadow-lg rounded-lg p-4">
                     <div className="text-center">
-                        <Link href={`/editClub/${id}`} className="text-blue-500 hover:text-blue-700">
+                        <Link href={`/editClub/${id}`} className="text-emerald-500 hover:text-emerald-700">
                             클럽 정보 수정
                         </Link>
                     </div>

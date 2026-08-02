@@ -17,8 +17,8 @@ interface MyDraftPanelProps {
 export default function MyDraftPanel({ user, categories, isCurrentUser, drafts }: MyDraftPanelProps) {
     return (
         <div
-            className={`w-1/5 p-4 border-r border-gray-200 flex flex-col ${
-                isCurrentUser ? "bg-green-100" : "bg-gray-50"
+            className={`w-1/5 p-4 border-r border-slate-200 flex flex-col ${
+                isCurrentUser ? "bg-emerald-100" : "bg-slate-50"
             }`}
         >
             <h2 className="text-2xl font-bold mb-4 text-center">{user?.nickName}님의 드래프트</h2>
@@ -27,7 +27,7 @@ export default function MyDraftPanel({ user, categories, isCurrentUser, drafts }
                     const draft = drafts.find((d) => d.category === category);
                     return (
                         <div key={category} className="p-4 border rounded-lg shadow-sm bg-white flex-shrink-0">
-                            <h3 className="font-semibold text-lg text-gray-800">{category}</h3>
+                            <h3 className="font-semibold text-lg text-slate-800">{category}</h3>
                             {draft ? (
                                 <div className="flex items-center space-x-2 mt-2">
                                     <div>
@@ -42,11 +42,11 @@ export default function MyDraftPanel({ user, categories, isCurrentUser, drafts }
                                     </div>
                                     <div>
                                         <p className="font-semibold">{draft.player.name}</p>
-                                        <p className="text-sm text-gray-500">Rank: {draft.player.ranking}</p>
+                                        <p className="text-sm text-slate-500">Rank: {draft.player.ranking}</p>
                                     </div>
                                 </div>
                             ) : (
-                                <div className="mt-2 text-gray-500">선수 없음</div>
+                                <div className="mt-2 text-slate-500">선수 없음</div>
                             )}
                         </div>
                     );

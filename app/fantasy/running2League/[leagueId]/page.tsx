@@ -219,7 +219,7 @@ function PlayerInfoLeft({
                     </div>
                 </div>
             ) : (
-                <div className={`flex items-center h-24 text-gray-500 ${isRight ? "justify-end" : "justify-center"}`}>
+                <div className={`flex items-center h-24 text-slate-500 ${isRight ? "justify-end" : "justify-center"}`}>
                     <p>선수 없음</p>
                 </div>
             )}
@@ -276,7 +276,7 @@ function PlayerInfoRight({
                     )}
                 </div>
             ) : (
-                <div className={`flex items-center h-24 text-gray-500 ${isRight ? "justify-end" : "justify-center"}`}>
+                <div className={`flex items-center h-24 text-slate-500 ${isRight ? "justify-end" : "justify-center"}`}>
                     <p>선수 없음</p>
                 </div>
             )}
@@ -707,35 +707,35 @@ export default async function RunningLeague({ params }: { params: PageParams }) 
                 </div>
 
                 <div className="mt-8 flex gap-8">
-                    <div className="w-1/2 border rounded-lg p-6 shadow-md bg-gray-50">
+                    <div className="w-1/2 border rounded-lg p-6 shadow-md bg-slate-50">
                         <div className="flex justify-around items-center">
                             <div className="text-center">
-                                <p className="text-2xl font-bold text-blue-600">
+                                <p className="text-2xl font-bold text-emerald-600">
                                     {team1Stats.win}승 {team1Stats.draw}무 {team1Stats.lose}패
                                 </p>
-                                <p className="text-gray-500 mt-1">총점: {team1Stats.total}</p>
+                                <p className="text-slate-500 mt-1">총점: {team1Stats.total}</p>
                             </div>
                             <div className="text-center">
-                                <p className="text-2xl font-bold text-red-600">
+                                <p className="text-2xl font-bold text-rose-600">
                                     {team2Stats.win}승 {team2Stats.draw}무 {team2Stats.lose}패
                                 </p>
-                                <p className="text-gray-500 mt-1">총점: {team2Stats.total}</p>
+                                <p className="text-slate-500 mt-1">총점: {team2Stats.total}</p>
                             </div>
                         </div>
                     </div>
-                    <div className="w-1/2 border rounded-lg p-6 shadow-md bg-gray-50">
+                    <div className="w-1/2 border rounded-lg p-6 shadow-md bg-slate-50">
                         <div className="flex justify-around items-center">
                             <div className="text-center">
-                                <p className="text-2xl font-bold text-blue-600">
+                                <p className="text-2xl font-bold text-emerald-600">
                                     {team3Stats.win}승 {team3Stats.draw}무 {team3Stats.lose}패
                                 </p>
-                                <p className="text-gray-500 mt-1">총점: {team3Stats.total}</p>
+                                <p className="text-slate-500 mt-1">총점: {team3Stats.total}</p>
                             </div>
                             <div className="text-center">
-                                <p className="text-2xl font-bold text-red-600">
+                                <p className="text-2xl font-bold text-rose-600">
                                     {team4Stats.win}승 {team4Stats.draw}무 {team4Stats.lose}패
                                 </p>
-                                <p className="text-gray-500 mt-1">총점: {team4Stats.total}</p>
+                                <p className="text-slate-500 mt-1">총점: {team4Stats.total}</p>
                             </div>
                         </div>
                     </div>

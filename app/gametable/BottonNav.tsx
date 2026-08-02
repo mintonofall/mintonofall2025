@@ -98,14 +98,14 @@ export default function BottomNav() {
         <>
             {/* 하단 네비게이션 바가 컨텐츠를 가리지 않도록 여백 추가 */}
             <div className="h-16" />
-            <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50">
+            <nav className="fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 z-50">
                 <div className="flex justify-around items-center h-16">
                     {navItems.map((item) => (
                         <Link
                             key={item.name}
                             href={item.href}
                             className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${
-                                pathname === item.href ? "text-blue-600" : "text-gray-500 hover:text-gray-900"
+                                pathname === item.href ? "text-emerald-600" : "text-slate-500 hover:text-slate-900"
                             }`}
                         >
                             {item.icon}

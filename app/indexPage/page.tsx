@@ -11,36 +11,54 @@ export default async function Index() {
     }
 
     return (
-        <div className="flex flex-col items-center space-y-4 p-4">
-            <h1>어서오세요 {user?.userName} </h1>
-            <Link href={"/home/"} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
-                게임진행판
-            </Link>
-            {/* <Link href={`/fantasy/${user!.id}`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
+        <div className="flex flex-col items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white px-4 py-10">
+            <h1 className="text-2xl font-extrabold text-slate-800 mb-1">
+                어서오세요, {user?.userName}님 <span className="text-emerald-500">🏸</span>
+            </h1>
+            <p className="text-slate-400 text-sm mb-8">오늘도 즐거운 배드민턴 되세요</p>
+
+            <div className="flex flex-col w-full max-w-sm gap-3">
+                <Link
+                    href={"/home/"}
+                    className="text-center bg-emerald-500 hover:bg-emerald-600 text-white font-semibold text-lg py-3 rounded-full shadow-sm transition-colors"
+                >
+                    게임진행판
+                </Link>
+                {/* <Link href={`/fantasy/${user!.id}`} className="text-emerald-500 hover:text-emerald-700 font-semibold text-lg">
                 판타지 리그
             </Link> */}
-            <Link href={`/diary/${user!.id}`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
-                일지작성
-            </Link>
-            <Link href={`/board`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
-                모두의민턴 게시판
-            </Link>
-            <Link
-                href="https://iotofall.notion.site/doc"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-blue-500 hover:text-blue-700 font-semibold text-lg"
-            >
-                사용설명서
-            </Link>
-            {/* <Link href={`/gametable/game-plan`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
+                <Link
+                    href={`/diary/${user!.id}`}
+                    className="text-center bg-white hover:bg-emerald-50 text-slate-700 font-semibold text-lg py-3 rounded-full shadow-sm border border-emerald-100 transition-colors"
+                >
+                    일지작성
+                </Link>
+                <Link
+                    href={`/board`}
+                    className="text-center bg-white hover:bg-emerald-50 text-slate-700 font-semibold text-lg py-3 rounded-full shadow-sm border border-emerald-100 transition-colors"
+                >
+                    모두의민턴 게시판
+                </Link>
+                <Link
+                    href="https://iotofall.notion.site/doc"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-center bg-white hover:bg-emerald-50 text-slate-700 font-semibold text-lg py-3 rounded-full shadow-sm border border-emerald-100 transition-colors"
+                >
+                    사용설명서
+                </Link>
+                {/* <Link href={`/gametable/game-plan`} className="text-emerald-500 hover:text-emerald-700 font-semibold text-lg">
                 개판 전국모임
             </Link> */}
-            <form action={logout}>
-                <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded mb-4">
-                    Logout
-                </button>
-            </form>
+                <form action={logout}>
+                    <button
+                        onClick={logout}
+                        className="w-full text-center text-slate-400 hover:text-rose-500 font-medium py-2 mt-2 transition-colors"
+                    >
+                        Logout
+                    </button>
+                </form>
+            </div>
         </div>
     );
 }

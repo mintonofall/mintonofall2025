@@ -100,11 +100,11 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
 
     return (
         <>
-            <div className="flex flex-col w-full h-full p-1 space-y-0 z-0">
+            <div className="flex flex-col w-full h-full p-1.5 gap-1.5 z-0">
                 {/* 상단 팀 (플레이어 1, 2) */}
-                <div className="flex h-1/2 space-x-0">
-                    <div className="flex flex-row justify-center items-center w-1/2 bg-blue-300 p-0 rounded-lg shadow-md">
-                        <div className="rounded-full overflow-hidden">
+                <div className="flex h-1/2 gap-1.5">
+                    <div className="flex flex-row justify-center items-center w-1/2 bg-sky-50 border border-sky-200 p-1 rounded-xl shadow-sm">
+                        <div className="rounded-full overflow-hidden ring-2 ring-sky-300">
                             <Image
                                 src={player1Avatar}
                                 alt="Player 1"
@@ -113,16 +113,16 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                                 className="object-cover w-12 h-12"
                             />
                         </div>
-                        <div className="ml-0">
-                            <div className="text-sm  font-medium text-gray-800">{p1?.name}</div>
-                            <div className="text-xs text-gray-600">
+                        <div className="ml-1.5">
+                            <div className="text-sm  font-semibold text-slate-800">{p1?.name}</div>
+                            <div className="text-xs text-sky-600">
                                 {p1?.age}
                                 {p1?.grade}
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-row justify-center items-center w-1/2 bg-green-200 p-0 rounded-lg shadow-md">
-                        <div className="rounded-full overflow-hidden">
+                    <div className="flex flex-row justify-center items-center w-1/2 bg-sky-50 border border-sky-200 p-1 rounded-xl shadow-sm">
+                        <div className="rounded-full overflow-hidden ring-2 ring-sky-300">
                             <Image
                                 src={player2Avatar}
                                 alt="Player 2"
@@ -131,9 +131,9 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                                 className="object-cover w-12 h-12"
                             />
                         </div>
-                        <div className="ml-0">
-                            <div className="text-sm font-medium text-gray-800">{p2?.name}</div>
-                            <div className="text-xs text-gray-600">
+                        <div className="ml-1.5">
+                            <div className="text-sm font-semibold text-slate-800">{p2?.name}</div>
+                            <div className="text-xs text-sky-600">
                                 {p2?.age}
                                 {p2?.grade}
                             </div>
@@ -141,9 +141,9 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                     </div>
                 </div>
                 {/* 하단 팀 (플레이어 3, 4) */}
-                <div className="flex h-1/2 space-x-0">
-                    <div className="flex flex-row justify-center items-center w-1/2 bg-red-200 p-0 rounded-lg shadow-md">
-                        <div className="rounded-full overflow-hidden">
+                <div className="flex h-1/2 gap-1.5">
+                    <div className="flex flex-row justify-center items-center w-1/2 bg-amber-50 border border-amber-200 p-1 rounded-xl shadow-sm">
+                        <div className="rounded-full overflow-hidden ring-2 ring-amber-300">
                             <Image
                                 src={player3Avatar}
                                 alt="Player 3"
@@ -152,16 +152,16 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                                 className="object-cover w-12 h-12"
                             />
                         </div>
-                        <div className="ml-0">
-                            <div className="text-sm font-medium text-gray-800">{p3?.name}</div>
-                            <div className="text-xs text-gray-600">
+                        <div className="ml-1.5">
+                            <div className="text-sm font-semibold text-slate-800">{p3?.name}</div>
+                            <div className="text-xs text-amber-600">
                                 {p3?.age}
                                 {p3?.grade}
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-row justify-center items-center w-1/2 bg-purple-200 p-0 rounded-lg shadow-md">
-                        <div className="rounded-full overflow-hidden">
+                    <div className="flex flex-row justify-center items-center w-1/2 bg-amber-50 border border-amber-200 p-1 rounded-xl shadow-sm">
+                        <div className="rounded-full overflow-hidden ring-2 ring-amber-300">
                             <Image
                                 src={player4Avatar}
                                 alt="Player 4"
@@ -170,9 +170,9 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                                 className="object-cover w-12 h-12"
                             />
                         </div>
-                        <div className="ml-0">
-                            <div className="text-sm font-medium text-gray-800">{p4?.name}</div>
-                            <div className="text-xs text-gray-600">
+                        <div className="ml-1.5">
+                            <div className="text-sm font-semibold text-slate-800">{p4?.name}</div>
+                            <div className="text-xs text-amber-600">
                                 {p4?.age}
                                 {p4?.grade}
                             </div>
@@ -180,33 +180,32 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                     </div>
                 </div>
                 {/* 게임 종료 버튼 */}
-                <div className="flex flex-row justify-center items-center space-x-4">
-                    <div
-                        className="text-center bg-red-500 text-white w-1/2 rounded-full cursor-pointer py-0"
+                <div className="flex flex-row justify-center items-center">
+                    <button
+                        className="text-center bg-rose-500 hover:bg-rose-600 active:scale-[0.98] text-white font-semibold w-1/2 rounded-full cursor-pointer py-1 shadow-sm transition-all"
                         onClick={() => setIsShowResult(!isShowResult)}
                     >
                         게임종료
-                    </div>
+                    </button>
                 </div>
             </div>
 
             {/* 승자 선택 모달 */}
             <div
-                className={`fixed left-0 top-72 w-full h-full bg-black/50 bg-opacity-50  ${
-                    isShowResult ? "block" : "hidden"
+                className={`fixed inset-0 w-full h-full bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 ${
+                    isShowResult ? "flex" : "hidden"
                 } z-50`}
             >
-                <div
-                    className="relative  left-1/2 transform -translate-x-1/2 bg-white rounded-t-lg shadow-lg
-                 space-y-4 w-1/4 max-w-md"
-                >
-                    <div className="text-center text-lg font-semibold">승리자를 입력하세요</div>
-                    <div className="flex flex-col p-0 space-y-0">
-                        <div className="flex flex-row p-0 justify-evenly items-center space-x-0">
+                <div className="relative bg-white rounded-2xl shadow-xl space-y-4 w-full max-w-sm p-5 border border-emerald-100">
+                    <div className="text-center text-lg font-bold text-slate-800">승리자를 입력하세요</div>
+                    <div className="flex flex-col p-0 space-y-2">
+                        <div className="flex flex-row p-0 justify-evenly items-center gap-2">
                             <div
                                 onClick={selectWinner(1)}
-                                className={`flex flex-col justify-center items-center w-1/2 p-0 rounded-lg ${
-                                    winnerpoint.includes(1) ? "bg-yellow-300" : ""
+                                className={`flex flex-col justify-center items-center w-1/2 p-2 rounded-xl border transition-colors ${
+                                    winnerpoint.includes(1)
+                                        ? "bg-amber-100 border-amber-400"
+                                        : "bg-slate-50 border-transparent"
                                 }`}
                             >
                                 <Image
@@ -216,12 +215,14 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                                     height={50}
                                     className="object-cover w-12 h-12 rounded-full"
                                 />
-                                <div className="text-sm font-medium text-gray-800">{p1?.name}</div>
+                                <div className="text-sm font-medium text-slate-800">{p1?.name}</div>
                             </div>
                             <div
                                 onClick={selectWinner(2)}
-                                className={`flex flex-col justify-center items-center w-1/2 p-0 rounded-lg ${
-                                    winnerpoint.includes(2) ? "bg-yellow-300" : ""
+                                className={`flex flex-col justify-center items-center w-1/2 p-2 rounded-xl border transition-colors ${
+                                    winnerpoint.includes(2)
+                                        ? "bg-amber-100 border-amber-400"
+                                        : "bg-slate-50 border-transparent"
                                 }`}
                             >
                                 <Image
@@ -231,14 +232,16 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                                     height={50}
                                     className="object-cover w-12 h-12 rounded-full"
                                 />
-                                <div className="text-sm font-medium text-gray-800">{p2?.name}</div>
+                                <div className="text-sm font-medium text-slate-800">{p2?.name}</div>
                             </div>
                         </div>
-                        <div className="flex flex-row justify-between items-center space-x-0">
+                        <div className="flex flex-row justify-between items-center gap-2">
                             <div
                                 onClick={selectWinner(3)}
-                                className={`flex flex-col justify-center items-center w-1/2 p-0 rounded-lg ${
-                                    winnerpoint.includes(3) ? "bg-yellow-300" : ""
+                                className={`flex flex-col justify-center items-center w-1/2 p-2 rounded-xl border transition-colors ${
+                                    winnerpoint.includes(3)
+                                        ? "bg-amber-100 border-amber-400"
+                                        : "bg-slate-50 border-transparent"
                                 }`}
                             >
                                 <Image
@@ -248,12 +251,14 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                                     height={50}
                                     className="object-cover w-12 h-12 rounded-full"
                                 />
-                                <div className="text-sm font-medium text-gray-800">{p3?.name}</div>
+                                <div className="text-sm font-medium text-slate-800">{p3?.name}</div>
                             </div>
                             <div
                                 onClick={selectWinner(4)}
-                                className={`flex flex-col justify-center items-center w-1/2 p-0 rounded-lg ${
-                                    winnerpoint.includes(4) ? "bg-yellow-300" : ""
+                                className={`flex flex-col justify-center items-center w-1/2 p-2 rounded-xl border transition-colors ${
+                                    winnerpoint.includes(4)
+                                        ? "bg-amber-100 border-amber-400"
+                                        : "bg-slate-50 border-transparent"
                                 }`}
                             >
                                 <Image
@@ -263,14 +268,14 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                                     height={50}
                                     className="object-cover w-12 h-12 rounded-full"
                                 />
-                                <div className="text-sm font-medium text-gray-800">{p4?.name}</div>
+                                <div className="text-sm font-medium text-slate-800">{p4?.name}</div>
                             </div>
                         </div>
                     </div>
-                    <div className="flex flex-row justify-center text-center gap-1">
+                    <div className="flex flex-row justify-center text-center gap-2 pt-1">
                         {/* 결과 입력 버튼 */}
                         <button
-                            className="bg-blue-500 text-white rounded-lg px-4 py-2"
+                            className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-full px-4 py-2 shadow-sm transition-colors"
                             onClick={() => {
                                 if (winnerpoint.length === 0) {
                                     endMatchFunction(gameid, []);
@@ -293,7 +298,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                         </button>
                         {/* 취소 버튼 */}
                         <button
-                            className="bg-blue-500 text-white rounded-lg px-4 py-2"
+                            className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-full px-4 py-2 transition-colors"
                             onClick={() => {
                                 setIsShowResult(false);
                                 setWinnerpoint([]);

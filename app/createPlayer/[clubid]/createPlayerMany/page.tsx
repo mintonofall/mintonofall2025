@@ -23,14 +23,14 @@ export default function CreatePlayerMany({ params }: { params: Promise<{ clubid:
                     <div key={index} className="space-y-2">
                         <div className="flex items-center space-x-4">
                             <div className="flex-1">
-                                <label htmlFor={`name${index + 1}`} className="block text-sm font-medium text-gray-700">
+                                <label htmlFor={`name${index + 1}`} className="block text-sm font-medium text-slate-700">
                                     이름
                                 </label>
                                 <input
                                     type="text"
                                     name={`name${index + 1}`}
                                     id={`name${index + 1}`}
-                                    className="block w-full p-2 border border-gray-300 rounded-md"
+                                    className="block w-full p-2 border border-slate-300 rounded-md"
                                 />
                             </div>
                             <div className="flex items-center space-x-2">
@@ -77,11 +77,11 @@ export default function CreatePlayerMany({ params }: { params: Promise<{ clubid:
                     </div>
                 ))}
                 <input type="hidden" name="clubid" value={String(id)} />
-                <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                <button type="submit" className="w-full bg-emerald-500 text-white p-2 rounded-lg hover:bg-emerald-600">
                     선수등록
                 </button>
                 <Link href={`/home/${id}`}>
-                    <div className="mt-4 bg-gray-500 text-center text-white p-2 rounded hover:bg-gray-600">
+                    <div className="mt-4 bg-slate-500 text-center text-white p-2 rounded-lg hover:bg-slate-600">
                         돌아가기
                     </div>
                 </Link>

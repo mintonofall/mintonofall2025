@@ -47,7 +47,7 @@ export default function Result({ params }: { params: { clubid: string } }) {
                                     <span className="font-semibold text-lg">{match.players[1]?.name}</span>
                                     <span className="font-semibold text-lg">{match.players[3]?.name}</span>
                                 </div>
-                                <div className="text-right text-sm text-gray-500">
+                                <div className="text-right text-sm text-slate-500">
                                     {match.createdAt.toLocaleDateString("ko-KR", { month: "long", day: "numeric" })}
                                 </div>
                             </div>

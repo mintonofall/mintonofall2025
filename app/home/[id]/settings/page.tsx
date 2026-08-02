@@ -16,8 +16,8 @@ export default async function Setting({ params }: { params: Promise<{ id: string
     if (!id || isNaN(clubId)) {
         return (
             <div className="container mx-auto p-8 text-center mt-20">
-                <h1 className="text-2xl font-bold text-red-500 mb-4">잘못된 접근입니다.</h1>
-                <Link href="/home" className="text-blue-500 hover:underline">
+                <h1 className="text-2xl font-bold text-rose-500 mb-4">잘못된 접근입니다.</h1>
+                <Link href="/home" className="text-emerald-500 hover:underline">
                     홈으로 돌아가기
                 </Link>
             </div>
@@ -34,8 +34,8 @@ export default async function Setting({ params }: { params: Promise<{ id: string
     if (!club) {
         return (
             <div className="container mx-auto p-8 text-center mt-20">
-                <h1 className="text-2xl font-bold text-red-500 mb-4">클럽을 찾을 수 없습니다.</h1>
-                <Link href="/home" className="text-blue-500 hover:underline">
+                <h1 className="text-2xl font-bold text-rose-500 mb-4">클럽을 찾을 수 없습니다.</h1>
+                <Link href="/home" className="text-emerald-500 hover:underline">
                     홈으로 돌아가기
                 </Link>
             </div>
@@ -98,57 +98,57 @@ export default async function Setting({ params }: { params: Promise<{ id: string
     return (
         <div className="container mx-auto p-4 max-w-4xl mt-10 mb-20">
             <div className="flex justify-between items-center mb-8">
-                <h1 className="text-3xl font-bold text-gray-800">클럽 설정</h1>
-                <Link href="/home" className="text-blue-500 hover:underline">
+                <h1 className="text-3xl font-bold text-slate-800">클럽 설정</h1>
+                <Link href="/home" className="text-emerald-500 hover:underline">
                     홈으로 돌아가기
                 </Link>
             </div>
 
             {/* --- 클럽 정보 수정 폼 --- */}
-            <div className="bg-white p-6 rounded-lg shadow-md mb-10 border border-gray-200">
-                <h2 className="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">기본 정보 수정</h2>
+            <div className="bg-white p-6 rounded-lg shadow-md mb-10 border border-slate-200">
+                <h2 className="text-xl font-semibold mb-4 text-slate-700 border-b pb-2">기본 정보 수정</h2>
                 <form action={updateClubSettings} className="flex flex-col gap-4">
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">클럽 이름</label>
+                        <label className="block text-sm font-bold text-slate-700 mb-1">클럽 이름</label>
                         <input
                             type="text"
                             value={club.clubName}
                             disabled
-                            className="w-full p-2 border border-gray-300 rounded bg-gray-100 text-gray-500"
+                            className="w-full p-2 border border-slate-300 rounded-lg bg-slate-100 text-slate-500"
                         />
-                        <span className="text-xs text-gray-400">클럽 이름은 변경할 수 없습니다.</span>
+                        <span className="text-xs text-slate-400">클럽 이름은 변경할 수 없습니다.</span>
                     </div>
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">클럽 소개</label>
+                        <label className="block text-sm font-bold text-slate-700 mb-1">클럽 소개</label>
                         <textarea
                             name="clubDescription"
                             defaultValue={club.clubDescription || ""}
-                            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                            className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:outline-none"
                             rows={3}
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">클럽 위치(지역)</label>
+                        <label className="block text-sm font-bold text-slate-700 mb-1">클럽 위치(지역)</label>
                         <input
                             type="text"
                             name="clubLocation"
                             defaultValue={club.clubLocation || ""}
-                            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                            className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:outline-none"
                         />
                     </div>
                     <div>
-                        <label className="block text-sm font-bold text-gray-700 mb-1">사용 코트 수</label>
+                        <label className="block text-sm font-bold text-slate-700 mb-1">사용 코트 수</label>
                         <input
                             type="number"
                             name="howManyCourts"
                             defaultValue={club.howManyCourts}
                             min={1}
-                            className="w-full p-2 border border-gray-300 rounded focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                            className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:outline-none"
                         />
                     </div>
                     <button
                         type="submit"
-                        className="mt-4 bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600 transition"
+                        className="mt-4 bg-emerald-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-emerald-600 transition"
                     >
                         설정 저장하기
                     </button>
@@ -156,21 +156,21 @@ export default async function Setting({ params }: { params: Promise<{ id: string
             </div>
 
             {/* --- 가입 신청 중인 유저 관리 --- */}
-            <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200">
-                <h2 className="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">가입 신청 대기자 관리</h2>
+            <div className="bg-white p-6 rounded-lg shadow-md border border-slate-200">
+                <h2 className="text-xl font-semibold mb-4 text-slate-700 border-b pb-2">가입 신청 대기자 관리</h2>
                 {club.pendingUsers.length === 0 ? (
-                    <p className="text-gray-500 text-center py-4 bg-gray-50 rounded">가입 대기 중인 유저가 없습니다.</p>
+                    <p className="text-slate-500 text-center py-4 bg-slate-50 rounded-lg">가입 대기 중인 유저가 없습니다.</p>
                 ) : (
                     <div className="flex flex-col gap-4">
                         {club.pendingUsers.map((applicant) => (
                             <div
                                 key={applicant.id}
-                                className="flex justify-between items-center p-4 bg-gray-50 border rounded shadow-sm"
+                                className="flex justify-between items-center p-4 bg-slate-50 border rounded-lg shadow-sm"
                             >
                                 <div className="flex flex-col">
-                                    <span className="font-bold text-lg text-gray-800">{applicant.userName}</span>
+                                    <span className="font-bold text-lg text-slate-800">{applicant.userName}</span>
                                     {applicant.nickName && (
-                                        <span className="text-sm text-gray-500">닉네임: {applicant.nickName}</span>
+                                        <span className="text-sm text-slate-500">닉네임: {applicant.nickName}</span>
                                     )}
                                 </div>
                                 <div className="flex gap-2">
@@ -178,7 +178,7 @@ export default async function Setting({ params }: { params: Promise<{ id: string
                                         <input type="hidden" name="userId" value={applicant.id} />
                                         <button
                                             type="submit"
-                                            className="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600 transition"
+                                            className="bg-emerald-500 text-white px-4 py-2 rounded-lg shadow hover:bg-emerald-600 transition"
                                         >
                                             승인
                                         </button>
@@ -187,7 +187,7 @@ export default async function Setting({ params }: { params: Promise<{ id: string
                                         <input type="hidden" name="userId" value={applicant.id} />
                                         <button
                                             type="submit"
-                                            className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600 transition"
+                                            className="bg-rose-500 text-white px-4 py-2 rounded-lg shadow hover:bg-rose-600 transition"
                                         >
                                             거절
                                         </button>

@@ -27,13 +27,13 @@ export default function PlayerListComponent({ playerList, id }: { playerList: Pl
                 <div>
                     <Link
                         href={"/createPlayer/" + id}
-                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 mx-2"
+                        className="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 mx-2"
                     >
                         선수등록
                     </Link>
                     <Link
                         href={"/home/" + id}
-                        className="bg-blue-500 text-white px-4 py-2 mx-2 rounded hover:bg-blue-600"
+                        className="bg-emerald-500 text-white px-4 py-2 mx-2 rounded-lg hover:bg-emerald-600"
                     >
                         게임판으로
                     </Link>
@@ -43,16 +43,16 @@ export default function PlayerListComponent({ playerList, id }: { playerList: Pl
                     placeholder="Search players"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full p-2 border border-gray-300 rounded m-4"
+                    className="w-full p-2 border border-slate-300 rounded-lg m-4"
                 />
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredPlayers.map((player) => (
-                    <div key={player.id} className="bg-white shadow-md rounded p-4 flex justify-between items-center">
+                    <div key={player.id} className="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
                         <PlayerCard {...player} />
                         <div className="flex gap-4">
-                            <Link href={`/editPlayer/${player.id}`} className="text-gray-500 hover:text-blue-500">
+                            <Link href={`/editPlayer/${player.id}`} className="text-slate-500 hover:text-emerald-500">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
@@ -64,7 +64,7 @@ export default function PlayerListComponent({ playerList, id }: { playerList: Pl
                             </Link>
                             <button
                                 onClick={() => handleDelete(player.id)}
-                                className="text-gray-500 hover:text-red-500 transition-colors"
+                                className="text-slate-500 hover:text-rose-500 transition-colors"
                             >
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"

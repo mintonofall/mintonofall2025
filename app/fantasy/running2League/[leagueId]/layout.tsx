@@ -20,36 +20,36 @@ export default async function Layout({
                 </Link>
                 <div className="flex gap-2">
                     <Link href={`/fantasy/runningLeague/${leagueId}`} className="text-center">
-                        <div className="px-3 py-2 bg-gray-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors text-sm">
+                        <div className="px-3 py-2 bg-slate-500 text-white rounded-lg font-bold hover:bg-emerald-600 transition-colors text-sm">
                             1ROUND
                         </div>
                     </Link>
                     <Link href={`/fantasy/running2League/${leagueId}`} className="text-center">
-                        <div className="px-3 py-2 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors text-sm">
+                        <div className="px-3 py-2 bg-emerald-500 text-white rounded-lg font-bold hover:bg-emerald-600 transition-colors text-sm">
                             2ROUND
                         </div>
                     </Link>
                     <Link href={`/fantasy/running3League/${leagueId}`} className="text-center">
-                        <div className="px-3 py-2 bg-gray-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors text-sm">
+                        <div className="px-3 py-2 bg-slate-500 text-white rounded-lg font-bold hover:bg-emerald-600 transition-colors text-sm">
                             3ROUND
                         </div>
                     </Link>
                     <Link href={`/fantasy/leagueResult/${leagueId}`} className="text-center">
-                        <div className="px-3 py-2 bg-gray-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors text-sm">
+                        <div className="px-3 py-2 bg-slate-500 text-white rounded-lg font-bold hover:bg-emerald-600 transition-colors text-sm">
                             최종성적
                         </div>
                     </Link>
                 </div>
             </header>
             <div className="pb-24">{children}</div>
-            <div className="flex flex-row justify-evenly fixed bottom-0 w-full bg-gray-200 p-4 shadow-lg z-50">
+            <div className="flex flex-row justify-evenly fixed bottom-0 w-full bg-slate-200 p-4 shadow-lg z-50">
                 <Link href={`/fantasy/runningLeague/${leagueId}`} className="flex-1 text-center">
-                    <div className="mx-2 px-4 py-3 bg-blue-500 text-white rounded-lg font-bold hover:bg-blue-600 transition-colors">
+                    <div className="mx-2 px-4 py-3 bg-emerald-500 text-white rounded-lg font-bold hover:bg-emerald-600 transition-colors">
                         판타지 리그
                     </div>
                 </Link>
                 <Link href={`/fantasy/runningLeague/${leagueId}/result`} className="flex-1 text-center">
-                    <div className="mx-2 px-4 py-3 bg-green-500 text-white rounded-lg font-bold hover:bg-green-600 transition-colors">
+                    <div className="mx-2 px-4 py-3 bg-emerald-500 text-white rounded-lg font-bold hover:bg-emerald-600 transition-colors">
                         경기 결과
                     </div>
                 </Link>

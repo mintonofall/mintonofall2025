@@ -19,11 +19,11 @@ function CreateClubContent() {
     }, [searchParams]);
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="flex justify-center items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold mb-6 text-center">클럽 생성</h2>
                 <form action={action} className="flex flex-col">
-                    <label htmlFor="clubName" className="mb-2 text-gray-700">
+                    <label htmlFor="clubName" className="mb-2 text-slate-700">
                         클럽 이름
                     </label>
                     <input
@@ -33,9 +33,9 @@ function CreateClubContent() {
                         name="clubName"
                         value={clubName}
                         onChange={(e) => setClubName(e.target.value)}
-                        className="mb-4 p-2 border border-gray-300 rounded"
+                        className="mb-4 p-2 border border-slate-300 rounded-lg"
                     />
-                    <label htmlFor="location" className="mb-2 text-gray-700">
+                    <label htmlFor="location" className="mb-2 text-slate-700">
                         위치
                     </label>
                     <input
@@ -45,10 +45,10 @@ function CreateClubContent() {
                         name="location"
                         value={location}
                         onChange={(e) => setLocation(e.target.value)}
-                        className="mb-4 p-2 border border-gray-300 rounded"
+                        className="mb-4 p-2 border border-slate-300 rounded-lg"
                     />
                     <div className="mb-4">
-                        <span className="text-gray-700">코트 수:</span>
+                        <span className="text-slate-700">코트 수:</span>
                         <div className="flex items-center mt-2">
                             <label className="mr-4 flex items-center">
                                 <input
@@ -83,11 +83,11 @@ function CreateClubContent() {
                             </label>
                         </div>
                     </div>
-                    <button type="submit" className="bg-blue-500 text-white p-2 mb-2 rounded hover:bg-blue-600">
+                    <button type="submit" className="bg-emerald-500 text-white p-2 mb-2 rounded-lg hover:bg-emerald-600">
                         생성
                     </button>
                     <Link href="/home">
-                        <div className="bg-blue-500 text-center text-white p-2 rounded hover:bg-blue-600">돌아가기</div>
+                        <div className="bg-emerald-500 text-center text-white p-2 rounded-lg hover:bg-emerald-600">돌아가기</div>
                     </Link>
                 </form>
             </div>

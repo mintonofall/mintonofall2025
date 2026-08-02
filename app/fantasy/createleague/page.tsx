@@ -6,7 +6,7 @@ export default function CreateLeaguePage() {
             <h1 className="text-2xl font-bold mb-6 text-center">새 판타지 리그 만들기</h1>
             <form action={createFantasyLeague} className="space-y-6 bg-white p-8 shadow-lg rounded-lg">
                 <div>
-                    <label htmlFor="leagueName" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="leagueName" className="block text-sm font-medium text-slate-700">
                         리그 이름
                     </label>
                     <input
@@ -15,11 +15,11 @@ export default function CreateLeaguePage() {
                         name="leagueName"
                         required
                         placeholder="예: 2025 모두의민턴 판타지 리그"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm"
                     />
                 </div>
                 <div>
-                    <label htmlFor="year" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="year" className="block text-sm font-medium text-slate-700">
                         연도
                     </label>
                     <select
@@ -27,7 +27,7 @@ export default function CreateLeaguePage() {
                         name="year"
                         required
                         defaultValue="2025"
-                        className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                        className="mt-1 block w-full px-3 py-2 border border-slate-300 rounded-md shadow-sm focus:outline-none focus:ring-sky-500 focus:border-sky-500 sm:text-sm"
                     >
                         <option value="2024">2024</option>
                         <option value="2025">2025</option>
@@ -36,7 +36,7 @@ export default function CreateLeaguePage() {
                 <div>
                     <button
                         type="submit"
-                        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                        className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-sky-600 hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-500"
                     >
                         리그 생성
                     </button>

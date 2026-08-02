@@ -10,7 +10,7 @@ import { placeBet, getBettedMatchIds, getBettingHistory } from "./bettingAction"
 const renderPlayer = (player: any, isSelected: boolean = false, onClick?: () => void) => {
     if (!player)
         return (
-            <div className="bg-white border p-1 rounded shadow-sm flex items-center justify-center text-gray-300 h-full min-h-[60px]">
+            <div className="bg-white border p-1 rounded-lg shadow-sm flex items-center justify-center text-slate-300 h-full min-h-[60px]">
                 -
             </div>
         );
@@ -20,20 +20,20 @@ const renderPlayer = (player: any, isSelected: boolean = false, onClick?: () => 
     return (
         <div
             onClick={onClick}
-            className={`border p-1 rounded shadow-sm flex flex-col items-center justify-center gap-1 h-full min-h-[60px] transition-colors ${onClick ? "cursor-pointer" : ""} ${isSelected ? "bg-yellow-100 border-yellow-500" : "bg-white"}`}
+            className={`border p-1 rounded-lg shadow-sm flex flex-col items-center justify-center gap-1 h-full min-h-[60px] transition-colors ${onClick ? "cursor-pointer" : ""} ${isSelected ? "bg-amber-100 border-amber-500" : "bg-white"}`}
         >
             {avatarSrc ? (
                 <img
                     src={avatarSrc}
                     alt={player.name}
-                    className="w-10 h-10 rounded-full object-cover bg-gray-100 shadow-sm"
+                    className="w-10 h-10 rounded-full object-cover bg-slate-100 shadow-sm"
                 />
             ) : (
-                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 shadow-sm">
+                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-[10px] text-slate-500 shadow-sm">
                     No Img
                 </div>
             )}
-            <span className="text-xs sm:text-sm font-medium text-gray-800 whitespace-nowrap overflow-hidden text-ellipsis w-full text-center">
+            <span className="text-xs sm:text-sm font-medium text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis w-full text-center">
                 {player.name}
             </span>
         </div>
@@ -274,18 +274,18 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
     }, []);
 
     return (
-        <div className="bg-gray-100 min-h-screen pb-24">
+        <div className="bg-slate-100 min-h-screen pb-24">
             {/* 상단 헤더 (유저 상태 표시) */}
-            <div className="sticky top-0 z-40 flex justify-between items-center bg-white p-4 shadow-sm border-b border-gray-200">
+            <div className="sticky top-0 z-40 flex justify-between items-center bg-white p-4 shadow-sm border-b border-slate-200">
                 {user ? (
                     <>
-                        <div className="font-bold text-gray-700 text-lg flex-1">
+                        <div className="font-bold text-slate-700 text-lg flex-1">
                             {user.userName}
-                            <span className="text-sm font-normal text-gray-500 ml-1">님</span>
+                            <span className="text-sm font-normal text-slate-500 ml-1">님</span>
                         </div>
                         <div className="flex flex-col items-center justify-center flex-1">
-                            <span className="text-xs text-gray-500 font-semibold mb-0.5">보유 포인트</span>
-                            <span className="text-base sm:text-lg font-bold text-blue-600">
+                            <span className="text-xs text-slate-500 font-semibold mb-0.5">보유 포인트</span>
+                            <span className="text-base sm:text-lg font-bold text-emerald-600">
                                 {user.point ? user.point.toLocaleString() : 0} P
                             </span>
                         </div>
@@ -296,7 +296,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                     setUser(null);
                                     setBettedMatchIds([]);
                                 }}
-                                className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-colors"
+                                className="p-2 text-slate-400 hover:text-rose-500 hover:bg-rose-50 rounded-full transition-colors"
                                 title="로그아웃"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -318,29 +318,29 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                 name="userName"
                                 type="text"
                                 placeholder="아이디"
-                                className="border border-gray-300 rounded px-2 py-1.5 text-sm w-full max-w-[100px] sm:max-w-[150px] outline-none focus:border-blue-500"
+                                className="border border-slate-300 rounded-lg px-2 py-1.5 text-sm w-full max-w-[100px] sm:max-w-[150px] outline-none focus:border-emerald-500"
                                 required
                             />
                             <input
                                 name="password"
                                 type="password"
                                 placeholder="비밀번호"
-                                className="border border-gray-300 rounded px-2 py-1.5 text-sm w-full max-w-[100px] sm:max-w-[150px] outline-none focus:border-blue-500"
+                                className="border border-slate-300 rounded-lg px-2 py-1.5 text-sm w-full max-w-[100px] sm:max-w-[150px] outline-none focus:border-emerald-500"
                                 required
                             />
                             <button
                                 type="submit"
-                                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1.5 px-3 rounded text-sm whitespace-nowrap transition-colors"
+                                className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-1.5 px-3 rounded-lg text-sm whitespace-nowrap transition-colors"
                             >
                                 로그인
                             </button>
                             {state?.error?.uniqueUser && (
-                                <span className="text-red-500 text-xs hidden md:inline">{state.error.uniqueUser}</span>
+                                <span className="text-rose-500 text-xs hidden md:inline">{state.error.uniqueUser}</span>
                             )}
                         </form>
                         <Link
                             href={clubId !== null ? `/createUser?clubId=${clubId}` : "/createUser"}
-                            className="flex items-center gap-1 p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors flex-shrink-0"
+                            className="flex items-center gap-1 p-2 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors flex-shrink-0"
                             title="가입하기"
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -360,10 +360,10 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
             <div className="p-6 flex flex-col gap-6">
                 {activeTab === "courts" && (
                     <div className="flex-1 bg-white p-4 lg:p-6 rounded-lg shadow-md">
-                        <h2 className="text-xl lg:text-2xl font-semibold mb-2 lg:mb-4 text-blue-600 border-b pb-2">
+                        <h2 className="text-xl lg:text-2xl font-semibold mb-2 lg:mb-4 text-emerald-600 border-b pb-2">
                             {clubName} 진행 중인 코트
                         </h2>
-                        <h2 className="text-sm lg:text-2xl mb-2 lg:mb-4 text-gray-500 border-b pb-2">
+                        <h2 className="text-sm lg:text-2xl mb-2 lg:mb-4 text-slate-500 border-b pb-2">
                             예상하는 승리자를 한명 혹은 두명을 선택하세요
                         </h2>
                         <div className="flex flex-col gap-2">
@@ -388,20 +388,20 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                 return (
                                     <div
                                         key={index}
-                                        className={`p-2 rounded border-2 relative ${court ? "border-green-500 bg-green-50" : "border-gray-200 bg-gray-50"}`}
+                                        className={`p-2 rounded-lg border-2 relative ${court ? "border-emerald-500 bg-emerald-50" : "border-slate-200 bg-slate-50"}`}
                                     >
                                         <div className="flex items-center justify-between mb-1">
                                             <div className="flex items-center gap-2">
-                                                <h3 className="text-base font-bold text-gray-700">Court {index + 1}</h3>
+                                                <h3 className="text-base font-bold text-slate-700">Court {index + 1}</h3>
                                                 {isLeagueGame && (
-                                                    <span className="px-2 py-0.5 bg-yellow-400 text-yellow-800 text-[10px] font-bold rounded">
+                                                    <span className="px-2 py-0.5 bg-amber-400 text-amber-800 text-[10px] font-bold rounded-lg">
                                                         리그게임
                                                     </span>
                                                 )}
                                             </div>
                                             {court && court.startTime && (
                                                 <span
-                                                    className={`text-xs font-semibold ${isBettingClosed ? "text-red-500" : "text-blue-500"}`}
+                                                    className={`text-xs font-semibold ${isBettingClosed ? "text-rose-500" : "text-emerald-500"}`}
                                                 >
                                                     {elapsedMinutes >= 0 ? `${elapsedMinutes}분 경과` : "시작 전"}
                                                 </span>
@@ -409,7 +409,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                         </div>
                                         {court ? (
                                             <div className="flex flex-col gap-2">
-                                                <div className="grid grid-cols-4 gap-2 text-center font-medium text-gray-800">
+                                                <div className="grid grid-cols-4 gap-2 text-center font-medium text-slate-800">
                                                     {renderPlayer(
                                                         court.p1,
                                                         court.p1 && selectedPlayers.includes(court.p1.id),
@@ -431,20 +431,20 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                                         () => court.p4 && handlePlayerClick(court.p4),
                                                     )}
                                                 </div>
-                                                <div className="flex justify-end items-center gap-2 mt-1 pt-2 border-t border-gray-200">
+                                                <div className="flex justify-end items-center gap-2 mt-1 pt-2 border-t border-slate-200">
                                                     {court.matchId &&
                                                     (bettedMatchIds === null ||
                                                         bettedMatchIds.includes(court.matchId)) ? (
                                                         <button
                                                             disabled
-                                                            className="bg-gray-300 text-white font-semibold py-1.5 px-4 rounded text-sm w-full cursor-not-allowed"
+                                                            className="bg-slate-300 text-white font-semibold py-1.5 px-4 rounded-lg text-sm w-full cursor-not-allowed"
                                                         >
                                                             이미 베팅한 시합입니다
                                                         </button>
                                                     ) : isBettingClosed ? (
                                                         <button
                                                             disabled
-                                                            className="bg-red-400 text-white font-semibold py-1.5 px-4 rounded text-sm w-full cursor-not-allowed"
+                                                            className="bg-rose-400 text-white font-semibold py-1.5 px-4 rounded-lg text-sm w-full cursor-not-allowed"
                                                         >
                                                             베팅 마감
                                                         </button>
@@ -456,9 +456,9 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                                                 defaultValue={1000}
                                                                 step={100}
                                                                 min={100}
-                                                                className="border border-gray-300 rounded px-2 py-1 text-sm w-20 outline-none focus:border-orange-500 text-right"
+                                                                className="border border-slate-300 rounded-lg px-2 py-1 text-sm w-20 outline-none focus:border-orange-500 text-right"
                                                             />
-                                                            <span className="text-sm text-gray-600 font-medium mr-1">
+                                                            <span className="text-sm text-slate-600 font-medium mr-1">
                                                                 P
                                                             </span>
                                                             <button
@@ -515,7 +515,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                                                         startTime: court.startTime,
                                                                     });
                                                                 }}
-                                                                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-1.5 px-4 rounded text-sm transition-colors shadow-sm"
+                                                                className="bg-orange-500 hover:bg-orange-600 text-white font-semibold py-1.5 px-4 rounded-lg text-sm transition-colors shadow-sm"
                                                             >
                                                                 베팅하기
                                                             </button>
@@ -524,7 +524,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                                 </div>
                                             </div>
                                         ) : (
-                                            <div className="text-gray-400 text-center py-4 font-medium">빈 코트</div>
+                                            <div className="text-slate-400 text-center py-4 font-medium">빈 코트</div>
                                         )}
                                     </div>
                                 );
@@ -552,7 +552,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                 return (
                                     <div
                                         key={rowIndex}
-                                        className="flex bg-gray-50 p-3 rounded border items-center gap-4"
+                                        className="flex bg-slate-50 p-3 rounded-lg border items-center gap-4"
                                     >
                                         <div className="font-bold text-purple-700 min-w-[60px] text-center">
                                             대기 {rowIndex + 1}
@@ -572,7 +572,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
 
                 {activeTab === "results" && (
                     <div className="flex-1 bg-white p-4 lg:p-6 rounded-lg shadow-md">
-                        <h2 className="text-xl lg:text-2xl font-semibold mb-2 lg:mb-4 text-green-600 border-b pb-2">
+                        <h2 className="text-xl lg:text-2xl font-semibold mb-2 lg:mb-4 text-emerald-600 border-b pb-2">
                             오늘의 게임 결과
                         </h2>
                         <div className="flex flex-col gap-4">
@@ -588,7 +588,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                     return (
                                         <div className="relative h-full">
                                             {isWinner && (
-                                                <span className="absolute -top-2 -left-1 bg-yellow-400 text-yellow-800 text-[10px] px-1 py-0.5 rounded shadow font-bold z-10">
+                                                <span className="absolute -top-2 -left-1 bg-amber-400 text-amber-800 text-[10px] px-1 py-0.5 rounded-lg shadow font-bold z-10">
                                                     WIN
                                                 </span>
                                             )}
@@ -600,9 +600,9 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                 return (
                                     <div
                                         key={index}
-                                        className="bg-gray-50 p-3 rounded-lg border border-gray-200 shadow-sm"
+                                        className="bg-slate-50 p-3 rounded-lg border border-slate-200 shadow-sm"
                                     >
-                                        <div className="flex justify-between items-center text-xs text-gray-500 font-semibold mb-2">
+                                        <div className="flex justify-between items-center text-xs text-slate-500 font-semibold mb-2">
                                             <span>
                                                 {match.createdAt
                                                     ? new Date(match.createdAt).toLocaleTimeString([], {
@@ -624,10 +624,10 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                 );
                             })}
                             {matches.length === 0 && (
-                                <div className="text-center text-gray-500 py-10">오늘 완료된 게임이 없습니다.</div>
+                                <div className="text-center text-slate-500 py-10">오늘 완료된 게임이 없습니다.</div>
                             )}
                             {matches.length > 0 && displayCount < matches.length && (
-                                <div className="text-center text-sm text-gray-400 py-2">스크롤하여 더 보기...</div>
+                                <div className="text-center text-sm text-slate-400 py-2">스크롤하여 더 보기...</div>
                             )}
                         </div>
                     </div>
@@ -639,7 +639,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                             배팅 내역
                         </h2>
                         {!user ? (
-                            <div className="text-center text-gray-500 py-10">로그인이 필요합니다.</div>
+                            <div className="text-center text-slate-500 py-10">로그인이 필요합니다.</div>
                         ) : (
                             <div className="flex flex-col gap-4">
                                 {bettingHistory.slice(0, betDisplayCount).map((bet: any, index: number) => {
@@ -652,7 +652,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                             className="bg-orange-50 p-4 rounded-lg border border-orange-100 shadow-sm flex flex-col gap-3"
                                         >
                                             <div className="flex justify-between items-center border-b border-orange-200 pb-2">
-                                                <span className="text-sm font-semibold text-gray-600">
+                                                <span className="text-sm font-semibold text-slate-600">
                                                     게임 번호: {bet.gameid}
                                                 </span>
                                                 <span className="font-bold text-orange-600 text-lg">
@@ -680,7 +680,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                                                 className="relative h-full pointer-events-none"
                                                             >
                                                                 {isWinner && (
-                                                                    <span className="absolute -top-2 -left-1 bg-yellow-400 text-yellow-800 text-[10px] px-1 py-0.5 rounded shadow font-bold z-10">
+                                                                    <span className="absolute -top-2 -left-1 bg-amber-400 text-amber-800 text-[10px] px-1 py-0.5 rounded-lg shadow font-bold z-10">
                                                                         WIN
                                                                     </span>
                                                                 )}
@@ -701,7 +701,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                                             );
                                                         })
                                                     ) : (
-                                                        <span className="text-gray-500 text-sm">
+                                                        <span className="text-slate-500 text-sm">
                                                             선수 정보를 찾을 수 없습니다.
                                                         </span>
                                                     )}
@@ -709,7 +709,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                             )}
                                             {bet.isProcess ? (
                                                 <div
-                                                    className={`text-center font-bold p-2 rounded mt-2 ${bet.isHit === "noDecision" ? "bg-gray-100 text-gray-700" : bet.isCorrect ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}
+                                                    className={`text-center font-bold p-2 rounded-lg mt-2 ${bet.isHit === "noDecision" ? "bg-slate-100 text-slate-700" : bet.isCorrect ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"}`}
                                                 >
                                                     {bet.isHit === "noDecision" ? (
                                                         <span>
@@ -731,7 +731,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                                     )}
                                                 </div>
                                             ) : (
-                                                <div className="text-center font-bold p-2 rounded mt-2 bg-gray-100 text-gray-500">
+                                                <div className="text-center font-bold p-2 rounded-lg mt-2 bg-slate-100 text-slate-500">
                                                     결과 대기 중
                                                 </div>
                                             )}
@@ -739,10 +739,10 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                     );
                                 })}
                                 {bettingHistory.length === 0 && (
-                                    <div className="text-center text-gray-500 py-10">베팅 내역이 없습니다.</div>
+                                    <div className="text-center text-slate-500 py-10">베팅 내역이 없습니다.</div>
                                 )}
                                 {bettingHistory.length > 0 && betDisplayCount < bettingHistory.length && (
-                                    <div className="text-center text-sm text-gray-400 py-2">스크롤하여 더 보기...</div>
+                                    <div className="text-center text-sm text-slate-400 py-2">스크롤하여 더 보기...</div>
                                 )}
                             </div>
                         )}
@@ -756,7 +756,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                     <div className="bg-white rounded-lg p-6 w-full max-w-sm shadow-xl">
                         <h2 className="text-xl font-bold mb-4 text-center text-orange-600">베팅 확인</h2>
                         <div className="mb-6 flex flex-col items-center gap-4">
-                            <div className="text-sm text-gray-600 font-medium">선택된 선수</div>
+                            <div className="text-sm text-slate-600 font-medium">선택된 선수</div>
                             <div className="flex gap-4">
                                 {bettingModal.targetPlayers.map((player: any) => (
                                     <div key={player.id} className="pointer-events-none w-24">
@@ -764,21 +764,21 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                     </div>
                                 ))}
                             </div>
-                            <div className="text-lg font-semibold text-gray-800 mt-2">
+                            <div className="text-lg font-semibold text-slate-800 mt-2">
                                 베팅 금액:{" "}
-                                <span className="text-blue-600">{bettingModal.amount.toLocaleString()} P</span>
+                                <span className="text-emerald-600">{bettingModal.amount.toLocaleString()} P</span>
                             </div>
                         </div>
                         <div className="flex justify-end gap-2">
                             <button
-                                className="flex-1 px-4 py-2 bg-gray-200 text-gray-800 rounded font-medium hover:bg-gray-300 transition-colors"
+                                className="flex-1 px-4 py-2 bg-slate-200 text-slate-800 rounded-lg font-medium hover:bg-slate-300 transition-colors"
                                 onClick={() => setBettingModal({ ...bettingModal, isOpen: false })}
                             >
                                 취소
                             </button>
                             <button
                                 disabled={isBettingSubmitting}
-                                className={`flex-1 px-4 py-2 text-white rounded font-bold transition-colors ${isBettingSubmitting ? "bg-gray-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"}`}
+                                className={`flex-1 px-4 py-2 text-white rounded-lg font-bold transition-colors ${isBettingSubmitting ? "bg-slate-400 cursor-not-allowed" : "bg-orange-500 hover:bg-orange-600"}`}
                                 onClick={async () => {
                                     if (isBettingSubmitting) return;
 
@@ -838,11 +838,11 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
             )}
 
             {/* 하단 네비게이션 바 */}
-            <div className="fixed bottom-0 left-0 w-full bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-50">
+            <div className="fixed bottom-0 left-0 w-full bg-white border-t border-slate-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-50">
                 <div className="flex justify-around items-center py-3 max-w-4xl mx-auto">
                     <button
                         onClick={() => setActiveTab("courts")}
-                        className={`flex flex-col items-center gap-1 ${activeTab === "courts" ? "text-blue-600" : "text-gray-400"} hover:text-blue-800 transition-colors w-1/4`}
+                        className={`flex flex-col items-center gap-1 ${activeTab === "courts" ? "text-emerald-600" : "text-slate-400"} hover:text-emerald-800 transition-colors w-1/4`}
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
@@ -856,7 +856,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                     </button>
                     <button
                         onClick={() => setActiveTab("waitlist")}
-                        className={`flex flex-col items-center gap-1 ${activeTab === "waitlist" ? "text-purple-600" : "text-gray-400"} hover:text-purple-600 transition-colors w-1/4 border-l border-gray-100`}
+                        className={`flex flex-col items-center gap-1 ${activeTab === "waitlist" ? "text-purple-600" : "text-slate-400"} hover:text-purple-600 transition-colors w-1/4 border-l border-slate-100`}
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
@@ -870,7 +870,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                     </button>
                     <button
                         onClick={() => setActiveTab("results")}
-                        className={`flex flex-col items-center gap-1 ${activeTab === "results" ? "text-green-600" : "text-gray-400"} hover:text-green-600 transition-colors w-1/4 border-l border-gray-100`}
+                        className={`flex flex-col items-center gap-1 ${activeTab === "results" ? "text-emerald-600" : "text-slate-400"} hover:text-emerald-600 transition-colors w-1/4 border-l border-slate-100`}
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
@@ -884,7 +884,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                     </button>
                     <button
                         onClick={() => setActiveTab("betting")}
-                        className={`flex flex-col items-center gap-1 ${activeTab === "betting" ? "text-orange-500" : "text-gray-400"} hover:text-orange-500 transition-colors w-1/4 border-l border-gray-100`}
+                        className={`flex flex-col items-center gap-1 ${activeTab === "betting" ? "text-orange-500" : "text-slate-400"} hover:text-orange-500 transition-colors w-1/4 border-l border-slate-100`}
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path

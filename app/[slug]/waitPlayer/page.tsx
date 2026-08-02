@@ -7,7 +7,7 @@ export default async function waitPlayerList({ params }: { params: Promise<{ slu
     const playerListData = await getWaitPlayerList(clubid);
 
     return (
-        <div className="flex justify-center bg-gray-100">
+        <div className="flex justify-center bg-slate-100">
             <div className="flex flex-wrap gap-1 max-w-4xl">
                 {playerListData.map((player) => (
                     <div

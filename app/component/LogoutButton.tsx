@@ -9,5 +9,12 @@ export default async function LogoutButton() {
         session.destroy();
         redirect("/");
     }
-    return <button onClick={logout}>로그아웃</button>;
+    return (
+        <button
+            onClick={logout}
+            className="text-sm font-semibold text-slate-500 hover:text-rose-500 transition-colors cursor-pointer"
+        >
+            로그아웃
+        </button>
+    );
 }

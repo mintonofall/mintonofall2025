@@ -62,35 +62,35 @@ export default async function LeagueResult({ params }: { params: PageParams }) {
             <h1 className="text-3xl font-bold text-center mb-8">최종 순위</h1>
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
                 <table className="w-full">
-                    <thead className="bg-gray-100 border-b">
+                    <thead className="bg-slate-100 border-b">
                         <tr>
-                            <th className="py-4 px-6 text-center font-bold text-gray-600">순위</th>
-                            <th className="py-4 px-6 text-left font-bold text-gray-600">팀 이름</th>
-                            <th className="py-4 px-6 text-center font-bold text-gray-600">승</th>
-                            <th className="py-4 px-6 text-center font-bold text-gray-600">무</th>
-                            <th className="py-4 px-6 text-center font-bold text-gray-600">패</th>
+                            <th className="py-4 px-6 text-center font-bold text-slate-600">순위</th>
+                            <th className="py-4 px-6 text-left font-bold text-slate-600">팀 이름</th>
+                            <th className="py-4 px-6 text-center font-bold text-slate-600">승</th>
+                            <th className="py-4 px-6 text-center font-bold text-slate-600">무</th>
+                            <th className="py-4 px-6 text-center font-bold text-slate-600">패</th>
                         </tr>
                     </thead>
                     <tbody>
                         {results.map((team, index) => {
                             let rankColor = "bg-white";
-                            if (index === 0) rankColor = "bg-yellow-50"; // 1등 강조
+                            if (index === 0) rankColor = "bg-amber-50"; // 1등 강조
 
                             return (
-                                <tr key={team.id} className={`border-b last:border-0 hover:bg-gray-50 ${rankColor}`}>
-                                    <td className="py-4 px-6 text-center font-bold text-xl text-gray-700">
+                                <tr key={team.id} className={`border-b last:border-0 hover:bg-slate-50 ${rankColor}`}>
+                                    <td className="py-4 px-6 text-center font-bold text-xl text-slate-700">
                                         {index + 1}위
                                     </td>
                                     <td className="py-4 px-6 text-left font-medium text-lg">
                                         {team.user.nickName}의 팀
                                     </td>
-                                    <td className="py-4 px-6 text-center text-blue-600 font-bold text-lg">
+                                    <td className="py-4 px-6 text-center text-emerald-600 font-bold text-lg">
                                         {team.win}
                                     </td>
-                                    <td className="py-4 px-6 text-center text-gray-600 font-bold text-lg">
+                                    <td className="py-4 px-6 text-center text-slate-600 font-bold text-lg">
                                         {team.draw}
                                     </td>
-                                    <td className="py-4 px-6 text-center text-red-600 font-bold text-lg">
+                                    <td className="py-4 px-6 text-center text-rose-600 font-bold text-lg">
                                         {team.lose}
                                     </td>
                                 </tr>
@@ -98,7 +98,7 @@ export default async function LeagueResult({ params }: { params: PageParams }) {
                         })}
                         {results.length === 0 && (
                             <tr>
-                                <td colSpan={5} className="py-8 text-center text-gray-500">
+                                <td colSpan={5} className="py-8 text-center text-slate-500">
                                     아직 경기 결과가 없습니다.
                                 </td>
                             </tr>

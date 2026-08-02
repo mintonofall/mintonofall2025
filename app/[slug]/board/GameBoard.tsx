@@ -67,7 +67,7 @@ export default function GameBoard(props: {
     return (
         <div className="flex mt-4 flex-col justify-center gap-2">
             {gameboards.map((gameboard, idx) => (
-                <li key={idx} className="bg-gray-100 p-1 rounded-lg shadow-md">
+                <li key={idx} className="bg-slate-100 p-1 rounded-lg shadow-md">
                     <h2 className="text-xl font-semibold mb-2 text-center">
                         {gameboard.updateTime
                             ? (() => {
@@ -105,7 +105,7 @@ export default function GameBoard(props: {
                                                 height: "50px",
                                             }}
                                             alt=""
-                                            className="rounded"
+                                            className="rounded-lg"
                                         />
                                         <span className="mt-2 text-sm font-medium">{player.name}</span>
                                     </div>

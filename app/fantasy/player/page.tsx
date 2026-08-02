@@ -12,12 +12,12 @@ export default async function FantasyPage() {
                 <h1 className="text-2xl font-bold">2024년 판타지 리그 선수 명단</h1>
                 <div className="flex gap-2">
                     <Link href="/fantasy/player/inputdata">
-                        <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                        <button className="px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600">
                             선수 추가
                         </button>
                     </Link>
                     <Link href="/fantasy/player/inputresult">
-                        <button className="px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600">
+                        <button className="px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600">
                             결과입력
                         </button>
                     </Link>
@@ -38,8 +38,8 @@ export default async function FantasyPage() {
                                 {player.name}
                             </h2>
                         </div>
-                        <p className="text-gray-600">종목: {player.event}</p>
-                        <p className="text-gray-600">랭킹: {player.ranking}위</p>
+                        <p className="text-slate-600">종목: {player.event}</p>
+                        <p className="text-slate-600">랭킹: {player.ranking}위</p>
                     </div>
                 ))}
             </div>

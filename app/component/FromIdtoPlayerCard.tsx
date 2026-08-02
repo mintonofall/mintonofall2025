@@ -12,16 +12,16 @@ interface Props {
 export default function FromIdtoPlayerCard({ key, player, clubid, which }: Props) {
     return (
         <div key={key} className="p-1 relative">
-            {player ? <PlayerCard {...player} /> : <p>Player not found</p>}
+            {player ? <PlayerCard {...player} /> : <p className="text-slate-400 text-sm">선수를 찾을 수 없습니다.</p>}
             <button
                 className={`${
-                    which === "waitPlayer" ? "block" : "hidden"
-                } absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center text-xs cursor-pointer`}
+                    which === "waitPlayer" ? "flex" : "hidden"
+                } absolute top-2 right-2 bg-rose-500 hover:bg-rose-600 text-white rounded-full w-6 h-6 items-center justify-center text-xs cursor-pointer shadow-sm transition-colors`}
                 onClick={() => {
                     exitPlayer(player.id, clubid);
                 }}
             >
-                X
+                ✕
             </button>
         </div>
     );

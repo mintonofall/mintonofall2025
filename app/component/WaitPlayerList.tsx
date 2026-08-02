@@ -41,25 +41,27 @@ export default function WaitPlayerList({
     return (
         <div
             className="flex flex-col flex-nowrap fixed top-12 right-4
-             bg-white p-4 h-full shadow-lg rounded overflow-y-scroll w-80 z-10
+             bg-white p-4 h-full shadow-xl border-l border-emerald-100 overflow-y-scroll w-80 z-10 gap-2
                "
         >
             <input
                 type="text"
-                placeholder="Search players"
+                placeholder="선수 검색"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full p-2 mb-4 border border-gray-300 rounded"
+                className="w-full p-2 mb-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition-shadow"
             />
             <Link href={`/createPlayer/${clubid}`}>
-                <button className="w-full mt-4 p-2 bg-blue-500 text-white rounded">선수등록</button>
+                <button className="w-full mt-2 mb-2 p-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-full shadow-sm transition-colors">
+                    선수등록
+                </button>
             </Link>
-            <div className="text-red-600">{playerListMsg}</div>
+            <div className="text-rose-500 text-sm font-medium">{playerListMsg}</div>
 
             {filteredPlayers.map((player) => (
                 <div className="flex gap-2 items-center" key={player.id}>
                     <div
-                        className="w-full"
+                        className="w-full cursor-pointer"
                         onClick={() => {
                             if (waitPLayerList.find((p) => p.Playerid === player.id)) {
                                 setPlayerListMsg("이미 대기중인 선수입니다.");
@@ -73,7 +75,7 @@ export default function WaitPlayerList({
                     >
                         <PlayerCard {...player} />
                     </div>
-                    <Link href={`/editPlayer/${player.id}`}>
+                    <Link href={`/editPlayer/${player.id}`} className="text-slate-400 hover:text-emerald-500 transition-colors">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"

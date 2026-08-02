@@ -109,20 +109,20 @@ export default async function BettingHiddenPage({
               : "";
 
     return (
-        <div className="p-8 flex flex-col items-center min-h-screen bg-gray-50 pt-16">
+        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white pt-16">
             <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-4xl mb-8 gap-4">
-                <h1 className="text-3xl font-bold text-blue-600">{date} 베팅 유저 목록</h1>
+                <h1 className="text-3xl font-bold text-emerald-600">{date} 베팅 유저 목록</h1>
                 <div className="flex gap-2">
                     <Link
                         href={`?selectedUser=all#detail`}
                         scroll={false}
-                        className="px-4 py-2 bg-gray-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-gray-600 transition-colors"
+                        className="px-4 py-2 bg-slate-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-slate-600 transition-colors"
                     >
                         전체보기
                     </Link>
                     <Link
                         href={`/home/${clubId}/gameReview/${date}`}
-                        className="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition-colors"
+                        className="px-4 py-2 bg-emerald-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-emerald-600 transition-colors"
                     >
                         돌아가기
                     </Link>
@@ -131,61 +131,61 @@ export default async function BettingHiddenPage({
 
             <div className="w-full max-w-4xl bg-white p-6 rounded-lg shadow-md overflow-x-auto">
                 {userStats.length > 0 ? (
-                    <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
+                    <table className="min-w-full divide-y divide-slate-200">
+                        <thead className="bg-slate-50">
                             <tr>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                                     순위
                                 </th>
-                                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
                                     유저명
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
                                     현재 포인트
                                 </th>
-                                <th className="hidden sm:table-cell px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="hidden sm:table-cell px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
                                     베팅 횟수
                                 </th>
-                                <th className="hidden sm:table-cell px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="hidden sm:table-cell px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
                                     총 베팅액
                                 </th>
-                                <th className="hidden sm:table-cell px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="hidden sm:table-cell px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
                                     총 당첨액
                                 </th>
-                                <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                <th className="px-6 py-3 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
                                     순수익
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-white divide-y divide-slate-200">
                             {userStats.map((stat, index) => (
-                                <tr key={stat.userId} className="hover:bg-gray-50">
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 font-semibold">
+                                <tr key={stat.userId} className="hover:bg-slate-50">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-slate-500 font-semibold">
                                         {index + 1}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-bold">
                                         <Link
                                             href={`?selectedUser=${stat.userId}#detail`}
-                                            className="text-blue-600 hover:underline"
+                                            className="text-emerald-600 hover:underline"
                                             scroll={false}
                                         >
                                             {stat.userName}
                                         </Link>
                                     </td>
-                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-semibold text-gray-700">
+                                    <td className="px-6 py-4 whitespace-nowrap text-sm text-right font-semibold text-slate-700">
                                         {stat.currentPoint.toLocaleString()} P
                                     </td>
-                                    <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-right text-gray-500">
+                                    <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-right text-slate-500">
                                         {stat.betCount}회
                                     </td>
-                                    <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-right text-gray-500">
+                                    <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-right text-slate-500">
                                         {stat.totalBet.toLocaleString()} P
                                     </td>
-                                    <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-right text-gray-500">
+                                    <td className="hidden sm:table-cell px-6 py-4 whitespace-nowrap text-sm text-right text-slate-500">
                                         {stat.totalReturn.toLocaleString()} P
                                     </td>
                                     <td
-                                        className={`px-6 py-4 whitespace-nowrap text-sm text-right font-bold ${stat.netProfit > 0 ? "text-red-500" : stat.netProfit < 0 ? "text-blue-500" : "text-gray-500"}`}
+                                        className={`px-6 py-4 whitespace-nowrap text-sm text-right font-bold ${stat.netProfit > 0 ? "text-rose-500" : stat.netProfit < 0 ? "text-emerald-500" : "text-slate-500"}`}
                                     >
                                         {stat.netProfit > 0 ? "+" : ""}
                                         {stat.netProfit.toLocaleString()} P
@@ -195,19 +195,19 @@ export default async function BettingHiddenPage({
                         </tbody>
                     </table>
                 ) : (
-                    <div className="text-center text-gray-500 py-8">이날 베팅한 유저가 없습니다.</div>
+                    <div className="text-center text-slate-500 py-8">이날 베팅한 유저가 없습니다.</div>
                 )}
             </div>
 
             {/* 선택된 유저 베팅 상세 내역 */}
             {selectedUserId && (
                 <div id="detail" className="w-full max-w-4xl bg-white p-6 rounded-lg shadow-md mt-8">
-                    <h2 className="text-2xl font-bold text-gray-800 mb-6">{selectedUserName} 베팅 상세 내역</h2>
+                    <h2 className="text-2xl font-bold text-slate-800 mb-6">{selectedUserName} 베팅 상세 내역</h2>
                     {selectedUserBets.length > 0 ? (
-                        <ul className="divide-y divide-gray-200">
+                        <ul className="divide-y divide-slate-200">
                             {selectedUserBets.map((bet) => {
                                 let statusText = "진행중";
-                                let statusColor = "text-gray-500";
+                                let statusColor = "text-slate-500";
                                 let netWinnings = 0;
 
                                 const betWinnerIds = Array.isArray(bet.betWinner) ? (bet.betWinner as number[]) : [];
@@ -219,11 +219,11 @@ export default async function BettingHiddenPage({
                                         netWinnings = 0;
                                     } else if (bet.isCorrect) {
                                         statusText = "적중";
-                                        statusColor = "text-red-500";
+                                        statusColor = "text-rose-500";
                                         netWinnings = betWinnerIds.length === 1 ? bet.betCoast * 2 : bet.betCoast * 3;
                                     } else {
                                         statusText = "미적중";
-                                        statusColor = "text-blue-500";
+                                        statusColor = "text-emerald-500";
                                         netWinnings = -bet.betCoast;
                                     }
                                 }
@@ -233,20 +233,20 @@ export default async function BettingHiddenPage({
                                 return (
                                     <li
                                         key={bet.id}
-                                        className="py-4 flex flex-col gap-4 border-b border-gray-100 last:border-0"
+                                        className="py-4 flex flex-col gap-4 border-b border-slate-100 last:border-0"
                                     >
                                         <div className="flex flex-col sm:flex-row justify-between items-center gap-2 w-full">
                                             <div className="flex-grow text-center sm:text-left">
-                                                <p className="text-lg font-semibold text-gray-800">
+                                                <p className="text-lg font-semibold text-slate-800">
                                                     경기 ID: {bet.gameid}
                                                 </p>
                                                 {selectedUserId === "all" && (
-                                                    <p className="text-sm font-bold text-blue-600 mb-1">
+                                                    <p className="text-sm font-bold text-emerald-600 mb-1">
                                                         베팅 유저:{" "}
                                                         {userMap.get(bet.userid)?.name || `User ${bet.userid}`}
                                                     </p>
                                                 )}
-                                                <p className="text-sm text-gray-500">
+                                                <p className="text-sm text-slate-500">
                                                     베팅 포인트: {bet.betCoast.toLocaleString()} P
                                                 </p>
                                             </div>
@@ -256,10 +256,10 @@ export default async function BettingHiddenPage({
                                                     <p
                                                         className={`text-lg font-bold ${
                                                             netWinnings > 0
-                                                                ? "text-red-500"
+                                                                ? "text-rose-500"
                                                                 : netWinnings < 0
-                                                                  ? "text-blue-500"
-                                                                  : "text-gray-700"
+                                                                  ? "text-emerald-500"
+                                                                  : "text-slate-700"
                                                         }`}
                                                     >
                                                         {netWinnings > 0 ? "+" : ""}
@@ -269,7 +269,7 @@ export default async function BettingHiddenPage({
                                             </div>
                                         </div>
                                         {match && (
-                                            <div className="grid grid-cols-4 gap-2 text-center w-full mt-2 bg-gray-50 p-3 rounded-lg border border-gray-200">
+                                            <div className="grid grid-cols-4 gap-2 text-center w-full mt-2 bg-slate-50 p-3 rounded-lg border border-slate-200">
                                                 {[
                                                     match.player1id,
                                                     match.player2id,
@@ -281,7 +281,7 @@ export default async function BettingHiddenPage({
                                                         return (
                                                             <div
                                                                 key={idx}
-                                                                className="bg-white border border-gray-200 p-1 rounded shadow-sm flex items-center justify-center text-gray-300 h-full min-h-[60px]"
+                                                                className="bg-white border border-slate-200 p-1 rounded-lg shadow-sm flex items-center justify-center text-slate-300 h-full min-h-[60px]"
                                                             >
                                                                 -
                                                             </div>
@@ -303,10 +303,10 @@ export default async function BettingHiddenPage({
                                                     return (
                                                         <div
                                                             key={idx}
-                                                            className={`relative border p-1 rounded shadow-sm flex flex-col items-center justify-center gap-1 h-full min-h-[60px] ${isSelected ? "bg-yellow-100 border-yellow-500" : "bg-white border-gray-200"}`}
+                                                            className={`relative border p-1 rounded-lg shadow-sm flex flex-col items-center justify-center gap-1 h-full min-h-[60px] ${isSelected ? "bg-amber-100 border-amber-500" : "bg-white border-slate-200"}`}
                                                         >
                                                             {isWinner && (
-                                                                <span className="absolute -top-2 -left-1 bg-yellow-400 text-yellow-800 text-[10px] px-1 py-0.5 rounded shadow font-bold z-10">
+                                                                <span className="absolute -top-2 -left-1 bg-amber-400 text-amber-800 text-[10px] px-1 py-0.5 rounded-lg shadow font-bold z-10">
                                                                     WIN
                                                                 </span>
                                                             )}
@@ -314,14 +314,14 @@ export default async function BettingHiddenPage({
                                                                 <img
                                                                     src={avatarSrc}
                                                                     alt={player.name}
-                                                                    className="w-10 h-10 rounded-full object-cover bg-gray-100 shadow-sm"
+                                                                    className="w-10 h-10 rounded-full object-cover bg-slate-100 shadow-sm"
                                                                 />
                                                             ) : (
-                                                                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 shadow-sm">
+                                                                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-[10px] text-slate-500 shadow-sm">
                                                                     No Img
                                                                 </div>
                                                             )}
-                                                            <span className="text-xs sm:text-sm font-medium text-gray-800 whitespace-nowrap overflow-hidden text-ellipsis w-full text-center">
+                                                            <span className="text-xs sm:text-sm font-medium text-slate-800 whitespace-nowrap overflow-hidden text-ellipsis w-full text-center">
                                                                 {player.name}
                                                             </span>
                                                         </div>
@@ -334,7 +334,7 @@ export default async function BettingHiddenPage({
                             })}
                         </ul>
                     ) : (
-                        <div className="text-gray-500 text-center py-8">베팅 내역이 없습니다.</div>
+                        <div className="text-slate-500 text-center py-8">베팅 내역이 없습니다.</div>
                     )}
                 </div>
             )}

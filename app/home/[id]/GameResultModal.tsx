@@ -57,7 +57,7 @@ export default function GameResultModal({
     return (
         <div className="fixed inset-0 bg-black/50 bg-opacity-50 z-50 flex items-center justify-center">
             <div className="bg-white rounded-lg p-6 w-80 relative shadow-xl">
-                <button className="absolute top-2 right-3 text-gray-500 hover:text-gray-700" onClick={onClose}>
+                <button className="absolute top-2 right-3 text-slate-500 hover:text-slate-700" onClick={onClose}>
                     <span className="text-2xl font-bold">✕</span>
                 </button>
                 <h2 className="text-xl font-bold text-center mb-6">경기 결과 기록</h2>
@@ -66,25 +66,25 @@ export default function GameResultModal({
                 {/* 4명의 선수 버튼 */}
                 <div className="grid grid-cols-2 gap-3 mb-6">
                     <button
-                        className={`${winners.includes("p1") ? "bg-yellow-400 hover:bg-yellow-500" : "bg-gray-100 hover:bg-gray-200"} p-3 rounded font-semibold truncate text-gray-800`}
+                        className={`${winners.includes("p1") ? "bg-amber-400 hover:bg-amber-500" : "bg-slate-100 hover:bg-slate-200"} p-3 rounded-lg font-semibold truncate text-slate-800`}
                         onClick={() => handlePlayerClick("p1")}
                     >
                         {players.p1?.name}
                     </button>
                     <button
-                        className={`${winners.includes("p2") ? "bg-yellow-400 hover:bg-yellow-500" : "bg-gray-100 hover:bg-gray-200"} p-3 rounded font-semibold truncate text-gray-800`}
+                        className={`${winners.includes("p2") ? "bg-amber-400 hover:bg-amber-500" : "bg-slate-100 hover:bg-slate-200"} p-3 rounded-lg font-semibold truncate text-slate-800`}
                         onClick={() => handlePlayerClick("p2")}
                     >
                         {players.p2?.name}
                     </button>
                     <button
-                        className={`${winners.includes("p3") ? "bg-yellow-400 hover:bg-yellow-500" : "bg-gray-100 hover:bg-gray-200"} p-3 rounded font-semibold truncate text-gray-800`}
+                        className={`${winners.includes("p3") ? "bg-amber-400 hover:bg-amber-500" : "bg-slate-100 hover:bg-slate-200"} p-3 rounded-lg font-semibold truncate text-slate-800`}
                         onClick={() => handlePlayerClick("p3")}
                     >
                         {players.p3?.name}
                     </button>
                     <button
-                        className={`${winners.includes("p4") ? "bg-yellow-400 hover:bg-yellow-500" : "bg-gray-100 hover:bg-gray-200"} p-3 rounded font-semibold truncate text-gray-800`}
+                        className={`${winners.includes("p4") ? "bg-amber-400 hover:bg-amber-500" : "bg-slate-100 hover:bg-slate-200"} p-3 rounded-lg font-semibold truncate text-slate-800`}
                         onClick={() => handlePlayerClick("p4")}
                     >
                         {players.p4?.name}
@@ -94,7 +94,7 @@ export default function GameResultModal({
                 {/* 결과 입력 버튼 */}
                 <div className="flex justify-center">
                     <button
-                        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 font-bold"
+                        className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 font-bold"
                         onClick={() => {
                             if (winners.length === 1) {
                                 alert("승리자를 2명을 선택해주세요");

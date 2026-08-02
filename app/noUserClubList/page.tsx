@@ -13,9 +13,9 @@ export default async function NoUserClubList() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {clubsList.map((club) => {
                     return (
-                        <div key={club.id} className="bg-white shadow-md rounded p-4">
+                        <div key={club.id} className="bg-white shadow-md rounded-lg p-4">
                             <Link href={club.id + "/board/"}>
-                                <h1 className="text-xl font-semibold text-blue-500 hover:underline">{club.clubName}</h1>
+                                <h1 className="text-xl font-semibold text-emerald-500 hover:underline">{club.clubName}</h1>
                             </Link>
                         </div>
                     );

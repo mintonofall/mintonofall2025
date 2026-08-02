@@ -80,31 +80,31 @@ export default function RightSection({
     };
 
     return (
-        <div className="w-[30%] border p-4 bg-gray-100 flex flex-col h-full">
+        <div className="w-[30%] border p-4 bg-slate-100 flex flex-col h-full">
             <div className="flex justify-between items-center">
                 <h1 className="text-xl font-bold shrink-0">입장 명단 ({waitPlayerList.length}명)</h1>
                 <div className="flex space-x-1 text-xs">
                     <button
                         onClick={() => onSort?.("name")}
-                        className={`px-2 py-1 rounded ${currentSort === "name" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-200"}`}
+                        className={`px-2 py-1 rounded-lg ${currentSort === "name" ? "bg-emerald-600 text-white" : "bg-white text-slate-700 hover:bg-slate-200"}`}
                     >
                         이름
                     </button>
                     <button
                         onClick={() => onSort?.("grade")}
-                        className={`px-2 py-1 rounded ${currentSort === "grade" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-200"}`}
+                        className={`px-2 py-1 rounded-lg ${currentSort === "grade" ? "bg-emerald-600 text-white" : "bg-white text-slate-700 hover:bg-slate-200"}`}
                     >
                         급수
                     </button>
                     <button
                         onClick={() => onSort?.("games")}
-                        className={`px-2 py-1 rounded ${currentSort === "games" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-200"}`}
+                        className={`px-2 py-1 rounded-lg ${currentSort === "games" ? "bg-emerald-600 text-white" : "bg-white text-slate-700 hover:bg-slate-200"}`}
                     >
                         경기
                     </button>
                     <button
                         onClick={() => onSort?.("participating")}
-                        className={`px-2 py-1 rounded ${currentSort === "participating" ? "bg-blue-600 text-white" : "bg-white text-gray-700 hover:bg-gray-200"}`}
+                        className={`px-2 py-1 rounded-lg ${currentSort === "participating" ? "bg-emerald-600 text-white" : "bg-white text-slate-700 hover:bg-slate-200"}`}
                     >
                         참여
                     </button>
@@ -126,18 +126,18 @@ export default function RightSection({
                         <div
                             key={player.id}
                             // 선수의 상태(대기판에 있는지, 게임 중인지)에 따라 배경색을 다르게 표시
-                            className={`relative p-2 rounded shadow flex justify-between items-center cursor-pointer hover:bg-gray-50 ${
+                            className={`relative p-2 rounded-lg shadow flex justify-between items-center cursor-pointer hover:bg-slate-50 ${
                                 gridData.some((p) => p && p.id === player.id)
-                                    ? "bg-green-100"
+                                    ? "bg-emerald-100"
                                     : isPlaying
-                                      ? "bg-green-300"
+                                      ? "bg-emerald-300"
                                       : "bg-white"
                             }`}
                             onClick={() => onPlayerClick?.(player)}
                         >
                             <button
                                 // 퇴장 버튼
-                                className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-gray-200/50 hover:bg-red-100 rounded-full shadow-sm text-gray-500 hover:text-red-600 transition-colors"
+                                className="absolute top-1 right-1 w-5 h-5 flex items-center justify-center bg-slate-200/50 hover:bg-rose-100 rounded-full shadow-sm text-slate-500 hover:text-rose-600 transition-colors"
                                 onClick={(e) => {
                                     e.stopPropagation();
                                     onExit?.(player.id);
@@ -147,7 +147,7 @@ export default function RightSection({
                             </button>
                             <div className="flex items-center gap-3">
                                 {/* 선수 아바타 */}
-                                <div className="w-16 h-16 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+                                <div className="w-16 h-16 rounded-full bg-slate-200 overflow-hidden flex-shrink-0">
                                     {player.avater ? (
                                         <img
                                             src={
@@ -159,7 +159,7 @@ export default function RightSection({
                                             className="w-full h-full object-cover"
                                         />
                                     ) : (
-                                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+                                        <div className="w-full h-full flex items-center justify-center text-slate-400 text-sm">
                                             No
                                         </div>
                                     )}
@@ -168,16 +168,16 @@ export default function RightSection({
                                 <div className="flex flex-col">
                                     <div className="flex items-center gap-2">
                                         <span className="font-bold text-sm ">{player.name}</span>
-                                        <span className="text-sm text-gray-500">
+                                        <span className="text-sm text-slate-500">
                                             {getLastGameElapsedTime(player.gameDatas)}
                                         </span>
                                         {player.isJoinLeague && (
-                                            <span className="px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs font-bold">
+                                            <span className="px-1.5 py-0.5 rounded-lg bg-sky-100 text-sky-700 text-xs font-bold">
                                                 리그참가
                                             </span>
                                         )}
                                     </div>
-                                    <span className="text-sm text-gray-500">
+                                    <span className="text-sm text-slate-500">
                                         {player.age} • {player.grade}조 • {getTodayGameCount(player.gameDatas)}경기
                                     </span>
                                 </div>
@@ -186,7 +186,7 @@ export default function RightSection({
                             <div className="flex flex-row gap-2 items-center justify-center pr-2">
                                 <button
                                     // 경기 기록 보기 버튼
-                                    className="w-8 h-8 flex items-center justify-center bg-white hover:bg-gray-100 rounded-full shadow text-gray-600 transition-colors"
+                                    className="w-8 h-8 flex items-center justify-center bg-white hover:bg-slate-100 rounded-full shadow text-slate-600 transition-colors"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         onHistoryClick?.(player);
@@ -209,7 +209,7 @@ export default function RightSection({
                                 </button>
                                 <button
                                     // 선수 정보 수정 버튼
-                                    className="w-8 h-8 flex items-center justify-center bg-white hover:bg-gray-100 rounded-full shadow text-gray-600 transition-colors"
+                                    className="w-8 h-8 flex items-center justify-center bg-white hover:bg-slate-100 rounded-full shadow text-slate-600 transition-colors"
                                     onClick={(e) => {
                                         e.stopPropagation();
                                         onEdit?.(player);

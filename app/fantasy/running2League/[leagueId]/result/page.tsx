@@ -8,11 +8,11 @@ export default async function Result() {
             <h1 className="text-2xl font-bold mb-6 text-center">2024년 12월 11일 경기 결과</h1>
             <div className="space-y-4">
                 {games.length === 0 ? (
-                    <div className="text-center text-gray-500 py-8">해당 날짜의 경기 결과가 없습니다.</div>
+                    <div className="text-center text-slate-500 py-8">해당 날짜의 경기 결과가 없습니다.</div>
                 ) : (
                     games.map((game) => (
                         <div key={game.id} className="bg-white border rounded-lg p-4 shadow-sm">
-                            <div className="flex justify-between items-center mb-2 text-sm text-gray-500"></div>
+                            <div className="flex justify-between items-center mb-2 text-sm text-slate-500"></div>
                             <div className="flex items-center justify-between">
                                 <div
                                     className={`flex-1 flex items-center justify-end gap-2 
@@ -29,7 +29,7 @@ export default async function Result() {
                                         />
                                     )}
                                 </div>
-                                <div className="mx-4 text-sm font-mono bg-gray-100 px-2 py-1 rounded flex flex-col items-center justify-center min-w-[60px]">
+                                <div className="mx-4 text-sm font-mono bg-slate-100 px-2 py-1 rounded-lg flex flex-col items-center justify-center min-w-[60px]">
                                     {(() => {
                                         const scores = game.gameResult;
                                         let pd: number[] = [];
@@ -68,9 +68,9 @@ export default async function Result() {
                                                         <span
                                                             className={
                                                                 pd[0] > 0
-                                                                    ? "text-green-600"
+                                                                    ? "text-emerald-600"
                                                                     : pd[0] < 0
-                                                                    ? "text-red-600"
+                                                                    ? "text-rose-600"
                                                                     : ""
                                                             }
                                                         >
@@ -80,9 +80,9 @@ export default async function Result() {
                                                         <span
                                                             className={
                                                                 pd[1] > 0
-                                                                    ? "text-green-600"
+                                                                    ? "text-emerald-600"
                                                                     : pd[1] < 0
-                                                                    ? "text-red-600"
+                                                                    ? "text-rose-600"
                                                                     : ""
                                                             }
                                                         >

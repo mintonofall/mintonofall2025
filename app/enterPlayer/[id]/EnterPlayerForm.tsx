@@ -29,7 +29,7 @@ export default function EnterPlayerForm({ id }: { id: number }) {
                             type="text"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded"
+                            className="w-full p-2 border border-slate-300 rounded-lg"
                         />
                         <button
                             onClick={async () => {
@@ -43,7 +43,7 @@ export default function EnterPlayerForm({ id }: { id: number }) {
                                     setShowCheck(true);
                                 }
                             }}
-                            className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+                            className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600"
                         >
                             확인
                         </button>
@@ -54,7 +54,7 @@ export default function EnterPlayerForm({ id }: { id: number }) {
                 <div className="space-y-4">
                     {players.map((player) => {
                         return (
-                            <div key={player.id} className="p-4 border border-gray-300 rounded">
+                            <div key={player.id} className="p-4 border border-slate-300 rounded-lg">
                                 <PlayerCard {...player} />
                                 <div className="space-x-2 mt-2">
                                     <button
@@ -63,13 +63,13 @@ export default function EnterPlayerForm({ id }: { id: number }) {
                                             setShowNotice(true);
                                             pushWaitPlayerList(player.id, id);
                                         }}
-                                        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+                                        className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600"
                                     >
                                         이걸로 입장
                                     </button>
                                     <Link
                                         href={`/createPlayer/${id}`}
-                                        className="px-4 py-2 bg-yellow-500 text-white rounded hover:bg-yellow-600"
+                                        className="px-4 py-2 bg-amber-500 text-white rounded-lg hover:bg-amber-600"
                                     >
                                         새로등록
                                     </Link>
@@ -78,7 +78,7 @@ export default function EnterPlayerForm({ id }: { id: number }) {
                                             pathname: `/editPlayer/${player.id}`,
                                             query: { from: "enterPlayer" },
                                         }}
-                                        className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                                        className="px-4 py-2 bg-rose-500 text-white rounded-lg hover:bg-rose-600"
                                     >
                                         수정
                                     </Link>
@@ -100,7 +100,7 @@ export default function EnterPlayerForm({ id }: { id: number }) {
                         환영합니다. 모두의민턴 입니다. 아래의 버튼을 누르시면 체육관 현황을 확인하실수 있습니다. 즐거운
                         운동되시길 바랍니다.
                     </p>
-                    <Link href={`/${id}/board`} className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600">
+                    <Link href={`/${id}/board`} className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600">
                         입장하기
                     </Link>
                 </div>

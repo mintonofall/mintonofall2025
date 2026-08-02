@@ -123,13 +123,13 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
 
     return (
         <div className="flex flex-col h-[calc(90vh-4rem)] w-full">
-            <div className="h-[50%] w-full bg-gray-100 flex flex-row">
+            <div className="h-[50%] w-full bg-slate-100 flex flex-row">
                 <div className="w-[70%] h-full p-4 flex flex-col">
                     <div className="flex-1 w-full overflow-hidden">
                         {courts.map((court, courtIdx) => (
                             <div
                                 key={courtIdx}
-                                className="bg-green-600 p-4 rounded-lg shadow-lg relative w-full h-full flex flex-col"
+                                className="bg-emerald-600 p-4 rounded-lg shadow-lg relative w-full h-full flex flex-col"
                             >
                                 <div className="absolute top-2 left-2 text-white font-bold text-xl opacity-50">
                                     선수목록
@@ -141,27 +141,27 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
                                             <div
                                                 key={slotIdx}
                                                 onClick={() => handleSlotClick(courtIdx, slotIdx)}
-                                                className={`flex-1 bg-white/90 rounded flex flex-col items-center justify-center cursor-pointer relative transition-all
-                                                ${selectedSlot?.[0] === courtIdx && selectedSlot?.[1] === slotIdx ? "ring-4 ring-yellow-400 scale-105 z-10" : "hover:bg-white"}
+                                                className={`flex-1 bg-white/90 rounded-lg flex flex-col items-center justify-center cursor-pointer relative transition-all
+                                                ${selectedSlot?.[0] === courtIdx && selectedSlot?.[1] === slotIdx ? "ring-4 ring-amber-400 scale-105 z-10" : "hover:bg-white"}
                                             `}
                                             >
                                                 {court[slotIdx] ? (
                                                     <>
-                                                        <span className="font-bold text-gray-800">
+                                                        <span className="font-bold text-slate-800">
                                                             {court[slotIdx]!.name}
                                                         </span>
-                                                        <span className="text-xs text-gray-600">
+                                                        <span className="text-xs text-slate-600">
                                                             {court[slotIdx]!.grade}
                                                         </span>
                                                         <button
                                                             onClick={(e) => handleRemovePlayer(e, courtIdx, slotIdx)}
-                                                            className="absolute top-1 right-1 text-red-500 hover:text-red-700 font-bold px-1"
+                                                            className="absolute top-1 right-1 text-rose-500 hover:text-rose-700 font-bold px-1"
                                                         >
                                                             ×
                                                         </button>
                                                     </>
                                                 ) : (
-                                                    <span className="text-gray-400 text-sm">선택</span>
+                                                    <span className="text-slate-400 text-sm">선택</span>
                                                 )}
                                             </div>
                                         ))}
@@ -174,27 +174,27 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
                                             <div
                                                 key={slotIdx}
                                                 onClick={() => handleSlotClick(courtIdx, slotIdx)}
-                                                className={`flex-1 bg-white/90 rounded flex flex-col items-center justify-center cursor-pointer relative transition-all
-                                                ${selectedSlot?.[0] === courtIdx && selectedSlot?.[1] === slotIdx ? "ring-4 ring-yellow-400 scale-105 z-10" : "hover:bg-white"}
+                                                className={`flex-1 bg-white/90 rounded-lg flex flex-col items-center justify-center cursor-pointer relative transition-all
+                                                ${selectedSlot?.[0] === courtIdx && selectedSlot?.[1] === slotIdx ? "ring-4 ring-amber-400 scale-105 z-10" : "hover:bg-white"}
                                             `}
                                             >
                                                 {court[slotIdx] ? (
                                                     <>
-                                                        <span className="font-bold text-gray-800">
+                                                        <span className="font-bold text-slate-800">
                                                             {court[slotIdx]!.name}
                                                         </span>
-                                                        <span className="text-xs text-gray-600">
+                                                        <span className="text-xs text-slate-600">
                                                             {court[slotIdx]!.grade}
                                                         </span>
                                                         <button
                                                             onClick={(e) => handleRemovePlayer(e, courtIdx, slotIdx)}
-                                                            className="absolute top-1 right-1 text-red-500 hover:text-red-700 font-bold px-1"
+                                                            className="absolute top-1 right-1 text-rose-500 hover:text-rose-700 font-bold px-1"
                                                         >
                                                             ×
                                                         </button>
                                                     </>
                                                 ) : (
-                                                    <span className="text-gray-400 text-sm">선택</span>
+                                                    <span className="text-slate-400 text-sm">선택</span>
                                                 )}
                                             </div>
                                         ))}
@@ -205,7 +205,7 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
                     </div>
                     <button
                         className={`mt-4 w-full text-white py-3 rounded-lg font-bold text-xl transition-colors shadow-md ${
-                            isCreating ? "bg-gray-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
+                            isCreating ? "bg-slate-400 cursor-not-allowed" : "bg-emerald-600 hover:bg-emerald-700"
                         }`}
                         disabled={isCreating}
                         onClick={async () => {
@@ -237,7 +237,7 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
                         {isCreating ? "생성 중..." : "게임생성"}
                     </button>
                 </div>
-                <div className="w-[30%] h-full border-l border-gray-300 bg-white p-4">
+                <div className="w-[30%] h-full border-l border-slate-300 bg-white p-4">
                     {focusedPlayerInfo ? (
                         <div className="h-full flex flex-col">
                             <div className="flex-1 overflow-y-auto">
@@ -246,11 +246,11 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
                                         {focusedPlayerInfo.games.map((game) => (
                                             <div
                                                 key={game.id}
-                                                className="bg-gray-50 p-1 rounded border border-gray-200"
+                                                className="bg-slate-50 p-1 rounded-lg border border-slate-200"
                                             >
                                                 <div className="flex justify-between px-1 mb-1">
-                                                    <span className="text-xs text-gray-500 font-bold">#{game.id}</span>
-                                                    <span className="text-xs text-gray-400">
+                                                    <span className="text-xs text-slate-500 font-bold">#{game.id}</span>
+                                                    <span className="text-xs text-slate-400">
                                                         {game.createdAt
                                                             ? new Date(game.createdAt).toLocaleTimeString("ko-KR", {
                                                                   hour: "2-digit",
@@ -259,12 +259,12 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
                                                             : "-"}
                                                     </span>
                                                 </div>
-                                                <div className="text-sm text-gray-700">
+                                                <div className="text-sm text-slate-700">
                                                     <div className="grid grid-cols-1 gap-1">
                                                         {game.players.map((p, i) => (
                                                             <span
                                                                 key={i}
-                                                                className="text-center bg-white rounded border border-gray-100 py-0"
+                                                                className="text-center bg-white rounded-lg border border-slate-100 py-0"
                                                             >
                                                                 {p}
                                                             </span>
@@ -275,12 +275,12 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
                                         ))}
                                     </div>
                                 ) : (
-                                    <div className="text-gray-500 text-center mt-10">오늘 진행한 경기가 없습니다.</div>
+                                    <div className="text-slate-500 text-center mt-10">오늘 진행한 경기가 없습니다.</div>
                                 )}
                             </div>
                         </div>
                     ) : (
-                        <div className="h-full flex items-center justify-center text-gray-400 text-center">
+                        <div className="h-full flex items-center justify-center text-slate-400 text-center">
                             선수를 선택하면
                             <br />
                             경기 기록이 표시됩니다.
@@ -289,25 +289,25 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
                 </div>
             </div>
 
-            <div className="h-[50%] w-full bg-white p-4 border-t-2 border-gray-300 flex flex-col">
+            <div className="h-[50%] w-full bg-white p-4 border-t-2 border-slate-300 flex flex-col">
                 <div className="flex justify-between items-center mb-4">
                     <div className="flex space-x-2 text-sm items-center">
                         <GradeSelector />
                         <Link
                             href={`?sort=name${filterQuery}`}
-                            className={`px-3 py-1 rounded-md border ${!sort || sort === "name" ? "bg-blue-500 text-white border-blue-500" : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"}`}
+                            className={`px-3 py-1 rounded-md border ${!sort || sort === "name" ? "bg-emerald-500 text-white border-emerald-500" : "bg-white text-slate-600 border-slate-300 hover:bg-slate-50"}`}
                         >
                             name
                         </Link>
                         <Link
                             href={`?sort=grade${filterQuery}`}
-                            className={`px-3 py-1 rounded-md border ${sort === "grade" ? "bg-blue-500 text-white border-blue-500" : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"}`}
+                            className={`px-3 py-1 rounded-md border ${sort === "grade" ? "bg-emerald-500 text-white border-emerald-500" : "bg-white text-slate-600 border-slate-300 hover:bg-slate-50"}`}
                         >
                             급수
                         </Link>
                         <Link
                             href={`?sort=${sort === "gameNum_desc" ? "gameNum_asc" : "gameNum_desc"}${filterQuery}`}
-                            className={`px-3 py-1 rounded-md border ${sort === "gameNum_desc" || sort === "gameNum_asc" ? "bg-blue-500 text-white border-blue-500" : "bg-white text-gray-600 border-gray-300 hover:bg-gray-50"}`}
+                            className={`px-3 py-1 rounded-md border ${sort === "gameNum_desc" || sort === "gameNum_asc" ? "bg-emerald-500 text-white border-emerald-500" : "bg-white text-slate-600 border-slate-300 hover:bg-slate-50"}`}
                         >
                             {sort === "gameNum_desc" ? "게임적은" : "게임많은"}
                         </Link>
@@ -315,39 +315,39 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
                 </div>
                 <div className="overflow-y-auto flex-1">
                     <table className="min-w-full table-auto text-left">
-                        <thead className="bg-gray-100 sticky top-0 z-10">
+                        <thead className="bg-slate-100 sticky top-0 z-10">
                             <tr>
-                                <th className="px-2 py-1 text-sm font-bold text-gray-600 uppercase tracking-wider">
+                                <th className="px-2 py-1 text-sm font-bold text-slate-600 uppercase tracking-wider">
                                     이름
                                 </th>
-                                <th className="px-2 py-1 text-sm font-bold text-gray-600 uppercase tracking-wider text-center">
+                                <th className="px-2 py-1 text-sm font-bold text-slate-600 uppercase tracking-wider text-center">
                                     지역
                                 </th>
-                                <th className="px-2 py-1 text-sm font-bold text-gray-600 uppercase tracking-wider text-center">
+                                <th className="px-2 py-1 text-sm font-bold text-slate-600 uppercase tracking-wider text-center">
                                     급수
                                 </th>
-                                <th className="px-2 py-1 text-sm font-bold text-gray-600 uppercase tracking-wider text-center">
+                                <th className="px-2 py-1 text-sm font-bold text-slate-600 uppercase tracking-wider text-center">
                                     게임수
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody className="bg-white divide-y divide-slate-200">
                             {dogPlayers.map((player) => (
                                 <tr
                                     key={player.id}
                                     onClick={() => handlePlayerClick(player)}
-                                    className={`cursor-pointer ${player.gender === "man" ? "bg-blue-100" : player.gender === "woman" ? "bg-red-100" : "bg-white"} hover:opacity-80 transition-colors`}
+                                    className={`cursor-pointer ${player.gender === "man" ? "bg-emerald-100" : player.gender === "woman" ? "bg-rose-100" : "bg-white"} hover:opacity-80 transition-colors`}
                                 >
-                                    <td className="px-2 py-1 whitespace-nowrap text-lg font-bold text-gray-800">
+                                    <td className="px-2 py-1 whitespace-nowrap text-lg font-bold text-slate-800">
                                         {player.name}
                                     </td>
-                                    <td className="px-2 py-1 whitespace-nowrap text-center text-gray-600 font-medium">
+                                    <td className="px-2 py-1 whitespace-nowrap text-center text-slate-600 font-medium">
                                         {player.where}
                                     </td>
-                                    <td className="px-2 py-1 whitespace-nowrap text-center text-gray-800 font-semibold">
+                                    <td className="px-2 py-1 whitespace-nowrap text-center text-slate-800 font-semibold">
                                         {player.grade}
                                     </td>
-                                    <td className="px-2 py-1 whitespace-nowrap text-center text-blue-600 font-bold">
+                                    <td className="px-2 py-1 whitespace-nowrap text-center text-emerald-600 font-bold">
                                         {player.gameNum}G
                                     </td>
                                 </tr>

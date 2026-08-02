@@ -61,15 +61,15 @@ export default function PlayerHistoryModal({
             >
                 <div className="flex justify-between items-center mb-4 border-b pb-2">
                     <h2 className="text-xl font-bold">{player.name} - 경기 기록</h2>
-                    <button className="text-gray-500 hover:text-gray-700" onClick={onClose}>
+                    <button className="text-slate-500 hover:text-slate-700" onClick={onClose}>
                         <span className="text-2xl font-bold">✕</span>
                     </button>
                 </div>
                 <div className="overflow-y-auto">
                     {loading ? (
-                        <p className="text-center text-gray-500">기록을 불러오는 중...</p>
+                        <p className="text-center text-slate-500">기록을 불러오는 중...</p>
                     ) : matches.length === 0 ? (
-                        <p className="text-center text-gray-500">경기 기록이 없습니다.</p>
+                        <p className="text-center text-slate-500">경기 기록이 없습니다.</p>
                     ) : (
                         // 경기 기록 목록 렌더링
                         <div className="space-y-3">
@@ -82,8 +82,8 @@ export default function PlayerHistoryModal({
                                 const isDraw = !match.winner1id;
 
                                 return (
-                                    <div key={match.id} className="border rounded p-3 bg-gray-50">
-                                        <p className="text-xs text-gray-500 mb-2">
+                                    <div key={match.id} className="border rounded-lg p-3 bg-slate-50">
+                                        <p className="text-xs text-slate-500 mb-2">
                                             {new Date(match.endTime).toLocaleString("ko-KR")}
                                         </p>
                                         <div className="grid grid-cols-4 gap-2 text-center text-sm">
@@ -95,7 +95,7 @@ export default function PlayerHistoryModal({
                                                 return (
                                                     <div
                                                         key={idx}
-                                                        className={`p-1 rounded ${isWinner ? "bg-blue-200 font-bold" : "bg-white border"}`}
+                                                        className={`p-1 rounded-lg ${isWinner ? "bg-emerald-200 font-bold" : "bg-white border"}`}
                                                     >
                                                         {p?.name || "-"}
                                                     </div>

@@ -51,12 +51,12 @@ export default async function FantasyLeaguesPage() {
                     {user && <span className="font-semibold text-lg mr-4">{user.nickName}님 환영합니다!</span>}
                     <Link
                         href="/fantasy/createleague"
-                        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
+                        className="px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600"
                     >
                         리그 만들기
                     </Link>
                     <form action={logout}>
-                        <button type="submit" className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600">
+                        <button type="submit" className="px-4 py-2 bg-rose-500 text-white rounded-md hover:bg-rose-600">
                             로그아웃
                         </button>
                     </form>
@@ -70,16 +70,16 @@ export default async function FantasyLeaguesPage() {
                             <div>
                                 <Link
                                     href={`/fantasy/${league.id}`}
-                                    className="block hover:bg-gray-50 rounded-t-lg -mt-4 -mx-4 p-4"
+                                    className="block hover:bg-slate-50 rounded-t-lg -mt-4 -mx-4 p-4"
                                 >
                                     <h2 className="text-xl font-semibold">{league.leagueName}</h2>
-                                    <p className="text-gray-600">{league.year}년</p>
-                                    <p className="text-gray-500">상태: {league.process}</p>
-                                    <div className="text-gray-500 mt-2">
+                                    <p className="text-slate-600">{league.year}년</p>
+                                    <p className="text-slate-500">상태: {league.process}</p>
+                                    <div className="text-slate-500 mt-2">
                                         <span className="font-medium">참가자:</span>{" "}
                                         {league.participants.map((p) => p.nickName).join(", ")}
                                     </div>
-                                    <p className="text-sm text-gray-500 mt-1">
+                                    <p className="text-sm text-slate-500 mt-1">
                                         현재 참가자: {league.participants.length} / 4
                                     </p>
                                 </Link>
@@ -90,7 +90,7 @@ export default async function FantasyLeaguesPage() {
                                         <input type="hidden" name="leagueId" value={league.id} />
                                         <button
                                             type="submit"
-                                            className="w-full px-4 py-2 bg-green-500 text-white rounded-md hover:bg-green-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                                            className="w-full px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 disabled:bg-slate-400 disabled:cursor-not-allowed"
                                             disabled={league.participants.length >= 4}
                                         >
                                             {league.participants.length >= 4 ? "참가 불가 (정원 초과)" : "참가하기"}
@@ -116,7 +116,7 @@ export default async function FantasyLeaguesPage() {
                                 {user && isParticipant && league.process.startsWith("running") && (
                                     <Link
                                         href={`/fantasy/runningLeague/${league.id}`}
-                                        className="block w-full text-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                                        className="block w-full text-center px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
                                     >
                                         리그진행하기
                                     </Link>

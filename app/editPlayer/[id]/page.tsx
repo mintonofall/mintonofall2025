@@ -111,12 +111,12 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="flex justify-center items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold mb-6 text-center">플레이어 수정</h2>
                 <form action={action} className="flex flex-col space-y-4">
                     <div>
-                        <label htmlFor="playerName" className="block mb-2 text-gray-700">
+                        <label htmlFor="playerName" className="block mb-2 text-slate-700">
                             플레이어 이름
                         </label>
                         <input
@@ -126,21 +126,21 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
                             name="name"
                             value={playerName}
                             onChange={(e) => setPlayerName(e.target.value)}
-                            className="w-full p-2 border border-gray-300 rounded"
+                            className="w-full p-2 border border-slate-300 rounded-lg"
                         />
                     </div>
                     <div>
-                        <label htmlFor="photo" className="block mb-2 text-gray-700">
+                        <label htmlFor="photo" className="block mb-2 text-slate-700">
                             사진
                         </label>
                         <label
                             htmlFor="photo"
-                            className="flex justify-center items-center w-full h-72 border-dashed border-2 border-gray-300 rounded-lg bg-cover bg-center bg-no-repeat cursor-pointer"
+                            className="flex justify-center items-center w-full h-72 border-dashed border-2 border-slate-300 rounded-lg bg-cover bg-center bg-no-repeat cursor-pointer"
                             style={{
                                 backgroundImage: `url(${preview})`,
                             }}
                         >
-                            {preview ? "" : <PhotoIcon className="w-12 h-12 text-gray-400" />}
+                            {preview ? "" : <PhotoIcon className="w-12 h-12 text-slate-400" />}
                         </label>
                         <input
                             type="file"
@@ -152,7 +152,7 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
                         />
                     </div>
                     <div className="flex flex-col space-y-2">
-                        <span className="text-gray-700">성별</span>
+                        <span className="text-slate-700">성별</span>
                         <div className="flex space-x-4">
                             <label className="flex items-center space-x-2">
                                 <input
@@ -180,7 +180,7 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
                         </div>
                     </div>
                     <div className="flex flex-col space-y-2">
-                        <span className="text-gray-700">나이</span>
+                        <span className="text-slate-700">나이</span>
                         <div className="flex space-x-4">
                             <label className="flex items-center space-x-2">
                                 <input
@@ -241,7 +241,7 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
                         </div>
                     </div>
                     <div className="flex flex-col space-y-2">
-                        <span className="text-gray-700">등급</span>
+                        <span className="text-slate-700">등급</span>
                         <div className="flex space-x-4">
                             <label className="flex items-center space-x-2">
                                 <input
@@ -317,13 +317,13 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
                     {player && <input type="number" value={player.id} name="playerId" hidden readOnly />}
                     <input type="hidden" name="originalPhoto" value={player?.avater || ""} />
                     <div className="flex gap-2 mt-4">
-                        <button type="submit" className="flex-1 bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                        <button type="submit" className="flex-1 bg-emerald-500 text-white p-2 rounded-lg hover:bg-emerald-600">
                             수정
                         </button>
                         <button
                             type="button"
                             onClick={handleDelete}
-                            className="flex-1 bg-red-500 text-white p-2 rounded hover:bg-red-600"
+                            className="flex-1 bg-rose-500 text-white p-2 rounded-lg hover:bg-rose-600"
                         >
                             삭제
                         </button>

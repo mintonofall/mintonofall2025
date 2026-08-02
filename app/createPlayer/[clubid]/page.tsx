@@ -57,11 +57,11 @@ export default function CreatePlayer({ params }: { params: Promise<{ clubid: str
     }
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-gray-100">
+        <div className="flex justify-center items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white">
             <div className="bg-white relative p-8 rounded-lg shadow-lg w-full max-w-md">
                 <div className="absolute top-5 right-5 w-20 h-4 ">
                     <Link href={"/createPlayer/" + id + "/createPlayerMany"}>
-                        <button className="absolute rounded p-2 top-0 left-0 bg-blue-500 text-white z-0">
+                        <button className="absolute rounded-lg p-2 top-0 left-0 bg-emerald-500 text-white z-0">
                             여러선수등록
                         </button>
                     </Link>
@@ -69,7 +69,7 @@ export default function CreatePlayer({ params }: { params: Promise<{ clubid: str
                 <h2 className="text-2xl font-bold mb-6 text-center">플레이어 생성</h2>
                 <form action={action} className="flex flex-col space-y-4">
                     <div>
-                        <label htmlFor="name" className="block mb-2 text-gray-700">
+                        <label htmlFor="name" className="block mb-2 text-slate-700">
                             플레이어 이름
                         </label>
                         <input
@@ -78,21 +78,21 @@ export default function CreatePlayer({ params }: { params: Promise<{ clubid: str
                             placeholder="플레이어 이름"
                             name="name"
                             defaultValue=""
-                            className="w-full p-2 border border-gray-300 rounded"
+                            className="w-full p-2 border border-slate-300 rounded-lg"
                         />
                     </div>
                     <div>
-                        <label htmlFor="photo" className="block mb-2 text-gray-700">
+                        <label htmlFor="photo" className="block mb-2 text-slate-700">
                             사진
                         </label>
                         <label
                             htmlFor="photo"
-                            className="flex justify-center items-center w-full h-48 border-dashed border-2 border-gray-300 rounded-lg bg-cover bg-center bg-no-repeat cursor-pointer"
+                            className="flex justify-center items-center w-full h-48 border-dashed border-2 border-slate-300 rounded-lg bg-cover bg-center bg-no-repeat cursor-pointer"
                             style={{
                                 backgroundImage: `url(${preview})`,
                             }}
                         >
-                            {preview ? "" : <PhotoIcon className="w-12 h-12 text-gray-400" />}
+                            {preview ? "" : <PhotoIcon className="w-12 h-12 text-slate-400" />}
                         </label>
                         <input
                             type="file"
@@ -104,7 +104,7 @@ export default function CreatePlayer({ params }: { params: Promise<{ clubid: str
                         />
                     </div>
                     <div className="flex flex-col space-y-2">
-                        <span className="text-gray-700">성별</span>
+                        <span className="text-slate-700">성별</span>
                         <div className="flex space-x-4">
                             <label className="flex items-center space-x-2">
                                 <input type="radio" name="gender" value="man" id="man" defaultChecked />
@@ -117,7 +117,7 @@ export default function CreatePlayer({ params }: { params: Promise<{ clubid: str
                         </div>
                     </div>
                     <div className="flex flex-col space-y-2">
-                        <span className="text-gray-700">나이</span>
+                        <span className="text-slate-700">나이</span>
                         <div className="flex space-x-4">
                             <label className="flex items-center space-x-2">
                                 <input type="radio" name="age" value={20} id="20" />
@@ -142,7 +142,7 @@ export default function CreatePlayer({ params }: { params: Promise<{ clubid: str
                         </div>
                     </div>
                     <div className="flex flex-col space-y-2">
-                        <span className="text-gray-700">등급</span>
+                        <span className="text-slate-700">등급</span>
                         <div className="flex space-x-4">
                             <label className="flex items-center space-x-2">
                                 <input type="radio" name="grade" value="S" id="S" />
@@ -171,11 +171,11 @@ export default function CreatePlayer({ params }: { params: Promise<{ clubid: str
                         </div>
                     </div>
                     <input type="number" value={Number(id)} name="clubId" hidden readOnly />
-                    <button type="submit" className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
+                    <button type="submit" className="bg-emerald-500 text-white p-2 rounded-lg hover:bg-emerald-600">
                         생성
                     </button>
                     <Link href={`/home/${id}`}>
-                        <div className="bg-blue-500 text-center text-white p-2 rounded hover:bg-blue-600">돌아가기</div>
+                        <div className="bg-emerald-500 text-center text-white p-2 rounded-lg hover:bg-emerald-600">돌아가기</div>
                     </Link>
                 </form>
             </div>

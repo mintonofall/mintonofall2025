@@ -767,27 +767,27 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
 
     if (isScreenTooSmall && !forceShowMain) {
         return (
-            <div className="flex h-screen items-center justify-center bg-gray-100 p-4 text-center">
+            <div className="flex h-screen items-center justify-center bg-slate-100 p-4 text-center">
                 <div className="flex flex-col items-center gap-6">
-                    <h1 className="text-xl md:text-2xl font-bold text-red-500 break-keep">
+                    <h1 className="text-xl md:text-2xl font-bold text-rose-500 break-keep">
                         가로해상도가 1028이 넘는 태블릿이나 모니터를 사용해 주시기 바랍니다
                     </h1>
                     <div className="flex flex-wrap justify-center gap-4">
                         <Link
                             href="/home"
-                            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition shadow-sm"
+                            className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-lg font-medium transition shadow-sm"
                         >
                             홈으로 돌아가기
                         </Link>
                         <Link
                             href="/board"
-                            className="bg-indigo-500 hover:bg-indigo-600 text-white px-6 py-2 rounded-lg font-medium transition shadow-sm"
+                            className="bg-sky-500 hover:bg-sky-600 text-white px-6 py-2 rounded-lg font-medium transition shadow-sm"
                         >
                             자유게시판
                         </Link>
                         <button
                             onClick={() => setForceShowMain(true)}
-                            className="bg-gray-500 hover:bg-gray-600 text-white px-6 py-2 rounded-lg font-medium transition shadow-sm"
+                            className="bg-slate-500 hover:bg-slate-600 text-white px-6 py-2 rounded-lg font-medium transition shadow-sm"
                         >
                             그래도 메인화면 들어가기
                         </button>
@@ -817,12 +817,12 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                     onGameEnd={handleGameEnd}
                     onGameCancel={handleGameCancel}
                 />
-                <div className="flex items-center justify-between p-2 bg-gray-100 rounded-md text-sm text-gray-700 relative">
+                <div className="flex items-center justify-between p-2 bg-slate-100 rounded-md text-sm text-slate-700 relative">
                     <div className="w-full flex justify-center">
                         {displayInfoCell !== null ? <span>{getRowMatchIds(displayInfoCell)}</span> : "선택된 셀 없음"}
                     </div>
                     <button
-                        className="absolute right-2 px-3 py-1 bg-indigo-500 text-white text-xs rounded hover:bg-indigo-600 transition-colors"
+                        className="absolute right-2 px-3 py-1 bg-sky-500 text-white text-xs rounded-lg hover:bg-sky-600 transition-colors"
                         onClick={() => setShowQRModal(true)}
                     >
                         QR코드
@@ -878,7 +878,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                 <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
                     <div className="bg-white rounded-lg p-6 flex flex-col items-center gap-4 relative">
                         <button
-                            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
+                            className="absolute top-2 right-2 text-slate-500 hover:text-slate-700 w-8 h-8 flex items-center justify-center rounded-full hover:bg-slate-100"
                             onClick={() => setShowQRModal(false)}
                         >
                             <span className="text-2xl pb-1">×</span>
@@ -894,7 +894,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                             width={200}
                             height={200}
                         />
-                        <p className="text-sm text-gray-500 text-center">
+                        <p className="text-sm text-slate-500 text-center">
                             스마트폰 카메라로 스캔하여
                             <br />
                             해당 클럽 뷰페이지로 접속하세요.
@@ -905,7 +905,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
 
             <div className="fixed bottom-4 right-4">
                 <button
-                    className="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors"
+                    className="bg-emerald-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-emerald-600 transition-colors"
                     onClick={() => setShowPlayerList(true)}
                 >
                     <span className="text-3xl pb-1">+</span>
@@ -916,7 +916,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                 <div className="fixed inset-0 bg-black/50 z-50">
                     <div className="absolute top-10 right-10 bg-white rounded-lg p-6 w-96 max-h-[80vh] overflow-y-auto">
                         <button
-                            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                            className="absolute top-2 right-2 text-slate-500 hover:text-slate-700"
                             onClick={() => setShowPlayerList(false)}
                         >
                             <span className="text-2xl">×</span>
@@ -924,7 +924,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                         <div className="flex justify-between items-center mb-4 pr-6">
                             <h2 className="text-xl font-bold">Players List</h2>
                             <button
-                                className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600"
+                                className="px-3 py-1 bg-emerald-500 text-white text-sm rounded-lg hover:bg-emerald-600"
                                 onClick={() => {
                                     setAddModalOpen(true);
                                     setShowPlayerList(false);
@@ -936,7 +936,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                         <input
                             type="text"
                             placeholder="이름 검색"
-                            className="w-full p-2 mb-4 border border-gray-300 rounded"
+                            className="w-full p-2 mb-4 border border-slate-300 rounded-lg"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -954,7 +954,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                                 .map((player, index) => (
                                     <div
                                         key={index}
-                                        className="flex items-center gap-3 p-3 border rounded hover:bg-gray-50 cursor-pointer"
+                                        className="flex items-center gap-3 p-3 border rounded-lg hover:bg-slate-50 cursor-pointer"
                                         onClick={() => {
                                             if (waitPlayerList.some((p) => p.id === player.id)) {
                                                 alert("이미 입장한 선수입니다");
@@ -968,7 +968,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                                             pushWaitPlayerList(player.id, clubId);
                                         }}
                                     >
-                                        <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+                                        <div className="w-12 h-12 rounded-full bg-slate-200 overflow-hidden flex-shrink-0">
                                             {player.avater ? (
                                                 <img
                                                     src={
@@ -980,7 +980,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                                                     className="w-full h-full object-cover"
                                                 />
                                             ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                                                <div className="w-full h-full flex items-center justify-center text-slate-400 text-xs">
                                                     No Img
                                                 </div>
                                             )}
@@ -989,12 +989,12 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                                             <div className="flex items-center gap-2">
                                                 <span className="font-bold">{player.name}</span>
                                                 {player.isJoinLeague && (
-                                                    <span className="px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs font-bold">
+                                                    <span className="px-1.5 py-0.5 rounded-lg bg-sky-100 text-sky-700 text-xs font-bold">
                                                         리그참가
                                                     </span>
                                                 )}
                                             </div>
-                                            <span className="text-sm text-gray-500">
+                                            <span className="text-sm text-slate-500">
                                                 {player.age} • {player.grade}조
                                             </span>
                                         </div>

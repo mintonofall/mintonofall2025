@@ -13,7 +13,7 @@ export default async function PlayerList({ params }: { params: Promise<{ id: num
             <Link href={"/createPlayer/" + id}>선수등록</Link>
 
             {playerList.map((player) => (
-                <div key={player.id} className="bg-white shadow-md rounded p-4 justify-between items-center flex">
+                <div key={player.id} className="bg-white shadow-md rounded-lg p-4 justify-between items-center flex">
                     <PlayerCard {...player} />
                     <Link href={`/editPlayer/${player.id}`}>
                         <svg

@@ -15,26 +15,29 @@ export default function PlayerCard(player: Player) {
         : player.avater || "/guest.png";
 
     return (
-        <div key={player.id} className="flex items-center w-full h-15 p-1 bg-white shadow-md rounded-lg">
+        <div
+            key={player.id}
+            className="flex items-center w-full h-15 p-1.5 bg-white border border-emerald-100 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all rounded-xl"
+        >
             <img
                 src={avatarSrc}
                 alt={player.name}
-                className="rounded-xl"
+                className="rounded-lg ring-1 ring-emerald-100"
                 style={{
                     objectFit: "cover",
                     width: "50px",
                     height: "50px",
                 }}
             />
-            <div className="flex flex-col w-full ml-1">
+            <div className="flex flex-col w-full ml-2">
                 <div className="flex flex-col items-center space-x-1">
-                    <div className="text-sm font-semibold">{player.name}</div>
+                    <div className="text-sm font-semibold text-slate-800">{player.name}</div>
                     <div className="flex space-x-1">
-                        <div className="text-xs text-gray-500">{player.age}</div>
-                        <div className="text-xs text-gray-500">{player.grade}</div>
+                        <div className="text-xs text-slate-400">{player.age}</div>
+                        <div className="text-xs text-slate-400">{player.grade}</div>
                     </div>
                 </div>
-                <div className="text-xs text-center w-full text-gray-700">
+                <div className="text-xs text-center w-full text-emerald-600 font-medium">
                     <div>
                         <div>경기수: {player.games}</div>
                         {/* {player.win}승 */}

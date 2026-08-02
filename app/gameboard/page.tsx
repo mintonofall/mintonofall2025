@@ -28,16 +28,16 @@ export default async function Home() {
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-3xl font-bold mb-4">Home {user?.userName}</h1>
-            <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded mb-4">
+            <button onClick={logout} className="bg-rose-500 text-white px-4 py-2 rounded-lg mb-4">
                 Logout
             </button>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {club?.clubs.map((club) => (
-                    <div key={club.id} className="bg-white shadow-md rounded p-4 flex justify-between items-center">
+                    <div key={club.id} className="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
                         <Link href={`/home/${club.id}`}>
                             <h2 className="text-xl font-semibold">{club.clubName}</h2>
                         </Link>
-                        <Link href={`playerList/${club.id}`} className="text-blue-500 hover:underline">
+                        <Link href={`playerList/${club.id}`} className="text-emerald-500 hover:underline">
                             <span>선수목록</span>
                         </Link>
                     </div>
@@ -48,9 +48,9 @@ export default async function Home() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                     {clubsList.map((club) => {
                         return (
-                            <div key={club.id} className="bg-white shadow-md rounded p-4">
+                            <div key={club.id} className="bg-white shadow-md rounded-lg p-4">
                                 <Link href={club.id + "/board/"}>
-                                    <h1 className="text-xl font-semibold text-blue-500 hover:underline">
+                                    <h1 className="text-xl font-semibold text-emerald-500 hover:underline">
                                         {club.clubName}
                                     </h1>
                                 </Link>
@@ -59,7 +59,7 @@ export default async function Home() {
                     })}
                 </div>
             </div>
-            <Link href="/createClub" className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded">
+            <Link href="/createClub" className="mt-4 inline-block bg-emerald-500 text-white px-4 py-2 rounded-lg">
                 클럽생성
             </Link>
         </div>

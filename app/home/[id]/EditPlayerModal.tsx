@@ -108,51 +108,51 @@ export default function EditPlayerModal({
                 <div className="flex flex-col gap-4">
                     {/* 이름 입력 필드 */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">이름</label>
+                        <label className="block text-sm font-medium text-slate-700">이름</label>
                         <input
                             type="text"
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                            className="mt-1 block w-full rounded-md border-slate-300 shadow-sm p-2 border"
                             value={editedPlayer.name || ""}
                             onChange={(e) => setEditPlayer({ ...editedPlayer, name: e.target.value })}
                         />
                     </div>
                     {/* 나이 입력 필드 */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">나이</label>
+                        <label className="block text-sm font-medium text-slate-700">나이</label>
                         <input
                             type="number"
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                            className="mt-1 block w-full rounded-md border-slate-300 shadow-sm p-2 border"
                             value={editedPlayer.age || ""}
                             onChange={(e) => setEditPlayer({ ...editedPlayer, age: e.target.value })}
                         />
                     </div>
                     {/* 급수 입력 필드 */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">급수</label>
+                        <label className="block text-sm font-medium text-slate-700">급수</label>
                         <input
                             type="text"
-                            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm p-2 border"
+                            className="mt-1 block w-full rounded-md border-slate-300 shadow-sm p-2 border"
                             value={editedPlayer.grade || ""}
                             onChange={(e) => setEditPlayer({ ...editedPlayer, grade: e.target.value })}
                         />
                     </div>
                     {/* 사진 파일 업로드 필드 */}
                     <div>
-                        <label className="block text-sm font-medium text-gray-700">
+                        <label className="block text-sm font-medium text-slate-700">
                             사진 수정
                             {isUploading && (
-                                <span className="ml-2 text-blue-500 text-xs font-normal">업로드 중...</span>
+                                <span className="ml-2 text-emerald-500 text-xs font-normal">업로드 중...</span>
                             )}
                         </label>
                         <input
                             type="file"
                             accept="image/*"
-                            className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                            className="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"
                             onChange={handleFileSelect}
                             disabled={isUploading}
                         />
                         {(previewUrl || editedPlayer.avater) && (
-                            <div className="mt-2 w-16 h-16 rounded-full overflow-hidden border border-gray-200">
+                            <div className="mt-2 w-16 h-16 rounded-full overflow-hidden border border-slate-200">
                                 <img
                                     src={
                                         previewUrl ||
@@ -171,22 +171,22 @@ export default function EditPlayerModal({
                         <input
                             id="isJoinLeague"
                             type="checkbox"
-                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                            className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-slate-300 rounded-lg"
                             checked={editedPlayer.isJoinLeague || false}
                             onChange={(e) => setEditPlayer({ ...editedPlayer, isJoinLeague: e.target.checked })}
                         />
-                        <label htmlFor="isJoinLeague" className="ml-2 block text-sm text-gray-900">
+                        <label htmlFor="isJoinLeague" className="ml-2 block text-sm text-slate-900">
                             리그 참가
                         </label>
                     </div>
                 </div>
                 {/* 하단 버튼 (취소, 저장) */}
                 <div className="mt-6 flex justify-end gap-2">
-                    <button className="px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300" onClick={onClose}>
+                    <button className="px-4 py-2 bg-slate-200 text-slate-800 rounded-lg hover:bg-slate-300" onClick={onClose}>
                         취소
                     </button>
                     <button
-                        className={`px-4 py-2 text-white rounded ${isUploading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
+                        className={`px-4 py-2 text-white rounded-lg ${isUploading ? "bg-emerald-400 cursor-not-allowed" : "bg-emerald-600 hover:bg-emerald-700"}`}
                         onClick={handleSubmit}
                         disabled={isUploading}
                     >

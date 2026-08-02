@@ -60,7 +60,7 @@ export default function WaitGames(props: { waitGames: WaitGameListCLass[]; playe
                 const playerId = getWaitGamePlayerId(idx);
                 const player = getPlayer(playerId);
                 return (
-                    <div key={idx} className="bg-gray-100 p-2 rounded-lg shadow-md flex flex-col items-center">
+                    <div key={idx} className="bg-slate-100 p-2 rounded-lg shadow-md flex flex-col items-center">
                         <span className="text-lg font-medium mb-2">{player.name}</span>
                         <Image
                             src={`${player.avater}/avatar`}
@@ -72,7 +72,7 @@ export default function WaitGames(props: { waitGames: WaitGameListCLass[]; playe
                                 height: "50px",
                             }}
                             alt=""
-                            className="rounded"
+                            className="rounded-lg"
                         />
                     </div>
                 );

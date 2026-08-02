@@ -22,51 +22,51 @@ interface ScoreInputProps {
 export default function ScoreInput({ score1, setScore1, score2, setScore2 }: ScoreInputProps) {
     return (
         <>
-            <div className="text-2xl font-bold text-center mb-2">{score1}</div>
-            <div className="flex justify-center gap-0 mb-4">
-                <span className="m-0 p-0">5</span>
+            <div className="text-3xl font-extrabold text-center mb-2 text-slate-800">{score1}</div>
+            <div className="flex justify-center items-center gap-1 mb-4">
+                <span className="m-0 px-1 text-xs font-semibold text-slate-400">5</span>
                 <MinusCircleIcon
                     onClick={() => {
                         setScore1(score1 - 5);
                     }}
-                    className="h-6 w-6 text-red-500 cursor-pointer"
+                    className="h-6 w-6 text-rose-400 hover:text-rose-500 cursor-pointer transition-colors"
                 />
                 <MinusCircleIcon
                     onClick={() => {
                         setScore1(score1 - 1);
                     }}
-                    className="h-6 w-6 mx-5 text-red-500 cursor-pointer"
+                    className="h-6 w-6 mx-5 text-rose-400 hover:text-rose-500 cursor-pointer transition-colors"
                 />
                 <PlusCircleIcon
                     onClick={() => {
                         setScore1(score1 + 1);
                     }}
-                    className="h-6 w-6 text-green-500 cursor-pointer"
+                    className="h-6 w-6 text-emerald-500 hover:text-emerald-600 cursor-pointer transition-colors"
                 />
             </div>
-            <div className="border-b border-gray-300 my-4"></div>
-            <div className="flex justify-center gap-0 mb-4">
-                <span className="m-0 p-0">5</span>
+            <div className="border-b border-emerald-100 my-4"></div>
+            <div className="flex justify-center items-center gap-1 mb-4">
+                <span className="m-0 px-1 text-xs font-semibold text-slate-400">5</span>
                 <MinusCircleIcon
                     onClick={() => {
                         setScore2(score2 - 5);
                     }}
-                    className="h-6 w-6 text-red-500 cursor-pointer"
+                    className="h-6 w-6 text-rose-400 hover:text-rose-500 cursor-pointer transition-colors"
                 />
                 <MinusCircleIcon
                     onClick={() => {
                         setScore2(score2 - 1);
                     }}
-                    className="h-6 w-6 mx-5 text-red-500 cursor-pointer"
+                    className="h-6 w-6 mx-5 text-rose-400 hover:text-rose-500 cursor-pointer transition-colors"
                 />
                 <PlusCircleIcon
                     onClick={() => {
                         setScore2(score2 + 1);
                     }}
-                    className="h-6 w-6 text-green-500 cursor-pointer"
+                    className="h-6 w-6 text-emerald-500 hover:text-emerald-600 cursor-pointer transition-colors"
                 />
             </div>
-            <div className="text-2xl font-bold text-center mb-4">{score2}</div>
+            <div className="text-3xl font-extrabold text-center mb-4 text-slate-800">{score2}</div>
         </>
     );
 }

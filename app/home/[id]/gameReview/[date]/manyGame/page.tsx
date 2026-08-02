@@ -52,12 +52,12 @@ export default async function ManyGamePage({ params }: { params: Promise<{ id: s
         .sort((a, b) => b.count - a.count);
 
     return (
-        <div className="p-8 flex flex-col items-center min-h-screen bg-gray-50 pt-16">
+        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white pt-16">
             <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-2xl mb-8 gap-4">
-                <h1 className="text-3xl font-bold text-blue-600">{date} 다전 순위 🏸</h1>
+                <h1 className="text-3xl font-bold text-emerald-600">{date} 다전 순위 🏸</h1>
                 <Link
                     href={`/home/${clubId}/gameReview/${date}`}
-                    className="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition-colors"
+                    className="px-4 py-2 bg-emerald-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-emerald-600 transition-colors"
                 >
                     돌아가기
                 </Link>
@@ -65,7 +65,7 @@ export default async function ManyGamePage({ params }: { params: Promise<{ id: s
 
             <div className="w-full max-w-2xl bg-white p-4 sm:p-6 rounded-lg shadow-md">
                 {rankedPlayers.length > 0 ? (
-                    <ul className="divide-y divide-gray-200">
+                    <ul className="divide-y divide-slate-200">
                         {rankedPlayers.map((entry, index) => {
                             const rank = index + 1;
                             const avatarSrc = entry.player!.avater?.startsWith("https://imagedelivery.net/")
@@ -82,10 +82,10 @@ export default async function ManyGamePage({ params }: { params: Promise<{ id: s
                                         ) : rank === 3 ? (
                                             <span className="text-2xl">🥉</span>
                                         ) : (
-                                            <span className="text-lg font-bold text-gray-500">{rank}</span>
+                                            <span className="text-lg font-bold text-slate-500">{rank}</span>
                                         )}
                                     </div>
-                                    <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-gray-100 shadow-sm flex items-center justify-center border">
+                                    <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0 bg-slate-100 shadow-sm flex items-center justify-center border">
                                         {avatarSrc ? (
                                             // eslint-disable-next-line @next/next/no-img-element
                                             <img
@@ -94,21 +94,21 @@ export default async function ManyGamePage({ params }: { params: Promise<{ id: s
                                                 className="w-full h-full object-cover"
                                             />
                                         ) : (
-                                            <span className="text-[10px] text-gray-400">No Img</span>
+                                            <span className="text-[10px] text-slate-400">No Img</span>
                                         )}
                                     </div>
                                     <div className="flex-grow">
-                                        <p className="text-lg font-semibold text-gray-800">{entry.player!.name}</p>
+                                        <p className="text-lg font-semibold text-slate-800">{entry.player!.name}</p>
                                     </div>
                                     <div className="text-right flex-shrink-0">
-                                        <p className="text-xl font-bold text-blue-600">{entry.count} 경기</p>
+                                        <p className="text-xl font-bold text-emerald-600">{entry.count} 경기</p>
                                     </div>
                                 </li>
                             );
                         })}
                     </ul>
                 ) : (
-                    <div className="text-center text-gray-500 py-8">해당 날짜에 진행된 경기가 없습니다.</div>
+                    <div className="text-center text-slate-500 py-8">해당 날짜에 진행된 경기가 없습니다.</div>
                 )}
             </div>
         </div>

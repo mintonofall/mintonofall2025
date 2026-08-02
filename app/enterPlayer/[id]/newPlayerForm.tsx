@@ -85,7 +85,7 @@ export default function NewPlayerForm({ clubid, name }: Props) {
         <div className="max-w-xl mx-auto p-6 bg-white rounded-lg shadow-md">
             <form action={action} className="flex flex-col space-y-6">
                 <div>
-                    <label htmlFor="name" className="block mb-2 text-lg font-medium text-gray-700">
+                    <label htmlFor="name" className="block mb-2 text-lg font-medium text-slate-700">
                         플레이어 이름
                     </label>
                     <input
@@ -94,16 +94,16 @@ export default function NewPlayerForm({ clubid, name }: Props) {
                         placeholder="플레이어 이름"
                         name="name"
                         defaultValue={name}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
                     />
                 </div>
                 <div>
-                    <label htmlFor="photo" className="block mb-2 text-lg font-medium text-gray-700">
+                    <label htmlFor="photo" className="block mb-2 text-lg font-medium text-slate-700">
                         사진
                     </label>
                     <label
                         htmlFor="photo"
-                        className="flex justify-center items-center h-52 w-52 mx-auto border-dashed border-2 border-gray-300 rounded-lg bg-cover bg-inherit bg-center bg-no-repeat cursor-pointer"
+                        className="flex justify-center items-center h-52 w-52 mx-auto border-dashed border-2 border-slate-300 rounded-lg bg-cover bg-inherit bg-center bg-no-repeat cursor-pointer"
                         style={{
                             backgroundImage: `url(${preview})`,
                         }}
@@ -112,8 +112,8 @@ export default function NewPlayerForm({ clubid, name }: Props) {
                             ""
                         ) : (
                             <div className="flex flex-col items-center">
-                                <PhotoIcon className="w-12 h-12 text-gray-400" />
-                                <p className="m-2 text-center text-gray-500">
+                                <PhotoIcon className="w-12 h-12 text-slate-400" />
+                                <p className="m-2 text-center text-slate-500">
                                     원할한 게임진행을 위해 여기를 눌러 얼굴이 잘 보이게 등록해 주세요, 혹은 오늘의
                                     착샷을 찍어주세요
                                 </p>
@@ -236,7 +236,7 @@ export default function NewPlayerForm({ clubid, name }: Props) {
                     </div> */}
                 </div>
                 <div className="flex flex-col space-y-2">
-                    <span className="text-lg font-medium text-gray-700">성별</span>
+                    <span className="text-lg font-medium text-slate-700">성별</span>
                     <div className="flex space-x-4">
                         <label className="flex items-center space-x-2">
                             <input type="radio" name="gender" value="man" id="man" defaultChecked />
@@ -249,7 +249,7 @@ export default function NewPlayerForm({ clubid, name }: Props) {
                     </div>
                 </div>
                 <div className="flex flex-col space-y-2">
-                    <span className="text-lg font-medium text-gray-700">나이</span>
+                    <span className="text-lg font-medium text-slate-700">나이</span>
                     <div className="flex space-x-4">
                         <label className="flex items-center space-x-2">
                             <input type="radio" name="age" value={20} id="20" />
@@ -274,7 +274,7 @@ export default function NewPlayerForm({ clubid, name }: Props) {
                     </div>
                 </div>
                 <div className="flex flex-col space-y-2">
-                    <span className="text-lg font-medium text-gray-700">등급</span>
+                    <span className="text-lg font-medium text-slate-700">등급</span>
                     <div className="flex space-x-4">
                         <label className="flex items-center space-x-2">
                             <input type="radio" name="grade" value="S" id="S" />
@@ -303,11 +303,11 @@ export default function NewPlayerForm({ clubid, name }: Props) {
                     </div>
                 </div>
                 <input type="number" value={Number(id)} name="clubId" hidden readOnly />
-                <button type="submit" className="bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600">
+                <button type="submit" className="bg-emerald-500 text-white p-3 rounded-lg hover:bg-emerald-600">
                     생성
                 </button>
                 <Link href={`/${id}/board`}>
-                    <div className="bg-blue-500 text-center text-white p-3 rounded-lg hover:bg-blue-600">돌아가기</div>
+                    <div className="bg-emerald-500 text-center text-white p-3 rounded-lg hover:bg-emerald-600">돌아가기</div>
                 </Link>
             </form>
         </div>

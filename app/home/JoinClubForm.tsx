@@ -17,7 +17,7 @@ export default function JoinClubForm({
             }}
         >
             <input type="hidden" name="clubId" value={clubId} />
-            <button type="submit" className="bg-blue-100 text-blue-600 px-3 py-1 rounded hover:bg-blue-200 transition">
+            <button type="submit" className="bg-emerald-100 text-emerald-600 px-3 py-1 rounded-lg hover:bg-emerald-200 transition">
                 가입신청
             </button>
         </form>

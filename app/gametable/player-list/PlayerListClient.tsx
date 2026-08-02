@@ -61,55 +61,55 @@ export default function PlayerListClient({ players }: { players: DogPlayer[] }) 
     return (
         <div className="w-full p-4 bg-white min-h-[calc(90vh-4rem)] pb-20">
             <div className="flex justify-between items-center mb-6">
-                <h1 className="text-3xl font-bold text-gray-700">Player List</h1>
+                <h1 className="text-3xl font-bold text-slate-700">Player List</h1>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-bold shadow-md"
+                    className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors font-bold shadow-md"
                 >
                     선수 추가
                 </button>
             </div>
             <div className="overflow-x-auto">
                 <table className="min-w-full table-auto text-left">
-                    <thead className="bg-gray-100">
+                    <thead className="bg-slate-100">
                         <tr>
-                            <th className="px-2 py-3 text-sm font-bold text-gray-600 uppercase tracking-wider">이름</th>
-                            <th className="px-2 py-3 text-sm font-bold text-gray-600 uppercase tracking-wider text-center">
+                            <th className="px-2 py-3 text-sm font-bold text-slate-600 uppercase tracking-wider">이름</th>
+                            <th className="px-2 py-3 text-sm font-bold text-slate-600 uppercase tracking-wider text-center">
                                 지역
                             </th>
-                            <th className="px-2 py-3 text-sm font-bold text-gray-600 uppercase tracking-wider text-center">
+                            <th className="px-2 py-3 text-sm font-bold text-slate-600 uppercase tracking-wider text-center">
                                 급수
                             </th>
-                            <th className="px-2 py-3 text-sm font-bold text-gray-600 uppercase tracking-wider text-center">
+                            <th className="px-2 py-3 text-sm font-bold text-slate-600 uppercase tracking-wider text-center">
                                 관리
                             </th>
                         </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-white divide-y divide-slate-200">
                         {players.map((player) => (
                             <tr
                                 key={player.id}
-                                className={`${player.gender === "man" ? "bg-blue-100" : player.gender === "woman" ? "bg-red-100" : "bg-white"} hover:opacity-80 transition-colors`}
+                                className={`${player.gender === "man" ? "bg-emerald-100" : player.gender === "woman" ? "bg-rose-100" : "bg-white"} hover:opacity-80 transition-colors`}
                             >
-                                <td className="px-2 py-4 whitespace-nowrap text-lg font-bold text-gray-800">
+                                <td className="px-2 py-4 whitespace-nowrap text-lg font-bold text-slate-800">
                                     {player.name}
                                 </td>
-                                <td className="px-2 py-4 whitespace-nowrap text-center text-gray-600">
+                                <td className="px-2 py-4 whitespace-nowrap text-center text-slate-600">
                                     {player.where}
                                 </td>
-                                <td className="px-2 py-4 whitespace-nowrap text-center text-gray-800 font-semibold">
+                                <td className="px-2 py-4 whitespace-nowrap text-center text-slate-800 font-semibold">
                                     {player.grade}
                                 </td>
                                 <td className="px-2 py-4 whitespace-nowrap text-center">
                                     <button
                                         onClick={() => handleEdit(player)}
-                                        className="text-blue-600 hover:text-blue-900 mr-3 font-medium"
+                                        className="text-emerald-600 hover:text-emerald-900 mr-3 font-medium"
                                     >
                                         수정
                                     </button>
                                     <button
                                         onClick={() => handleDelete(player.id)}
-                                        className="text-red-600 hover:text-red-900 font-medium"
+                                        className="text-rose-600 hover:text-rose-900 font-medium"
                                     >
                                         삭제
                                     </button>
@@ -126,30 +126,30 @@ export default function PlayerListClient({ players }: { players: DogPlayer[] }) 
                         <h2 className="text-2xl font-bold mb-4">{editingPlayer ? "선수 수정" : "선수 추가"}</h2>
                         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">이름</label>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">이름</label>
                                 <input
                                     type="text"
                                     name="name"
                                     defaultValue={editingPlayer?.name}
                                     required
-                                    className="w-full border border-gray-300 rounded-md p-2"
+                                    className="w-full border border-slate-300 rounded-md p-2"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">지역</label>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">지역</label>
                                 <input
                                     type="text"
                                     name="where"
                                     defaultValue={editingPlayer?.where || ""}
-                                    className="w-full border border-gray-300 rounded-md p-2"
+                                    className="w-full border border-slate-300 rounded-md p-2"
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">급수</label>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">급수</label>
                                 <select
                                     name="grade"
                                     defaultValue={editingPlayer?.grade || "C"}
-                                    className="w-full border border-gray-300 rounded-md p-2"
+                                    className="w-full border border-slate-300 rounded-md p-2"
                                 >
                                     {["A", "B", "C", "D", "E"].map((g) => (
                                         <option key={g} value={g}>
@@ -159,7 +159,7 @@ export default function PlayerListClient({ players }: { players: DogPlayer[] }) 
                                 </select>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">성별</label>
+                                <label className="block text-sm font-medium text-slate-700 mb-1">성별</label>
                                 <div className="flex gap-4">
                                     <label className="flex items-center">
                                         <input
@@ -187,13 +187,13 @@ export default function PlayerListClient({ players }: { players: DogPlayer[] }) 
                                 <button
                                     type="button"
                                     onClick={closeModal}
-                                    className="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-md"
+                                    className="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-md"
                                 >
                                     취소
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+                                    className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
                                 >
                                     저장
                                 </button>

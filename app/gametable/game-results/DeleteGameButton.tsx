@@ -15,7 +15,7 @@ export default function DeleteGameButton({ gameId }: { gameId: number }) {
     return (
         <button
             onClick={handleDelete}
-            className="text-gray-400 hover:text-red-500 transition-colors p-1"
+            className="text-slate-400 hover:text-rose-500 transition-colors p-1"
             title="게임 삭제"
         >
             <svg

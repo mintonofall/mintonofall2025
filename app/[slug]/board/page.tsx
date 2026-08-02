@@ -38,7 +38,7 @@ export default async function Board({ params }: { params: Promise<{ slug: string
             {userId ? (
                 <div>
                     <div>{userId} 님</div>
-                    <button onClick={logout} className="bg-red-500 text-white px-4 py-2 rounded mb-4">
+                    <button onClick={logout} className="bg-rose-500 text-white px-4 py-2 rounded-lg mb-4">
                         Logout
                     </button>
                 </div>

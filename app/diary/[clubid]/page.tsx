@@ -165,21 +165,21 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                 <div className="flex flex-col w-3/5 p-4 bg-white shadow-md rounded-lg">
                     <div className="mb-4">
                         <h2 className="text-xl font-semibold">Player 1</h2>
-                        <div className="text-gray-700">{playerList[0] ? playerList[0].name : "No player selected"}</div>
+                        <div className="text-slate-700">{playerList[0] ? playerList[0].name : "No player selected"}</div>
                     </div>
                     <div className="mb-4">
                         <h2 className="text-xl font-semibold">Player 2</h2>
-                        <div className="text-gray-700">{playerList[1] ? playerList[1].name : "No player selected"}</div>
+                        <div className="text-slate-700">{playerList[1] ? playerList[1].name : "No player selected"}</div>
                     </div>
                     {/* 점수 입력 컴포넌트 */}
                     <ScoreInput score1={score1} setScore1={setScore1} score2={score2} setScore2={setScore2} />
                     <div className="mb-4">
                         <h2 className="text-xl font-semibold">Player 3</h2>
-                        <div className="text-gray-700">{playerList[2] ? playerList[2].name : "No player selected"}</div>
+                        <div className="text-slate-700">{playerList[2] ? playerList[2].name : "No player selected"}</div>
                     </div>
                     <div className="mb-4">
                         <h2 className="text-xl font-semibold">Player 4</h2>
-                        <div className="text-gray-700">{playerList[3] ? playerList[3].name : "No player selected"}</div>
+                        <div className="text-slate-700">{playerList[3] ? playerList[3].name : "No player selected"}</div>
                     </div>
                     <div className="flex justify-center gap-4">
                         <button
@@ -188,7 +188,7 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                              * 선수 4명이 모두 선택되었는지 확인하고, 승자를 결정한 후 `makeMatch` API를 호출하여 경기 결과를 저장합니다.
                              */
                             onClick={handleSubmitMatch}
-                            className="mt-4 px-7 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                            className="mt-4 px-7 py-2 bg-emerald-500 text-white font-semibold rounded-lg shadow-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75"
                         >
                             결과입력
                         </button>
@@ -202,13 +202,13 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                                 copy.pop();
                                 setPlayerList(copy);
                             }}
-                            className="mt-4 px-1 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                            className="mt-4 px-1 py-2 bg-emerald-500 text-white font-semibold rounded-lg shadow-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75"
                         >
                             UNDO
                         </button>
                     </div>
                 </div>
-                <div className="flex flex-col w-2/5 p-4 bg-gray-100 shadow-md rounded-lg overflow-y-auto h-[calc(100vh-100px)]">
+                <div className="flex flex-col w-2/5 p-4 bg-slate-100 shadow-md rounded-lg overflow-y-auto h-[calc(100vh-100px)]">
                     <input
                         className="p-2 m-2"
                         type="text"
@@ -229,15 +229,15 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                     ></input>
                     {waitPlayerList.map((player) => (
                         <div
-                            className="flex justify-between items-center p-2 mb-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-200"
+                            className="flex justify-between items-center p-2 mb-2 bg-white rounded-lg shadow cursor-pointer hover:bg-slate-200"
                             onClick={() => handleClickedPlayer(player)}
                             key={player.id}
                         >
                             <div>
                                 <h1 className="text-lg font-semibold">{player.name}</h1>
                                 <div className="flex gap-2">
-                                    <h2 className="text-sm text-gray-600">{player.age} </h2>
-                                    <h2 className="text-sm text-gray-600">{player.grade}</h2>
+                                    <h2 className="text-sm text-slate-600">{player.age} </h2>
+                                    <h2 className="text-sm text-slate-600">{player.grade}</h2>
                                 </div>
                             </div>
                         </div>
@@ -249,7 +249,7 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                             query: { userid: userid },
                         }}
                     >
-                        <span className="mt-4 lg:px-4 w-10/12 lg:text-lg text-lg   py-2 px-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+                        <span className="mt-4 lg:px-4 w-10/12 lg:text-lg text-lg   py-2 px-2 bg-emerald-500 text-white font-semibold rounded-lg shadow-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75">
                             새로만들기
                         </span>
                     </Link>

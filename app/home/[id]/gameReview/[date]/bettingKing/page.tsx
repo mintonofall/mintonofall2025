@@ -30,7 +30,7 @@ export default async function BettingKingPage({ params }: { params: Promise<{ id
 
     if (matchesOnDate.length === 0) {
         return (
-            <div className="p-8 flex flex-col items-center min-h-screen bg-gray-50 pt-16">
+            <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white pt-16">
                 <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-2xl mb-8 gap-4">
                     <h1 className="text-3xl font-bold text-orange-600">{date} 베팅왕 👑</h1>
                     <Link
@@ -40,7 +40,7 @@ export default async function BettingKingPage({ params }: { params: Promise<{ id
                         돌아가기
                     </Link>
                 </div>
-                <div className="w-full max-w-2xl bg-white p-8 rounded-lg shadow-md text-center text-gray-500">
+                <div className="w-full max-w-2xl bg-white p-8 rounded-lg shadow-md text-center text-slate-500">
                     해당 날짜에 종료된 경기가 없어 베팅 기록을 집계할 수 없습니다.
                 </div>
             </div>
@@ -111,7 +111,7 @@ export default async function BettingKingPage({ params }: { params: Promise<{ id
     const rankedUsers = Array.from(userWinnings.values()).sort((a, b) => b.totalNetWinnings - a.totalNetWinnings);
 
     return (
-        <div className="p-8 flex flex-col items-center min-h-screen bg-gray-50 pt-16">
+        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white pt-16">
             <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-2xl mb-8 gap-4">
                 <h1 className="text-3xl font-bold text-orange-600">{date} 베팅왕 👑</h1>
                 <Link
@@ -124,7 +124,7 @@ export default async function BettingKingPage({ params }: { params: Promise<{ id
 
             <div className="w-full max-w-2xl bg-white p-4 sm:p-6 rounded-lg shadow-md">
                 {rankedUsers.length > 0 ? (
-                    <ul className="divide-y divide-gray-200">
+                    <ul className="divide-y divide-slate-200">
                         {rankedUsers.map((entry, index) => {
                             const rank = index + 1;
                             const hitRate = entry.totalBets > 0 ? (entry.correctBets / entry.totalBets) * 100 : 0;
@@ -139,12 +139,12 @@ export default async function BettingKingPage({ params }: { params: Promise<{ id
                                         ) : rank === 3 ? (
                                             <span className="text-2xl">🥉</span>
                                         ) : (
-                                            <span className="text-lg font-bold text-gray-500">{rank}</span>
+                                            <span className="text-lg font-bold text-slate-500">{rank}</span>
                                         )}
                                     </div>
                                     <div className="flex-grow">
-                                        <p className="text-lg font-semibold text-gray-800">{entry.user.userName}</p>
-                                        <p className="text-sm text-gray-500">
+                                        <p className="text-lg font-semibold text-slate-800">{entry.user.userName}</p>
+                                        <p className="text-sm text-slate-500">
                                             적중률: {hitRate.toFixed(1)}% ({entry.correctBets}/{entry.totalBets})
                                         </p>
                                     </div>
@@ -152,16 +152,16 @@ export default async function BettingKingPage({ params }: { params: Promise<{ id
                                         <p
                                             className={`text-xl font-bold ${
                                                 entry.totalNetWinnings > 0
-                                                    ? "text-red-500"
+                                                    ? "text-rose-500"
                                                     : entry.totalNetWinnings < 0
-                                                      ? "text-blue-500"
-                                                      : "text-gray-700"
+                                                      ? "text-emerald-500"
+                                                      : "text-slate-700"
                                             }`}
                                         >
                                             {entry.totalNetWinnings > 0 ? "+" : ""}
                                             {formatNumber(entry.totalNetWinnings)} P
                                         </p>
-                                        <p className="text-xs text-gray-500 mt-1 font-medium">
+                                        <p className="text-xs text-slate-500 mt-1 font-medium">
                                             보유: {formatNumber(entry.user.point || 0)} P
                                         </p>
                                     </div>
@@ -170,7 +170,7 @@ export default async function BettingKingPage({ params }: { params: Promise<{ id
                         })}
                     </ul>
                 ) : (
-                    <div className="text-center text-gray-500 py-8">처리된 베팅 기록이 없습니다.</div>
+                    <div className="text-center text-slate-500 py-8">처리된 베팅 기록이 없습니다.</div>
                 )}
             </div>
         </div>

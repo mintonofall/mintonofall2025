@@ -7,10 +7,10 @@ const PlayerCard = ({ player }: { player: any }) => {
     if (!player) {
         return (
             <div className="w-20 flex flex-col items-center gap-1">
-                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 shadow-sm border border-gray-100">
+                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-[10px] text-slate-500 shadow-sm border border-slate-100">
                     -
                 </div>
-                <span className="text-xs font-semibold text-gray-400">-</span>
+                <span className="text-xs font-semibold text-slate-400">-</span>
             </div>
         );
     }
@@ -25,16 +25,16 @@ const PlayerCard = ({ player }: { player: any }) => {
                 <img
                     src={avatarSrc}
                     alt={player.name}
-                    className="w-10 h-10 rounded-full object-cover shadow-sm bg-gray-100 border border-gray-200"
+                    className="w-10 h-10 rounded-full object-cover shadow-sm bg-slate-100 border border-slate-200"
                 />
             ) : (
-                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center text-[10px] text-gray-500 shadow-sm border border-gray-200">
+                <div className="w-10 h-10 rounded-full bg-slate-200 flex items-center justify-center text-[10px] text-slate-500 shadow-sm border border-slate-200">
                     No Img
                 </div>
             )}
-            <span className="text-xs font-semibold text-gray-700 truncate w-full text-center">{player.name}</span>
+            <span className="text-xs font-semibold text-slate-700 truncate w-full text-center">{player.name}</span>
             {player.isJoinLeague && (
-                <span className="px-1 py-0.5 rounded bg-indigo-100 text-indigo-700 text-[9px] font-bold whitespace-nowrap">
+                <span className="px-1 py-0.5 rounded-lg bg-sky-100 text-sky-700 text-[9px] font-bold whitespace-nowrap">
                     리그경기 참가자
                 </span>
             )}
@@ -83,12 +83,12 @@ export default async function LeagueGamePage({ params }: { params: Promise<{ id:
     const getPlayer = (pid: number | null) => players.find((p: any) => p.id === pid) || null;
 
     return (
-        <div className="p-8 flex flex-col items-center min-h-screen bg-gray-50 pt-16">
+        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white pt-16">
             <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-4xl mb-8 gap-4">
-                <h1 className="text-3xl font-bold text-blue-600">{date} 리그 게임 결과</h1>
+                <h1 className="text-3xl font-bold text-emerald-600">{date} 리그 게임 결과</h1>
                 <Link
                     href={`/home/${clubId}/gameReview/${date}`}
-                    className="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition-colors"
+                    className="px-4 py-2 bg-emerald-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-emerald-600 transition-colors"
                 >
                     돌아가기
                 </Link>
@@ -110,14 +110,14 @@ export default async function LeagueGamePage({ params }: { params: Promise<{ id:
                         return (
                             <div
                                 key={match.id}
-                                className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 flex flex-col sm:flex-row items-center justify-between gap-6 hover:shadow-md transition-shadow"
+                                className="bg-white p-6 rounded-lg shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-6 hover:shadow-md transition-shadow"
                             >
                                 {/* Team 1 */}
                                 <div
-                                    className={`flex flex-col items-center p-3 rounded-xl w-full sm:w-2/5 ${isTeam1Win ? "bg-yellow-50 border border-yellow-200" : "bg-gray-50 border border-transparent"}`}
+                                    className={`flex flex-col items-center p-3 rounded-xl w-full sm:w-2/5 ${isTeam1Win ? "bg-amber-50 border border-amber-200" : "bg-slate-50 border border-transparent"}`}
                                 >
                                     {isTeam1Win && (
-                                        <span className="text-yellow-600 font-bold text-xs mb-2 tracking-widest">
+                                        <span className="text-amber-600 font-bold text-xs mb-2 tracking-widest">
                                             WINNER
                                         </span>
                                     )}
@@ -130,19 +130,19 @@ export default async function LeagueGamePage({ params }: { params: Promise<{ id:
                                 {/* VS & Time Info */}
                                 <div className="flex flex-col items-center justify-center gap-1 w-full sm:w-1/5 text-center my-2 sm:my-0">
                                     {startTimeStr && (
-                                        <div className="text-[11px] text-gray-500 font-medium bg-gray-100 border border-gray-200 px-2 py-1 rounded shadow-sm whitespace-nowrap">
+                                        <div className="text-[11px] text-slate-500 font-medium bg-slate-100 border border-slate-200 px-2 py-1 rounded-lg shadow-sm whitespace-nowrap">
                                             {startTimeStr}
                                         </div>
                                     )}
-                                    <div className="text-gray-400 font-black italic text-xl mt-1">VS</div>
+                                    <div className="text-slate-400 font-black italic text-xl mt-1">VS</div>
                                 </div>
 
                                 {/* Team 2 */}
                                 <div
-                                    className={`flex flex-col items-center p-3 rounded-xl w-full sm:w-2/5 ${isTeam2Win ? "bg-yellow-50 border border-yellow-200" : "bg-gray-50 border border-transparent"}`}
+                                    className={`flex flex-col items-center p-3 rounded-xl w-full sm:w-2/5 ${isTeam2Win ? "bg-amber-50 border border-amber-200" : "bg-slate-50 border border-transparent"}`}
                                 >
                                     {isTeam2Win && (
-                                        <span className="text-yellow-600 font-bold text-xs mb-2 tracking-widest">
+                                        <span className="text-amber-600 font-bold text-xs mb-2 tracking-widest">
                                             WINNER
                                         </span>
                                     )}
@@ -155,7 +155,7 @@ export default async function LeagueGamePage({ params }: { params: Promise<{ id:
                         );
                     })
                 ) : (
-                    <div className="text-center text-gray-500 py-12 bg-white rounded-lg shadow-sm border border-gray-200 font-medium">
+                    <div className="text-center text-slate-500 py-12 bg-white rounded-lg shadow-sm border border-slate-200 font-medium">
                         해당 날짜에 기록된 리그 게임이 없습니다.
                     </div>
                 )}

@@ -32,10 +32,10 @@ export default function OtherParticipantsPanel({
                             <div
                                 key={otherUser.id}
                                 className={`flex-grow p-3 border rounded-lg shadow-sm flex flex-col ${
-                                    isCurrentUser ? "bg-green-100" : "bg-white"
+                                    isCurrentUser ? "bg-emerald-100" : "bg-white"
                                 }`}
                             >
-                                <h3 className="font-semibold text-lg text-gray-800 mb-2 text-center">
+                                <h3 className="font-semibold text-lg text-slate-800 mb-2 text-center">
                                     {otherUser.nickName}
                                 </h3>
                                 {categories.map((category) => {
@@ -45,7 +45,7 @@ export default function OtherParticipantsPanel({
                                     return (
                                         <div
                                             key={category}
-                                            className="flex items-center space-x-2 p-2 border rounded bg-white text-sm mt-2"
+                                            className="flex items-center space-x-2 p-2 border rounded-lg bg-white text-sm mt-2"
                                         >
                                             <strong className="w-14 flex-shrink-0">{category}:</strong>
                                             {draft ? (
@@ -60,7 +60,7 @@ export default function OtherParticipantsPanel({
                                                     </span>
                                                 </>
                                             ) : (
-                                                <span className="text-gray-500 ml-1">선수 없음</span>
+                                                <span className="text-slate-500 ml-1">선수 없음</span>
                                             )}
                                         </div>
                                     );
@@ -69,7 +69,7 @@ export default function OtherParticipantsPanel({
                         );
                     })
                 ) : (
-                    <div className="flex-grow flex items-center justify-center text-gray-500">
+                    <div className="flex-grow flex items-center justify-center text-slate-500">
                         <p>다른 참가자가 없습니다.</p>
                     </div>
                 )}
