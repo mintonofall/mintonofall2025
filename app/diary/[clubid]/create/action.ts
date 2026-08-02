@@ -21,7 +21,7 @@ export async function handleForm(_: unknown, formData: FormData) {
                 avater = "https://imagedelivery.net/H_vtnjYSM5axKm4PivHM5g/82dae85a-dfe6-4a3c-c6ec-c184046f0500";
             }
             if (name) {
-                pushData.push({ name, age, gender, grade, avater, userid, clubid });
+                pushData.push({ name, age, gender, grade, avater, userid, clubid, lastGameDate: new Date() });
             }
         }
     }
