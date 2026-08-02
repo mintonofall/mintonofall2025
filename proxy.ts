@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import getSession from "./lib/session";
 
-export async function middleware(req: NextRequest) {
+export async function proxy(req: NextRequest) {
     const session = await getSession();
     if (req.nextUrl.pathname === "/") {
         if (session.id) {

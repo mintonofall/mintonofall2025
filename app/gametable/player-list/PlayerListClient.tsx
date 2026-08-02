@@ -121,7 +121,7 @@ export default function PlayerListClient({ players }: { players: DogPlayer[] }) 
             </div>
 
             {isModalOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+                <div className="fixed inset-0 bg-black/50 bg-opacity-50 flex items-center justify-center z-50 p-4">
                     <div className="bg-white rounded-lg p-6 w-full max-w-md">
                         <h2 className="text-2xl font-bold mb-4">{editingPlayer ? "선수 수정" : "선수 추가"}</h2>
                         <form onSubmit={handleSubmit} className="flex flex-col gap-4">

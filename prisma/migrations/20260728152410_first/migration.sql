@@ -8,82 +8,82 @@
 
 */
 -- DropForeignKey
-ALTER TABLE "Betting" DROP CONSTRAINT "Betting_clubid_fkey" IF EXISTS;
+ALTER TABLE "Betting" DROP CONSTRAINT "Betting_clubid_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "Betting" DROP CONSTRAINT "Betting_gameid_fkey" IF EXISTS;
+ALTER TABLE "Betting" DROP CONSTRAINT "Betting_gameid_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "Betting" DROP CONSTRAINT "Betting_userid_fkey" IF EXISTS;
+ALTER TABLE "Betting" DROP CONSTRAINT "Betting_userid_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "ClubDiary" DROP CONSTRAINT "ClubDiary_userid_fkey" IF EXISTS;
+ALTER TABLE "ClubDiary" DROP CONSTRAINT "ClubDiary_userid_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "DraftPick" DROP CONSTRAINT "DraftPick_leagueId_fkey" IF EXISTS;
+ALTER TABLE "DraftPick" DROP CONSTRAINT "DraftPick_leagueId_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "DraftPick" DROP CONSTRAINT "DraftPick_playerId_fkey" IF EXISTS;
+ALTER TABLE "DraftPick" DROP CONSTRAINT "DraftPick_playerId_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "DraftPick" DROP CONSTRAINT "DraftPick_userId_fkey" IF EXISTS;
+ALTER TABLE "DraftPick" DROP CONSTRAINT "DraftPick_userId_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "FantasyGame" DROP CONSTRAINT "FantasyGame_player1Id_fkey" IF EXISTS;
+ALTER TABLE "FantasyGame" DROP CONSTRAINT "FantasyGame_player1Id_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "FantasyGame" DROP CONSTRAINT "FantasyGame_player2Id_fkey" IF EXISTS    ;
+ALTER TABLE "FantasyGame" DROP CONSTRAINT "FantasyGame_player2Id_fkey"      ;
 
 -- DropForeignKey
-ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_fantasyLeagueId_fkey" IF EXISTS;
+ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_fantasyLeagueId_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_mdId_fkey" IF EXISTS;
+ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_mdId_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_msId_fkey" IF EXISTS;
+ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_msId_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_userId_fkey" IF EXISTS;
+ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_userId_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_wcId_fkey" IF EXISTS;
+ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_wcId_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_wdId_fkey" IF EXISTS;
+ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_wdId_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_wsId_fkey" IF EXISTS;
+ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_wsId_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_xdId_fkey" IF EXISTS;
+ALTER TABLE "FantasyTeam" DROP CONSTRAINT "FantasyTeam_xdId_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "MatchDiary" DROP CONSTRAINT "MatchDiary_clubid_fkey" IF EXISTS;
+ALTER TABLE "MatchDiary" DROP CONSTRAINT "MatchDiary_clubid_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "Player" DROP CONSTRAINT "Player_clubid_fkey" IF EXISTS;
+ALTER TABLE "Player" DROP CONSTRAINT "Player_clubid_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "PlayerDiary" DROP CONSTRAINT "PlayerDiary_clubid_fkey" IF EXISTS;
+ALTER TABLE "PlayerDiary" DROP CONSTRAINT "PlayerDiary_clubid_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "WaitGame" DROP CONSTRAINT "WaitGame_playerid_fkey" IF EXISTS;
+ALTER TABLE "WaitGame" DROP CONSTRAINT "WaitGame_playerid_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "WaitPlayerList" DROP CONSTRAINT "WaitPlayerList_Playerid_fkey" IF EXISTS;
+ALTER TABLE "WaitPlayerList" DROP CONSTRAINT "WaitPlayerList_Playerid_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "_FantasyLeagueParticipants" DROP CONSTRAINT "_FantasyLeagueParticipants_A_fkey" IF EXISTS;
+ALTER TABLE "_FantasyLeagueParticipants" DROP CONSTRAINT "_FantasyLeagueParticipants_A_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "_FantasyLeagueParticipants" DROP CONSTRAINT "_FantasyLeagueParticipants_B_fkey" IF EXISTS;
+ALTER TABLE "_FantasyLeagueParticipants" DROP CONSTRAINT "_FantasyLeagueParticipants_B_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "_UserClubs" DROP CONSTRAINT "_UserClubs_A_fkey" IF EXISTS;
+ALTER TABLE "_UserClubs" DROP CONSTRAINT "_UserClubs_A_fkey"  ;
 
 -- DropForeignKey
-ALTER TABLE "_UserClubs" DROP CONSTRAINT "_UserClubs_B_fkey" IF EXISTS;
+ALTER TABLE "_UserClubs" DROP CONSTRAINT "_UserClubs_B_fkey"  ;
 
 -- AlterTable
 ALTER TABLE "Betting" ADD COLUMN     "isHit" TEXT DEFAULT 'betting',

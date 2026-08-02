@@ -51,7 +51,10 @@ export default function PlayerHistoryModal({
     if (!isOpen || !player) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center" onClick={onClose}>
+        <div
+            className="fixed inset-0 bg-black/50 bg-opacity-50 z-50 flex items-center justify-center"
+            onClick={onClose}
+        >
             <div
                 className="bg-white rounded-lg p-6 w-[500px] max-h-[80vh] flex flex-col shadow-xl"
                 onClick={(e) => e.stopPropagation()}

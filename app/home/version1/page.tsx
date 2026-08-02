@@ -889,7 +889,7 @@ export default function GameBoard({ params }: { params: Promise<{ id: string }> 
                 </button>
             </div>
             {showPlayerList && (
-                <div className="fixed top-0 z-50 right-0 w-full bg-black bg-opacity-50 flex flex-wrap items-center justify-center">
+                <div className="fixed top-0 z-50 right-0 w-full bg-black/50 bg-opacity-50 flex flex-wrap items-center justify-center">
                     <button
                         className="absolute top-2 right-2 bg-red-500 text-white rounded-full w-8 h-8 flex items-center justify-center shadow-lg"
                         onClick={togglePlayerList}

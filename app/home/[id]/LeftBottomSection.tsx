@@ -39,7 +39,7 @@ export default function LeftBottomSection({
     };
 
     return (
-        <div className="h-[70%] border p-4 bg-gray-50">
+        <div className="h-[70%] p-4 bg-gray-50">
             <div className="grid grid-cols-[1fr_4fr_4fr_4fr_4fr] grid-rows-7 gap-1 h-full">
                 {/* 35개의 셀을 렌더링 (7행 5열) */}
                 {Array.from({ length: 35 }).map((_, index) => {
@@ -54,8 +54,8 @@ export default function LeftBottomSection({
                     return (
                         <div
                             key={index}
-                            // 첫 번째 열(게임 시작 버튼)과 선택된 셀은 다른 배경색을 가짐
-                            className={`border flex items-center justify-center relative ${
+                            // 첫 번째 열(게임 시작 버튼)과 선택된 셀은 다른 배경색을 가짐 (border 클래스 제거)
+                            className={`flex items-center justify-center relative ${
                                 index % 5 === 0 ? "bg-gray-200" : selectedCell === index ? "bg-blue-200" : "bg-white"
                             }`}
                             onClick={() => {
@@ -65,7 +65,7 @@ export default function LeftBottomSection({
                             {/* 첫 번째 열(인덱스가 5의 배수)에는 '게임 시작' 버튼 렌더링 */}
                             {index % 5 === 0 ? (
                                 <button
-                                    className={`px-2 py-1 rounded text-xs shadow transition-colors ${
+                                    className={`px-2 py-1 rounded text-xs shadow transition-colors whitespace-nowrap ${
                                         canStartGame
                                             ? "bg-blue-500 text-white hover:bg-blue-600"
                                             : "bg-gray-400 text-gray-200 cursor-not-allowed"

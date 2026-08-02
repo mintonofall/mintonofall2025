@@ -218,7 +218,7 @@ model WaitPlayerList {
   Playerid  Int
   player    Player    @relation(fields: [Playerid], references: [id], onDelete: Cascade)
   enterDate DateTime
-  exitDate  DateTime
+  exitDate  DateTime? // '?'를 추가하여 null을 허용합니다.
 }
 
 model WaitGame {
@@ -259,7 +259,7 @@ model Match {
   winner1id    Int?
   winner2id    Int?
   startTime    DateTime  @default(now())
-  endTime      DateTime
+  endTime      DateTime?
   duration     Int?
   score1       Int?
   score2       Int?

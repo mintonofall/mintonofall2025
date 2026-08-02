@@ -57,7 +57,7 @@ export default function LeftTopSection({
     };
 
     return (
-        <div className="h-[30%] border p-4 bg-gray-50">
+        <div className="h-[30%] p-4 bg-gray-50">
             <div className="flex h-full gap-2">
                 {/* 클럽의 코트 수만큼 코트 컴포넌트를 렌더링 */}
                 {Array.from({ length: howManyCourts }).map((_, index) => {
@@ -74,7 +74,7 @@ export default function LeftTopSection({
                         <div
                             key={index}
                             // courtPointer와 인덱스가 일치하는 코트(다음에 게임이 배정될 코트)는 다른 배경색으로 강조
-                            className={`relative flex-1 border flex flex-col items-center justify-center rounded shadow-sm cursor-pointer ${
+                            className={`relative flex-1 flex flex-col items-center justify-center rounded shadow-sm cursor-pointer ${
                                 courtPointer === index ? "bg-green-500" : "bg-white"
                             }`}
                             onClick={() => setCourtPointer(index)}

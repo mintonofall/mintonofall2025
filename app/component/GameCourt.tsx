@@ -192,7 +192,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
 
             {/* 승자 선택 모달 */}
             <div
-                className={`fixed left-0 top-72 w-full h-full bg-black bg-opacity-50  ${
+                className={`fixed left-0 top-72 w-full h-full bg-black/50 bg-opacity-50  ${
                     isShowResult ? "block" : "hidden"
                 } z-50`}
             >

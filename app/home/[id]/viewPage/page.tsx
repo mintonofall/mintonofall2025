@@ -752,7 +752,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
 
             {/* 베팅 확인 모달 */}
             {bettingModal.isOpen && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 z-[60] flex items-center justify-center p-4">
+                <div className="fixed inset-0 bg-black/50 bg-opacity-50 z-[60] flex items-center justify-center p-4">
                     <div className="bg-white rounded-lg p-6 w-full max-w-sm shadow-xl">
                         <h2 className="text-xl font-bold mb-4 text-center text-orange-600">베팅 확인</h2>
                         <div className="mb-6 flex flex-col items-center gap-4">

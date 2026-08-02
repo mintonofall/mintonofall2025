@@ -37,9 +37,7 @@ export default async function handleSignUp(pevState: unknown, formdata: FormData
                         userName: username,
                         password: hashedPassword,
                         nickName,
-                        joinedClubs: {
-                            connect: { id: 15 },
-                        },
+                        favoriteClub: [], // favoriteClub 필드에 빈 배열을 명시적으로 제공합니다.
                     },
                 });
                 await sendSlackNotification(`🎉 ${newUser.userName} 님이 방금 가입하셨습니다!`);

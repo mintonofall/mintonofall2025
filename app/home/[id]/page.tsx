@@ -817,7 +817,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                     onGameEnd={handleGameEnd}
                     onGameCancel={handleGameCancel}
                 />
-                <div className="flex items-center justify-between p-2 bg-gray-100 border rounded-md text-sm text-gray-700 shadow-sm relative">
+                <div className="flex items-center justify-between p-2 bg-gray-100 rounded-md text-sm text-gray-700 relative">
                     <div className="w-full flex justify-center">
                         {displayInfoCell !== null ? <span>{getRowMatchIds(displayInfoCell)}</span> : "선택된 셀 없음"}
                     </div>
@@ -875,7 +875,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
             />
 
             {showQRModal && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
                     <div className="bg-white rounded-lg p-6 flex flex-col items-center gap-4 relative">
                         <button
                             className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
@@ -913,7 +913,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
             </div>
 
             {showPlayerList && (
-                <div className="fixed inset-0 bg-black bg-opacity-50 z-50">
+                <div className="fixed inset-0 bg-black/50 z-50">
                     <div className="absolute top-10 right-10 bg-white rounded-lg p-6 w-96 max-h-[80vh] overflow-y-auto">
                         <button
                             className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
