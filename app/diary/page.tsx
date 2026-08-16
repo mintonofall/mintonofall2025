@@ -18,7 +18,7 @@ export default async function Home() {
                         >
                             <Link
                                 href={`/diary/${user!.id}`}
-                                className="text-xl font-semibold text-emerald-600 hover:underline"
+                                className="text-xl font-semibold text-blue-600 hover:underline"
                             >
                                 {club.clubName}
                             </Link>
@@ -28,7 +28,7 @@ export default async function Home() {
             </div>
             <div className="mt-10">
                 <Link href="/createClubDiary">
-                    <span className="px-6 py-3 bg-emerald-600 text-white font-bold rounded-lg shadow-lg hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-opacity-75 transition-all">
+                    <span className="px-6 py-3 bg-blue-600 text-white font-bold rounded-lg shadow-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75 transition-all">
                         클럽 만들기
                     </span>
                 </Link>

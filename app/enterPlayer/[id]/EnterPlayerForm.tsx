@@ -43,7 +43,7 @@ export default function EnterPlayerForm({ id }: { id: number }) {
                                     setShowCheck(true);
                                 }
                             }}
-                            className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600"
+                            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                         >
                             확인
                         </button>
@@ -63,7 +63,7 @@ export default function EnterPlayerForm({ id }: { id: number }) {
                                             setShowNotice(true);
                                             pushWaitPlayerList(player.id, id);
                                         }}
-                                        className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600"
+                                        className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                                     >
                                         이걸로 입장
                                     </button>
@@ -100,7 +100,7 @@ export default function EnterPlayerForm({ id }: { id: number }) {
                         환영합니다. 모두의민턴 입니다. 아래의 버튼을 누르시면 체육관 현황을 확인하실수 있습니다. 즐거운
                         운동되시길 바랍니다.
                     </p>
-                    <Link href={`/${id}/board`} className="px-4 py-2 bg-emerald-500 text-white rounded-lg hover:bg-emerald-600">
+                    <Link href={`/${id}/board`} className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600">
                         입장하기
                     </Link>
                 </div>

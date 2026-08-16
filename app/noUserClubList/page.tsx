@@ -15,7 +15,7 @@ export default async function NoUserClubList() {
                     return (
                         <div key={club.id} className="bg-white shadow-md rounded-lg p-4">
                             <Link href={club.id + "/board/"}>
-                                <h1 className="text-xl font-semibold text-emerald-500 hover:underline">{club.clubName}</h1>
+                                <h1 className="text-xl font-semibold text-blue-500 hover:underline">{club.clubName}</h1>
                             </Link>
                         </div>
                     );

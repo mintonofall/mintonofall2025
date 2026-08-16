@@ -95,7 +95,7 @@ export default function PlayerHistoryModal({
                                                 return (
                                                     <div
                                                         key={idx}
-                                                        className={`p-1 rounded-lg ${isWinner ? "bg-emerald-200 font-bold" : "bg-white border"}`}
+                                                        className={`p-1 rounded-lg ${isWinner ? "bg-blue-200 font-bold" : "bg-white border"}`}
                                                     >
                                                         {p?.name || "-"}
                                                     </div>

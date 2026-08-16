@@ -17,7 +17,7 @@ export default async function Setting({ params }: { params: Promise<{ id: string
         return (
             <div className="container mx-auto p-8 text-center mt-20">
                 <h1 className="text-2xl font-bold text-rose-500 mb-4">잘못된 접근입니다.</h1>
-                <Link href="/home" className="text-emerald-500 hover:underline">
+                <Link href="/home" className="text-blue-500 hover:underline">
                     홈으로 돌아가기
                 </Link>
             </div>
@@ -35,7 +35,7 @@ export default async function Setting({ params }: { params: Promise<{ id: string
         return (
             <div className="container mx-auto p-8 text-center mt-20">
                 <h1 className="text-2xl font-bold text-rose-500 mb-4">클럽을 찾을 수 없습니다.</h1>
-                <Link href="/home" className="text-emerald-500 hover:underline">
+                <Link href="/home" className="text-blue-500 hover:underline">
                     홈으로 돌아가기
                 </Link>
             </div>
@@ -99,7 +99,7 @@ export default async function Setting({ params }: { params: Promise<{ id: string
         <div className="container mx-auto p-4 max-w-4xl mt-10 mb-20">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold text-slate-800">클럽 설정</h1>
-                <Link href="/home" className="text-emerald-500 hover:underline">
+                <Link href="/home" className="text-blue-500 hover:underline">
                     홈으로 돌아가기
                 </Link>
             </div>
@@ -123,7 +123,7 @@ export default async function Setting({ params }: { params: Promise<{ id: string
                         <textarea
                             name="clubDescription"
                             defaultValue={club.clubDescription || ""}
-                            className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:outline-none"
+                            className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
                             rows={3}
                         />
                     </div>
@@ -133,7 +133,7 @@ export default async function Setting({ params }: { params: Promise<{ id: string
                             type="text"
                             name="clubLocation"
                             defaultValue={club.clubLocation || ""}
-                            className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:outline-none"
+                            className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
                         />
                     </div>
                     <div>
@@ -143,12 +143,12 @@ export default async function Setting({ params }: { params: Promise<{ id: string
                             name="howManyCourts"
                             defaultValue={club.howManyCourts}
                             min={1}
-                            className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-400 focus:outline-none"
+                            className="w-full p-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none"
                         />
                     </div>
                     <button
                         type="submit"
-                        className="mt-4 bg-emerald-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-emerald-600 transition"
+                        className="mt-4 bg-blue-500 text-white font-bold py-2 px-4 rounded-lg hover:bg-blue-600 transition"
                     >
                         설정 저장하기
                     </button>
@@ -178,7 +178,7 @@ export default async function Setting({ params }: { params: Promise<{ id: string
                                         <input type="hidden" name="userId" value={applicant.id} />
                                         <button
                                             type="submit"
-                                            className="bg-emerald-500 text-white px-4 py-2 rounded-lg shadow hover:bg-emerald-600 transition"
+                                            className="bg-blue-500 text-white px-4 py-2 rounded-lg shadow hover:bg-blue-600 transition"
                                         >
                                             승인
                                         </button>

@@ -127,20 +127,20 @@ export default async function Home() {
                     <div key={club.id} className="bg-white shadow-md rounded-lg p-4 flex flex-col justify-between gap-3">
                         <div className="flex justify-between items-start">
                             <Link href={`/home/${club.id}`}>
-                                <h2 className="text-xl font-semibold hover:text-emerald-600 transition">
+                                <h2 className="text-xl font-semibold hover:text-blue-600 transition">
                                     {club.clubName}
                                 </h2>
                             </Link>
                         </div>
                         <div className="flex flex-col gap-2 mt-2">
                             <div className="flex items-center justify-end gap-4">
-                                <Link href={`/home/${club.id}/settings`} className="text-emerald-500 hover:underline">
+                                <Link href={`/home/${club.id}/settings`} className="text-blue-500 hover:underline">
                                     <span>클럽설정</span>
                                 </Link>
-                                <Link href={`/home/${club.id}/gameReview`} className="text-emerald-500 hover:underline">
+                                <Link href={`/home/${club.id}/gameReview`} className="text-blue-500 hover:underline">
                                     <span>게임리뷰</span>
                                 </Link>
-                                <Link href={`playerList/${club.id}`} className="text-emerald-500 hover:underline">
+                                <Link href={`playerList/${club.id}`} className="text-blue-500 hover:underline">
                                     <span>선수목록</span>
                                 </Link>
                             </div>
@@ -169,12 +169,12 @@ export default async function Home() {
                                 className="bg-white shadow-md rounded-lg p-4 flex justify-between items-center"
                             >
                                 <Link href={"/home/" + c.id + "/viewPage/"}>
-                                    <h1 className="text-xl font-semibold text-emerald-500 hover:underline">
+                                    <h1 className="text-xl font-semibold text-blue-500 hover:underline">
                                         {c.clubName}
                                     </h1>
                                 </Link>
                                 <div className="flex items-center gap-4">
-                                    <Link href={`/home/${c.id}/gameReview`} className="text-emerald-500 hover:underline">
+                                    <Link href={`/home/${c.id}/gameReview`} className="text-blue-500 hover:underline">
                                         <span>게임리뷰</span>
                                     </Link>
                                     <form action={toggleFavorite}>
@@ -214,7 +214,7 @@ export default async function Home() {
                 <h2 className="text-2xl font-bold mb-4">가입 가능한 클럽</h2>
                 <SearchableUnjoinedClubs unjoinedClubs={unjoinedClubs} requestJoin={requestJoin} />
             </div>
-            <Link href="/createClub" className="mt-4 inline-block bg-emerald-500 text-white px-4 py-2 rounded-lg">
+            <Link href="/createClub" className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded-lg">
                 클럽생성
             </Link>
         </div>

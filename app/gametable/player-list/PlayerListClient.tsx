@@ -64,7 +64,7 @@ export default function PlayerListClient({ players }: { players: DogPlayer[] }) 
                 <h1 className="text-3xl font-bold text-slate-700">Player List</h1>
                 <button
                     onClick={() => setIsModalOpen(true)}
-                    className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 transition-colors font-bold shadow-md"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-bold shadow-md"
                 >
                     선수 추가
                 </button>
@@ -89,7 +89,7 @@ export default function PlayerListClient({ players }: { players: DogPlayer[] }) 
                         {players.map((player) => (
                             <tr
                                 key={player.id}
-                                className={`${player.gender === "man" ? "bg-emerald-100" : player.gender === "woman" ? "bg-rose-100" : "bg-white"} hover:opacity-80 transition-colors`}
+                                className={`${player.gender === "man" ? "bg-blue-100" : player.gender === "woman" ? "bg-rose-100" : "bg-white"} hover:opacity-80 transition-colors`}
                             >
                                 <td className="px-2 py-4 whitespace-nowrap text-lg font-bold text-slate-800">
                                     {player.name}
@@ -103,7 +103,7 @@ export default function PlayerListClient({ players }: { players: DogPlayer[] }) 
                                 <td className="px-2 py-4 whitespace-nowrap text-center">
                                     <button
                                         onClick={() => handleEdit(player)}
-                                        className="text-emerald-600 hover:text-emerald-900 mr-3 font-medium"
+                                        className="text-blue-600 hover:text-blue-900 mr-3 font-medium"
                                     >
                                         수정
                                     </button>
@@ -193,7 +193,7 @@ export default function PlayerListClient({ players }: { players: DogPlayer[] }) 
                                 </button>
                                 <button
                                     type="submit"
-                                    className="px-4 py-2 bg-emerald-600 text-white rounded-md hover:bg-emerald-700"
+                                    className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
                                 >
                                     저장
                                 </button>

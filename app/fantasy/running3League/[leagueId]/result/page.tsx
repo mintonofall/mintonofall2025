@@ -78,7 +78,7 @@ export default async function Result({ params }: { params: Promise<{ leagueId: s
                                                         <span
                                                             className={
                                                                 pd[0] > 0
-                                                                    ? "text-emerald-600"
+                                                                    ? "text-blue-600"
                                                                     : pd[0] < 0
                                                                     ? "text-rose-600"
                                                                     : ""
@@ -90,7 +90,7 @@ export default async function Result({ params }: { params: Promise<{ leagueId: s
                                                         <span
                                                             className={
                                                                 pd[1] > 0
-                                                                    ? "text-emerald-600"
+                                                                    ? "text-blue-600"
                                                                     : pd[1] < 0
                                                                     ? "text-rose-600"
                                                                     : ""

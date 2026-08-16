@@ -27,13 +27,13 @@ export default function PlayerListComponent({ playerList, id }: { playerList: Pl
                 <div>
                     <Link
                         href={"/createPlayer/" + id}
-                        className="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 mx-2"
+                        className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 mx-2"
                     >
                         선수등록
                     </Link>
                     <Link
                         href={"/home/" + id}
-                        className="bg-emerald-500 text-white px-4 py-2 mx-2 rounded-lg hover:bg-emerald-600"
+                        className="bg-blue-500 text-white px-4 py-2 mx-2 rounded-lg hover:bg-blue-600"
                     >
                         게임판으로
                     </Link>
@@ -52,7 +52,7 @@ export default function PlayerListComponent({ playerList, id }: { playerList: Pl
                     <div key={player.id} className="bg-white shadow-md rounded-lg p-4 flex justify-between items-center">
                         <PlayerCard {...player} />
                         <div className="flex gap-4">
-                            <Link href={`/editPlayer/${player.id}`} className="text-slate-500 hover:text-emerald-500">
+                            <Link href={`/editPlayer/${player.id}`} className="text-slate-500 hover:text-blue-500">
                                 <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"

@@ -77,7 +77,7 @@ export default function CreatePlayerMany({ params }: { params: Promise<{ clubid:
                     </div>
                 ))}
                 <input type="hidden" name="clubid" value={String(id)} />
-                <button type="submit" className="w-full bg-emerald-500 text-white p-2 rounded-lg hover:bg-emerald-600">
+                <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600">
                     선수등록
                 </button>
                 <Link href={`/home/${id}`}>

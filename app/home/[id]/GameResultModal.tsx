@@ -94,7 +94,7 @@ export default function GameResultModal({
                 {/* 결과 입력 버튼 */}
                 <div className="flex justify-center">
                     <button
-                        className="bg-emerald-600 text-white px-4 py-2 rounded-lg hover:bg-emerald-700 font-bold"
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 font-bold"
                         onClick={() => {
                             if (winners.length === 1) {
                                 alert("승리자를 2명을 선택해주세요");

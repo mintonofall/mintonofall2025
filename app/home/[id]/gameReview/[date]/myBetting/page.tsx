@@ -12,15 +12,15 @@ export default async function MyBettingPage({ params }: { params: Promise<{ id: 
     // 로그인이 안 되어 있는 경우
     if (!user) {
         return (
-            <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white pt-16">
-                <h1 className="text-3xl font-bold text-emerald-600 mb-8">{date} 나의 베팅 내역</h1>
+            <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-blue-50 via-white to-white pt-16">
+                <h1 className="text-3xl font-bold text-blue-600 mb-8">{date} 나의 베팅 내역</h1>
                 <div className="w-full max-w-2xl bg-white p-8 rounded-lg shadow-md text-center text-slate-500">
                     로그인이 필요한 페이지입니다.
                 </div>
                 <div className="mt-8 w-full max-w-2xl flex justify-center">
                     <Link
                         href={`/home/${clubId}/gameReview/${date}`}
-                        className="px-6 py-2 bg-emerald-500 text-white font-semibold rounded-lg shadow hover:bg-emerald-600 transition-colors"
+                        className="px-6 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow hover:bg-blue-600 transition-colors"
                     >
                         돌아가기
                     </Link>
@@ -68,17 +68,17 @@ export default async function MyBettingPage({ params }: { params: Promise<{ id: 
     });
 
     return (
-        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white pt-16">
+        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-blue-50 via-white to-white pt-16">
             <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-3xl mb-8 gap-4">
                 <div className="flex flex-col gap-1 text-center sm:text-left">
-                    <h1 className="text-3xl font-bold text-emerald-600">{date} 나의 베팅 내역</h1>
+                    <h1 className="text-3xl font-bold text-blue-600">{date} 나의 베팅 내역</h1>
                     <p className="text-sm text-slate-600 font-semibold">
-                        현재 보유 포인트: <span className="text-emerald-500">{user.point?.toLocaleString() || 0} P</span>
+                        현재 보유 포인트: <span className="text-blue-500">{user.point?.toLocaleString() || 0} P</span>
                     </p>
                 </div>
                 <Link
                     href={`/home/${clubId}/gameReview/${date}`}
-                    className="px-4 py-2 bg-emerald-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-emerald-600 transition-colors"
+                    className="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition-colors"
                 >
                     돌아가기
                 </Link>
@@ -105,7 +105,7 @@ export default async function MyBettingPage({ params }: { params: Promise<{ id: 
                                     netWinnings = betWinnerIds.length === 1 ? bet.betCoast * 2 : bet.betCoast * 3;
                                 } else {
                                     statusText = "미적중";
-                                    statusColor = "text-emerald-500";
+                                    statusColor = "text-blue-500";
                                     netWinnings = -bet.betCoast;
                                 }
                             }
@@ -132,7 +132,7 @@ export default async function MyBettingPage({ params }: { params: Promise<{ id: 
                                                         netWinnings > 0
                                                             ? "text-rose-500"
                                                             : netWinnings < 0
-                                                              ? "text-emerald-500"
+                                                              ? "text-blue-500"
                                                               : "text-slate-700"
                                                     }`}
                                                 >

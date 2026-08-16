@@ -17,7 +17,7 @@ export default function Layout({
     console.log(clubid);
 
     return (
-        <div className="relative min-h-screen bg-linear-to-b from-emerald-50 via-white to-white">
+        <div className="relative min-h-screen bg-linear-to-b from-blue-50 via-white to-white">
             <div className="container mx-auto p-4">{children}</div>
             <div className="fixed bottom-0 w-full flex justify-around bg-white py-4 border-t border-slate-300 shadow-lg">
                 <Link href={`/diary/${clubid}`}>

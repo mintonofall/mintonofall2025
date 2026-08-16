@@ -84,7 +84,7 @@ export default async function LeagueResult({ params }: { params: PageParams }) {
                                     <td className="py-4 px-6 text-left font-medium text-lg">
                                         {team.user.nickName}의 팀
                                     </td>
-                                    <td className="py-4 px-6 text-center text-emerald-600 font-bold text-lg">
+                                    <td className="py-4 px-6 text-center text-blue-600 font-bold text-lg">
                                         {team.win}
                                     </td>
                                     <td className="py-4 px-6 text-center text-slate-600 font-bold text-lg">

@@ -57,11 +57,11 @@ export default function CreatePlayer({ params }: { params: Promise<{ clubid: str
     }
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white">
+        <div className="flex justify-center items-center min-h-screen bg-linear-to-b from-blue-50 via-white to-white">
             <div className="bg-white relative p-8 rounded-lg shadow-lg w-full max-w-md">
                 <div className="absolute top-5 right-5 w-20 h-4 ">
                     <Link href={"/createPlayer/" + id + "/createPlayerMany"}>
-                        <button className="absolute rounded-lg p-2 top-0 left-0 bg-emerald-500 text-white z-0">
+                        <button className="absolute rounded-lg p-2 top-0 left-0 bg-blue-500 text-white z-0">
                             여러선수등록
                         </button>
                     </Link>
@@ -171,11 +171,11 @@ export default function CreatePlayer({ params }: { params: Promise<{ clubid: str
                         </div>
                     </div>
                     <input type="number" value={Number(id)} name="clubId" hidden readOnly />
-                    <button type="submit" className="bg-emerald-500 text-white p-2 rounded-lg hover:bg-emerald-600">
+                    <button type="submit" className="bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600">
                         생성
                     </button>
                     <Link href={`/home/${id}`}>
-                        <div className="bg-emerald-500 text-center text-white p-2 rounded-lg hover:bg-emerald-600">돌아가기</div>
+                        <div className="bg-blue-500 text-center text-white p-2 rounded-lg hover:bg-blue-600">돌아가기</div>
                     </Link>
                 </form>
             </div>

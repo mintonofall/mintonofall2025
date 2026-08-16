@@ -37,7 +37,7 @@ export default async function Home() {
                         <Link href={`/home/${club.id}`}>
                             <h2 className="text-xl font-semibold">{club.clubName}</h2>
                         </Link>
-                        <Link href={`playerList/${club.id}`} className="text-emerald-500 hover:underline">
+                        <Link href={`playerList/${club.id}`} className="text-blue-500 hover:underline">
                             <span>선수목록</span>
                         </Link>
                     </div>
@@ -50,7 +50,7 @@ export default async function Home() {
                         return (
                             <div key={club.id} className="bg-white shadow-md rounded-lg p-4">
                                 <Link href={club.id + "/board/"}>
-                                    <h1 className="text-xl font-semibold text-emerald-500 hover:underline">
+                                    <h1 className="text-xl font-semibold text-blue-500 hover:underline">
                                         {club.clubName}
                                     </h1>
                                 </Link>
@@ -59,7 +59,7 @@ export default async function Home() {
                     })}
                 </div>
             </div>
-            <Link href="/createClub" className="mt-4 inline-block bg-emerald-500 text-white px-4 py-2 rounded-lg">
+            <Link href="/createClub" className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded-lg">
                 클럽생성
             </Link>
         </div>

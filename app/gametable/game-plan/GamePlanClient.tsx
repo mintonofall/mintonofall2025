@@ -129,7 +129,7 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
                         {courts.map((court, courtIdx) => (
                             <div
                                 key={courtIdx}
-                                className="bg-emerald-600 p-4 rounded-lg shadow-lg relative w-full h-full flex flex-col"
+                                className="bg-blue-600 p-4 rounded-lg shadow-lg relative w-full h-full flex flex-col"
                             >
                                 <div className="absolute top-2 left-2 text-white font-bold text-xl opacity-50">
                                     선수목록
@@ -205,7 +205,7 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
                     </div>
                     <button
                         className={`mt-4 w-full text-white py-3 rounded-lg font-bold text-xl transition-colors shadow-md ${
-                            isCreating ? "bg-slate-400 cursor-not-allowed" : "bg-emerald-600 hover:bg-emerald-700"
+                            isCreating ? "bg-slate-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"
                         }`}
                         disabled={isCreating}
                         onClick={async () => {
@@ -295,19 +295,19 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
                         <GradeSelector />
                         <Link
                             href={`?sort=name${filterQuery}`}
-                            className={`px-3 py-1 rounded-md border ${!sort || sort === "name" ? "bg-emerald-500 text-white border-emerald-500" : "bg-white text-slate-600 border-slate-300 hover:bg-slate-50"}`}
+                            className={`px-3 py-1 rounded-md border ${!sort || sort === "name" ? "bg-blue-500 text-white border-blue-500" : "bg-white text-slate-600 border-slate-300 hover:bg-slate-50"}`}
                         >
                             name
                         </Link>
                         <Link
                             href={`?sort=grade${filterQuery}`}
-                            className={`px-3 py-1 rounded-md border ${sort === "grade" ? "bg-emerald-500 text-white border-emerald-500" : "bg-white text-slate-600 border-slate-300 hover:bg-slate-50"}`}
+                            className={`px-3 py-1 rounded-md border ${sort === "grade" ? "bg-blue-500 text-white border-blue-500" : "bg-white text-slate-600 border-slate-300 hover:bg-slate-50"}`}
                         >
                             급수
                         </Link>
                         <Link
                             href={`?sort=${sort === "gameNum_desc" ? "gameNum_asc" : "gameNum_desc"}${filterQuery}`}
-                            className={`px-3 py-1 rounded-md border ${sort === "gameNum_desc" || sort === "gameNum_asc" ? "bg-emerald-500 text-white border-emerald-500" : "bg-white text-slate-600 border-slate-300 hover:bg-slate-50"}`}
+                            className={`px-3 py-1 rounded-md border ${sort === "gameNum_desc" || sort === "gameNum_asc" ? "bg-blue-500 text-white border-blue-500" : "bg-white text-slate-600 border-slate-300 hover:bg-slate-50"}`}
                         >
                             {sort === "gameNum_desc" ? "게임적은" : "게임많은"}
                         </Link>
@@ -336,7 +336,7 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
                                 <tr
                                     key={player.id}
                                     onClick={() => handlePlayerClick(player)}
-                                    className={`cursor-pointer ${player.gender === "man" ? "bg-emerald-100" : player.gender === "woman" ? "bg-rose-100" : "bg-white"} hover:opacity-80 transition-colors`}
+                                    className={`cursor-pointer ${player.gender === "man" ? "bg-blue-100" : player.gender === "woman" ? "bg-rose-100" : "bg-white"} hover:opacity-80 transition-colors`}
                                 >
                                     <td className="px-2 py-1 whitespace-nowrap text-lg font-bold text-slate-800">
                                         {player.name}
@@ -347,7 +347,7 @@ export default function GamePlanClient({ dogPlayers = [], filterQuery, sort }: G
                                     <td className="px-2 py-1 whitespace-nowrap text-center text-slate-800 font-semibold">
                                         {player.grade}
                                     </td>
-                                    <td className="px-2 py-1 whitespace-nowrap text-center text-emerald-600 font-bold">
+                                    <td className="px-2 py-1 whitespace-nowrap text-center text-blue-600 font-bold">
                                         {player.gameNum}G
                                     </td>
                                 </tr>

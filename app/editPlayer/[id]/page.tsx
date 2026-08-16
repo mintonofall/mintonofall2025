@@ -111,7 +111,7 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
     };
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white">
+        <div className="flex justify-center items-center min-h-screen bg-linear-to-b from-blue-50 via-white to-white">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold mb-6 text-center">플레이어 수정</h2>
                 <form action={action} className="flex flex-col space-y-4">
@@ -317,7 +317,7 @@ export default function EditPlayer({ params }: { params: Promise<{ id: string }>
                     {player && <input type="number" value={player.id} name="playerId" hidden readOnly />}
                     <input type="hidden" name="originalPhoto" value={player?.avater || ""} />
                     <div className="flex gap-2 mt-4">
-                        <button type="submit" className="flex-1 bg-emerald-500 text-white p-2 rounded-lg hover:bg-emerald-600">
+                        <button type="submit" className="flex-1 bg-blue-500 text-white p-2 rounded-lg hover:bg-blue-600">
                             수정
                         </button>
                         <button

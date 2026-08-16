@@ -81,7 +81,7 @@ export default function PlayerListPanel({
                                             draftedPlayerIds.has(player.id)
                                                 ? "cursor-not-allowed bg-slate-300 opacity-50"
                                                 : isCurrentUser
-                                                ? "cursor-pointer hover:shadow-md hover:bg-emerald-50"
+                                                ? "cursor-pointer hover:shadow-md hover:bg-blue-50"
                                                 : "cursor-not-allowed bg-slate-100"
                                         }
                                         

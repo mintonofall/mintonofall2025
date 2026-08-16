@@ -7,7 +7,7 @@ export default async function BoardPage() {
     const posts = await getPosts();
 
     return (
-        <div className="bg-linear-to-b from-emerald-50 via-white to-white min-h-screen py-8">
+        <div className="bg-linear-to-b from-blue-50 via-white to-white min-h-screen py-8">
             <div className="container mx-auto px-4">
                 <BoardClient currentUser={user?.userName || "익명"} initialPosts={posts} />
             </div>

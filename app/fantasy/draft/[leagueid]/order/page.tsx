@@ -102,14 +102,14 @@ export default function Order() {
                 <div className="flex gap-4">
                     <button
                         onClick={handleShuffle}
-                        className="w-full px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600"
+                        className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
                     >
                         순서 섞기
                     </button>
                     <button
                         onClick={handleSaveOrder}
                         disabled={!isShuffled || isPending}
-                        className="w-full px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600 disabled:bg-slate-400 disabled:cursor-not-allowed"
+                        className="w-full px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 disabled:bg-slate-400 disabled:cursor-not-allowed"
                     >
                         {isPending ? "저장 중..." : "이 순서로 확정"}
                     </button>

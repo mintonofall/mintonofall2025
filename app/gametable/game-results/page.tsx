@@ -106,7 +106,7 @@ export default async function GameResult({ searchParams }: { searchParams: Promi
                                         key={playerId}
                                         className={`text-center p-2 rounded-lg ${
                                             player?.gender === "man"
-                                                ? "bg-emerald-500"
+                                                ? "bg-blue-500"
                                                 : player?.gender === "woman"
                                                   ? "bg-rose-100"
                                                   : "bg-slate-50"
@@ -118,7 +118,7 @@ export default async function GameResult({ searchParams }: { searchParams: Promi
                                             {player?.name || "Unknown"}
                                         </span>
                                         <span
-                                            className={`text-xs ml-1 ${player?.gender === "man" ? "text-emerald-200" : "text-slate-500"}`}
+                                            className={`text-xs ml-1 ${player?.gender === "man" ? "text-blue-200" : "text-slate-500"}`}
                                         >
                                             {player?.grade}
                                         </span>

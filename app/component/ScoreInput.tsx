@@ -41,10 +41,10 @@ export default function ScoreInput({ score1, setScore1, score2, setScore2 }: Sco
                     onClick={() => {
                         setScore1(score1 + 1);
                     }}
-                    className="h-6 w-6 text-emerald-500 hover:text-emerald-600 cursor-pointer transition-colors"
+                    className="h-6 w-6 text-blue-500 hover:text-blue-600 cursor-pointer transition-colors"
                 />
             </div>
-            <div className="border-b border-emerald-100 my-4"></div>
+            <div className="border-b border-blue-100 my-4"></div>
             <div className="flex justify-center items-center gap-1 mb-4">
                 <span className="m-0 px-1 text-xs font-semibold text-slate-400">5</span>
                 <MinusCircleIcon
@@ -63,7 +63,7 @@ export default function ScoreInput({ score1, setScore1, score2, setScore2 }: Sco
                     onClick={() => {
                         setScore2(score2 + 1);
                     }}
-                    className="h-6 w-6 text-emerald-500 hover:text-emerald-600 cursor-pointer transition-colors"
+                    className="h-6 w-6 text-blue-500 hover:text-blue-600 cursor-pointer transition-colors"
                 />
             </div>
             <div className="text-3xl font-extrabold text-center mb-4 text-slate-800">{score2}</div>

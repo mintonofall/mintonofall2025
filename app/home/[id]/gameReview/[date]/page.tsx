@@ -41,7 +41,7 @@ export default async function GameReviewDatePage({ params }: { params: Promise<{
     const playerCount = uniquePlayers.size;
 
     return (
-        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white pt-16">
+        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-blue-50 via-white to-white pt-16">
             {/* 상단 유저 정보 및 로그아웃 버튼 */}
             {isLoggedIn ? (
                 <div className="w-full max-w-4xl flex justify-end items-center mb-4 gap-3">
@@ -68,18 +68,18 @@ export default async function GameReviewDatePage({ params }: { params: Promise<{
                             name="username"
                             placeholder="아이디"
                             required
-                            className="border border-slate-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                            className="border border-slate-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                         />
                         <input
                             type="password"
                             name="password"
                             placeholder="비밀번호"
                             required
-                            className="border border-slate-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                            className="border border-slate-300 rounded-lg px-3 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
                         />
                         <button
                             type="submit"
-                            className="bg-emerald-500 hover:bg-emerald-600 text-white text-sm font-semibold py-1 px-3 rounded-lg transition-colors"
+                            className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-semibold py-1 px-3 rounded-lg transition-colors"
                         >
                             로그인
                         </button>
@@ -88,15 +88,15 @@ export default async function GameReviewDatePage({ params }: { params: Promise<{
             )}
             <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-4xl mb-8 gap-4">
                 <div className="flex flex-col gap-1 text-center sm:text-left">
-                    <h1 className="text-3xl font-bold text-emerald-600">{date} 경기 통계 및 리뷰</h1>
+                    <h1 className="text-3xl font-bold text-blue-600">{date} 경기 통계 및 리뷰</h1>
                     <p className="text-sm text-slate-600 font-semibold">
-                        총 경기 수: <span className="text-emerald-500">{matchCount}</span> | 참여 인원:{" "}
-                        <span className="text-emerald-500">{playerCount}</span>명
+                        총 경기 수: <span className="text-blue-500">{matchCount}</span> | 참여 인원:{" "}
+                        <span className="text-blue-500">{playerCount}</span>명
                     </p>
                 </div>
                 <Link
                     href={`/home/${clubId}/gameReview`}
-                    className="px-4 py-2 bg-emerald-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-emerald-600 transition-colors"
+                    className="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition-colors"
                 >
                     돌아가기
                 </Link>
@@ -114,7 +114,7 @@ export default async function GameReviewDatePage({ params }: { params: Promise<{
                             href={`/home/${id}/gameReview/${date}${targetPath}`}
                             className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow border flex flex-col gap-2 group"
                         >
-                            <h2 className="text-xl font-bold text-slate-800 group-hover:text-emerald-500 transition-colors">
+                            <h2 className="text-xl font-bold text-slate-800 group-hover:text-blue-500 transition-colors">
                                 {menu.title}
                             </h2>
                             <p className="text-sm text-slate-500">{menu.description}</p>

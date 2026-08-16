@@ -196,7 +196,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                     isShowResult ? "flex" : "hidden"
                 } z-50`}
             >
-                <div className="relative bg-white rounded-2xl shadow-xl space-y-4 w-full max-w-sm p-5 border border-emerald-100">
+                <div className="relative bg-white rounded-2xl shadow-xl space-y-4 w-full max-w-sm p-5 border border-blue-100">
                     <div className="text-center text-lg font-bold text-slate-800">승리자를 입력하세요</div>
                     <div className="flex flex-col p-0 space-y-2">
                         <div className="flex flex-row p-0 justify-evenly items-center gap-2">
@@ -275,7 +275,7 @@ export default function GameCourt({ p1, p2, p3, p4, court, gameid, onEndMatch, o
                     <div className="flex flex-row justify-center text-center gap-2 pt-1">
                         {/* 결과 입력 버튼 */}
                         <button
-                            className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-full px-4 py-2 shadow-sm transition-colors"
+                            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-full px-4 py-2 shadow-sm transition-colors"
                             onClick={() => {
                                 if (winnerpoint.length === 0) {
                                     endMatchFunction(gameid, []);

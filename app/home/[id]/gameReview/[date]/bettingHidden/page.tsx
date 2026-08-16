@@ -109,9 +109,9 @@ export default async function BettingHiddenPage({
               : "";
 
     return (
-        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white pt-16">
+        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-blue-50 via-white to-white pt-16">
             <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-4xl mb-8 gap-4">
-                <h1 className="text-3xl font-bold text-emerald-600">{date} 베팅 유저 목록</h1>
+                <h1 className="text-3xl font-bold text-blue-600">{date} 베팅 유저 목록</h1>
                 <div className="flex gap-2">
                     <Link
                         href={`?selectedUser=all#detail`}
@@ -122,7 +122,7 @@ export default async function BettingHiddenPage({
                     </Link>
                     <Link
                         href={`/home/${clubId}/gameReview/${date}`}
-                        className="px-4 py-2 bg-emerald-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-emerald-600 transition-colors"
+                        className="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition-colors"
                     >
                         돌아가기
                     </Link>
@@ -166,7 +166,7 @@ export default async function BettingHiddenPage({
                                     <td className="px-6 py-4 whitespace-nowrap text-sm font-bold">
                                         <Link
                                             href={`?selectedUser=${stat.userId}#detail`}
-                                            className="text-emerald-600 hover:underline"
+                                            className="text-blue-600 hover:underline"
                                             scroll={false}
                                         >
                                             {stat.userName}
@@ -185,7 +185,7 @@ export default async function BettingHiddenPage({
                                         {stat.totalReturn.toLocaleString()} P
                                     </td>
                                     <td
-                                        className={`px-6 py-4 whitespace-nowrap text-sm text-right font-bold ${stat.netProfit > 0 ? "text-rose-500" : stat.netProfit < 0 ? "text-emerald-500" : "text-slate-500"}`}
+                                        className={`px-6 py-4 whitespace-nowrap text-sm text-right font-bold ${stat.netProfit > 0 ? "text-rose-500" : stat.netProfit < 0 ? "text-blue-500" : "text-slate-500"}`}
                                     >
                                         {stat.netProfit > 0 ? "+" : ""}
                                         {stat.netProfit.toLocaleString()} P
@@ -223,7 +223,7 @@ export default async function BettingHiddenPage({
                                         netWinnings = betWinnerIds.length === 1 ? bet.betCoast * 2 : bet.betCoast * 3;
                                     } else {
                                         statusText = "미적중";
-                                        statusColor = "text-emerald-500";
+                                        statusColor = "text-blue-500";
                                         netWinnings = -bet.betCoast;
                                     }
                                 }
@@ -241,7 +241,7 @@ export default async function BettingHiddenPage({
                                                     경기 ID: {bet.gameid}
                                                 </p>
                                                 {selectedUserId === "all" && (
-                                                    <p className="text-sm font-bold text-emerald-600 mb-1">
+                                                    <p className="text-sm font-bold text-blue-600 mb-1">
                                                         베팅 유저:{" "}
                                                         {userMap.get(bet.userid)?.name || `User ${bet.userid}`}
                                                     </p>
@@ -258,7 +258,7 @@ export default async function BettingHiddenPage({
                                                             netWinnings > 0
                                                                 ? "text-rose-500"
                                                                 : netWinnings < 0
-                                                                  ? "text-emerald-500"
+                                                                  ? "text-blue-500"
                                                                   : "text-slate-700"
                                                         }`}
                                                     >

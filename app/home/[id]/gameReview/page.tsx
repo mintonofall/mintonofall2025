@@ -39,7 +39,7 @@ export default async function GameReview({ params }: { params: Promise<{ id: str
     const matchDates = Array.from(dateSet);
 
     return (
-        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white pt-16">
+        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-blue-50 via-white to-white pt-16">
             {/* 상단 유저 정보 및 로그아웃 버튼 */}
             {isLoggedIn && (
                 <div className="w-full max-w-4xl flex justify-end items-center mb-4 gap-3">
@@ -65,7 +65,7 @@ export default async function GameReview({ params }: { params: Promise<{ id: str
                         <li key={index}>
                             <Link
                                 href={item.href}
-                                className="text-slate-600 hover:text-emerald-500 font-medium transition-colors"
+                                className="text-slate-600 hover:text-blue-500 font-medium transition-colors"
                             >
                                 {item.label}
                             </Link>
@@ -73,7 +73,7 @@ export default async function GameReview({ params }: { params: Promise<{ id: str
                     ))}
                 </ul>
             </nav>
-            <h1 className="text-3xl font-bold text-emerald-600 mb-8">
+            <h1 className="text-3xl font-bold text-blue-600 mb-8">
                 {club?.clubName ? `${club.clubName} 환영합니다!` : `${clubId}번 클럽 환영합니다!`}
             </h1>
             <div className="w-full max-w-4xl">
@@ -84,7 +84,7 @@ export default async function GameReview({ params }: { params: Promise<{ id: str
                             <Link
                                 key={date}
                                 href={`/home/${clubId}/gameReview/${date}`}
-                                className="bg-white border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow text-center font-bold text-slate-800 hover:text-emerald-500"
+                                className="bg-white border rounded-lg p-6 shadow-sm hover:shadow-md transition-shadow text-center font-bold text-slate-800 hover:text-blue-500"
                             >
                                 {date}
                             </Link>

@@ -188,7 +188,7 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                              * 선수 4명이 모두 선택되었는지 확인하고, 승자를 결정한 후 `makeMatch` API를 호출하여 경기 결과를 저장합니다.
                              */
                             onClick={handleSubmitMatch}
-                            className="mt-4 px-7 py-2 bg-emerald-500 text-white font-semibold rounded-lg shadow-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75"
+                            className="mt-4 px-7 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
                         >
                             결과입력
                         </button>
@@ -202,7 +202,7 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                                 copy.pop();
                                 setPlayerList(copy);
                             }}
-                            className="mt-4 px-1 py-2 bg-emerald-500 text-white font-semibold rounded-lg shadow-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75"
+                            className="mt-4 px-1 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
                         >
                             UNDO
                         </button>
@@ -249,7 +249,7 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                             query: { userid: userid },
                         }}
                     >
-                        <span className="mt-4 lg:px-4 w-10/12 lg:text-lg text-lg   py-2 px-2 bg-emerald-500 text-white font-semibold rounded-lg shadow-md hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-400 focus:ring-opacity-75">
+                        <span className="mt-4 lg:px-4 w-10/12 lg:text-lg text-lg   py-2 px-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
                             새로만들기
                         </span>
                     </Link>

@@ -41,7 +41,7 @@ export default function WaitPlayerList({
     return (
         <div
             className="flex flex-col flex-nowrap fixed top-12 right-4
-             bg-white p-4 h-full shadow-xl border-l border-emerald-100 overflow-y-scroll w-80 z-10 gap-2
+             bg-white p-4 h-full shadow-xl border-l border-blue-100 overflow-y-scroll w-80 z-10 gap-2
                "
         >
             <input
@@ -49,10 +49,10 @@ export default function WaitPlayerList({
                 placeholder="선수 검색"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full p-2 mb-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition-shadow"
+                className="w-full p-2 mb-2 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-shadow"
             />
             <Link href={`/createPlayer/${clubid}`}>
-                <button className="w-full mt-2 mb-2 p-2 bg-emerald-500 hover:bg-emerald-600 text-white font-semibold rounded-full shadow-sm transition-colors">
+                <button className="w-full mt-2 mb-2 p-2 bg-blue-500 hover:bg-blue-600 text-white font-semibold rounded-full shadow-sm transition-colors">
                     선수등록
                 </button>
             </Link>
@@ -75,7 +75,7 @@ export default function WaitPlayerList({
                     >
                         <PlayerCard {...player} />
                     </div>
-                    <Link href={`/editPlayer/${player.id}`} className="text-slate-400 hover:text-emerald-500 transition-colors">
+                    <Link href={`/editPlayer/${player.id}`} className="text-slate-400 hover:text-blue-500 transition-colors">
                         <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"

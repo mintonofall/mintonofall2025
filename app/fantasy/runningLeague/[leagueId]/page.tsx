@@ -723,7 +723,7 @@ export default async function RunningLeague({ params }: { params: PageParams }) 
                     <div className="w-1/2 border rounded-lg p-6 shadow-md bg-slate-50">
                         <div className="flex justify-around items-center">
                             <div className="text-center">
-                                <p className="text-2xl font-bold text-emerald-600">
+                                <p className="text-2xl font-bold text-blue-600">
                                     {team1Stats.win}승 {team1Stats.draw}무 {team1Stats.lose}패
                                 </p>
                                 <p className="text-slate-500 mt-1">총점: {team1Stats.total}</p>
@@ -739,7 +739,7 @@ export default async function RunningLeague({ params }: { params: PageParams }) 
                     <div className="w-1/2 border rounded-lg p-6 shadow-md bg-slate-50">
                         <div className="flex justify-around items-center">
                             <div className="text-center">
-                                <p className="text-2xl font-bold text-emerald-600">
+                                <p className="text-2xl font-bold text-blue-600">
                                     {team3Stats.win}승 {team3Stats.draw}무 {team3Stats.lose}패
                                 </p>
                                 <p className="text-slate-500 mt-1">총점: {team3Stats.total}</p>

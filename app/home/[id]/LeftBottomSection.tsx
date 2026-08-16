@@ -56,7 +56,7 @@ export default function LeftBottomSection({
                             key={index}
                             // 첫 번째 열(게임 시작 버튼)과 선택된 셀은 다른 배경색을 가짐 (border 클래스 제거)
                             className={`flex items-center justify-center relative ${
-                                index % 5 === 0 ? "bg-slate-200" : selectedCell === index ? "bg-emerald-200" : "bg-white"
+                                index % 5 === 0 ? "bg-slate-200" : selectedCell === index ? "bg-blue-200" : "bg-white"
                             }`}
                             onClick={() => {
                                 if (index % 5 !== 0) onCellClick(index);
@@ -67,7 +67,7 @@ export default function LeftBottomSection({
                                 <button
                                     className={`px-2 py-1 rounded-lg text-xs shadow transition-colors whitespace-nowrap ${
                                         canStartGame
-                                            ? "bg-emerald-500 text-white hover:bg-emerald-600"
+                                            ? "bg-blue-500 text-white hover:bg-blue-600"
                                             : "bg-slate-400 text-slate-200 cursor-not-allowed"
                                     }`}
                                     disabled={!canStartGame}
@@ -113,7 +113,7 @@ export default function LeftBottomSection({
                                             <span className="text-xs text-slate-500 block">
                                                 {gridData[index].age} • {gridData[index].grade}조
                                             </span>
-                                            <span className="text-xs text-emerald-600 font-bold block">
+                                            <span className="text-xs text-blue-600 font-bold block">
                                                 {getTodayGameCount(gridData[index].gameDatas)}경기
                                             </span>
                                         </div>

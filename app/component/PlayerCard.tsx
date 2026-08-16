@@ -17,12 +17,12 @@ export default function PlayerCard(player: Player) {
     return (
         <div
             key={player.id}
-            className="flex items-center w-full h-15 p-1.5 bg-white border border-emerald-100 shadow-sm hover:shadow-md hover:border-emerald-200 transition-all rounded-xl"
+            className="flex items-center w-full h-15 p-1.5 bg-white border border-blue-100 shadow-sm hover:shadow-md hover:border-blue-200 transition-all rounded-xl"
         >
             <img
                 src={avatarSrc}
                 alt={player.name}
-                className="rounded-lg ring-1 ring-emerald-100"
+                className="rounded-lg ring-1 ring-blue-100"
                 style={{
                     objectFit: "cover",
                     width: "50px",
@@ -37,7 +37,7 @@ export default function PlayerCard(player: Player) {
                         <div className="text-xs text-slate-400">{player.grade}</div>
                     </div>
                 </div>
-                <div className="text-xs text-center w-full text-emerald-600 font-medium">
+                <div className="text-xs text-center w-full text-blue-600 font-medium">
                     <div>
                         <div>경기수: {player.games}</div>
                         {/* {player.win}승 */}

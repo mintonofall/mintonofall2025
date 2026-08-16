@@ -32,7 +32,7 @@ export default function OtherParticipantsPanel({
                             <div
                                 key={otherUser.id}
                                 className={`flex-grow p-3 border rounded-lg shadow-sm flex flex-col ${
-                                    isCurrentUser ? "bg-emerald-100" : "bg-white"
+                                    isCurrentUser ? "bg-blue-100" : "bg-white"
                                 }`}
                             >
                                 <h3 className="font-semibold text-lg text-slate-800 mb-2 text-center">

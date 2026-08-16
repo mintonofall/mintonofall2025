@@ -94,7 +94,7 @@ export default function NewPlayerForm({ clubid, name }: Props) {
                         placeholder="플레이어 이름"
                         name="name"
                         defaultValue={name}
-                        className="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                        className="w-full p-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
                 </div>
                 <div>
@@ -303,11 +303,11 @@ export default function NewPlayerForm({ clubid, name }: Props) {
                     </div>
                 </div>
                 <input type="number" value={Number(id)} name="clubId" hidden readOnly />
-                <button type="submit" className="bg-emerald-500 text-white p-3 rounded-lg hover:bg-emerald-600">
+                <button type="submit" className="bg-blue-500 text-white p-3 rounded-lg hover:bg-blue-600">
                     생성
                 </button>
                 <Link href={`/${id}/board`}>
-                    <div className="bg-emerald-500 text-center text-white p-3 rounded-lg hover:bg-emerald-600">돌아가기</div>
+                    <div className="bg-blue-500 text-center text-white p-3 rounded-lg hover:bg-blue-600">돌아가기</div>
                 </Link>
             </form>
         </div>

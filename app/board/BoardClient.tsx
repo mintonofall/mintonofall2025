@@ -89,7 +89,7 @@ export default function BoardClient({ currentUser, initialPosts }: { currentUser
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            className="mt-1 block w-full border border-slate-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                            className="mt-1 block w-full border border-slate-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                             placeholder="제목을 입력하세요"
                         />
                     </div>
@@ -98,7 +98,7 @@ export default function BoardClient({ currentUser, initialPosts }: { currentUser
                         <textarea
                             value={content}
                             onChange={(e) => setContent(e.target.value)}
-                            className="mt-1 block w-full border border-slate-300 rounded-lg p-2 h-48 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                            className="mt-1 block w-full border border-slate-300 rounded-lg p-2 h-48 focus:outline-none focus:ring-2 focus:ring-blue-400"
                             placeholder="내용을 입력하세요"
                         />
                     </div>
@@ -113,7 +113,7 @@ export default function BoardClient({ currentUser, initialPosts }: { currentUser
                         <button
                             type="submit"
                             disabled={isPending}
-                            className="bg-emerald-500 text-white px-4 py-2 rounded-lg hover:bg-emerald-600 transition disabled:opacity-50"
+                            className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition disabled:opacity-50"
                         >
                             {isPending ? "작성 중..." : "작성 완료"}
                         </button>
@@ -127,7 +127,7 @@ export default function BoardClient({ currentUser, initialPosts }: { currentUser
     if (view === "detail" && selectedPost) {
         return (
             <div className="max-w-3xl mx-auto bg-white p-4 sm:p-6 rounded-lg shadow-md w-full">
-                <button onClick={() => setView("list")} className="text-emerald-500 hover:underline mb-4 font-medium">
+                <button onClick={() => setView("list")} className="text-blue-500 hover:underline mb-4 font-medium">
                     &larr; 목록으로 돌아가기
                 </button>
                 <h2 className="text-xl sm:text-3xl font-bold mb-3 break-all">{selectedPost.title}</h2>
@@ -168,13 +168,13 @@ export default function BoardClient({ currentUser, initialPosts }: { currentUser
                             type="text"
                             value={comment}
                             onChange={(e) => setComment(e.target.value)}
-                            className="flex-1 border border-slate-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                            className="flex-1 border border-slate-300 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
                             placeholder="댓글을 남겨보세요..."
                         />
                         <button
                             type="submit"
                             disabled={isPending}
-                            className="bg-emerald-500 text-white px-5 py-2 rounded-lg hover:bg-emerald-600 transition font-medium disabled:opacity-50 w-full sm:w-auto"
+                            className="bg-blue-500 text-white px-5 py-2 rounded-lg hover:bg-blue-600 transition font-medium disabled:opacity-50 w-full sm:w-auto"
                         >
                             {isPending ? "등록 중..." : "등록"}
                         </button>
@@ -192,7 +192,7 @@ export default function BoardClient({ currentUser, initialPosts }: { currentUser
                 <div className="w-full sm:w-auto flex gap-2 justify-end">
                     <button
                         onClick={() => setView("write")}
-                        className="bg-emerald-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg hover:bg-emerald-600 transition font-medium text-sm sm:text-base"
+                        className="bg-blue-500 text-white px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg hover:bg-blue-600 transition font-medium text-sm sm:text-base"
                     >
                         글쓰기
                     </button>
@@ -229,7 +229,7 @@ export default function BoardClient({ currentUser, initialPosts }: { currentUser
                             initialPosts.map((post: Post, index: number) => (
                                 <tr
                                     key={post.id}
-                                    className="border-b border-slate-100 hover:bg-emerald-50 cursor-pointer transition"
+                                    className="border-b border-slate-100 hover:bg-blue-50 cursor-pointer transition"
                                     onClick={() => {
                                         setSelectedPostId(post.id);
                                         setView("detail");
@@ -241,7 +241,7 @@ export default function BoardClient({ currentUser, initialPosts }: { currentUser
                                     <td className="p-3 sm:p-4 text-slate-800 font-medium text-sm sm:text-base break-all">
                                         {post.title}
                                         {post.comments.length > 0 && (
-                                            <span className="text-emerald-500 text-xs sm:text-sm ml-2 font-bold">
+                                            <span className="text-blue-500 text-xs sm:text-sm ml-2 font-bold">
                                                 [{post.comments.length}]
                                             </span>
                                         )}

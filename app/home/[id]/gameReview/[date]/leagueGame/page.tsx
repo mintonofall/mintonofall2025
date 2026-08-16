@@ -83,12 +83,12 @@ export default async function LeagueGamePage({ params }: { params: Promise<{ id:
     const getPlayer = (pid: number | null) => players.find((p: any) => p.id === pid) || null;
 
     return (
-        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white pt-16">
+        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-blue-50 via-white to-white pt-16">
             <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-4xl mb-8 gap-4">
-                <h1 className="text-3xl font-bold text-emerald-600">{date} 리그 게임 결과</h1>
+                <h1 className="text-3xl font-bold text-blue-600">{date} 리그 게임 결과</h1>
                 <Link
                     href={`/home/${clubId}/gameReview/${date}`}
-                    className="px-4 py-2 bg-emerald-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-emerald-600 transition-colors"
+                    className="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition-colors"
                 >
                     돌아가기
                 </Link>

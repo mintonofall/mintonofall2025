@@ -143,7 +143,7 @@ export default async function DraftPage({ params }: { params: PageParams }) {
                                     <Link
                                         key={p.id + "-" + index}
                                         href={`/fantasy/runningLeague/${leagueId}`}
-                                        className="text-center p-2 rounded-md bg-emerald-500 text-white font-bold hover:bg-emerald-600"
+                                        className="text-center p-2 rounded-md bg-blue-500 text-white font-bold hover:bg-blue-600"
                                     >
                                         <div className="text-sm">{p.nickName}</div>
                                     </Link>
@@ -162,7 +162,7 @@ export default async function DraftPage({ params }: { params: PageParams }) {
                             <div
                                 key={p.id + "-" + index}
                                 className={`text-center p-2 rounded-md ${
-                                    p.isCurrent ? "bg-emerald-500 text-white font-bold" : "bg-slate-100"
+                                    p.isCurrent ? "bg-blue-500 text-white font-bold" : "bg-slate-100"
                                 }`}
                             >
                                 <div className="text-sm">{p.nickName}</div>

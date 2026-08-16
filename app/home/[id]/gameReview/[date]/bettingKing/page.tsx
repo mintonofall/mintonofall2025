@@ -30,7 +30,7 @@ export default async function BettingKingPage({ params }: { params: Promise<{ id
 
     if (matchesOnDate.length === 0) {
         return (
-            <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white pt-16">
+            <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-blue-50 via-white to-white pt-16">
                 <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-2xl mb-8 gap-4">
                     <h1 className="text-3xl font-bold text-orange-600">{date} 베팅왕 👑</h1>
                     <Link
@@ -111,7 +111,7 @@ export default async function BettingKingPage({ params }: { params: Promise<{ id
     const rankedUsers = Array.from(userWinnings.values()).sort((a, b) => b.totalNetWinnings - a.totalNetWinnings);
 
     return (
-        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white pt-16">
+        <div className="p-8 flex flex-col items-center min-h-screen bg-linear-to-b from-blue-50 via-white to-white pt-16">
             <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-2xl mb-8 gap-4">
                 <h1 className="text-3xl font-bold text-orange-600">{date} 베팅왕 👑</h1>
                 <Link
@@ -154,7 +154,7 @@ export default async function BettingKingPage({ params }: { params: Promise<{ id
                                                 entry.totalNetWinnings > 0
                                                     ? "text-rose-500"
                                                     : entry.totalNetWinnings < 0
-                                                      ? "text-emerald-500"
+                                                      ? "text-blue-500"
                                                       : "text-slate-700"
                                             }`}
                                         >

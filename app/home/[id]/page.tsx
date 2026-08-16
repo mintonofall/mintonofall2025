@@ -775,7 +775,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                     <div className="flex flex-wrap justify-center gap-4">
                         <Link
                             href="/home"
-                            className="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-2 rounded-lg font-medium transition shadow-sm"
+                            className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition shadow-sm"
                         >
                             홈으로 돌아가기
                         </Link>
@@ -905,7 +905,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
 
             <div className="fixed bottom-4 right-4">
                 <button
-                    className="bg-emerald-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-emerald-600 transition-colors"
+                    className="bg-blue-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-blue-600 transition-colors"
                     onClick={() => setShowPlayerList(true)}
                 >
                     <span className="text-3xl pb-1">+</span>
@@ -924,7 +924,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                         <div className="flex justify-between items-center mb-4 pr-6">
                             <h2 className="text-xl font-bold">Players List</h2>
                             <button
-                                className="px-3 py-1 bg-emerald-500 text-white text-sm rounded-lg hover:bg-emerald-600"
+                                className="px-3 py-1 bg-blue-500 text-white text-sm rounded-lg hover:bg-blue-600"
                                 onClick={() => {
                                     setAddModalOpen(true);
                                     setShowPlayerList(false);

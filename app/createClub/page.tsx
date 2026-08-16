@@ -19,7 +19,7 @@ function CreateClubContent() {
     }, [searchParams]);
 
     return (
-        <div className="flex justify-center items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white">
+        <div className="flex justify-center items-center min-h-screen bg-linear-to-b from-blue-50 via-white to-white">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                 <h2 className="text-2xl font-bold mb-6 text-center">클럽 생성</h2>
                 <form action={action} className="flex flex-col">
@@ -83,11 +83,11 @@ function CreateClubContent() {
                             </label>
                         </div>
                     </div>
-                    <button type="submit" className="bg-emerald-500 text-white p-2 mb-2 rounded-lg hover:bg-emerald-600">
+                    <button type="submit" className="bg-blue-500 text-white p-2 mb-2 rounded-lg hover:bg-blue-600">
                         생성
                     </button>
                     <Link href="/home">
-                        <div className="bg-emerald-500 text-center text-white p-2 rounded-lg hover:bg-emerald-600">돌아가기</div>
+                        <div className="bg-blue-500 text-center text-white p-2 rounded-lg hover:bg-blue-600">돌아가기</div>
                     </Link>
                 </form>
             </div>

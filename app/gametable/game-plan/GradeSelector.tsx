@@ -33,7 +33,7 @@ export default function GradeSelector() {
         <select
             value={currentValue}
             onChange={handleChange}
-            className="border border-slate-300 rounded-md p-1 text-sm bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+            className="border border-slate-300 rounded-md p-1 text-sm bg-white text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
         >
             <option value="all">전체 보기</option>
             <optgroup label="성별">

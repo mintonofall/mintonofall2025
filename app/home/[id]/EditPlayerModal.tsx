@@ -141,13 +141,13 @@ export default function EditPlayerModal({
                         <label className="block text-sm font-medium text-slate-700">
                             사진 수정
                             {isUploading && (
-                                <span className="ml-2 text-emerald-500 text-xs font-normal">업로드 중...</span>
+                                <span className="ml-2 text-blue-500 text-xs font-normal">업로드 중...</span>
                             )}
                         </label>
                         <input
                             type="file"
                             accept="image/*"
-                            className="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100"
+                            className="mt-1 block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                             onChange={handleFileSelect}
                             disabled={isUploading}
                         />
@@ -171,7 +171,7 @@ export default function EditPlayerModal({
                         <input
                             id="isJoinLeague"
                             type="checkbox"
-                            className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-slate-300 rounded-lg"
+                            className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded-lg"
                             checked={editedPlayer.isJoinLeague || false}
                             onChange={(e) => setEditPlayer({ ...editedPlayer, isJoinLeague: e.target.checked })}
                         />
@@ -186,7 +186,7 @@ export default function EditPlayerModal({
                         취소
                     </button>
                     <button
-                        className={`px-4 py-2 text-white rounded-lg ${isUploading ? "bg-emerald-400 cursor-not-allowed" : "bg-emerald-600 hover:bg-emerald-700"}`}
+                        className={`px-4 py-2 text-white rounded-lg ${isUploading ? "bg-blue-400 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700"}`}
                         onClick={handleSubmit}
                         disabled={isUploading}
                     >

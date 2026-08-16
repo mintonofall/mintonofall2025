@@ -106,7 +106,7 @@ export default function StatisticsClient({
                     placeholder="선수 이름 검색"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    className="w-full border border-slate-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                    className="w-full border border-slate-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 />
             </div>
             <div className="bg-white shadow-sm border-b border-slate-200">
@@ -117,7 +117,7 @@ export default function StatisticsClient({
                             onClick={() => setActiveTab(tab)}
                             className={`flex-1 py-4 text-sm font-bold text-center border-b-2 transition-colors ${
                                 activeTab === tab
-                                    ? "border-emerald-600 text-emerald-600"
+                                    ? "border-blue-600 text-blue-600"
                                     : "border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300"
                             }`}
                         >
@@ -153,7 +153,7 @@ export default function StatisticsClient({
                                         onClick={() => handlePlayerClick(player)}
                                         className={`cursor-pointer hover:opacity-80 transition-opacity ${
                                             player.gender === "man"
-                                                ? "bg-emerald-50"
+                                                ? "bg-blue-50"
                                                 : player.gender === "woman"
                                                   ? "bg-rose-50"
                                                   : ""
@@ -168,7 +168,7 @@ export default function StatisticsClient({
                                         <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-slate-500">
                                             {player.grade}
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-emerald-600">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-blue-600">
                                             {player.todayGameNum}
                                         </td>
                                     </tr>
@@ -205,19 +205,19 @@ export default function StatisticsClient({
                                         <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-slate-900">
                                             <div className="flex justify-center items-center gap-2">
                                                 <span
-                                                    className={`font-bold ${stat.player1?.gender === "man" ? "text-emerald-600" : stat.player1?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
+                                                    className={`font-bold ${stat.player1?.gender === "man" ? "text-blue-600" : stat.player1?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player1?.name}
                                                 </span>
                                                 <span className="text-slate-400">/</span>
                                                 <span
-                                                    className={`font-bold ${stat.player2?.gender === "man" ? "text-emerald-600" : stat.player2?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
+                                                    className={`font-bold ${stat.player2?.gender === "man" ? "text-blue-600" : stat.player2?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player2?.name}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-emerald-600">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-blue-600">
                                             {stat.count}
                                         </td>
                                     </tr>
@@ -256,25 +256,25 @@ export default function StatisticsClient({
                                         <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-slate-900">
                                             <div className="flex justify-center items-center gap-2 flex-wrap">
                                                 <span
-                                                    className={`font-bold ${stat.player1?.gender === "man" ? "text-emerald-600" : stat.player1?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
+                                                    className={`font-bold ${stat.player1?.gender === "man" ? "text-blue-600" : stat.player1?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player1?.name}
                                                 </span>
                                                 <span className="text-slate-400">/</span>
                                                 <span
-                                                    className={`font-bold ${stat.player2?.gender === "man" ? "text-emerald-600" : stat.player2?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
+                                                    className={`font-bold ${stat.player2?.gender === "man" ? "text-blue-600" : stat.player2?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player2?.name}
                                                 </span>
                                                 <span className="text-slate-400">/</span>
                                                 <span
-                                                    className={`font-bold ${stat.player3?.gender === "man" ? "text-emerald-600" : stat.player3?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
+                                                    className={`font-bold ${stat.player3?.gender === "man" ? "text-blue-600" : stat.player3?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player3?.name}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-emerald-600">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-blue-600">
                                             {stat.count}
                                         </td>
                                     </tr>
@@ -318,31 +318,31 @@ export default function StatisticsClient({
                                         <td className="px-4 py-3 whitespace-nowrap text-center text-sm text-slate-900">
                                             <div className="flex justify-center items-center gap-2 flex-wrap">
                                                 <span
-                                                    className={`font-bold ${stat.player1?.gender === "man" ? "text-emerald-600" : stat.player1?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
+                                                    className={`font-bold ${stat.player1?.gender === "man" ? "text-blue-600" : stat.player1?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player1?.name}
                                                 </span>
                                                 <span className="text-slate-400">/</span>
                                                 <span
-                                                    className={`font-bold ${stat.player2?.gender === "man" ? "text-emerald-600" : stat.player2?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
+                                                    className={`font-bold ${stat.player2?.gender === "man" ? "text-blue-600" : stat.player2?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player2?.name}
                                                 </span>
                                                 <span className="text-slate-400">/</span>
                                                 <span
-                                                    className={`font-bold ${stat.player3?.gender === "man" ? "text-emerald-600" : stat.player3?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
+                                                    className={`font-bold ${stat.player3?.gender === "man" ? "text-blue-600" : stat.player3?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player3?.name}
                                                 </span>
                                                 <span className="text-slate-400">/</span>
                                                 <span
-                                                    className={`font-bold ${stat.player4?.gender === "man" ? "text-emerald-600" : stat.player4?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
+                                                    className={`font-bold ${stat.player4?.gender === "man" ? "text-blue-600" : stat.player4?.gender === "woman" ? "text-rose-600" : "text-slate-800"}`}
                                                 >
                                                     {stat.player4?.name}
                                                 </span>
                                             </div>
                                         </td>
-                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-emerald-600">
+                                        <td className="px-4 py-3 whitespace-nowrap text-center text-sm font-bold text-blue-600">
                                             {stat.count}
                                         </td>
                                     </tr>

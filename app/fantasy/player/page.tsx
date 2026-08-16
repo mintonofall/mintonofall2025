@@ -12,12 +12,12 @@ export default async function FantasyPage() {
                 <h1 className="text-2xl font-bold">2024년 판타지 리그 선수 명단</h1>
                 <div className="flex gap-2">
                     <Link href="/fantasy/player/inputdata">
-                        <button className="px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600">
+                        <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                             선수 추가
                         </button>
                     </Link>
                     <Link href="/fantasy/player/inputresult">
-                        <button className="px-4 py-2 bg-emerald-500 text-white rounded-md hover:bg-emerald-600">
+                        <button className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600">
                             결과입력
                         </button>
                     </Link>

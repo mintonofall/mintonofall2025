@@ -86,25 +86,25 @@ export default function RightSection({
                 <div className="flex space-x-1 text-xs">
                     <button
                         onClick={() => onSort?.("name")}
-                        className={`px-2 py-1 rounded-lg ${currentSort === "name" ? "bg-emerald-600 text-white" : "bg-white text-slate-700 hover:bg-slate-200"}`}
+                        className={`px-2 py-1 rounded-lg ${currentSort === "name" ? "bg-blue-600 text-white" : "bg-white text-slate-700 hover:bg-slate-200"}`}
                     >
                         이름
                     </button>
                     <button
                         onClick={() => onSort?.("grade")}
-                        className={`px-2 py-1 rounded-lg ${currentSort === "grade" ? "bg-emerald-600 text-white" : "bg-white text-slate-700 hover:bg-slate-200"}`}
+                        className={`px-2 py-1 rounded-lg ${currentSort === "grade" ? "bg-blue-600 text-white" : "bg-white text-slate-700 hover:bg-slate-200"}`}
                     >
                         급수
                     </button>
                     <button
                         onClick={() => onSort?.("games")}
-                        className={`px-2 py-1 rounded-lg ${currentSort === "games" ? "bg-emerald-600 text-white" : "bg-white text-slate-700 hover:bg-slate-200"}`}
+                        className={`px-2 py-1 rounded-lg ${currentSort === "games" ? "bg-blue-600 text-white" : "bg-white text-slate-700 hover:bg-slate-200"}`}
                     >
                         경기
                     </button>
                     <button
                         onClick={() => onSort?.("participating")}
-                        className={`px-2 py-1 rounded-lg ${currentSort === "participating" ? "bg-emerald-600 text-white" : "bg-white text-slate-700 hover:bg-slate-200"}`}
+                        className={`px-2 py-1 rounded-lg ${currentSort === "participating" ? "bg-blue-600 text-white" : "bg-white text-slate-700 hover:bg-slate-200"}`}
                     >
                         참여
                     </button>
@@ -128,9 +128,9 @@ export default function RightSection({
                             // 선수의 상태(대기판에 있는지, 게임 중인지)에 따라 배경색을 다르게 표시
                             className={`relative p-2 rounded-lg shadow flex justify-between items-center cursor-pointer hover:bg-slate-50 ${
                                 gridData.some((p) => p && p.id === player.id)
-                                    ? "bg-emerald-100"
+                                    ? "bg-blue-100"
                                     : isPlaying
-                                      ? "bg-emerald-300"
+                                      ? "bg-blue-300"
                                       : "bg-white"
                             }`}
                             onClick={() => onPlayerClick?.(player)}

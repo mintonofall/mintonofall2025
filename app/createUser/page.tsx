@@ -11,7 +11,7 @@ function SubmitButton() {
         <button
             type="submit"
             disabled={pending}
-            className="w-full bg-emerald-500 text-white font-semibold p-2.5 rounded-full shadow-sm hover:bg-emerald-600 active:scale-[0.99] disabled:bg-slate-300 disabled:cursor-not-allowed transition-all"
+            className="w-full bg-blue-500 text-white font-semibold p-2.5 rounded-full shadow-sm hover:bg-blue-600 active:scale-[0.99] disabled:bg-slate-300 disabled:cursor-not-allowed transition-all"
         >
             {pending ? "가입 처리중..." : "가입신청"}
         </button>
@@ -34,7 +34,7 @@ function SignupForm() {
                     type="text"
                     id="username"
                     name="username"
-                    className="w-full p-2.5 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition-shadow"
+                    className="w-full p-2.5 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-shadow"
                     required
                 />
             </div>
@@ -46,7 +46,7 @@ function SignupForm() {
                     type="text"
                     id="nickname"
                     name="nickName"
-                    className="w-full p-2.5 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition-shadow"
+                    className="w-full p-2.5 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-shadow"
                     required
                 />
             </div>
@@ -58,7 +58,7 @@ function SignupForm() {
                     type="password"
                     id="password"
                     name="password"
-                    className="w-full p-2.5 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition-shadow"
+                    className="w-full p-2.5 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-shadow"
                     required
                 />
             </div>
@@ -70,7 +70,7 @@ function SignupForm() {
                     type="password"
                     id="passwordconfirm"
                     name="passwordconfirm"
-                    className="w-full p-2.5 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-emerald-400 focus:border-emerald-400 transition-shadow"
+                    className="w-full p-2.5 border border-slate-200 rounded-lg outline-none focus:ring-2 focus:ring-blue-400 focus:border-blue-400 transition-shadow"
                     required
                 />
             </div>
@@ -78,7 +78,7 @@ function SignupForm() {
             {state?.error && <span className="text-rose-500 text-sm text-center">{state.error}</span>}
             <Link
                 href={clubId ? `/home/${clubId}/viewPage` : "/"}
-                className="w-full text-center text-slate-500 hover:text-emerald-600 font-medium p-2 transition-colors"
+                className="w-full text-center text-slate-500 hover:text-blue-600 font-medium p-2 transition-colors"
             >
                 돌아가기
             </Link>
@@ -88,10 +88,10 @@ function SignupForm() {
 
 export default function SignupPage() {
     return (
-        <div className="flex justify-center items-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white px-4">
-            <div className="bg-white p-8 rounded-2xl shadow-xl border border-emerald-100 w-full max-w-md">
+        <div className="flex justify-center items-center min-h-screen bg-linear-to-b from-blue-50 via-white to-white px-4">
+            <div className="bg-white p-8 rounded-2xl shadow-xl border border-blue-100 w-full max-w-md">
                 <h2 className="text-2xl font-extrabold mb-6 text-center text-slate-800">
-                    회원가입 <span className="text-emerald-500">🏸</span>
+                    회원가입 <span className="text-blue-500">🏸</span>
                 </h2>
                 <Suspense fallback={<div className="text-center text-slate-400">로딩 중...</div>}>
                     <SignupForm />

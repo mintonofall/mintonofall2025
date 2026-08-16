@@ -13,7 +13,7 @@ export default function MyDraftPanel({ user, categories, myPicks, isCurrentUser 
     return (
         <div
             className={`w-1/5 p-4 border-r border-slate-200 flex flex-col ${
-                isCurrentUser ? "bg-emerald-100" : "bg-slate-50"
+                isCurrentUser ? "bg-blue-100" : "bg-slate-50"
             }`}
         >
             <h2 className="text-2xl font-bold mb-4 text-center">{user?.nickName}님의 드래프트</h2>

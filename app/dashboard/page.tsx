@@ -67,7 +67,7 @@ export default function DashBoard() {
 
     if (authStatus === "loading") {
         return (
-            <div className="flex items-center justify-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white">
+            <div className="flex items-center justify-center min-h-screen bg-linear-to-b from-blue-50 via-white to-white">
                 <p className="text-lg text-slate-600">권한을 확인하는 중입니다...</p>
             </div>
         );
@@ -75,7 +75,7 @@ export default function DashBoard() {
 
     if (authStatus === "unauthorized") {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-linear-to-b from-emerald-50 via-white to-white">
+            <div className="flex flex-col items-center justify-center min-h-screen bg-linear-to-b from-blue-50 via-white to-white">
                 <div className="bg-white p-8 rounded-lg shadow-md text-center">
                     <h1 className="text-2xl font-bold mb-4 text-rose-600">접근 거부</h1>
                     <p className="text-slate-700">이 페이지에 접근할 권한이 없습니다.</p>
@@ -149,7 +149,7 @@ export default function DashBoard() {
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
                                                     {user.userName}
                                                 </td>
-                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-emerald-600 font-bold">
+                                                <td className="px-6 py-4 whitespace-nowrap text-sm text-right text-blue-600 font-bold">
                                                     {user.point?.toLocaleString() || 0} P
                                                 </td>
                                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-center text-slate-500">
@@ -217,7 +217,7 @@ export default function DashBoard() {
                                                             setSelectedClubId(club.id);
                                                             setActiveMenu("player");
                                                         }}
-                                                        className="text-emerald-600 hover:text-emerald-800 hover:underline font-bold transition-colors"
+                                                        className="text-blue-600 hover:text-blue-800 hover:underline font-bold transition-colors"
                                                     >
                                                         {club._count?.players || 0} 명
                                                     </button>
@@ -228,7 +228,7 @@ export default function DashBoard() {
                                                             setSelectedClubId(club.id);
                                                             setActiveMenu("match");
                                                         }}
-                                                        className="text-emerald-600 hover:text-emerald-800 hover:underline font-bold transition-colors"
+                                                        className="text-blue-600 hover:text-blue-800 hover:underline font-bold transition-colors"
                                                     >
                                                         {club._count?.matchCount || 0} 건
                                                     </button>
@@ -440,7 +440,7 @@ export default function DashBoard() {
                                                             {renderPlayerWithPhoto(match.player4)}
                                                         </div>
                                                     </td>
-                                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-center font-bold text-emerald-600">
+                                                    <td className="px-4 py-4 whitespace-nowrap text-sm text-center font-bold text-blue-600">
                                                         {winnerText}
                                                     </td>
                                                     <td className="px-4 py-4 whitespace-nowrap text-sm text-center text-slate-500">
@@ -543,7 +543,7 @@ export default function DashBoard() {
                                                                 <div className="font-bold text-slate-700">
                                                                     <span
                                                                         className={
-                                                                            m.score1 > m.score2 ? "text-emerald-600" : ""
+                                                                            m.score1 > m.score2 ? "text-blue-600" : ""
                                                                         }
                                                                     >
                                                                         {m.score1}
@@ -551,7 +551,7 @@ export default function DashBoard() {
                                                                     <span className="mx-1">:</span>
                                                                     <span
                                                                         className={
-                                                                            m.score2 > m.score1 ? "text-emerald-600" : ""
+                                                                            m.score2 > m.score1 ? "text-blue-600" : ""
                                                                         }
                                                                     >
                                                                         {m.score2}
@@ -563,7 +563,7 @@ export default function DashBoard() {
                                                                 m.winner1id === m.player1id ||
                                                                 m.winner1id === m.player2id;
                                                             return (
-                                                                <span className="font-bold text-emerald-600">
+                                                                <span className="font-bold text-blue-600">
                                                                     {isTeam1Win ? "팀 1 승리" : "팀 2 승리"}
                                                                 </span>
                                                             );
@@ -595,7 +595,7 @@ export default function DashBoard() {
                                                             무승부 (환불)
                                                         </span>
                                                     ) : bet.isCorrect ? (
-                                                        <span className="px-2 py-1 bg-emerald-100 text-emerald-700 rounded-lg text-xs font-bold">
+                                                        <span className="px-2 py-1 bg-blue-100 text-blue-700 rounded-lg text-xs font-bold">
                                                             적중
                                                         </span>
                                                     ) : (
@@ -628,7 +628,7 @@ export default function DashBoard() {
     };
 
     return (
-        <div className="flex min-h-screen bg-linear-to-b from-emerald-50 via-white to-white">
+        <div className="flex min-h-screen bg-linear-to-b from-blue-50 via-white to-white">
             {/* 왼쪽 사이드바 (메뉴) */}
             <div className="w-64 bg-white border-r shadow-sm flex flex-col">
                 <div className="p-6 border-b">
@@ -644,7 +644,7 @@ export default function DashBoard() {
                             }}
                             className={`text-left px-4 py-3 rounded-lg transition-colors font-medium ${
                                 activeMenu === item.id
-                                    ? "bg-emerald-500 text-white shadow-md"
+                                    ? "bg-blue-500 text-white shadow-md"
                                     : "hover:bg-slate-100 text-slate-700"
                             }`}
                         >

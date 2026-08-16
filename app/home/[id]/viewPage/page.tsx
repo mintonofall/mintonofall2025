@@ -285,7 +285,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                         </div>
                         <div className="flex flex-col items-center justify-center flex-1">
                             <span className="text-xs text-slate-500 font-semibold mb-0.5">보유 포인트</span>
-                            <span className="text-base sm:text-lg font-bold text-emerald-600">
+                            <span className="text-base sm:text-lg font-bold text-blue-600">
                                 {user.point ? user.point.toLocaleString() : 0} P
                             </span>
                         </div>
@@ -318,19 +318,19 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                 name="userName"
                                 type="text"
                                 placeholder="아이디"
-                                className="border border-slate-300 rounded-lg px-2 py-1.5 text-sm w-full max-w-[100px] sm:max-w-[150px] outline-none focus:border-emerald-500"
+                                className="border border-slate-300 rounded-lg px-2 py-1.5 text-sm w-full max-w-[100px] sm:max-w-[150px] outline-none focus:border-blue-500"
                                 required
                             />
                             <input
                                 name="password"
                                 type="password"
                                 placeholder="비밀번호"
-                                className="border border-slate-300 rounded-lg px-2 py-1.5 text-sm w-full max-w-[100px] sm:max-w-[150px] outline-none focus:border-emerald-500"
+                                className="border border-slate-300 rounded-lg px-2 py-1.5 text-sm w-full max-w-[100px] sm:max-w-[150px] outline-none focus:border-blue-500"
                                 required
                             />
                             <button
                                 type="submit"
-                                className="bg-emerald-500 hover:bg-emerald-600 text-white font-semibold py-1.5 px-3 rounded-lg text-sm whitespace-nowrap transition-colors"
+                                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1.5 px-3 rounded-lg text-sm whitespace-nowrap transition-colors"
                             >
                                 로그인
                             </button>
@@ -340,7 +340,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                         </form>
                         <Link
                             href={clubId !== null ? `/createUser?clubId=${clubId}` : "/createUser"}
-                            className="flex items-center gap-1 p-2 text-emerald-500 hover:text-emerald-700 hover:bg-emerald-50 rounded-lg transition-colors flex-shrink-0"
+                            className="flex items-center gap-1 p-2 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors flex-shrink-0"
                             title="가입하기"
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -360,7 +360,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
             <div className="p-6 flex flex-col gap-6">
                 {activeTab === "courts" && (
                     <div className="flex-1 bg-white p-4 lg:p-6 rounded-lg shadow-md">
-                        <h2 className="text-xl lg:text-2xl font-semibold mb-2 lg:mb-4 text-emerald-600 border-b pb-2">
+                        <h2 className="text-xl lg:text-2xl font-semibold mb-2 lg:mb-4 text-blue-600 border-b pb-2">
                             {clubName} 진행 중인 코트
                         </h2>
                         <h2 className="text-sm lg:text-2xl mb-2 lg:mb-4 text-slate-500 border-b pb-2">
@@ -388,7 +388,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                 return (
                                     <div
                                         key={index}
-                                        className={`p-2 rounded-lg border-2 relative ${court ? "border-emerald-500 bg-emerald-50" : "border-slate-200 bg-slate-50"}`}
+                                        className={`p-2 rounded-lg border-2 relative ${court ? "border-blue-500 bg-blue-50" : "border-slate-200 bg-slate-50"}`}
                                     >
                                         <div className="flex items-center justify-between mb-1">
                                             <div className="flex items-center gap-2">
@@ -401,7 +401,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                             </div>
                                             {court && court.startTime && (
                                                 <span
-                                                    className={`text-xs font-semibold ${isBettingClosed ? "text-rose-500" : "text-emerald-500"}`}
+                                                    className={`text-xs font-semibold ${isBettingClosed ? "text-rose-500" : "text-blue-500"}`}
                                                 >
                                                     {elapsedMinutes >= 0 ? `${elapsedMinutes}분 경과` : "시작 전"}
                                                 </span>
@@ -572,7 +572,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
 
                 {activeTab === "results" && (
                     <div className="flex-1 bg-white p-4 lg:p-6 rounded-lg shadow-md">
-                        <h2 className="text-xl lg:text-2xl font-semibold mb-2 lg:mb-4 text-emerald-600 border-b pb-2">
+                        <h2 className="text-xl lg:text-2xl font-semibold mb-2 lg:mb-4 text-blue-600 border-b pb-2">
                             오늘의 게임 결과
                         </h2>
                         <div className="flex flex-col gap-4">
@@ -709,7 +709,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                             )}
                                             {bet.isProcess ? (
                                                 <div
-                                                    className={`text-center font-bold p-2 rounded-lg mt-2 ${bet.isHit === "noDecision" ? "bg-slate-100 text-slate-700" : bet.isCorrect ? "bg-emerald-100 text-emerald-700" : "bg-rose-100 text-rose-700"}`}
+                                                    className={`text-center font-bold p-2 rounded-lg mt-2 ${bet.isHit === "noDecision" ? "bg-slate-100 text-slate-700" : bet.isCorrect ? "bg-blue-100 text-blue-700" : "bg-rose-100 text-rose-700"}`}
                                                 >
                                                     {bet.isHit === "noDecision" ? (
                                                         <span>
@@ -766,7 +766,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                             </div>
                             <div className="text-lg font-semibold text-slate-800 mt-2">
                                 베팅 금액:{" "}
-                                <span className="text-emerald-600">{bettingModal.amount.toLocaleString()} P</span>
+                                <span className="text-blue-600">{bettingModal.amount.toLocaleString()} P</span>
                             </div>
                         </div>
                         <div className="flex justify-end gap-2">
@@ -842,7 +842,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                 <div className="flex justify-around items-center py-3 max-w-4xl mx-auto">
                     <button
                         onClick={() => setActiveTab("courts")}
-                        className={`flex flex-col items-center gap-1 ${activeTab === "courts" ? "text-emerald-600" : "text-slate-400"} hover:text-emerald-800 transition-colors w-1/4`}
+                        className={`flex flex-col items-center gap-1 ${activeTab === "courts" ? "text-blue-600" : "text-slate-400"} hover:text-blue-800 transition-colors w-1/4`}
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
@@ -870,7 +870,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                     </button>
                     <button
                         onClick={() => setActiveTab("results")}
-                        className={`flex flex-col items-center gap-1 ${activeTab === "results" ? "text-emerald-600" : "text-slate-400"} hover:text-emerald-600 transition-colors w-1/4 border-l border-slate-100`}
+                        className={`flex flex-col items-center gap-1 ${activeTab === "results" ? "text-blue-600" : "text-slate-400"} hover:text-blue-600 transition-colors w-1/4 border-l border-slate-100`}
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path

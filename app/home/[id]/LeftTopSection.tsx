@@ -75,7 +75,7 @@ export default function LeftTopSection({
                             key={index}
                             // courtPointer와 인덱스가 일치하는 코트(다음에 게임이 배정될 코트)는 다른 배경색으로 강조
                             className={`relative flex-1 flex flex-col items-center justify-center rounded-lg shadow-sm cursor-pointer ${
-                                courtPointer === index ? "bg-emerald-500" : "bg-white"
+                                courtPointer === index ? "bg-blue-500" : "bg-white"
                             }`}
                             onClick={() => setCourtPointer(index)}
                         >
@@ -118,7 +118,7 @@ export default function LeftTopSection({
                                     {!courtData.isLoading && (
                                         // 경기 종료 버튼
                                         <button
-                                            className="mt-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-1 rounded-lg shadow-sm transition-colors z-10"
+                                            className="mt-3 bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded-lg shadow-sm transition-colors z-10"
                                             onClick={(e) => {
                                                 e.preventDefault();
                                                 e.stopPropagation();

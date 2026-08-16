@@ -105,7 +105,7 @@ export default function BottomNav() {
                             key={item.name}
                             href={item.href}
                             className={`flex flex-col items-center justify-center w-full h-full space-y-1 ${
-                                pathname === item.href ? "text-emerald-600" : "text-slate-500 hover:text-slate-900"
+                                pathname === item.href ? "text-blue-600" : "text-slate-500 hover:text-slate-900"
                             }`}
                         >
                             {item.icon}

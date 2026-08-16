@@ -28,7 +28,7 @@ export default function SearchableUnjoinedClubs({
                 placeholder="클럽 이름을 검색하세요..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full p-2 mb-4 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-400"
+                className="w-full p-2 mb-4 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {filteredClubs.length > 0 ? (
