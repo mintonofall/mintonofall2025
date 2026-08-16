@@ -1,12 +1,13 @@
+const KOREA_OFFSET_MS = 9 * 60 * 60000; // Korea is UTC+9
+
 export function getKoreaTime(): Date {
-    const koreaTimeOffset = 9 * 60; // Korea is UTC+9
-    const currentTime = new Date();
-    const utcTime = currentTime.getTime() + currentTime.getTimezoneOffset() * 60000;
-    const koreaTime = new Date(utcTime + koreaTimeOffset * 60000);
-    return koreaTime;
+    // Returns a Date whose UTC fields represent Korea wall-clock time,
+    // independent of the host process's local timezone (important on Vercel, which runs TZ=UTC).
+    return new Date(Date.now() + KOREA_OFFSET_MS);
 }
 export function getKoreaMidnight(): Date {
     const koreaTime = getKoreaTime();
-    koreaTime.setHours(0, 0, 0, 0);
-    return koreaTime;
+    return new Date(
+        Date.UTC(koreaTime.getUTCFullYear(), koreaTime.getUTCMonth(), koreaTime.getUTCDate()) - KOREA_OFFSET_MS
+    );
 }
