@@ -56,6 +56,15 @@ export default function LeftTopSection({
         return minutes < 1 ? "방금 전" : `${minutes}분 전`;
     };
 
+    /**
+     * 선수의 아바타 이미지 URL을 반환하는 함수
+     * @param {any} player - 선수 정보
+     */
+    const getAvatarSrc = (player: any) => {
+        if (!player?.avater) return null;
+        return player.avater.startsWith("https://imagedelivery.net/") ? `${player.avater}/avatar` : player.avater;
+    };
+
     return (
         <div className="h-[30%] p-4 bg-gray-50">
             <div className="flex h-full gap-2">
@@ -106,14 +115,33 @@ export default function LeftTopSection({
                                             <span className="text-xs font-bold">✕</span>
                                         </button>
                                     )}
-                                    {/* 게임에 참여 중인 선수 이름 표시 */}
-                                    <div
-                                        className={`text-lg font-bold mt-2 grid grid-cols-2 gap-x-4 gap-y-2 ${courtPointer === index ? "text-white" : "text-gray-800"}`}
-                                    >
-                                        <span>{courtData.p1?.name}</span>
-                                        <span>{courtData.p2?.name}</span>
-                                        <span>{courtData.p3?.name}</span>
-                                        <span>{courtData.p4?.name}</span>
+                                    {/* 게임에 참여 중인 선수 얼굴 및 이름 표시 */}
+                                    <div className="grid grid-cols-2 gap-x-4 gap-y-2 mt-2 px-2 w-full">
+                                        {[courtData.p1, courtData.p2, courtData.p3, courtData.p4].map(
+                                            (player, playerIndex) => {
+                                                const avatarSrc = getAvatarSrc(player);
+                                                return (
+                                                    <div key={playerIndex} className="flex items-center gap-1.5 min-w-0">
+                                                        <div className="w-7 h-7 rounded-full bg-gray-200 overflow-hidden flex-shrink-0 flex items-center justify-center">
+                                                            {avatarSrc ? (
+                                                                <img
+                                                                    src={avatarSrc}
+                                                                    alt={player?.name}
+                                                                    className="w-full h-full object-cover"
+                                                                />
+                                                            ) : (
+                                                                <span className="text-[9px] text-gray-400">No</span>
+                                                            )}
+                                                        </div>
+                                                        <span
+                                                            className={`text-sm font-bold truncate ${courtPointer === index ? "text-white" : "text-gray-800"}`}
+                                                        >
+                                                            {player?.name}
+                                                        </span>
+                                                    </div>
+                                                );
+                                            },
+                                        )}
                                     </div>
                                     {!courtData.isLoading && (
                                         // 경기 종료 버튼
