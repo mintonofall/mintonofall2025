@@ -58,6 +58,33 @@ export async function getUser() {
     }
 }
 
+export async function getAllUsers() {
+    const users = await db.user.findMany({
+        orderBy: { userName: "asc" },
+        select: {
+            id: true,
+            userName: true,
+            nickName: true,
+            point: true,
+        },
+    });
+    return users;
+}
+
+export async function updateUserPoint(userId: number, point: number) {
+    const user = await db.user.update({
+        where: { id: userId },
+        data: { point },
+        select: {
+            id: true,
+            userName: true,
+            nickName: true,
+            point: true,
+        },
+    });
+    return user;
+}
+
 export async function getPlayer(id: number) {
     const player = await db.player.findUnique({
         where: {
