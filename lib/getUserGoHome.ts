@@ -435,6 +435,41 @@ export const endMatch = async (matchId: string, winner: number[], isLeagueGame: 
                 },
             },
         });
+
+        // 리그(isJoinLeague) 선수들끼리의 경기는 ELO 점수(mmr)를 갱신합니다.
+        if (isLeagueGame) {
+            const allPlayerIds = [match.player1id, match.player2id, match.player3id, match.player4id];
+            const loserIds = allPlayerIds.filter((id) => !winner.includes(id));
+
+            if (loserIds.length === 2) {
+                const eloPlayers = await db.player.findMany({
+                    where: { id: { in: allPlayerIds } },
+                    select: { id: true, mmr: true },
+                });
+                const mmrOf = (id: number) => eloPlayers.find((p) => p.id === id)?.mmr ?? 1000;
+
+                const K_FACTOR = 32;
+                const winnerAvgMmr = (mmrOf(winner[0]) + mmrOf(winner[1])) / 2;
+                const loserAvgMmr = (mmrOf(loserIds[0]) + mmrOf(loserIds[1])) / 2;
+                const expectedWinnerScore = 1 / (1 + Math.pow(10, (loserAvgMmr - winnerAvgMmr) / 400));
+                const eloDelta = Math.round(K_FACTOR * (1 - expectedWinnerScore));
+
+                await Promise.all([
+                    ...winner.map((id) =>
+                        db.player.update({
+                            where: { id },
+                            data: { mmr: { increment: eloDelta } },
+                        }),
+                    ),
+                    ...loserIds.map((id) =>
+                        db.player.update({
+                            where: { id },
+                            data: { mmr: { decrement: eloDelta } },
+                        }),
+                    ),
+                ]);
+            }
+        }
     }
 };
 
