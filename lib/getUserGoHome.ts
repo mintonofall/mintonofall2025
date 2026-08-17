@@ -177,6 +177,21 @@ export async function pushWaitPlayerList(Playerid: number, clubid: number) {
         },
     });
     console.log(pushPlayer);
+
+    // 더블클릭/동시 요청 등으로 같은 선수가 중복 입장 처리됐다면, 방금 만든 row만 남기고
+    // 나머지 활성 row는 즉시 퇴장 처리해 선수당 활성 row가 하나만 남도록 정리합니다.
+    await db.waitPlayerList.updateMany({
+        where: {
+            clubid,
+            Playerid,
+            exitDate: null,
+            id: { not: pushPlayer.id },
+        },
+        data: {
+            exitDate: new Date(),
+        },
+    });
+
     const player = await db.player.findUnique({
         where: {
             id: Playerid,
@@ -212,7 +227,16 @@ export async function getWaitPlayerList(clubid: number) {
             player: true,
         },
     });
-    return waitPlayerList;
+
+    // 과거에 생성된 중복 활성 row가 남아있을 수 있으므로, 선수당 가장 최근 입장 row 하나만 사용합니다.
+    const latestByPlayer = new Map<number, (typeof waitPlayerList)[number]>();
+    for (const entry of waitPlayerList) {
+        const existing = latestByPlayer.get(entry.Playerid);
+        if (!existing || entry.enterDate > existing.enterDate) {
+            latestByPlayer.set(entry.Playerid, entry);
+        }
+    }
+    return Array.from(latestByPlayer.values());
 }
 
 export async function exitPlayer(Playerid: number, clubid: number) {

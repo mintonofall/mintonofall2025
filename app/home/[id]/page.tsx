@@ -98,6 +98,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
     const [waitPlayerList, setWaitPlayerList] = useState<any[]>([]);
     /** @type {boolean} 데이터 로딩 상태 */
     const [isLoading, setIsLoading] = useState(true);
+    const [isRefreshing, setIsRefreshing] = useState(false);
     /** @type {number | null} 대기 게임판에서 선택된 셀의 인덱스 */
     const [selectedCell, setSelectedCell] = useState<number | null>(1);
     /** @type {(any | null)[]} 35칸의 대기 게임판 데이터. 각 셀에는 선수 정보 또는 null이 저장됩니다. */
@@ -243,6 +244,18 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
 
         console.log(data);
         setIsLoading(false);
+    };
+
+    /**
+     * 새로고침 버튼 클릭 시 최신 데이터를 다시 불러옵니다.
+     */
+    const handleManualRefresh = async () => {
+        setIsRefreshing(true);
+        try {
+            await fetchData();
+        } finally {
+            setIsRefreshing(false);
+        }
     };
 
     useEffect(() => {
@@ -902,6 +915,29 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                     </div>
                 </div>
             )}
+
+            <div className="fixed bottom-4 left-4">
+                <button
+                    className="bg-gray-500 text-white rounded-full w-12 h-12 flex items-center justify-center shadow-lg hover:bg-gray-600 transition-colors disabled:opacity-50"
+                    onClick={handleManualRefresh}
+                    disabled={isRefreshing}
+                    title="새로고침"
+                >
+                    <svg
+                        className={`w-6 h-6 ${isRefreshing ? "animate-spin" : ""}`}
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                        />
+                    </svg>
+                </button>
+            </div>
 
             <div className="fixed bottom-4 right-4">
                 <button
