@@ -1,8 +1,149 @@
 @import "tailwindcss";
 
+/*
+ * "손그림 마카(sketch/marker)" 디자인 토큰.
+ * 아래 값들은 Tailwind의 기본 팔레트/그림자/라운딩 토큰을 오버라이드합니다.
+ * 즉, 기존 페이지에서 쓰던 bg-blue-500, shadow-md, rounded-lg 같은
+ * 유틸리티 클래스는 그대로 두고 값만 바꿔서 사이트 전체의 톤을 맞춥니다.
+ */
+@theme {
+    /* 종이 질감의 따뜻한 뉴트럴 (기존 gray 팔레트 대체) */
+    --color-gray-50: #fbf7ec;
+    --color-gray-100: #f5edd8;
+    --color-gray-200: #e8dab4;
+    --color-gray-300: #d6c08a;
+    --color-gray-400: #b79a5c;
+    --color-gray-500: #8f7540;
+    --color-gray-600: #6e5a30;
+    --color-gray-700: #564628;
+    --color-gray-800: #3a2f1b;
+    --color-gray-900: #201a0f;
+
+    /* 하늘색 마카 (기존 blue 팔레트 대체) */
+    --color-blue-50: #eaf4ff;
+    --color-blue-100: #d3e8ff;
+    --color-blue-200: #a6d1ff;
+    --color-blue-300: #74b6ff;
+    --color-blue-400: #3d96ff;
+    --color-blue-500: #1c7dfa;
+    --color-blue-600: #0f63d6;
+    --color-blue-700: #0d4fad;
+    --color-blue-800: #0c3e85;
+    --color-blue-900: #0a2f63;
+
+    /* 잔디색 마카 (기존 green 팔레트 대체) */
+    --color-green-50: #eafbee;
+    --color-green-100: #cff5d9;
+    --color-green-200: #9fe8b4;
+    --color-green-300: #6bd68c;
+    --color-green-400: #3ec26a;
+    --color-green-500: #22a852;
+    --color-green-600: #178a3e;
+    --color-green-700: #136e32;
+    --color-green-800: #0f5527;
+    --color-green-900: #0b3f1d;
+
+    /* 토마토색 마카 (기존 red 팔레트 대체) */
+    --color-red-50: #ffedec;
+    --color-red-100: #ffd6d3;
+    --color-red-200: #ffaca6;
+    --color-red-300: #ff8078;
+    --color-red-400: #fa564c;
+    --color-red-500: #e8372b;
+    --color-red-600: #c6281d;
+    --color-red-700: #a11f16;
+    --color-red-800: #7c1811;
+    --color-red-900: #5c120d;
+
+    /* 햇살색 마카 (기존 yellow 팔레트 대체) */
+    --color-yellow-50: #fffbea;
+    --color-yellow-100: #fff3c4;
+    --color-yellow-200: #ffe58a;
+    --color-yellow-300: #ffd84d;
+    --color-yellow-400: #ffc814;
+    --color-yellow-500: #f2ae00;
+    --color-yellow-600: #c98d00;
+    --color-yellow-700: #a16f00;
+    --color-yellow-800: #7a5400;
+    --color-yellow-900: #543900;
+
+    /* 귤색 마카 (기존 orange 팔레트 대체) */
+    --color-orange-50: #fff1e8;
+    --color-orange-100: #ffdfc7;
+    --color-orange-200: #ffbd8c;
+    --color-orange-300: #ff9b54;
+    --color-orange-400: #ff7b24;
+    --color-orange-500: #f2600a;
+    --color-orange-600: #d14e05;
+    --color-orange-700: #a83e05;
+    --color-orange-800: #803007;
+    --color-orange-900: #5c2306;
+
+    /* 데님색 마카 (기존 indigo 팔레트 대체) */
+    --color-indigo-50: #eef0ff;
+    --color-indigo-100: #dee1ff;
+    --color-indigo-200: #bcc3ff;
+    --color-indigo-300: #96a0ff;
+    --color-indigo-400: #6e78fa;
+    --color-indigo-500: #4c53e8;
+    --color-indigo-600: #3a3ecb;
+    --color-indigo-700: #2e31a3;
+    --color-indigo-800: #24267d;
+    --color-indigo-900: #1a1b5c;
+
+    /* 포도색 마카 (기존 purple 팔레트 대체) */
+    --color-purple-50: #f7eeff;
+    --color-purple-100: #ecd9ff;
+    --color-purple-200: #d9b3ff;
+    --color-purple-300: #c287ff;
+    --color-purple-400: #a85cf2;
+    --color-purple-500: #8e3fde;
+    --color-purple-600: #7530be;
+    --color-purple-700: #5d2599;
+    --color-purple-800: #461c75;
+    --color-purple-900: #301353;
+
+    /* 손그림 스티커 느낌의 뭉툭한 그림자 (blur 대신 잉크색 오프셋) */
+    --shadow-sm: 1px 1px 0 0 rgb(32 26 15 / 0.35);
+    --shadow-md: 3px 3px 0 0 rgb(32 26 15 / 0.45);
+    --shadow-lg: 5px 5px 0 0 rgb(32 26 15 / 0.5);
+    --shadow-xl: 7px 7px 0 0 rgb(32 26 15 / 0.55);
+    --shadow-2xl: 9px 9px 0 0 rgb(32 26 15 / 0.6);
+
+    /* 손으로 오린 듯한 둥근 모서리 */
+    --radius-md: 0.65rem;
+    --radius-lg: 1rem;
+    --radius-xl: 1.4rem;
+    --radius-2xl: 1.8rem;
+
+    --font-sans: "Gaegu", "Apple SD Gothic Neo", sans-serif;
+
+    /* 손글씨 폰트는 작은 크기에서 잘 안 보이므로 전체 글자 크기 단계를 큼직하게 키움 */
+    --text-xs: 1rem;
+    --text-xs--line-height: 1.375rem;
+    --text-sm: 1.125rem;
+    --text-sm--line-height: 1.625rem;
+    --text-base: 1.25rem;
+    --text-base--line-height: 1.875rem;
+    --text-lg: 1.375rem;
+    --text-lg--line-height: 2rem;
+    --text-xl: 1.5rem;
+    --text-xl--line-height: 2rem;
+    --text-2xl: 1.875rem;
+    --text-2xl--line-height: 2.375rem;
+    --text-3xl: 2.25rem;
+    --text-3xl--line-height: 2.625rem;
+    --text-4xl: 2.75rem;
+    --text-4xl--line-height: 3rem;
+    --text-5xl: 3.5rem;
+    --text-5xl--line-height: 1;
+    --text-6xl: 4.5rem;
+    --text-6xl--line-height: 1;
+}
+
 :root {
-    --background: #ffffff;
-    --foreground: #171717;
+    --background: #fdfbf3;
+    --foreground: #201a0f;
 }
 
 @media (min-width: 768px) {
@@ -15,5 +156,5 @@
 body {
     color: var(--foreground);
     background: var(--background);
-    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Gaegu", "Apple SD Gothic Neo", sans-serif;
 }
