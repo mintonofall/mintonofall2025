@@ -52,6 +52,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
     const [matches, setMatches] = useState<any[]>([]);
     const [allMatches, setAllMatches] = useState<any[]>([]);
     const [displayCount, setDisplayCount] = useState<number>(10);
+    const [resultFilterPlayerId, setResultFilterPlayerId] = useState<number | null>(null);
     const [selectedPlayers, setSelectedPlayers] = useState<number[]>([]);
     const [bettedMatchIds, setBettedMatchIds] = useState<number[] | null>(null);
     const [currentTime, setCurrentTime] = useState<Date>(new Date());
@@ -258,6 +259,11 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
         if (activeTab === "results") setDisplayCount(10);
         if (activeTab === "betting") setBetDisplayCount(10);
     }, [activeTab]);
+
+    // 게임 결과 선수 필터가 바뀌면 표시 개수 초기화
+    useEffect(() => {
+        setDisplayCount(10);
+    }, [resultFilterPlayerId]);
 
     useEffect(() => {
         // 모바일 브라우저에서 화면을 아래로 당겨서 새로고침하는 동작(Pull-to-refresh)을 막습니다.
@@ -575,8 +581,36 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                         <h2 className="text-xl lg:text-2xl font-semibold mb-2 lg:mb-4 text-green-600 border-b pb-2">
                             오늘의 게임 결과
                         </h2>
+                        <div className="mb-4">
+                            <select
+                                value={resultFilterPlayerId ?? ""}
+                                onChange={(e) =>
+                                    setResultFilterPlayerId(e.target.value ? Number(e.target.value) : null)
+                                }
+                                className="border border-gray-300 rounded px-3 py-2 text-sm w-full outline-none focus:border-green-500 bg-white"
+                            >
+                                <option value="">전체 선수</option>
+                                {[...players]
+                                    .sort((a: any, b: any) => (a.name || "").localeCompare(b.name || ""))
+                                    .map((p: any) => (
+                                        <option key={p.id} value={p.id}>
+                                            {p.name}
+                                        </option>
+                                    ))}
+                            </select>
+                        </div>
+                        {(() => {
+                            const filteredMatches = resultFilterPlayerId
+                                ? matches.filter((m: any) =>
+                                      [m.player1id, m.player2id, m.player3id, m.player4id].includes(
+                                          resultFilterPlayerId,
+                                      ),
+                                  )
+                                : matches;
+
+                            return (
                         <div className="flex flex-col gap-4">
-                            {matches.slice(0, displayCount).map((match: any, index: number) => {
+                            {filteredMatches.slice(0, displayCount).map((match: any, index: number) => {
                                 const p1 = players.find((p: any) => p.id === match.player1id);
                                 const p2 = players.find((p: any) => p.id === match.player2id);
                                 const p3 = players.find((p: any) => p.id === match.player3id);
@@ -609,7 +643,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                                           hour: "2-digit",
                                                           minute: "2-digit",
                                                       })
-                                                    : `Game ${matches.length - index}`}{" "}
+                                                    : `Game ${filteredMatches.length - index}`}{" "}
                                                 종료
                                             </span>
                                             <span>게임 번호: {match.id}</span>
@@ -623,13 +657,19 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                     </div>
                                 );
                             })}
-                            {matches.length === 0 && (
-                                <div className="text-center text-gray-500 py-10">오늘 완료된 게임이 없습니다.</div>
+                            {filteredMatches.length === 0 && (
+                                <div className="text-center text-gray-500 py-10">
+                                    {resultFilterPlayerId
+                                        ? "선택한 선수의 게임 결과가 없습니다."
+                                        : "오늘 완료된 게임이 없습니다."}
+                                </div>
                             )}
-                            {matches.length > 0 && displayCount < matches.length && (
+                            {filteredMatches.length > 0 && displayCount < filteredMatches.length && (
                                 <div className="text-center text-sm text-gray-400 py-2">스크롤하여 더 보기...</div>
                             )}
                         </div>
+                            );
+                        })()}
                     </div>
                 )}
 
