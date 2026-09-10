@@ -65,9 +65,17 @@ export default function LeftTopSection({
         return player.avater.startsWith("https://imagedelivery.net/") ? `${player.avater}/avatar` : player.avater;
     };
 
+    // 코트가 6개 또는 8개면 한 줄에 다 넣기엔 좁아지므로 두 줄로 배치합니다.
+    let courtsContainerClass = "flex h-full gap-2";
+    if (howManyCourts === 6) {
+        courtsContainerClass = "grid grid-cols-3 grid-rows-2 h-full gap-2";
+    } else if (howManyCourts === 8) {
+        courtsContainerClass = "grid grid-cols-4 grid-rows-2 h-full gap-2";
+    }
+
     return (
         <div className="h-[30%] p-4 bg-gray-50">
-            <div className="flex h-full gap-2">
+            <div className={courtsContainerClass}>
                 {/* 클럽의 코트 수만큼 코트 컴포넌트를 렌더링 */}
                 {Array.from({ length: howManyCourts }).map((_, index) => {
                     const courtData = courts[index];
