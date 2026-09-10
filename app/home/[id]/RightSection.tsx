@@ -165,19 +165,25 @@ export default function RightSection({
                                     )}
                                 </div>
                                 {/* 선수 정보 (이름, 마지막 게임 시간, 리그 참가 여부 등) */}
-                                <div className="flex flex-col">
-                                    <div className="flex items-center gap-2">
-                                        <span className="font-bold text-sm ">{player.name}</span>
-                                        <span className="text-sm text-gray-500">
+                                <div className="flex flex-col min-w-0 flex-1">
+                                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                                        <span
+                                            className={`font-bold text-sm whitespace-nowrap ${
+                                                player.gender === "woman" ? "text-pink-500" : "text-black"
+                                            }`}
+                                        >
+                                            {player.name}
+                                        </span>
+                                        <span className="text-sm text-gray-500 whitespace-nowrap">
                                             {getLastGameElapsedTime(player.gameDatas)}
                                         </span>
                                         {player.isJoinLeague && (
-                                            <span className="px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs font-bold">
+                                            <span className="px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs font-bold whitespace-nowrap">
                                                 리그참가
                                             </span>
                                         )}
                                     </div>
-                                    <span className="text-sm text-gray-500">
+                                    <span className="text-sm text-gray-500 whitespace-nowrap">
                                         {player.age} • {player.grade}조 • {getTodayGameCount(player.gameDatas)}경기
                                     </span>
                                 </div>
