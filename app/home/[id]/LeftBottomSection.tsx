@@ -80,7 +80,7 @@ export default function LeftBottomSection({
                                 </button>
                             ) : gridData[index] ? (
                                 <>
-                                    <div className="flex flex-row items-center justify-start w-full h-full overflow-hidden p-1 pl-2">
+                                    <div className="flex flex-row items-center justify-start w-full h-full overflow-hidden p-1 pl-2 pr-4">
                                         <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex-shrink-0 mr-2">
                                             {gridData[index].avater ? (
                                                 <img
@@ -99,9 +99,9 @@ export default function LeftBottomSection({
                                             )}
                                         </div>
                                         {/* 선수 정보 (이름, 나이, 급수, 경기 수 등) */}
-                                        <div className="text-left leading-tight">
-                                            <div className="flex items-center gap-1 h-5 w-full">
-                                                <span className="font-bold text-sm truncate max-w-[60px]">
+                                        <div className="text-left leading-tight min-w-0 flex-1">
+                                            <div className="flex items-center gap-1 h-5 w-full min-w-0">
+                                                <span className="font-bold text-sm truncate min-w-0 flex-1">
                                                     {gridData[index].name}
                                                 </span>
                                                 {gridData[index].isJoinLeague && (
