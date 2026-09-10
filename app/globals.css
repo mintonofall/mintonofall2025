@@ -146,6 +146,17 @@
     --foreground: #201a0f;
 }
 
+/*
+ * 해상도가 높은/넓은 모니터일수록 글자와 아바타(rem 기반 크기)가 상대적으로
+ * 작아 보이므로, 뷰포트 너비에 따라 기준 폰트 크기를 부드럽게 키웁니다.
+ * rem 단위를 쓰는 모든 폰트 크기·아바타 크기·여백이 함께 비례해서 커집니다.
+ * 1024px 근처(태블릿/노트북)에서는 기존과 동일하고, 1920px 이상의 큰
+ * 모니터에서는 최대 약 30%까지 커집니다.
+ */
+html {
+    font-size: clamp(16px, 9.5px + 0.6vw, 21px);
+}
+
 @media (min-width: 768px) {
     /* :root {
         --background: #0a0a0a;
@@ -157,4 +168,6 @@ body {
     color: var(--foreground);
     background: var(--background);
     font-family: "Do Hyeon", "Apple SD Gothic Neo", sans-serif;
+    /* 좁은 flex/grid 컨테이너에서 한글이 글자 단위로 쪼개져 줄바꿈되는 것을 방지합니다. */
+    word-break: keep-all;
 }
