@@ -86,7 +86,7 @@ function CreateClubContent({ params }: { params: Promise<{ id: string }> }) {
                                 />
                                 3
                             </label>
-                            <label className="flex items-center">
+                            <label className="mr-4 flex items-center">
                                 <input
                                     type="radio"
                                     id="howManyCourts4"
@@ -96,15 +96,25 @@ function CreateClubContent({ params }: { params: Promise<{ id: string }> }) {
                                 />
                                 4
                             </label>
-                            <label className="flex items-center">
+                            <label className="mr-4 flex items-center">
                                 <input
                                     type="radio"
-                                    id="howManyCourts4"
+                                    id="howManyCourts6"
                                     name="howManyCourts"
                                     value="6"
                                     className="mr-2"
                                 />
                                 6
+                            </label>
+                            <label className="flex items-center">
+                                <input
+                                    type="radio"
+                                    id="howManyCourts8"
+                                    name="howManyCourts"
+                                    value="8"
+                                    className="mr-2"
+                                />
+                                8
                             </label>
                         </div>
                     </div>
