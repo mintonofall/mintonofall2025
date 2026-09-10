@@ -66,6 +66,8 @@ export default function LeftTopSection({
     };
 
     // 코트가 6개 또는 8개면 한 줄에 다 넣기엔 좁아지므로 두 줄로 배치합니다.
+    // 이 경우 칸 높이가 절반으로 줄어들기 때문에 내부 요소들도 함께 축소합니다.
+    const isTwoRows = howManyCourts === 6 || howManyCourts === 8;
     let courtsContainerClass = "flex h-full gap-2";
     if (howManyCourts === 6) {
         courtsContainerClass = "grid grid-cols-3 grid-rows-2 h-full gap-2";
@@ -91,20 +93,24 @@ export default function LeftTopSection({
                         <div
                             key={index}
                             // courtPointer와 인덱스가 일치하는 코트(다음에 게임이 배정될 코트)는 다른 배경색으로 강조
-                            className={`relative flex-1 flex flex-col items-center justify-center rounded shadow-sm cursor-pointer ${
-                                courtPointer === index ? "bg-green-500" : "bg-white"
-                            }`}
+                            className={`relative flex-1 flex flex-col items-center justify-center rounded shadow-sm cursor-pointer overflow-hidden ${
+                                isTwoRows ? "p-1" : "p-2"
+                            } ${courtPointer === index ? "bg-green-500" : "bg-white"}`}
                             onClick={() => setCourtPointer(index)}
                         >
                             {/* 리그 게임일 경우 '리그게임' 배지 표시 */}
                             {isLeagueGame && (
-                                <div className="absolute top-2 left-2 px-2 py-1 bg-yellow-400 text-yellow-800 text-xs font-bold rounded z-10">
+                                <div
+                                    className={`absolute top-1 left-1 bg-yellow-400 text-yellow-800 font-bold rounded z-10 ${
+                                        isTwoRows ? "px-1 py-0.5 text-[9px]" : "px-2 py-1 text-xs"
+                                    }`}
+                                >
                                     리그게임
                                 </div>
                             )}
                             <span
                                 // 코트가 비어있으면 'Court N', 게임 중이면 경과 시간 표시
-                                className={`text-xl font-bold ${courtPointer === index ? "text-white" : "text-gray-600"}`}
+                                className={`font-bold ${isTwoRows ? "text-sm" : "text-xl"} ${courtPointer === index ? "text-white" : "text-gray-600"}`}
                             >
                                 {courtData ? getElapsedTime(courtData.startTime) : `Court ${index + 1}`}
                             </span>
@@ -113,27 +119,39 @@ export default function LeftTopSection({
                                     {!courtData.isLoading && (
                                         // 경기 취소 버튼
                                         <button
-                                            className="absolute top-1 right-1 w-6 h-6 flex items-center justify-center bg-white/80 hover:bg-red-100 rounded-full shadow-sm text-gray-500 hover:text-red-600 transition-colors"
+                                            className={`absolute top-1 right-1 flex items-center justify-center bg-white/80 hover:bg-red-100 rounded-full shadow-sm text-gray-500 hover:text-red-600 transition-colors ${
+                                                isTwoRows ? "w-4 h-4" : "w-6 h-6"
+                                            }`}
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 setCourtPointer(index);
                                                 onGameCancel?.(index);
                                             }}
                                         >
-                                            <span className="text-xs font-bold">✕</span>
+                                            <span className={isTwoRows ? "text-[9px] font-bold" : "text-xs font-bold"}>
+                                                ✕
+                                            </span>
                                         </button>
                                     )}
                                     {/* 게임에 참여 중인 선수 얼굴 및 이름 표시 */}
-                                    <div className="grid grid-cols-2 gap-x-3 gap-y-2 mt-2 px-2 w-full">
+                                    <div
+                                        className={`grid grid-cols-2 w-full ${
+                                            isTwoRows ? "gap-x-1 gap-y-0.5 mt-1 px-1" : "gap-x-3 gap-y-2 mt-2 px-2"
+                                        }`}
+                                    >
                                         {[courtData.p1, courtData.p2, courtData.p3, courtData.p4].map(
                                             (player, playerIndex) => {
                                                 const avatarSrc = getAvatarSrc(player);
                                                 return (
                                                     <div
                                                         key={playerIndex}
-                                                        className="flex flex-col items-center gap-1 min-w-0"
+                                                        className={`flex flex-col items-center min-w-0 ${isTwoRows ? "gap-0.5" : "gap-1"}`}
                                                     >
-                                                        <div className="w-14 h-14 rounded-full bg-gray-200 overflow-hidden flex-shrink-0 flex items-center justify-center">
+                                                        <div
+                                                            className={`rounded-full bg-gray-200 overflow-hidden flex-shrink-0 flex items-center justify-center ${
+                                                                isTwoRows ? "w-6 h-6" : "w-14 h-14"
+                                                            }`}
+                                                        >
                                                             {avatarSrc ? (
                                                                 <img
                                                                     src={avatarSrc}
@@ -141,11 +159,11 @@ export default function LeftTopSection({
                                                                     className="w-full h-full object-cover"
                                                                 />
                                                             ) : (
-                                                                <span className="text-[10px] text-gray-400">No</span>
+                                                                <span className="text-[9px] text-gray-400">No</span>
                                                             )}
                                                         </div>
                                                         <span
-                                                            className={`text-xs font-bold truncate max-w-14 ${courtPointer === index ? "text-white" : "text-gray-800"}`}
+                                                            className={`font-bold truncate ${isTwoRows ? "text-[9px] max-w-10" : "text-xs max-w-14"} ${courtPointer === index ? "text-white" : "text-gray-800"}`}
                                                         >
                                                             {player?.name}
                                                         </span>
@@ -154,20 +172,35 @@ export default function LeftTopSection({
                                             },
                                         )}
                                     </div>
-                                    {!courtData.isLoading && (
-                                        // 경기 종료 버튼
-                                        <button
-                                            className="mt-3 bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded shadow-sm transition-colors z-10"
-                                            onClick={(e) => {
-                                                e.preventDefault();
-                                                e.stopPropagation();
-                                                setCourtPointer(index);
-                                                onGameEnd?.(index);
-                                            }}
-                                        >
-                                            경기 종료
-                                        </button>
-                                    )}
+                                    {!courtData.isLoading &&
+                                        (isTwoRows ? (
+                                            // 경기 종료 버튼 (2줄 모드: 칸 높이가 좁아 절대위치 아이콘 버튼으로 대체)
+                                            <button
+                                                className="absolute bottom-1 right-1 w-5 h-5 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-sm transition-colors z-10"
+                                                title="경기 종료"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    setCourtPointer(index);
+                                                    onGameEnd?.(index);
+                                                }}
+                                            >
+                                                <span className="text-[10px] font-bold">✓</span>
+                                            </button>
+                                        ) : (
+                                            // 경기 종료 버튼
+                                            <button
+                                                className="mt-3 bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded shadow-sm transition-colors z-10"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    e.stopPropagation();
+                                                    setCourtPointer(index);
+                                                    onGameEnd?.(index);
+                                                }}
+                                            >
+                                                경기 종료
+                                            </button>
+                                        ))}
                                 </>
                             )}
                         </div>
