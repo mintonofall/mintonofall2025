@@ -89,12 +89,15 @@ export default function LeftTopSection({
                         courtData.p3?.isJoinLeague &&
                         courtData.p4?.isJoinLeague;
 
+                    const avatarSizeClass = "w-12 h-12";
+                    const nameOverlayTextClass = isTwoRows ? "text-[21px]" : "text-[10px]";
+
                     return (
                         <div
                             key={index}
                             // courtPointer와 인덱스가 일치하는 코트(다음에 게임이 배정될 코트)는 다른 배경색으로 강조
                             className={`relative flex-1 flex flex-col items-center justify-center rounded shadow-sm cursor-pointer overflow-hidden ${
-                                isTwoRows ? "p-1" : "p-2"
+                                isTwoRows ? "p-0" : "p-2"
                             } ${courtPointer === index ? "bg-green-500" : "bg-white"}`}
                             onClick={() => setCourtPointer(index)}
                         >
@@ -108,12 +111,23 @@ export default function LeftTopSection({
                                     리그게임
                                 </div>
                             )}
-                            <span
-                                // 코트가 비어있으면 'Court N', 게임 중이면 경과 시간 표시
-                                className={`font-bold ${isTwoRows ? "text-sm" : "text-xl"} ${courtPointer === index ? "text-white" : "text-gray-600"}`}
+                            {/* 상단 헤더: 코트 상태 텍스트.
+                                2줄 모드는 사진을 최대한 키우기 위해 맨 위에 작게 고정(절대위치)하고,
+                                1줄 모드는 기존처럼 사진 위 흐름 안에 배치합니다. */}
+                            <div
+                                className={
+                                    isTwoRows
+                                        ? "absolute top-0.5 inset-x-0 flex items-center justify-center z-10"
+                                        : "flex items-center justify-center"
+                                }
                             >
-                                {courtData ? getElapsedTime(courtData.startTime) : `Court ${index + 1}`}
-                            </span>
+                                <span
+                                    // 코트가 비어있으면 'Court N', 게임 중이면 경과 시간 표시
+                                    className={`font-bold ${isTwoRows ? "text-[9px]" : "text-lg"} ${courtPointer === index ? "text-white" : "text-gray-600"}`}
+                                >
+                                    {courtData ? getElapsedTime(courtData.startTime) : `Court ${index + 1}`}
+                                </span>
+                            </div>
                             {courtData && (
                                 <>
                                     {!courtData.isLoading && (
@@ -133,11 +147,13 @@ export default function LeftTopSection({
                                             </span>
                                         </button>
                                     )}
-                                    {/* 게임에 참여 중인 선수 얼굴 및 이름 표시 */}
+                                    {/* 게임에 참여 중인 선수 얼굴 (이름은 사진 하단에 겹쳐서 표시) */}
                                     <div
-                                        className={`grid grid-cols-2 w-full ${
-                                            isTwoRows ? "gap-x-1 gap-y-0.5 mt-1 px-1" : "gap-x-3 gap-y-2 mt-2 px-2"
-                                        }`}
+                                        className={
+                                            isTwoRows
+                                                ? "flex flex-row justify-center w-full gap-0"
+                                                : "grid grid-cols-2 w-full gap-2 mt-2 px-2"
+                                        }
                                     >
                                         {[courtData.p1, courtData.p2, courtData.p3, courtData.p4].map(
                                             (player, playerIndex) => {
@@ -145,25 +161,24 @@ export default function LeftTopSection({
                                                 return (
                                                     <div
                                                         key={playerIndex}
-                                                        className={`flex flex-col items-center min-w-0 ${isTwoRows ? "gap-0.5" : "gap-1"}`}
+                                                        className={
+                                                            isTwoRows
+                                                                ? "relative flex-1 aspect-square min-w-0 rounded-lg bg-gray-200 overflow-hidden flex items-center justify-center"
+                                                                : `relative mx-auto rounded-lg bg-gray-200 overflow-hidden flex-shrink-0 flex items-center justify-center ${avatarSizeClass}`
+                                                        }
                                                     >
-                                                        <div
-                                                            className={`rounded-full bg-gray-200 overflow-hidden flex-shrink-0 flex items-center justify-center ${
-                                                                isTwoRows ? "w-6 h-6" : "w-14 h-14"
-                                                            }`}
-                                                        >
-                                                            {avatarSrc ? (
-                                                                <img
-                                                                    src={avatarSrc}
-                                                                    alt={player?.name}
-                                                                    className="w-full h-full object-cover"
-                                                                />
-                                                            ) : (
-                                                                <span className="text-[9px] text-gray-400">No</span>
-                                                            )}
-                                                        </div>
+                                                        {avatarSrc ? (
+                                                            <img
+                                                                src={avatarSrc}
+                                                                alt={player?.name}
+                                                                className="w-full h-full object-cover"
+                                                            />
+                                                        ) : (
+                                                            <span className="text-[9px] text-gray-400">No</span>
+                                                        )}
+                                                        {/* 이름표: 사진 하단에 겹쳐서 표시 */}
                                                         <span
-                                                            className={`font-bold truncate ${isTwoRows ? "text-[9px] max-w-10" : "text-xs max-w-14"} ${courtPointer === index ? "text-white" : "text-gray-800"}`}
+                                                            className={`absolute bottom-0 left-0 right-0 bg-black/50 text-white font-bold text-center truncate leading-tight px-0.5 ${nameOverlayTextClass}`}
                                                         >
                                                             {player?.name}
                                                         </span>
@@ -172,35 +187,22 @@ export default function LeftTopSection({
                                             },
                                         )}
                                     </div>
-                                    {!courtData.isLoading &&
-                                        (isTwoRows ? (
-                                            // 경기 종료 버튼 (2줄 모드: 칸 높이가 좁아 절대위치 아이콘 버튼으로 대체)
-                                            <button
-                                                className="absolute bottom-1 right-1 w-5 h-5 flex items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-sm transition-colors z-10"
-                                                title="경기 종료"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    setCourtPointer(index);
-                                                    onGameEnd?.(index);
-                                                }}
-                                            >
-                                                <span className="text-[10px] font-bold">✓</span>
-                                            </button>
-                                        ) : (
-                                            // 경기 종료 버튼
-                                            <button
-                                                className="mt-3 bg-blue-600 hover:bg-blue-700 text-white text-xs px-3 py-1 rounded shadow-sm transition-colors z-10"
-                                                onClick={(e) => {
-                                                    e.preventDefault();
-                                                    e.stopPropagation();
-                                                    setCourtPointer(index);
-                                                    onGameEnd?.(index);
-                                                }}
-                                            >
-                                                경기 종료
-                                            </button>
-                                        ))}
+                                    {!courtData.isLoading && (
+                                        // 경기완료 버튼: 코트 카드 하단에 배치
+                                        <button
+                                            className={`bg-blue-600 hover:bg-blue-700 text-white font-bold rounded shadow-sm transition-colors z-10 ${
+                                                isTwoRows ? "mt-0.5 mb-0.5 px-2 py-0.5 text-[10px]" : "mt-2 px-3 py-1 text-xs"
+                                            }`}
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                setCourtPointer(index);
+                                                onGameEnd?.(index);
+                                            }}
+                                        >
+                                            경기완료
+                                        </button>
+                                    )}
                                 </>
                             )}
                         </div>
