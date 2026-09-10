@@ -94,6 +94,8 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
     const [showPlayerList, setShowPlayerList] = useState(false);
     /** @type {string} 전체 선수 목록 검색어 */
     const [searchTerm, setSearchTerm] = useState("");
+    /** @type {number[]} 전체 선수 목록에서 체크박스로 선택된 선수 id 목록 */
+    const [selectedPlayerIds, setSelectedPlayerIds] = useState<number[]>([]);
     /** @type {any[]} 현재 입장한 대기 선수 목록 */
     const [waitPlayerList, setWaitPlayerList] = useState<any[]>([]);
     /** @type {boolean} 데이터 로딩 상태 */
@@ -294,6 +296,26 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
     const handleExit = async (playerId: number) => {
         setWaitPlayerList((prev) => prev.filter((p) => p.id !== playerId));
         await exitPlayer(playerId, clubId);
+    };
+
+    /**
+     * 선수(들)를 대기 명단에 입장시키는 헬퍼 함수. 단일/다중 입장에서 공통으로 사용합니다.
+     * @param {any[]} playersToEnter - 입장시킬 선수 배열
+     */
+    const enterPlayers = (playersToEnter: any[]) => {
+        const alreadyEntered = playersToEnter.filter((player) => waitPlayerList.some((p) => p.id === player.id));
+        const newPlayers = playersToEnter.filter((player) => !waitPlayerList.some((p) => p.id === player.id));
+
+        if (alreadyEntered.length > 0) {
+            alert(`이미 입장한 선수입니다: ${alreadyEntered.map((p) => p.name).join(", ")}`);
+        }
+        if (newPlayers.length === 0) return;
+
+        setWaitPlayerList((prev) => [
+            ...newPlayers.map((player) => ({ ...player, clickedTime: new Date() })),
+            ...prev,
+        ]);
+        newPlayers.forEach((player) => pushWaitPlayerList(player.id, clubId));
     };
 
     /**
@@ -953,21 +975,42 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                     <div className="absolute top-10 right-10 bg-white rounded-lg p-6 w-96 max-h-[80vh] overflow-y-auto">
                         <button
                             className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
-                            onClick={() => setShowPlayerList(false)}
+                            onClick={() => {
+                                setShowPlayerList(false);
+                                setSelectedPlayerIds([]);
+                            }}
                         >
                             <span className="text-2xl">×</span>
                         </button>
                         <div className="flex justify-between items-center mb-4 pr-6">
                             <h2 className="text-xl font-bold">Players List</h2>
-                            <button
-                                className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600"
-                                onClick={() => {
-                                    setAddModalOpen(true);
-                                    setShowPlayerList(false);
-                                }}
-                            >
-                                선수 추가
-                            </button>
+                            <div className="flex gap-2">
+                                {selectedPlayerIds.length > 0 && (
+                                    <button
+                                        className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+                                        onClick={() => {
+                                            const playersToEnter = players.filter((p) =>
+                                                selectedPlayerIds.includes(p.id),
+                                            );
+                                            enterPlayers(playersToEnter);
+                                            setSelectedPlayerIds([]);
+                                            setShowPlayerList(false);
+                                        }}
+                                    >
+                                        선수입장 ({selectedPlayerIds.length})
+                                    </button>
+                                )}
+                                <button
+                                    className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600"
+                                    onClick={() => {
+                                        setAddModalOpen(true);
+                                        setShowPlayerList(false);
+                                        setSelectedPlayerIds([]);
+                                    }}
+                                >
+                                    선수 추가
+                                </button>
+                            </div>
                         </div>
                         <input
                             type="text"
@@ -992,18 +1035,25 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                                         key={index}
                                         className="flex items-center gap-3 p-3 border rounded hover:bg-gray-50 cursor-pointer"
                                         onClick={() => {
-                                            if (waitPlayerList.some((p) => p.id === player.id)) {
-                                                alert("이미 입장한 선수입니다");
-                                                return;
-                                            }
+                                            // 체크박스가 아닌 나머지 영역을 클릭하면 예전처럼 즉시 해당 선수만 입장시킵니다.
+                                            enterPlayers([player]);
                                             setShowPlayerList(false);
-                                            setWaitPlayerList((prev) => [
-                                                { ...player, clickedTime: new Date() },
-                                                ...prev,
-                                            ]);
-                                            pushWaitPlayerList(player.id, clubId);
+                                            setSelectedPlayerIds([]);
                                         }}
                                     >
+                                        <input
+                                            type="checkbox"
+                                            className="w-5 h-5 flex-shrink-0 cursor-pointer accent-blue-500"
+                                            checked={selectedPlayerIds.includes(player.id)}
+                                            onClick={(e) => e.stopPropagation()}
+                                            onChange={(e) => {
+                                                setSelectedPlayerIds((prev) =>
+                                                    e.target.checked
+                                                        ? [...prev, player.id]
+                                                        : prev.filter((id) => id !== player.id),
+                                                );
+                                            }}
+                                        />
                                         <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
                                             {player.avater ? (
                                                 <img
