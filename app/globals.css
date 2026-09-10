@@ -116,7 +116,7 @@
     --radius-xl: 1.4rem;
     --radius-2xl: 1.8rem;
 
-    --font-sans: "Gaegu", "Apple SD Gothic Neo", sans-serif;
+    --font-sans: "Do Hyeon", "Apple SD Gothic Neo", sans-serif;
 
     /* 손글씨 폰트는 작은 크기에서 잘 안 보이므로 전체 글자 크기 단계를 큼직하게 키움 */
     --text-xs: 1rem;
@@ -156,5 +156,5 @@
 body {
     color: var(--foreground);
     background: var(--background);
-    font-family: "Gaegu", "Apple SD Gothic Neo", sans-serif;
+    font-family: "Do Hyeon", "Apple SD Gothic Neo", sans-serif;
 }
