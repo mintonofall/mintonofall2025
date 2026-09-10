@@ -34,62 +34,15 @@ export default async function handleClubCreate(
         },
     });
     await db.gameBoard.createMany({
-        data: [
-            {
-                gameid: "0",
-                clubid: newClub.id,
-                CourtNumber: 1,
-                player1id: 12,
-                player2id: 12,
-                player3id: 12,
-                player4id: 12,
-            },
-            {
-                gameid: "0",
-                clubid: newClub.id,
-                CourtNumber: 2,
-                player1id: 12,
-                player2id: 12,
-                player3id: 12,
-                player4id: 12,
-            },
-            {
-                gameid: "0",
-                clubid: newClub.id,
-                CourtNumber: 3,
-                player1id: 12,
-                player2id: 12,
-                player3id: 12,
-                player4id: 12,
-            },
-            {
-                gameid: "0",
-                clubid: newClub.id,
-                CourtNumber: 4,
-                player1id: 12,
-                player2id: 12,
-                player3id: 12,
-                player4id: 12,
-            },
-            {
-                gameid: "0",
-                clubid: newClub.id,
-                CourtNumber: 5,
-                player1id: 12,
-                player2id: 12,
-                player3id: 12,
-                player4id: 12,
-            },
-            {
-                gameid: "0",
-                clubid: newClub.id,
-                CourtNumber: 6,
-                player1id: 12,
-                player2id: 12,
-                player3id: 12,
-                player4id: 12,
-            },
-        ],
+        data: Array.from({ length: howManyCourts }, (_, i) => ({
+            gameid: "0",
+            clubid: newClub.id,
+            CourtNumber: i + 1,
+            player1id: 12,
+            player2id: 12,
+            player3id: 12,
+            player4id: 12,
+        })),
     });
     redirect("/home");
 }
