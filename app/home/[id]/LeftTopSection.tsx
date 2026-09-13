@@ -133,7 +133,7 @@ export default function LeftTopSection({
                                     {!courtData.isLoading && (
                                         // 경기 취소 버튼
                                         <button
-                                            className={`absolute top-1 right-1 flex items-center justify-center bg-white/80 hover:bg-red-100 rounded-full shadow-sm text-gray-500 hover:text-red-600 transition-colors ${
+                                            className={`absolute top-1 right-1 z-20 flex items-center justify-center bg-white/80 hover:bg-red-100 rounded-full shadow-sm text-gray-500 hover:text-red-600 transition-colors ${
                                                 isTwoRows ? "w-4 h-4" : "w-6 h-6"
                                             }`}
                                             onClick={(e) => {

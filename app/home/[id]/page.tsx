@@ -972,7 +972,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
 
             {showPlayerList && (
                 <div className="fixed inset-0 bg-black/50 z-50">
-                    <div className="absolute top-10 right-10 bg-white rounded-lg p-6 w-96 max-h-[80vh] overflow-y-auto">
+                    <div className="absolute top-10 right-10 bg-white rounded-lg w-96 max-h-[80vh] flex flex-col">
                         <button
                             className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
                             onClick={() => {
@@ -982,44 +982,46 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                         >
                             <span className="text-2xl">×</span>
                         </button>
-                        <div className="flex justify-between items-center mb-4 pr-6">
-                            <h2 className="text-xl font-bold">Players List</h2>
-                            <div className="flex gap-2">
-                                {selectedPlayerIds.length > 0 && (
+                        <div className="p-6 pb-0 shrink-0">
+                            <div className="flex justify-between items-center mb-4 pr-6">
+                                <h2 className="text-xl font-bold">Players List</h2>
+                                <div className="flex gap-2">
+                                    {selectedPlayerIds.length > 0 && (
+                                        <button
+                                            className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+                                            onClick={() => {
+                                                const playersToEnter = players.filter((p) =>
+                                                    selectedPlayerIds.includes(p.id),
+                                                );
+                                                enterPlayers(playersToEnter);
+                                                setSelectedPlayerIds([]);
+                                                setShowPlayerList(false);
+                                            }}
+                                        >
+                                            선수입장 ({selectedPlayerIds.length})
+                                        </button>
+                                    )}
                                     <button
-                                        className="px-3 py-1 bg-blue-500 text-white text-sm rounded hover:bg-blue-600"
+                                        className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600"
                                         onClick={() => {
-                                            const playersToEnter = players.filter((p) =>
-                                                selectedPlayerIds.includes(p.id),
-                                            );
-                                            enterPlayers(playersToEnter);
-                                            setSelectedPlayerIds([]);
+                                            setAddModalOpen(true);
                                             setShowPlayerList(false);
+                                            setSelectedPlayerIds([]);
                                         }}
                                     >
-                                        선수입장 ({selectedPlayerIds.length})
+                                        선수 추가
                                     </button>
-                                )}
-                                <button
-                                    className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600"
-                                    onClick={() => {
-                                        setAddModalOpen(true);
-                                        setShowPlayerList(false);
-                                        setSelectedPlayerIds([]);
-                                    }}
-                                >
-                                    선수 추가
-                                </button>
+                                </div>
                             </div>
+                            <input
+                                type="text"
+                                placeholder="이름 검색"
+                                className="w-full p-2 mb-4 border border-gray-300 rounded"
+                                value={searchTerm}
+                                onChange={(e) => setSearchTerm(e.target.value)}
+                            />
                         </div>
-                        <input
-                            type="text"
-                            placeholder="이름 검색"
-                            className="w-full p-2 mb-4 border border-gray-300 rounded"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                        />
-                        <div className="flex flex-col gap-2">
+                        <div className="flex flex-col gap-2 overflow-y-auto px-6 pb-6">
                             {players
                                 .filter((player) => {
                                     const name = player.name;
