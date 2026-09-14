@@ -37,19 +37,15 @@ export default async function Home() {
     const joinedClubsList = club?.joinedClubs || [];
     const pendingClubsList = club?.pendingClubs || [];
 
-    // 실험용클럽(id=2)은 모든 유저가 가입 절차 없이 바로 사용할 수 있도록 노출합니다.
+    // 실험용클럽(id=2)의 게임진행판은 가입 여부와 무관하게 모든 유저가 바로 사용할 수 있도록 링크만 노출합니다.
     const EXPERIMENTAL_CLUB_ID = 2;
     const experimentalClub = user?.id
         ? await db.club.findUnique({ where: { id: EXPERIMENTAL_CLUB_ID } })
         : null;
-    const combinedJoinedClubsList = experimentalClub
-        ? [experimentalClub, ...joinedClubsList.filter((c) => c.id !== EXPERIMENTAL_CLUB_ID)]
-        : joinedClubsList;
 
     const unjoinedClubs = await db.club.findMany({
         where: user?.id
             ? {
-                  id: { not: EXPERIMENTAL_CLUB_ID },
                   NOT: {
                       OR: [
                           { users: { some: { id: user.id } } },
@@ -58,13 +54,13 @@ export default async function Home() {
                       ],
                   },
               }
-            : { id: { not: EXPERIMENTAL_CLUB_ID } },
+            : {},
     });
     console.log(club);
 
     // favoriteClub 배열 기준으로 정렬 (즐겨찾기 된 클럽들이 맨 위로)
     const favoriteClubs = club?.favoriteClub || [];
-    const sortedJoinedClubsList = [...combinedJoinedClubsList].sort((a, b) => {
+    const sortedJoinedClubsList = [...joinedClubsList].sort((a, b) => {
         const aFav = favoriteClubs.includes(a.id);
         const bFav = favoriteClubs.includes(b.id);
         if (aFav && !bFav) return -1;
@@ -132,6 +128,16 @@ export default async function Home() {
                     </form>
                 </div>
             </div>
+            {experimentalClub && (
+                <div className="mb-6">
+                    <Link
+                        href={`/home/${experimentalClub.id}`}
+                        className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-3 rounded-lg font-semibold shadow-md transition"
+                    >
+                        🏸 {experimentalClub.clubName} 게임진행판 바로가기
+                    </Link>
+                </div>
+            )}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {club?.clubs.map((club) => (
                     <div key={club.id} className="bg-white shadow-md rounded p-4 flex flex-col justify-between gap-3">
