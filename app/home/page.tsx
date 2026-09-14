@@ -37,9 +37,19 @@ export default async function Home() {
     const joinedClubsList = club?.joinedClubs || [];
     const pendingClubsList = club?.pendingClubs || [];
 
+    // 실험용클럽(id=2)은 모든 유저가 가입 절차 없이 바로 사용할 수 있도록 노출합니다.
+    const EXPERIMENTAL_CLUB_ID = 2;
+    const experimentalClub = user?.id
+        ? await db.club.findUnique({ where: { id: EXPERIMENTAL_CLUB_ID } })
+        : null;
+    const combinedJoinedClubsList = experimentalClub
+        ? [experimentalClub, ...joinedClubsList.filter((c) => c.id !== EXPERIMENTAL_CLUB_ID)]
+        : joinedClubsList;
+
     const unjoinedClubs = await db.club.findMany({
         where: user?.id
             ? {
+                  id: { not: EXPERIMENTAL_CLUB_ID },
                   NOT: {
                       OR: [
                           { users: { some: { id: user.id } } },
@@ -48,13 +58,13 @@ export default async function Home() {
                       ],
                   },
               }
-            : {},
+            : { id: { not: EXPERIMENTAL_CLUB_ID } },
     });
     console.log(club);
 
     // favoriteClub 배열 기준으로 정렬 (즐겨찾기 된 클럽들이 맨 위로)
     const favoriteClubs = club?.favoriteClub || [];
-    const sortedJoinedClubsList = [...joinedClubsList].sort((a, b) => {
+    const sortedJoinedClubsList = [...combinedJoinedClubsList].sort((a, b) => {
         const aFav = favoriteClubs.includes(a.id);
         const bFav = favoriteClubs.includes(b.id);
         if (aFav && !bFav) return -1;
