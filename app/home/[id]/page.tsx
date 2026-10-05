@@ -36,6 +36,7 @@ import EditPlayerModal from "./EditPlayerModal";
 import PlayerHistoryModal from "./PlayerHistoryModal";
 import AddPlayerModal from "./AddPlayerModal";
 import { processBettingResult } from "./processBettingAction";
+import { getMemberMessages, markMemberMessageRead } from "@/lib/memberMessage";
 
 /**
  * 한글 초성을 추출하기 위한 배열
@@ -144,6 +145,10 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
     const [isScreenTooSmall, setIsScreenTooSmall] = useState<boolean | null>(null);
     /** @type {boolean} 해상도 경고 무시 여부 */
     const [forceShowMain, setForceShowMain] = useState(false);
+    /** @type {any[]} 클럽 멤버가 보낸 미확인 요청 메시지 목록 */
+    const [memberMessages, setMemberMessages] = useState<any[]>([]);
+    /** @type {boolean} 요청 메시지 목록 모달 표시 여부 */
+    const [showMessagesModal, setShowMessagesModal] = useState(false);
 
     // --- 데이터 로딩 및 초기화 (Data Loading & Initialization) ---
 
@@ -286,6 +291,36 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         window.addEventListener("resize", checkScreenSize);
         return () => window.removeEventListener("resize", checkScreenSize);
     }, []);
+
+    /**
+     * 클럽 멤버가 보낸 요청 메시지를 주기적으로 가져옵니다.
+     */
+    useEffect(() => {
+        if (!clubId) return;
+        const fetchMessages = async () => {
+            try {
+                const messages = await getMemberMessages(clubId);
+                setMemberMessages(messages || []);
+            } catch (error) {
+                console.error("요청 메시지를 가져오는 중 오류가 발생했습니다:", error);
+            }
+        };
+        fetchMessages();
+        const intervalId = setInterval(fetchMessages, 10000);
+        return () => clearInterval(intervalId);
+    }, [clubId]);
+
+    /**
+     * 요청 메시지를 확인 처리합니다. (목록에서 지우지 않고 읽음 표시만 합니다)
+     */
+    const handleMarkMessageRead = async (id: number) => {
+        setMemberMessages((prev) => prev.map((m) => (m.id === id ? { ...m, isRead: true } : m)));
+        try {
+            await markMemberMessageRead(id);
+        } catch (error) {
+            console.error("요청 메시지 확인 처리 중 오류가 발생했습니다:", error);
+        }
+    };
 
     // --- 이벤트 핸들러 (Event Handlers) ---
 
@@ -857,6 +892,17 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                         {displayInfoCell !== null ? <span>{getRowMatchIds(displayInfoCell)}</span> : "선택된 셀 없음"}
                     </div>
                     <button
+                        className="absolute left-2 px-3 py-1 bg-teal-500 text-white text-xs rounded hover:bg-teal-600 transition-colors"
+                        onClick={() => setShowMessagesModal(true)}
+                    >
+                        요청 메시지
+                        {memberMessages.filter((m) => !m.isRead).length > 0 && (
+                            <span className="ml-1 inline-flex items-center justify-center bg-white text-teal-600 font-bold rounded-full w-5 h-5 text-[10px]">
+                                {memberMessages.filter((m) => !m.isRead).length}
+                            </span>
+                        )}
+                    </button>
+                    <button
                         className="absolute right-2 px-3 py-1 bg-indigo-500 text-white text-xs rounded hover:bg-indigo-600 transition-colors"
                         onClick={() => setShowQRModal(true)}
                     >
@@ -934,6 +980,61 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                             <br />
                             해당 클럽 뷰페이지로 접속하세요.
                         </p>
+                    </div>
+                </div>
+            )}
+
+            {showMessagesModal && (
+                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-lg p-6 w-full max-w-lg max-h-[80vh] flex flex-col relative">
+                        <button
+                            className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"
+                            onClick={() => setShowMessagesModal(false)}
+                        >
+                            <span className="text-2xl pb-1">×</span>
+                        </button>
+                        <h2 className="text-xl font-bold mb-4">요청 메시지</h2>
+                        <div className="flex flex-col gap-3 overflow-y-auto">
+                            {memberMessages.length === 0 ? (
+                                <p className="text-gray-500 text-center py-8">도착한 요청 메시지가 없습니다.</p>
+                            ) : (
+                                memberMessages.map((msg) => (
+                                    <div
+                                        key={msg.id}
+                                        className={`flex justify-between items-start gap-3 p-3 border rounded ${msg.isRead ? "bg-white" : "bg-gray-50"}`}
+                                    >
+                                        <div className="flex flex-col gap-1">
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-bold text-gray-800">
+                                                    {msg.userName || "익명"}
+                                                </span>
+                                                <span className="text-xs text-gray-400">
+                                                    {new Date(msg.createdAt).toLocaleTimeString([], {
+                                                        hour: "2-digit",
+                                                        minute: "2-digit",
+                                                    })}
+                                                </span>
+                                            </div>
+                                            <p
+                                                className={`text-sm whitespace-pre-wrap ${msg.isRead ? "text-gray-400" : "text-gray-700"}`}
+                                            >
+                                                {msg.message}
+                                            </p>
+                                        </div>
+                                        {msg.isRead ? (
+                                            <span className="shrink-0 text-gray-400 text-xs px-2 py-1">확인됨</span>
+                                        ) : (
+                                            <button
+                                                className="shrink-0 bg-teal-500 text-white text-xs px-2 py-1 rounded hover:bg-teal-600 transition-colors"
+                                                onClick={() => handleMarkMessageRead(msg.id)}
+                                            >
+                                                확인
+                                            </button>
+                                        )}
+                                    </div>
+                                ))
+                            )}
+                        </div>
                     </div>
                 </div>
             )}

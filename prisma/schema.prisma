@@ -9,8 +9,8 @@ generator client {
 }
 
 datasource db {
- provider     = "postgresql"
- relationMode = "prisma"
+  provider     = "postgresql"
+  relationMode = "prisma"
 }
 
 model User {
@@ -130,27 +130,39 @@ model DraftPick {
 }
 
 model Club {
-  id              Int       @id @default(autoincrement())
-  clubName        String    @unique
+  id              Int             @id @default(autoincrement())
+  clubName        String          @unique
   clubLogo        String?
   clubDescription String?
   clubLocation    String?
-  users           User[]    @relation("UserClubs")
-  joinedUsers     User[]    @relation("JoinedClub")
-  pendingUsers    User[]    @relation("PendingClubs")
-  howManyCourts   Int       @default(4)
+  users           User[]          @relation("UserClubs")
+  joinedUsers     User[]          @relation("JoinedClub")
+  pendingUsers    User[]          @relation("PendingClubs")
+  howManyCourts   Int             @default(4)
   players         Player[]
   bettings        Betting[]
-  createdAt  DateTime      @default(now())
+  memberMessages  MemberMessage[]
+  createdAt       DateTime        @default(now())
+}
+
+model MemberMessage {
+  id        Int      @id @default(autoincrement())
+  clubid    Int
+  club      Club     @relation(fields: [clubid], references: [id], onDelete: Cascade)
+  userId    Int?
+  userName  String?
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
 }
 
 model ClubDiary {
-  id       Int           @id @default(autoincrement())
-  clubName String
-  userid   Int
-  players  PlayerDiary[]
-  matches  MatchDiary[]
-  user     User          @relation(fields: [userid], references: [id])
+  id        Int           @id @default(autoincrement())
+  clubName  String
+  userid    Int
+  players   PlayerDiary[]
+  matches   MatchDiary[]
+  user      User          @relation(fields: [userid], references: [id])
   createdAt DateTime      @default(now())
 }
 
@@ -184,31 +196,47 @@ model MatchDiary {
   duration  Int?
   score1    Int?
   score2    Int?
-  createdAt  DateTime  @default(now())
+  createdAt DateTime  @default(now())
 }
 
 model Player {
-  id              Int              @id @default(autoincrement())
+  id              Int                 @id @default(autoincrement())
   name            String
   grade           String
-  gender          String           @default("man")
+  gender          String              @default("man")
   age             Int?
   avater          String?
   clubid          Int
-  club            Club             @relation(fields: [clubid], references: [id], onDelete: Cascade)
-  suttlePoint     Int              @default(10000)
+  club            Club                @relation(fields: [clubid], references: [id], onDelete: Cascade)
+  suttlePoint     Int                 @default(10000)
   waitPlayerLists WaitPlayerList[]
   waitGames       WaitGame[]
-  win             Int              @default(0)
-  lose            Int              @default(0)
-  games           Int              @default(0)
-  mmr             Int              @default(1000)
+  win             Int                 @default(0)
+  lose            Int                 @default(0)
+  games           Int                 @default(0)
+  mmr             Int                 @default(1000)
   gameDatas       DateTime[]
   winDatas        String[]
   loseDatas       String[]
   enterDatas      DateTime[]
-  isJoinLeague    Boolean?          @default(false)
-  createdAt       DateTime         @default(now())
+  isJoinLeague    Boolean?            @default(false)
+  createdAt       DateTime            @default(now())
+  editRequests    PlayerEditRequest[]
+}
+
+model PlayerEditRequest {
+  id        Int      @id @default(autoincrement())
+  playerId  Int
+  player    Player   @relation(fields: [playerId], references: [id], onDelete: Cascade)
+  clubid    Int
+  name      String?
+  age       Int?
+  grade     String?
+  gender    String?
+  photo     String?
+  message   String?
+  status    String   @default("pending") // pending, approved, rejected
+  createdAt DateTime @default(now())
 }
 
 model WaitPlayerList {
@@ -221,10 +249,10 @@ model WaitPlayerList {
 }
 
 model WaitGame {
-  id         Int       @id @default(autoincrement())
+  id         Int      @id @default(autoincrement())
   clubid     Int
   playerid   Int
-  player     Player    @relation(fields: [playerid], references: [id])
+  player     Player   @relation(fields: [playerid], references: [id])
   point      Int
   updateTime DateTime @updatedAt
 }
@@ -243,7 +271,7 @@ model Betting {
   isHit     String?  @default("betting")
   isProcess Boolean? @default(false)
   betCoast  Int
-  createdAt  DateTime @default(now())
+  createdAt DateTime @default(now())
 }
 
 model Match {
@@ -266,7 +294,7 @@ model Match {
 }
 
 model GameBoard {
-  id          Int       @id @default(autoincrement())
+  id          Int      @id @default(autoincrement())
   gameid      String
   clubid      Int
   CourtNumber Int
@@ -278,25 +306,25 @@ model GameBoard {
 }
 
 model DogPlayer {
-  id           Int       @id @default(autoincrement())
+  id           Int      @id @default(autoincrement())
   userid       Int?
   name         String
   grade        String?
   gender       String?
-  age          Int       @default(40)
+  age          Int      @default(40)
   where        String?
   avater       String?
-  mmr          Int       @default(1000)
+  mmr          Int      @default(1000)
   games        Int[]
   winGames     Int[]
-  gameNum      Int       @default(0)
-  winNum       Int       @default(0)
+  gameNum      Int      @default(0)
+  winNum       Int      @default(0)
   lastGameDate DateTime
-  createdAt    DateTime  @default(now())
+  createdAt    DateTime @default(now())
 }
 
 model DogGames {
-  id        Int       @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   Players   Int[]
   WinPlayer Int[]
   createdAt DateTime @default(now())
@@ -304,25 +332,25 @@ model DogGames {
 }
 
 model Post {
-  id        Int       @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   title     String
   content   String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  authorId  Int
-  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  comments  Comment[]
+  authorId Int
+  author   User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  comments Comment[]
 }
 
 model Comment {
-  id        Int       @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   content   String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  authorId  Int
-  author    User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  postId    Int
-  post      Post      @relation(fields: [postId], references: [id], onDelete: Cascade)
+  authorId Int
+  author   User @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  postId   Int
+  post     Post @relation(fields: [postId], references: [id], onDelete: Cascade)
 }

@@ -31,6 +31,12 @@ export default async function Setting({ params }: { params: Promise<{ id: string
         },
     });
 
+    const editRequests = await db.playerEditRequest.findMany({
+        where: { clubid: clubId, status: "pending" },
+        include: { player: true },
+        orderBy: { createdAt: "asc" },
+    });
+
     if (!club) {
         return (
             <div className="container mx-auto p-8 text-center mt-20">
@@ -116,6 +122,48 @@ export default async function Setting({ params }: { params: Promise<{ id: string
                 },
             },
         });
+        revalidatePath(`/home/${clubId}/settings`);
+    };
+
+    // --- 서버 액션: 선수 정보 수정요청 승인 ---
+    const approveEditRequest = async (formData: FormData) => {
+        "use server";
+        const requestId = Number(formData.get("requestId"));
+
+        const request = await db.playerEditRequest.findUnique({ where: { id: requestId } });
+        if (!request || request.status !== "pending") {
+            return;
+        }
+
+        await db.player.update({
+            where: { id: request.playerId },
+            data: {
+                ...(request.name && { name: request.name }),
+                ...(request.age !== null && { age: request.age }),
+                ...(request.grade && { grade: request.grade }),
+                ...(request.gender && { gender: request.gender }),
+                ...(request.photo && { avater: request.photo }),
+            },
+        });
+
+        await db.playerEditRequest.update({
+            where: { id: requestId },
+            data: { status: "approved" },
+        });
+
+        revalidatePath(`/home/${clubId}/settings`);
+    };
+
+    // --- 서버 액션: 선수 정보 수정요청 거절 ---
+    const rejectEditRequest = async (formData: FormData) => {
+        "use server";
+        const requestId = Number(formData.get("requestId"));
+
+        await db.playerEditRequest.update({
+            where: { id: requestId },
+            data: { status: "rejected" },
+        });
+
         revalidatePath(`/home/${clubId}/settings`);
     };
 
@@ -219,6 +267,108 @@ export default async function Setting({ params }: { params: Promise<{ id: string
                                 </div>
                             </div>
                         ))}
+                    </div>
+                )}
+            </div>
+
+            {/* --- 선수 정보 수정요청 관리 --- */}
+            <div className="bg-white p-6 rounded-lg shadow-md border border-gray-200 mt-10">
+                <h2 className="text-xl font-semibold mb-4 text-gray-700 border-b pb-2">선수 정보 수정요청 관리</h2>
+                {editRequests.length === 0 ? (
+                    <p className="text-gray-500 text-center py-4 bg-gray-50 rounded">대기 중인 수정요청이 없습니다.</p>
+                ) : (
+                    <div className="flex flex-col gap-4">
+                        {editRequests.map((request) => {
+                            const newPhoto = request.photo
+                                ? `${request.photo}/avatar`
+                                : null;
+                            const currentPhoto = request.player.avater
+                                ? `${request.player.avater}/avatar`
+                                : null;
+
+                            return (
+                                <div key={request.id} className="flex flex-col gap-3 p-4 bg-gray-50 border rounded shadow-sm">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex flex-col items-center gap-1">
+                                            <span className="text-[10px] text-gray-400">기존</span>
+                                            {currentPhoto ? (
+                                                // eslint-disable-next-line @next/next/no-img-element
+                                                <img
+                                                    src={currentPhoto}
+                                                    alt="기존 사진"
+                                                    className="w-14 h-14 rounded-full object-cover border"
+                                                />
+                                            ) : (
+                                                <div className="w-14 h-14 rounded-full bg-gray-200" />
+                                            )}
+                                        </div>
+                                        {newPhoto && (
+                                            <div className="flex flex-col items-center gap-1">
+                                                <span className="text-[10px] text-teal-500">요청된 사진</span>
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img
+                                                    src={newPhoto}
+                                                    alt="요청된 사진"
+                                                    className="w-14 h-14 rounded-full object-cover border border-teal-400"
+                                                />
+                                            </div>
+                                        )}
+                                        <div className="flex flex-col flex-1">
+                                            <span className="font-bold text-lg text-gray-800">
+                                                {request.player.name}
+                                            </span>
+                                            <div className="text-sm text-gray-600 flex flex-col">
+                                                {request.name && request.name !== request.player.name && (
+                                                    <span>
+                                                        이름: {request.player.name} → <b>{request.name}</b>
+                                                    </span>
+                                                )}
+                                                {request.age !== null && request.age !== request.player.age && (
+                                                    <span>
+                                                        나이: {request.player.age ?? "미등록"} → <b>{request.age}</b>
+                                                    </span>
+                                                )}
+                                                {request.grade && request.grade !== request.player.grade && (
+                                                    <span>
+                                                        급수: {request.player.grade} → <b>{request.grade}</b>
+                                                    </span>
+                                                )}
+                                                {request.gender && request.gender !== request.player.gender && (
+                                                    <span>
+                                                        성별: {request.player.gender} → <b>{request.gender}</b>
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {request.message && (
+                                        <p className="text-sm text-gray-700 bg-white border rounded p-2">
+                                            {request.message}
+                                        </p>
+                                    )}
+                                    <div className="flex justify-end gap-2">
+                                        <form action={approveEditRequest}>
+                                            <input type="hidden" name="requestId" value={request.id} />
+                                            <button
+                                                type="submit"
+                                                className="bg-green-500 text-white px-4 py-2 rounded shadow hover:bg-green-600 transition"
+                                            >
+                                                승인
+                                            </button>
+                                        </form>
+                                        <form action={rejectEditRequest}>
+                                            <input type="hidden" name="requestId" value={request.id} />
+                                            <button
+                                                type="submit"
+                                                className="bg-red-500 text-white px-4 py-2 rounded shadow hover:bg-red-600 transition"
+                                            >
+                                                거절
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            );
+                        })}
                     </div>
                 )}
             </div>

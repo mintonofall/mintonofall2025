@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState, useActionState } from "react";
-import { getClub, getMatch, getWaitGames, getUser, getMatchs } from "@/lib/getUserGoHome";
+import { getClub, getMatch, getWaitGames, getUser, getMatchs, getWaitPlayerList } from "@/lib/getUserGoHome";
 import { logoutFromViewpage } from "@/lib/logout";
+import { createMemberMessage, getMyMemberMessages, deleteMemberMessage } from "@/lib/memberMessage";
 import Link from "next/link";
 import handleLogin from "./action";
 import { placeBet, getBettedMatchIds, getBettingHistory } from "./bettingAction";
@@ -44,7 +45,8 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
     const [clubName, setClubName] = useState<string>("로딩 중...");
     const [courts, setCourts] = useState<any[]>([]);
     const [waitGames, setWaitGames] = useState<(any | null)[]>(Array(35).fill(null));
-    const [activeTab, setActiveTab] = useState<"courts" | "waitlist" | "results" | "betting">("courts");
+    const [activeTab, setActiveTab] = useState<"courts" | "waitlist" | "players" | "results" | "betting">("courts");
+    const [enteredPlayers, setEnteredPlayers] = useState<any[]>([]);
     const [user, setUser] = useState<any>(null);
     const [state, action] = useActionState(handleLogin, null);
     const [clubId, setClubId] = useState<number | null>(null);
@@ -69,6 +71,11 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
         startTime?: Date;
     }>({ isOpen: false, courtIndex: null, userId: null, matchId: null, amount: 0, targetPlayers: [] });
     const [isBettingSubmitting, setIsBettingSubmitting] = useState(false);
+    const [requestMessage, setRequestMessage] = useState("");
+    const [isSendingRequest, setIsSendingRequest] = useState(false);
+    const [requestSentNotice, setRequestSentNotice] = useState(false);
+    const [myMessages, setMyMessages] = useState<any[]>([]);
+    const [showMyMessages, setShowMyMessages] = useState(false);
 
     const handlePlayerClick = (player: any) => {
         if (selectedPlayers.includes(player.id)) {
@@ -78,10 +85,67 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
         }
     };
 
+    const fetchMyMessages = async () => {
+        if (!user || clubId === null) return;
+        try {
+            const messages = await getMyMemberMessages(clubId, user.id);
+            setMyMessages(messages || []);
+        } catch (error) {
+            console.error("보낸 메시지를 가져오는 중 오류가 발생했습니다:", error);
+        }
+    };
+
+    const handleSendRequest = async () => {
+        if (!user || clubId === null || !requestMessage.trim() || isSendingRequest) return;
+        setIsSendingRequest(true);
+        try {
+            const result = await createMemberMessage(clubId, user.id, user.userName, requestMessage.trim());
+            if (result?.success) {
+                setRequestMessage("");
+                setRequestSentNotice(true);
+                setTimeout(() => setRequestSentNotice(false), 3000);
+                fetchMyMessages();
+            } else {
+                alert(result?.error || "요청 전송에 실패했습니다.");
+            }
+        } catch (error) {
+            console.error("요청 전송 중 오류가 발생했습니다:", error);
+            alert("요청 전송에 실패했습니다.");
+        } finally {
+            setIsSendingRequest(false);
+        }
+    };
+
+    const handleDeleteMyMessage = async (id: number) => {
+        if (!user) return;
+        const prevMessages = myMessages;
+        setMyMessages((prev) => prev.filter((m) => m.id !== id));
+        try {
+            const result = await deleteMemberMessage(id, user.id);
+            if (!result?.success) {
+                alert(result?.error || "삭제에 실패했습니다.");
+                setMyMessages(prevMessages);
+            }
+        } catch (error) {
+            console.error("메시지 삭제 중 오류가 발생했습니다:", error);
+            setMyMessages(prevMessages);
+        }
+    };
+
     useEffect(() => {
         const timer = setInterval(() => setCurrentTime(new Date()), 1000);
         return () => clearInterval(timer);
     }, []);
+
+    useEffect(() => {
+        if (!user || clubId === null) {
+            setMyMessages([]);
+            return;
+        }
+        fetchMyMessages();
+        const intervalId = setInterval(fetchMyMessages, 10000);
+        return () => clearInterval(intervalId);
+    }, [user?.id, clubId]);
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -109,12 +173,13 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                     setClubId(currentClubId);
                 }
 
-                // 클럽 정보, 진행 중인 게임, 대기 게임, 게임 결과 데이터를 병렬로 가져옵니다.
-                const [clubData, gameBoardData, waitGameData, matchData] = await Promise.all([
+                // 클럽 정보, 진행 중인 게임, 대기 게임, 게임 결과, 입장중인 선수 데이터를 병렬로 가져옵니다.
+                const [clubData, gameBoardData, waitGameData, matchData, waitPlayerListData] = await Promise.all([
                     getClub(currentClubId),
                     getMatch(currentClubId),
                     getWaitGames(currentClubId),
                     getMatchs(currentClubId),
+                    getWaitPlayerList(currentClubId),
                 ]);
 
                 setClubName(clubData?.clubName || clubData?.clubName || "이름 없는 클럽");
@@ -179,6 +244,14 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                         return (b.id || 0) - (a.id || 0);
                     });
                 setMatches(todaysMatches);
+
+                // 4. 현재 입장중인 선수 목록 세팅
+                const sortedEnteredPlayers = Array.isArray(waitPlayerListData)
+                    ? [...waitPlayerListData].sort(
+                          (a: any, b: any) => new Date(a.enterDate).getTime() - new Date(b.enterDate).getTime(),
+                      )
+                    : [];
+                setEnteredPlayers(sortedEnteredPlayers);
             } catch (error) {
                 console.error("데이터를 가져오는 중 오류가 발생했습니다:", error);
                 setClubName("데이터를 불러오지 못했습니다.");
@@ -282,7 +355,8 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
     return (
         <div className="bg-gray-100 min-h-screen pb-24">
             {/* 상단 헤더 (유저 상태 표시) */}
-            <div className="sticky top-0 z-40 flex justify-between items-center bg-white p-4 shadow-sm border-b border-gray-200">
+            <div className="sticky top-0 z-40 bg-white shadow-sm border-b border-gray-200">
+                <div className="flex justify-between items-center p-4">
                 {user ? (
                     <>
                         <div className="font-bold text-gray-700 text-lg flex-1">
@@ -360,6 +434,80 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                             <span className="font-semibold text-sm">가입하기</span>
                         </Link>
                     </>
+                )}
+                </div>
+                {user && (
+                    <div className="px-4 pb-3">
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="text"
+                                value={requestMessage}
+                                onChange={(e) => setRequestMessage(e.target.value)}
+                                onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                        e.preventDefault();
+                                        handleSendRequest();
+                                    }
+                                }}
+                                placeholder="운영자에게 보낼 메시지를 입력하세요"
+                                className="flex-1 border border-gray-300 rounded px-3 py-1.5 text-sm outline-none focus:border-blue-500"
+                            />
+                            <button
+                                type="button"
+                                onClick={handleSendRequest}
+                                disabled={isSendingRequest || !requestMessage.trim()}
+                                className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1.5 px-3 rounded text-sm whitespace-nowrap transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                            >
+                                {isSendingRequest ? "전송 중..." : "요청"}
+                            </button>
+                            {requestSentNotice && (
+                                <span className="text-xs text-green-600 whitespace-nowrap">전달되었습니다</span>
+                            )}
+                        </div>
+                        <button
+                            type="button"
+                            onClick={() => setShowMyMessages((prev) => !prev)}
+                            className="mt-2 text-xs text-gray-500 hover:text-gray-700 underline"
+                        >
+                            {showMyMessages ? "보낸 메시지 닫기" : `내가 보낸 메시지 보기 (${myMessages.length})`}
+                        </button>
+                        {showMyMessages && (
+                            <div className="mt-2 flex flex-col gap-2 max-h-48 overflow-y-auto">
+                                {myMessages.length === 0 ? (
+                                    <p className="text-xs text-gray-400 py-2">보낸 메시지가 없습니다.</p>
+                                ) : (
+                                    myMessages.map((msg) => (
+                                        <div
+                                            key={msg.id}
+                                            className="flex justify-between items-start gap-2 p-2 bg-gray-50 border border-gray-200 rounded text-sm"
+                                        >
+                                            <div className="flex flex-col gap-0.5">
+                                                <span className="text-gray-700 whitespace-pre-wrap">
+                                                    {msg.message}
+                                                </span>
+                                                <span className="text-[10px] text-gray-400">
+                                                    {new Date(msg.createdAt).toLocaleString([], {
+                                                        month: "numeric",
+                                                        day: "numeric",
+                                                        hour: "2-digit",
+                                                        minute: "2-digit",
+                                                    })}{" "}
+                                                    · {msg.isRead ? "확인됨" : "확인 대기중"}
+                                                </span>
+                                            </div>
+                                            <button
+                                                type="button"
+                                                onClick={() => handleDeleteMyMessage(msg.id)}
+                                                className="shrink-0 text-xs text-red-500 hover:text-red-700 px-2 py-1 hover:bg-red-50 rounded"
+                                            >
+                                                삭제
+                                            </button>
+                                        </div>
+                                    ))
+                                )}
+                            </div>
+                        )}
+                    </div>
                 )}
             </div>
 
@@ -573,6 +721,73 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                                 );
                             })}
                         </div>
+                    </div>
+                )}
+
+                {activeTab === "players" && (
+                    <div className="flex-1 bg-white p-4 lg:p-6 rounded-lg shadow-md">
+                        <h2 className="text-xl lg:text-2xl font-semibold mb-2 lg:mb-4 text-teal-600 border-b pb-2">
+                            현재 입장중인 선수 ({enteredPlayers.length}명)
+                        </h2>
+                        <div className="flex flex-col gap-2">
+                            {enteredPlayers.map((entry: any) => {
+                                const player = entry.player;
+                                let wins = 0;
+                                let losses = 0;
+                                if (player) {
+                                    matches.forEach((m: any) => {
+                                        const isParticipant = [
+                                            m.player1id,
+                                            m.player2id,
+                                            m.player3id,
+                                            m.player4id,
+                                        ].includes(player.id);
+                                        if (!isParticipant || m.winner1id == null) return;
+                                        if (m.winner1id === player.id || m.winner2id === player.id) {
+                                            wins += 1;
+                                        } else {
+                                            losses += 1;
+                                        }
+                                    });
+                                }
+
+                                return (
+                                    <div
+                                        key={entry.id}
+                                        className="flex items-center gap-3 bg-gray-50 p-2 rounded border border-gray-200"
+                                    >
+                                        <div className="w-14 shrink-0">{renderPlayer(player)}</div>
+                                        <div className="flex-1 flex flex-col gap-0.5">
+                                            <div className="font-semibold text-gray-800">
+                                                {player?.name ?? "알 수 없음"}
+                                            </div>
+                                            <div className="text-xs text-gray-500">
+                                                {player?.age ? `${player.age}세` : "나이 미등록"} ·{" "}
+                                                {player?.grade || "급수 미등록"}
+                                            </div>
+                                        </div>
+                                        <div className="text-sm font-bold text-blue-600 whitespace-nowrap">
+                                            오늘 {wins}승 {losses}패
+                                        </div>
+                                        {player && clubId !== null ? (
+                                            <Link
+                                                href={`/home/${clubId}/viewPage/editRequest/${player.id}`}
+                                                className="text-xs font-semibold text-gray-500 bg-white border border-gray-300 rounded px-2 py-1 whitespace-nowrap hover:bg-gray-100 hover:text-gray-700 transition-colors"
+                                            >
+                                                수정요청
+                                            </Link>
+                                        ) : (
+                                            <span className="text-xs font-semibold text-gray-300 bg-white border border-gray-200 rounded px-2 py-1 whitespace-nowrap cursor-not-allowed">
+                                                수정요청
+                                            </span>
+                                        )}
+                                    </div>
+                                );
+                            })}
+                        </div>
+                        {enteredPlayers.length === 0 && (
+                            <div className="text-center text-gray-500 py-10">현재 입장중인 선수가 없습니다.</div>
+                        )}
                     </div>
                 )}
 
@@ -882,7 +1097,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                 <div className="flex justify-around items-center py-3 max-w-4xl mx-auto">
                     <button
                         onClick={() => setActiveTab("courts")}
-                        className={`flex flex-col items-center gap-1 ${activeTab === "courts" ? "text-blue-600" : "text-gray-400"} hover:text-blue-800 transition-colors w-1/4`}
+                        className={`flex flex-col items-center gap-1 ${activeTab === "courts" ? "text-blue-600" : "text-gray-400"} hover:text-blue-800 transition-colors w-1/5`}
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
@@ -896,7 +1111,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                     </button>
                     <button
                         onClick={() => setActiveTab("waitlist")}
-                        className={`flex flex-col items-center gap-1 ${activeTab === "waitlist" ? "text-purple-600" : "text-gray-400"} hover:text-purple-600 transition-colors w-1/4 border-l border-gray-100`}
+                        className={`flex flex-col items-center gap-1 ${activeTab === "waitlist" ? "text-purple-600" : "text-gray-400"} hover:text-purple-600 transition-colors w-1/5 border-l border-gray-100`}
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
@@ -909,8 +1124,22 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                         <span className="text-xs font-semibold">대기게임</span>
                     </button>
                     <button
+                        onClick={() => setActiveTab("players")}
+                        className={`flex flex-col items-center gap-1 ${activeTab === "players" ? "text-teal-600" : "text-gray-400"} hover:text-teal-600 transition-colors w-1/5 border-l border-gray-100`}
+                    >
+                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87m6-2.13a4 4 0 100-8 4 4 0 000 8zm6 3c0-2.21-2.69-4-6-4s-6 1.79-6 4"
+                            />
+                        </svg>
+                        <span className="text-xs font-semibold">선수목록</span>
+                    </button>
+                    <button
                         onClick={() => setActiveTab("results")}
-                        className={`flex flex-col items-center gap-1 ${activeTab === "results" ? "text-green-600" : "text-gray-400"} hover:text-green-600 transition-colors w-1/4 border-l border-gray-100`}
+                        className={`flex flex-col items-center gap-1 ${activeTab === "results" ? "text-green-600" : "text-gray-400"} hover:text-green-600 transition-colors w-1/5 border-l border-gray-100`}
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path
@@ -924,7 +1153,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                     </button>
                     <button
                         onClick={() => setActiveTab("betting")}
-                        className={`flex flex-col items-center gap-1 ${activeTab === "betting" ? "text-orange-500" : "text-gray-400"} hover:text-orange-500 transition-colors w-1/4 border-l border-gray-100`}
+                        className={`flex flex-col items-center gap-1 ${activeTab === "betting" ? "text-orange-500" : "text-gray-400"} hover:text-orange-500 transition-colors w-1/5 border-l border-gray-100`}
                     >
                         <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path

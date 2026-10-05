@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useActionState } from "react";
 
 export default function Home() {
-    const [state, action] = useActionState(handleLogin, null);
+    const [state, action, isPending] = useActionState(handleLogin, null);
     return (
         <>
             <div className="flex flex-col items-center justify-center min-h-screen py-2 bg-gray-100">
@@ -38,9 +38,10 @@ export default function Home() {
                     <div className="flex items-center justify-between">
                         <button
                             type="submit"
-                            className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+                            disabled={isPending}
+                            className="bg-blue-500 hover:bg-blue-700 disabled:bg-blue-300 disabled:cursor-not-allowed text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
                         >
-                            로그인
+                            {isPending ? "로그인 중..." : "로그인"}
                         </button>
                     </div>
                 </form>
