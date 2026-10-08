@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowTrendingUpIcon, ListBulletIcon, PencilSquareIcon } from "@heroicons/react/24/outline";
+import { ArrowTrendingUpIcon, ListBulletIcon, PencilSquareIcon, UsersIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
 import { use } from "react";
 // import { useSearchParams } from "next/navigation";
@@ -17,9 +17,9 @@ export default function Layout({
     console.log(clubid);
 
     return (
-        <div className="relative min-h-screen bg-gray-100">
-            <div className="container mx-auto p-4">{children}</div>
-            <div className="fixed bottom-0 w-full flex justify-around bg-white py-4 border-t border-gray-300 shadow-lg">
+        <div className="h-screen flex flex-col bg-gray-100">
+            <div className="container mx-auto p-4 flex-1 min-h-0 overflow-y-auto">{children}</div>
+            <div className="shrink-0 w-full flex justify-around bg-white py-3 border-t border-gray-300 shadow-lg">
                 <Link href={`/diary/${clubid}`}>
                     <div className="text-center">
                         <PencilSquareIcon className="h-6 w-6 text-gray-700" />
@@ -36,6 +36,12 @@ export default function Layout({
                     <div className="text-center">
                         <ArrowTrendingUpIcon className="h-6 w-6 text-gray-700" />
                         <p className="text-gray-700 font-semibold">통계</p>
+                    </div>
+                </Link>
+                <Link href={`/diary/${clubid}/players`}>
+                    <div className="text-center">
+                        <UsersIcon className="h-6 w-6 text-gray-700" />
+                        <p className="text-gray-700 font-semibold">선수</p>
                     </div>
                 </Link>
             </div>

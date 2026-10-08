@@ -19,6 +19,144 @@ export async function getClubDiary(clubid: number) {
 }
 
 /**
+ * 사용자의 ClubDiary를 가져오고, 없으면 새로 생성합니다.
+ * 경기 기록(MatchDiary)은 ClubDiary에 연결되어야 하므로, 아직 ClubDiary가 없는 사용자가
+ * 경기를 기록하려 할 때 이 함수로 자동 생성합니다.
+ * @param {number} userid - 사용자 ID
+ */
+export async function getOrCreateClubDiary(userid: number) {
+    const existing = await db.clubDiary.findFirst({ where: { userid } });
+    if (existing) return existing;
+
+    const user = await db.user.findUnique({
+        where: { id: userid },
+        select: { userName: true, nickName: true },
+    });
+    const clubName = user?.nickName || user?.userName || `${userid}번 다이어리`;
+
+    return db.clubDiary.create({
+        data: { userid, clubName },
+    });
+}
+
+/**
+ * 주어진 경기(Match, 클럽 게임판 기준) 중 사용자가 이미 다이어리에 저장한 경기 ID 목록을 반환합니다.
+ * @param {number} userid - 사용자 ID
+ * @param {number[]} matchIds - 확인할 Match ID 목록
+ * @returns {Promise<number[]>} 이미 저장된 Match ID 목록
+ */
+export async function getSavedDiaryMatchIds(userid: number, matchIds: number[]) {
+    if (matchIds.length === 0) return [];
+    const saved = await db.matchDiary.findMany({
+        where: { userid, sourceMatchId: { in: matchIds } },
+        select: { sourceMatchId: true },
+    });
+    return saved.map((m) => m.sourceMatchId).filter((id): id is number => id !== null);
+}
+
+/**
+ * 클럽 게임판(Match)의 경기 결과를 사용자의 개인 다이어리(MatchDiary)에 저장합니다.
+ * 선수는 이름을 기준으로 기존 PlayerDiary를 찾고, 없으면 새로 생성합니다.
+ * @param {number} userid - 사용자 ID
+ * @param {number} matchId - 저장할 Match의 ID
+ */
+export async function saveMatchToMyDiary(userid: number, matchId: number) {
+    const existing = await db.matchDiary.findFirst({
+        where: { userid, sourceMatchId: matchId },
+    });
+    if (existing) {
+        return { alreadySaved: true, matchDiaryId: existing.id };
+    }
+
+    const match = await db.match.findUnique({ where: { id: matchId } });
+    if (!match) {
+        return { error: "경기 정보를 찾을 수 없습니다." };
+    }
+
+    const originalPlayerIds = [match.player1id, match.player2id, match.player3id, match.player4id];
+    const clubPlayers = await db.player.findMany({ where: { id: { in: originalPlayerIds } } });
+    const clubPlayerMap = new Map(clubPlayers.map((p) => [p.id, p]));
+
+    const clubDiary = await getOrCreateClubDiary(userid);
+
+    // 클럽에서는 코트 자리(player1~4)가 팀 편성을 의미하지 않고 승자를 자유롭게 고르므로,
+    // 다이어리의 "앞 2명 = 한 팀, 뒤 2명 = 다른 팀" 규칙에 맞춰 승리팀을 앞으로 재정렬합니다.
+    let playerIds = originalPlayerIds;
+    if (match.winner1id != null && match.winner2id != null) {
+        const winners = [match.winner1id, match.winner2id];
+        const losers = originalPlayerIds.filter((id) => !winners.includes(id));
+        playerIds = [...winners, ...losers];
+    }
+
+    // 클럽 선수를 이름 기준으로 기존 PlayerDiary와 매칭하고, 없으면 새로 만듭니다.
+    const diaryPlayerIds: number[] = [];
+    for (const pid of playerIds) {
+        const clubPlayer = clubPlayerMap.get(pid);
+        if (!clubPlayer) {
+            return { error: "선수 정보를 찾을 수 없습니다." };
+        }
+        let diaryPlayer = await db.playerDiary.findFirst({
+            where: { userid, name: clubPlayer.name },
+        });
+        if (!diaryPlayer) {
+            diaryPlayer = await db.playerDiary.create({
+                data: {
+                    userid,
+                    clubid: clubDiary.id,
+                    name: clubPlayer.name,
+                    age: clubPlayer.age,
+                    grade: clubPlayer.grade,
+                    gender: clubPlayer.gender,
+                    avater: clubPlayer.avater,
+                },
+            });
+        }
+        diaryPlayerIds.push(diaryPlayer.id);
+    }
+
+    const winnerIndex1 = match.winner1id != null ? playerIds.indexOf(match.winner1id) : -1;
+    const winnerIndex2 = match.winner2id != null ? playerIds.indexOf(match.winner2id) : -1;
+
+    const created = await db.matchDiary.create({
+        data: {
+            userid,
+            club: { connect: { id: clubDiary.id } },
+            players: diaryPlayerIds,
+            winner1id: winnerIndex1 !== -1 ? diaryPlayerIds[winnerIndex1] : undefined,
+            winner2id: winnerIndex2 !== -1 ? diaryPlayerIds[winnerIndex2] : undefined,
+            score1: match.score1 ?? undefined,
+            score2: match.score2 ?? undefined,
+            startTime: match.startTime,
+            endTime: match.endTime ?? match.startTime,
+            sourceMatchId: match.id,
+        },
+    });
+
+    return { success: true, matchDiaryId: created.id };
+}
+
+/**
+ * 여러 경기(Match)를 한 번에 사용자의 개인 다이어리에 저장합니다.
+ * 각 경기는 `saveMatchToMyDiary`와 동일한 로직으로 저장되며, 이미 저장된 경기는 건너뜁니다.
+ * @param {number} userid - 사용자 ID
+ * @param {number[]} matchIds - 저장할 Match ID 목록
+ */
+export async function saveMatchesToMyDiary(userid: number, matchIds: number[]) {
+    let savedCount = 0;
+    let alreadySavedCount = 0;
+    let failedCount = 0;
+
+    for (const matchId of matchIds) {
+        const result = await saveMatchToMyDiary(userid, matchId);
+        if (result.success) savedCount += 1;
+        else if (result.alreadySaved) alreadySavedCount += 1;
+        else failedCount += 1;
+    }
+
+    return { savedCount, alreadySavedCount, failedCount };
+}
+
+/**
  * 특정 클럽에 속한 모든 선수 목록을 가져옵니다.
  * isMe (본인) 여부와 마지막 게임 날짜를 기준으로 정렬합니다.
  * @param {number} clubid - 클럽 ID
@@ -63,6 +201,52 @@ export async function getPlayersFromClub(clubid: number) {
 }
 
 /**
+ * 다이어리 선수 정보를 수정합니다.
+ * @param {number} id - 수정할 선수(PlayerDiary)의 ID
+ * @param {{ name: string; age: number | null; grade: string; gender: string }} data - 수정할 필드
+ */
+export async function updatePlayerDiary(
+    id: number,
+    data: { name: string; age: number | null; grade: string; gender: string },
+) {
+    const result = await db.playerDiary.update({
+        where: { id },
+        data,
+    });
+    return result;
+}
+
+/**
+ * 다이어리 선수를 삭제합니다.
+ * @param {number} id - 삭제할 선수(PlayerDiary)의 ID
+ */
+export async function deletePlayerDiary(id: number) {
+    const result = await db.playerDiary.delete({
+        where: { id },
+    });
+    return result;
+}
+
+/**
+ * 선수 목록 중 한 명을 "주인공"(isMe)으로 지정합니다. 기존 주인공은 해제됩니다.
+ * @param {number} userid - 사용자(클럽 관리자) ID
+ * @param {number} playerId - 주인공으로 지정할 선수(PlayerDiary)의 ID
+ */
+export async function setMainPlayer(userid: number, playerId: number) {
+    await db.$transaction([
+        db.playerDiary.updateMany({
+            where: { userid, isMe: true },
+            data: { isMe: false },
+        }),
+        db.playerDiary.update({
+            where: { id: playerId },
+            data: { isMe: true },
+        }),
+    ]);
+    return { success: true };
+}
+
+/**
  * 새로운 경기(Match)를 생성하고, 참여한 선수들의 마지막 게임 날짜를 업데이트합니다.
  * @param {number[]} players - 경기에 참여한 모든 선수의 ID 배열
  * @param {number} userid - 작업을 수행하는 사용자(클럽 관리자)의 ID
@@ -88,6 +272,7 @@ export async function makeMatch(
 ) {
     console.log(players, userid, clubid, winner1id, winner2id, score1, score2, startTime, endTime);
 
+    const now = new Date();
     const createData: Prisma.MatchDiaryCreateInput = {
         club: {
             connect: {
@@ -96,8 +281,8 @@ export async function makeMatch(
         },
         userid,
         players,
-        startTime: "",
-        endTime: "",
+        startTime: now,
+        endTime: now,
     };
 
     if (winner1id !== undefined) createData.winner1id = winner1id;
@@ -280,7 +465,7 @@ export async function getMatch(userid: number): Promise<MatchDiaryWithPlayers[]>
             userid: userid,
         },
         orderBy: {
-            createdAt: "desc",
+            startTime: "desc",
         },
     });
 

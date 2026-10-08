@@ -3,12 +3,13 @@
 import Link from "next/link";
 import { useActionState, useEffect, useState } from "react";
 import { handleForm } from "./action";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function CreatePlayerMany({ params }: { params: Promise<{ userid: string }> }) {
     const [id, setId] = useState<number | null>(null);
-    const [, action] = useActionState(handleForm, null);
+    const [state, action, isPending] = useActionState(handleForm, null);
     const querys = useSearchParams();
+    const router = useRouter();
 
     useEffect(() => {
         async function fetchParams() {
@@ -17,6 +18,23 @@ export default function CreatePlayerMany({ params }: { params: Promise<{ userid:
         }
         fetchParams();
     }, [params, id]);
+
+    useEffect(() => {
+        if (state?.error) {
+            alert(state.error);
+            return;
+        }
+        if (state?.success) {
+            if (state.skippedNames && state.skippedNames.length > 0) {
+                alert(
+                    `${state.registeredCount}명 등록되었습니다.\n이미 등록되었거나 중복된 이름이라 제외됨: ${state.skippedNames.join(", ")}`,
+                );
+            }
+            if (id !== null) {
+                router.push(`/diary/${id}`);
+            }
+        }
+    }, [state]);
     return (
         <div className="p-4 max-w-3xl mx-auto">
             <form action={action} className="space-y-6">
@@ -112,8 +130,12 @@ export default function CreatePlayerMany({ params }: { params: Promise<{ userid:
                     </div>
                 ))}
                 <input type="hidden" name="userid" value={String(id)} />
-                <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
-                    선수등록
+                <button
+                    type="submit"
+                    disabled={isPending}
+                    className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                >
+                    {isPending ? "등록 중..." : "선수등록"}
                 </button>
                 <Link href={`/diary/${id}`}>
                     <div className="mt-4 bg-gray-500 text-center text-white p-2 rounded hover:bg-gray-600">

@@ -9,8 +9,9 @@
  * @date 2024-07-16
  */
 import { useEffect, useState } from "react";
-import { getPlayersFromClub, getWinToday, makeMatch } from "@/lib/getClubDiary";
+import { getPlayersFromClub, getWinToday, makeMatch, getOrCreateClubDiary, getMatch } from "@/lib/getClubDiary";
 import { PlayerDiary } from "@/lib/interface";
+import type { MatchDiaryWithPlayers } from "@/lib/types";
 import ScoreInput from "@/app/component/ScoreInput";
 // import { MinusCircleIcon, PlusCircleIcon } from "@heroicons/react/24/outline"; // ScoreInput으로 이동
 import getSessionClient from "@/lib/sessionClient";
@@ -31,6 +32,10 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
     /** @type {string} 선수 검색어. */
     const [searchTerm, setSearchTerm] = useState("");
     const [data, setData] = useState<number[]>([0, 0, 0, 0]);
+    /** @type {number | null} 현재 사용자가 소유한 ClubDiary의 실제 ID (경기 기록 생성 시 연결에 사용). */
+    const [clubDiaryId, setClubDiaryId] = useState<number | null>(null);
+    /** @type {MatchDiaryWithPlayers[]} 나와의 상대전적을 계산하기 위한 전체 경기 기록. */
+    const [allMatches, setAllMatches] = useState<MatchDiaryWithPlayers[]>([]);
 
     // --- 데이터 로딩 및 초기화 (Data Loading & Initialization) ---
 
@@ -59,9 +64,63 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
             setFirstWaitPlayerList(players);
             const datas = await getWinToday(userid);
             setData(datas);
+
+            // 경기 기록을 생성할 때 연결할 실제 ClubDiary ID를 가져옵니다 (없으면 자동 생성).
+            const clubDiary = await getOrCreateClubDiary(userid);
+            setClubDiaryId(clubDiary.id);
+
+            // 나와의 상대전적을 계산하기 위해 전체 경기 기록을 가져옵니다.
+            const matches = await getMatch(userid);
+            setAllMatches(matches);
         }
         fetchPlayers();
     }, [userid]);
+
+    /** @type {PlayerDiary | undefined} "주인공"(나)으로 지정된 선수. */
+    const me = firstWaitPlayerList.find((p) => p.isMe);
+
+    /**
+     * 나와 특정 선수가 서로 다른 팀(상대)으로 맞붙은 경기만 집계하여 상대전적을 계산합니다.
+     * @param {number} opponentId - 상대전적을 계산할 선수의 ID
+     * @returns {{ wins: number; losses: number }} 나의 승/패 횟수
+     */
+    function getHeadToHeadRecord(opponentId: number): { wins: number; losses: number } {
+        if (!me) return { wins: 0, losses: 0 };
+        let wins = 0;
+        let losses = 0;
+        allMatches.forEach((match) => {
+            const team1 = [match.players[0]?.id, match.players[1]?.id];
+            const team2 = [match.players[2]?.id, match.players[3]?.id];
+            const meVsOpponent =
+                (team1.includes(me.id) && team2.includes(opponentId)) ||
+                (team2.includes(me.id) && team1.includes(opponentId));
+            if (!meVsOpponent) return;
+
+            if (match.winner1id === me.id || match.winner2id === me.id) {
+                wins += 1;
+            } else if (match.winner1id === opponentId || match.winner2id === opponentId) {
+                losses += 1;
+            }
+        });
+        return { wins, losses };
+    }
+
+    /**
+     * 나와 특정 선수가 같은 팀(파트너)으로 함께한 경기 횟수를 계산합니다.
+     * @param {number} partnerId - 파트너 횟수를 계산할 선수의 ID
+     * @returns {number} 나와 파트너로 함께한 경기 횟수
+     */
+    function getPartnerCount(partnerId: number): number {
+        if (!me) return 0;
+        return allMatches.filter((match) => {
+            const team1 = [match.players[0]?.id, match.players[1]?.id];
+            const team2 = [match.players[2]?.id, match.players[3]?.id];
+            return (
+                (team1.includes(me.id) && team1.includes(partnerId)) ||
+                (team2.includes(me.id) && team2.includes(partnerId))
+            );
+        }).length;
+    }
 
     // --- 이벤트 핸들러 (Event Handlers) ---
 
@@ -91,8 +150,8 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
      * 선택된 선수, 점수, 클럽 ID 등을 사용하여 경기 결과를 생성합니다.
      */
     async function handleSubmitMatch() {
-        // userid와 userid가 유효한지 확인합니다.
-        if (!userid || !userid) {
+        // userid와 clubDiaryId가 유효한지 확인합니다.
+        if (!userid || !clubDiaryId) {
             alert("사용자 또는 클럽 정보가 아직 로드되지 않았습니다.");
             return;
         }
@@ -129,14 +188,14 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
         console.log("Submitting match with:", {
             allPlayerIds,
             userid,
-            clubid: 1,
+            clubid: clubDiaryId,
             winner1,
             winner2,
             score1,
             score2,
         });
 
-        const result = await makeMatch(allPlayerIds, userid, 1, winner1, winner2, score1, score2);
+        const result = await makeMatch(allPlayerIds, userid, clubDiaryId, winner1, winner2, score1, score2);
         console.log("Match submission result:", result);
 
         // allPlayerIds의 숫자를 waitPlayerList의 id와 매치하여 lastGameDate에 현재시간을 입력함
@@ -149,6 +208,10 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
         const datas = await getWinToday(userid);
         setData(datas);
 
+        // 나와의 상대전적에 방금 기록한 경기가 반영되도록 다시 불러옵니다.
+        const matches = await getMatch(userid);
+        setAllMatches(matches);
+
         // 상태 초기화
         setPlayerList([]);
         setScore1(25);
@@ -159,25 +222,25 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
 
     return (
         // --- 렌더링 (Rendering) ---
-        <div className="mb-16">
-            <h1 className="text-3xl font-bold mb-4 text-center">게임 결과 입력</h1>
-            <div className="flex h-1/2 flex-row gap-4 justify-center">
-                <div className="flex flex-col w-3/5 p-4 bg-white shadow-md rounded-lg">
-                    <div className="mb-4">
+        <div className="h-full flex flex-col">
+            <h1 className="text-2xl font-bold mb-3 text-center shrink-0">게임 결과 입력</h1>
+            <div className="flex flex-1 min-h-0 flex-row gap-4 justify-center">
+                <div className="flex flex-col w-1/2 p-4 bg-white shadow-md rounded-lg overflow-y-auto">
+                    <div className="mb-2">
                         <h2 className="text-xl font-semibold">Player 1</h2>
                         <div className="text-gray-700">{playerList[0] ? playerList[0].name : "No player selected"}</div>
                     </div>
-                    <div className="mb-4">
+                    <div className="mb-2">
                         <h2 className="text-xl font-semibold">Player 2</h2>
                         <div className="text-gray-700">{playerList[1] ? playerList[1].name : "No player selected"}</div>
                     </div>
                     {/* 점수 입력 컴포넌트 */}
                     <ScoreInput score1={score1} setScore1={setScore1} score2={score2} setScore2={setScore2} />
-                    <div className="mb-4">
+                    <div className="mb-2">
                         <h2 className="text-xl font-semibold">Player 3</h2>
                         <div className="text-gray-700">{playerList[2] ? playerList[2].name : "No player selected"}</div>
                     </div>
-                    <div className="mb-4">
+                    <div className="mb-2">
                         <h2 className="text-xl font-semibold">Player 4</h2>
                         <div className="text-gray-700">{playerList[3] ? playerList[3].name : "No player selected"}</div>
                     </div>
@@ -208,7 +271,7 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                         </button>
                     </div>
                 </div>
-                <div className="flex flex-col w-2/5 p-4 bg-gray-100 shadow-md rounded-lg overflow-y-auto h-[calc(100vh-100px)]">
+                <div className="flex flex-col w-1/2 p-4 bg-gray-100 shadow-md rounded-lg overflow-y-auto">
                     <input
                         className="p-2 m-2"
                         type="text"
@@ -227,21 +290,45 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                             }
                         }}
                     ></input>
-                    {waitPlayerList.map((player) => (
-                        <div
-                            className="flex justify-between items-center p-2 mb-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-200"
-                            onClick={() => handleClickedPlayer(player)}
-                            key={player.id}
-                        >
-                            <div>
-                                <h1 className="text-lg font-semibold">{player.name}</h1>
-                                <div className="flex gap-2">
-                                    <h2 className="text-sm text-gray-600">{player.age} </h2>
-                                    <h2 className="text-sm text-gray-600">{player.grade}</h2>
+                    {waitPlayerList.map((player) => {
+                        const isMePlayer = me?.id === player.id;
+                        const record = !isMePlayer ? getHeadToHeadRecord(player.id) : null;
+                        const partnerCount = !isMePlayer ? getPartnerCount(player.id) : null;
+                        return (
+                            <div
+                                className="p-2 mb-2 bg-white rounded-lg shadow cursor-pointer hover:bg-gray-200"
+                                onClick={() => handleClickedPlayer(player)}
+                                key={player.id}
+                            >
+                                <div className="flex justify-between items-center gap-2">
+                                    <h1 className="text-lg font-semibold truncate min-w-0">{player.name}</h1>
+                                    {isMePlayer && (
+                                        <span className="text-xs bg-yellow-100 text-yellow-700 px-1.5 py-0.5 rounded font-bold shrink-0 whitespace-nowrap">
+                                            주인공
+                                        </span>
+                                    )}
+                                    {record && (
+                                        <span className="text-xs font-semibold text-gray-500 shrink-0 whitespace-nowrap">
+                                            {record.wins + record.losses > 0
+                                                ? `${record.wins}승 ${record.losses}패`
+                                                : ""}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="flex justify-between items-center gap-2">
+                                    <div className="flex gap-2">
+                                        <h2 className="text-sm text-gray-600">{player.age} </h2>
+                                        <h2 className="text-sm text-gray-600">{player.grade}</h2>
+                                    </div>
+                                    {partnerCount !== null && partnerCount > 0 && (
+                                        <span className="text-xs text-gray-400 shrink-0 whitespace-nowrap">
+                                            파트너 {partnerCount}회
+                                        </span>
+                                    )}
                                 </div>
                             </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                     <Link
                         className=""
                         href={{
@@ -255,7 +342,9 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                     </Link>
                 </div>
             </div>
-            오늘 결과 {data[0]}승 {data[1]}패 {data[2]}득점 {data[3]}실점
+            <div className="shrink-0 text-center py-2">
+                오늘 결과 {data[0]}승 {data[1]}패 {data[2]}득점 {data[3]}실점
+            </div>
         </div>
     );
 }

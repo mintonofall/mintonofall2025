@@ -183,20 +183,21 @@ model PlayerDiary {
 }
 
 model MatchDiary {
-  id        Int       @id @default(autoincrement())
-  userid    Int?
-  gameid    String?
-  players   Int[]
-  club      ClubDiary @relation(fields: [clubid], references: [id])
-  clubid    Int
-  winner1id Int?
-  winner2id Int?
-  startTime DateTime
-  endTime   DateTime
-  duration  Int?
-  score1    Int?
-  score2    Int?
-  createdAt DateTime  @default(now())
+  id            Int       @id @default(autoincrement())
+  userid        Int?
+  gameid        String?
+  players       Int[]
+  club          ClubDiary @relation(fields: [clubid], references: [id])
+  clubid        Int
+  winner1id     Int?
+  winner2id     Int?
+  startTime     DateTime
+  endTime       DateTime
+  duration      Int?
+  score1        Int?
+  score2        Int?
+  createdAt     DateTime  @default(now())
+  sourceMatchId Int?
 }
 
 model Player {

@@ -1,6 +1,6 @@
 import db from "@/lib/db";
-import Link from "next/link";
-import { getClub } from "@/lib/getUserGoHome";
+import { getClub, getUser } from "@/lib/getUserGoHome";
+import { getSavedDiaryMatchIds } from "@/lib/getClubDiary";
 import MatchResultsClient from "./MatchResultsClient";
 
 export default async function MatchResultsPage({
@@ -48,19 +48,20 @@ export default async function MatchResultsPage({
         endTime: m.endTime ? m.endTime.toISOString() : null,
     }));
 
+    const user = await getUser();
+    const savedMatchIds = user?.id ? await getSavedDiaryMatchIds(user.id, matches.map((m) => m.id)) : [];
+
     return (
         <div className="p-8 flex flex-col items-center min-h-screen bg-gray-50 pt-16">
-            <div className="flex flex-col sm:flex-row items-center justify-between w-full max-w-2xl mb-8 gap-4">
-                <h1 className="text-3xl font-bold text-blue-600">{date} 경기 결과 🏸</h1>
-                <Link
-                    href={backHref}
-                    className="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition-colors"
-                >
-                    돌아가기
-                </Link>
-            </div>
-
-            <MatchResultsClient players={players} matches={matches} initialPlayerId={initialPlayerId} />
+            <MatchResultsClient
+                date={date}
+                backHref={backHref}
+                players={players}
+                matches={matches}
+                initialPlayerId={initialPlayerId}
+                userId={user?.id ?? null}
+                initialSavedMatchIds={savedMatchIds}
+            />
         </div>
     );
 }

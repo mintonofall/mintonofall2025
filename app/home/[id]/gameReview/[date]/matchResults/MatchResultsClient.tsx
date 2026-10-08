@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { saveMatchToMyDiary, saveMatchesToMyDiary } from "@/lib/getClubDiary";
 
 type MatchResultPlayer = {
     id: number;
@@ -58,15 +60,68 @@ const renderPlayer = (player: MatchResultPlayer | undefined, isWinner: boolean) 
 };
 
 export default function MatchResultsClient({
+    date,
+    backHref,
     players,
     matches,
     initialPlayerId = null,
+    userId = null,
+    initialSavedMatchIds = [],
 }: {
+    date: string;
+    backHref: string;
     players: MatchResultPlayer[];
     matches: MatchResult[];
     initialPlayerId?: number | null;
+    userId?: number | null;
+    initialSavedMatchIds?: number[];
 }) {
     const [selectedPlayerId, setSelectedPlayerId] = useState<number | null>(initialPlayerId);
+    const [savedMatchIds, setSavedMatchIds] = useState<Set<number>>(new Set(initialSavedMatchIds));
+    const [savingMatchId, setSavingMatchId] = useState<number | null>(null);
+    const [isSavingAll, setIsSavingAll] = useState(false);
+
+    const handleSaveToDiary = async (matchId: number) => {
+        if (!userId || savingMatchId !== null) return;
+        setSavingMatchId(matchId);
+        try {
+            const result = await saveMatchToMyDiary(userId, matchId);
+            if (result.error) {
+                alert(result.error);
+                return;
+            }
+            setSavedMatchIds((prev) => new Set(prev).add(matchId));
+        } catch (error) {
+            console.error("내 기록으로 저장하는 중 오류가 발생했습니다:", error);
+            alert("저장에 실패했습니다.");
+        } finally {
+            setSavingMatchId(null);
+        }
+    };
+
+    const handleSaveAllToDiary = async () => {
+        if (!userId || isSavingAll || filteredMatches.length === 0) return;
+        if (!confirm("정말 저장 하시겠습니까?")) return;
+
+        setIsSavingAll(true);
+        try {
+            const matchIds = filteredMatches.map((m) => m.id);
+            const result = await saveMatchesToMyDiary(userId, matchIds);
+            setSavedMatchIds(new Set(matchIds));
+            if (result.failedCount > 0) {
+                alert(
+                    `${result.savedCount}개 저장 완료, ${result.alreadySavedCount}개는 이미 저장됨, ${result.failedCount}개 저장 실패`,
+                );
+            } else {
+                alert(`${result.savedCount}개 저장 완료 (이미 저장된 ${result.alreadySavedCount}개 제외)`);
+            }
+        } catch (error) {
+            console.error("전체 기록을 저장하는 중 오류가 발생했습니다:", error);
+            alert("저장에 실패했습니다.");
+        } finally {
+            setIsSavingAll(false);
+        }
+    };
 
     const playerMap = new Map(players.map((p) => [p.id, p]));
 
@@ -96,30 +151,43 @@ export default function MatchResultsClient({
     if (selectedPlayerId) {
         let wins = 0;
         let losses = 0;
-        const opponentCounts = new Map<number, number>();
+        const partnerCounts = new Map<number, number>();
+        const anyMatchWith = new Set<number>();
 
         filteredMatches.forEach((match) => {
             const matchPlayers = [match.player1id, match.player2id, match.player3id, match.player4id];
-            if (match.winner1id === selectedPlayerId || match.winner2id === selectedPlayerId) {
+            const selectedWon = match.winner1id === selectedPlayerId || match.winner2id === selectedPlayerId;
+
+            if (selectedWon) {
                 wins += 1;
             } else if (match.winner1id != null) {
                 losses += 1;
             }
+
+            // 코트 슬롯(player1~4) 자리는 팀 편성과 무관하므로, 실제 승자 조합(winner1id/winner2id)으로 팀을 나눕니다.
+            if (match.winner1id != null && match.winner2id != null) {
+                const winningTeam = [match.winner1id, match.winner2id];
+                const myTeam = selectedWon ? winningTeam : matchPlayers.filter((pid) => !winningTeam.includes(pid));
+                myTeam.forEach((pid) => {
+                    if (pid && pid !== selectedPlayerId) {
+                        partnerCounts.set(pid, (partnerCounts.get(pid) || 0) + 1);
+                    }
+                });
+            }
+
             matchPlayers.forEach((pid) => {
-                if (pid && pid !== selectedPlayerId) {
-                    opponentCounts.set(pid, (opponentCounts.get(pid) || 0) + 1);
-                }
+                if (pid && pid !== selectedPlayerId) anyMatchWith.add(pid);
             });
         });
 
-        const opponents = Array.from(opponentCounts.entries())
+        const opponents = Array.from(partnerCounts.entries())
             .map(([pid, count]) => ({ player: playerMap.get(pid), count }))
             .filter((entry): entry is { player: MatchResultPlayer; count: number } => !!entry.player)
             .sort((a, b) => b.count - a.count);
 
         // 오늘 경기에 참가했지만 선택한 선수와는 한 번도 같은 경기를 뛰지 않은 선수
         const neverPlayedWith = participants
-            .filter((p) => p.id !== selectedPlayerId && !opponentCounts.has(p.id))
+            .filter((p) => p.id !== selectedPlayerId && !anyMatchWith.has(p.id))
             .sort((a, b) => a.name.localeCompare(b.name));
 
         summary = { total: filteredMatches.length, wins, losses, opponents, neverPlayedWith };
@@ -127,6 +195,27 @@ export default function MatchResultsClient({
 
     return (
         <div className="w-full max-w-2xl">
+            <div className="flex flex-col sm:flex-row items-center justify-between w-full mb-8 gap-4">
+                <h1 className="text-3xl font-bold text-blue-600">{date} 경기 결과 🏸</h1>
+                <div className="flex items-center gap-2">
+                    <Link
+                        href={backHref}
+                        className="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition-colors"
+                    >
+                        돌아가기
+                    </Link>
+                    {userId && selectedPlayerId !== null && (
+                        <button
+                            type="button"
+                            onClick={handleSaveAllToDiary}
+                            disabled={isSavingAll || filteredMatches.length === 0}
+                            className="px-4 py-2 bg-emerald-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-emerald-600 transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                        >
+                            {isSavingAll ? "저장 중..." : "기록저장"}
+                        </button>
+                    )}
+                </div>
+            </div>
             <div className="mb-4">
                 <select
                     value={selectedPlayerId ?? ""}
@@ -162,7 +251,7 @@ export default function MatchResultsClient({
                     </div>
                     {summary.opponents.length > 0 && (
                         <div>
-                            <p className="text-sm font-semibold text-gray-700 mb-2">많이 함께한 선수</p>
+                            <p className="text-sm font-semibold text-gray-700 mb-2">파트너를 많이 한 선수</p>
                             <ul className="flex flex-col gap-1">
                                 {summary.opponents.slice(0, 5).map(({ player, count }) => (
                                     <li
@@ -208,6 +297,22 @@ export default function MatchResultsClient({
                                 {renderPlayer(p3, isWinner(p3))}
                                 {renderPlayer(p4, isWinner(p4))}
                             </div>
+                            {userId && (
+                                <div className="mt-2 pt-2 border-t border-gray-100 flex justify-end">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleSaveToDiary(match.id)}
+                                        disabled={savedMatchIds.has(match.id) || savingMatchId === match.id}
+                                        className="text-xs font-semibold px-3 py-1.5 rounded transition-colors disabled:cursor-not-allowed bg-emerald-50 text-emerald-700 hover:bg-emerald-100 disabled:bg-gray-100 disabled:text-gray-400"
+                                    >
+                                        {savedMatchIds.has(match.id)
+                                            ? "저장됨"
+                                            : savingMatchId === match.id
+                                              ? "저장 중..."
+                                              : "내기록으로 저장"}
+                                    </button>
+                                </div>
+                            )}
                         </div>
                     );
                 })}
