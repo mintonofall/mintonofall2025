@@ -7,6 +7,12 @@ export interface GameReviewMenu {
 
 export const Menus: GameReviewMenu[] = [
     {
+        title: "경기 결과",
+        description: "오늘의 경기 결과 보기 (선수별 필터)",
+        url: "/[id]/matchResults",
+        isLogin: false,
+    },
+    {
         title: "나의베팅",
         description: "오늘 나의 베팅",
         url: "/[id]/myBetting",
@@ -22,6 +28,12 @@ export const Menus: GameReviewMenu[] = [
         title: "다승순위",
         description: "많이 이긴 선수 순위",
         url: "/[id]/manyWin",
+        isLogin: false,
+    },
+    {
+        title: "폭넓은 교류",
+        description: "같은편/상대 구분 없이 가장 다양한 선수와 경기한 순위",
+        url: "/[id]/manyOpponents",
         isLogin: false,
     },
     {

@@ -547,26 +547,23 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
             return newCourts;
         });
 
-        // 게임 시작한 선수들을 대기 게임판에서 제거하고 재정렬
-        const remainingPlayers = [];
-        const indicesToRemove = new Set([startIndex + 1, startIndex + 2, startIndex + 3, startIndex + 4]);
+        // 게임 시작한 줄을 대기 게임판에서 제거하고, 그 아래 줄들을 한 줄씩 그대로 위로 당깁니다.
+        const startedRow = Math.floor(startIndex / 5);
+        const totalRows = 7; // 35칸 / 5칸(줄당)
+        const newGridData = Array(35).fill(null);
 
-        for (let i = 0; i < 35; i++) {
-            if (i % 5 !== 0 && gridData[i]) {
-                if (!indicesToRemove.has(i)) {
-                    remainingPlayers.push(gridData[i]);
-                }
+        // 시작된 줄보다 위에 있는 줄들은 그대로 유지합니다.
+        for (let r = 0; r < startedRow; r++) {
+            for (let c = 1; c <= 4; c++) {
+                newGridData[r * 5 + c] = gridData[r * 5 + c];
             }
         }
 
-        const newGridData = Array(35).fill(null);
-        let playerIdx = 0;
-        for (let i = 0; i < 35; i++) {
-            if (i % 5 !== 0) {
-                if (playerIdx < remainingPlayers.length) {
-                    newGridData[i] = remainingPlayers[playerIdx];
-                    playerIdx++;
-                }
+        // 시작된 줄부터는 바로 아래 줄의 내용을 그대로 한 줄씩 당겨옵니다.
+        for (let r = startedRow; r < totalRows; r++) {
+            const sourceRow = r + 1;
+            for (let c = 1; c <= 4; c++) {
+                newGridData[r * 5 + c] = sourceRow < totalRows ? gridData[sourceRow * 5 + c] : null;
             }
         }
         setGridData(newGridData);
@@ -1136,13 +1133,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                                 .map((player, index) => (
                                     <div
                                         key={index}
-                                        className="flex items-center gap-3 p-3 border rounded hover:bg-gray-50 cursor-pointer"
-                                        onClick={() => {
-                                            // 체크박스가 아닌 나머지 영역을 클릭하면 예전처럼 즉시 해당 선수만 입장시킵니다.
-                                            enterPlayers([player]);
-                                            setShowPlayerList(false);
-                                            setSelectedPlayerIds([]);
-                                        }}
+                                        className="flex items-center gap-3 p-3 border rounded hover:bg-gray-50"
                                     >
                                         <input
                                             type="checkbox"
@@ -1157,35 +1148,45 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                                                 );
                                             }}
                                         />
-                                        <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
-                                            {player.avater ? (
-                                                <img
-                                                    src={
-                                                        player.avater?.startsWith("https://imagedelivery.net/")
-                                                            ? `${player.avater}/avatar`
-                                                            : player.avater
-                                                    }
-                                                    alt={player.name}
-                                                    className="w-full h-full object-cover"
-                                                />
-                                            ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
-                                                    No Img
-                                                </div>
-                                            )}
-                                        </div>
-                                        <div className="flex flex-col">
-                                            <div className="flex items-center gap-2">
-                                                <span className="font-bold">{player.name}</span>
-                                                {player.isJoinLeague && (
-                                                    <span className="px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs font-bold">
-                                                        리그참가
-                                                    </span>
+                                        <div
+                                            className="flex items-center gap-3 cursor-pointer"
+                                            onClick={() => {
+                                                // 사진~이름 영역을 클릭하면 예전처럼 즉시 해당 선수만 입장시킵니다.
+                                                enterPlayers([player]);
+                                                setShowPlayerList(false);
+                                                setSelectedPlayerIds([]);
+                                            }}
+                                        >
+                                            <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex-shrink-0">
+                                                {player.avater ? (
+                                                    <img
+                                                        src={
+                                                            player.avater?.startsWith("https://imagedelivery.net/")
+                                                                ? `${player.avater}/avatar`
+                                                                : player.avater
+                                                        }
+                                                        alt={player.name}
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">
+                                                        No Img
+                                                    </div>
                                                 )}
                                             </div>
-                                            <span className="text-sm text-gray-500">
-                                                {player.age} • {player.grade}조
-                                            </span>
+                                            <div className="flex flex-col">
+                                                <div className="flex items-center gap-2">
+                                                    <span className="font-bold">{player.name}</span>
+                                                    {player.isJoinLeague && (
+                                                        <span className="px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs font-bold">
+                                                            리그참가
+                                                        </span>
+                                                    )}
+                                                </div>
+                                                <span className="text-sm text-gray-500">
+                                                    {player.age} • {player.grade}조
+                                                </span>
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
