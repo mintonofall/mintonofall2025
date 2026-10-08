@@ -345,6 +345,35 @@ export const getClub = async (clubid: number) => {
     return club;
 };
 
+export const getClubMembershipStatus = async (clubid: number, userId: number) => {
+    const club = await db.club.findUnique({
+        where: { id: clubid },
+        select: {
+            users: { where: { id: userId }, select: { id: true } },
+            joinedUsers: { where: { id: userId }, select: { id: true } },
+            pendingUsers: { where: { id: userId }, select: { id: true } },
+        },
+    });
+    if (!club) return { isOwner: false, isJoined: false, isPending: false };
+    return {
+        isOwner: club.users.length > 0,
+        isJoined: club.joinedUsers.length > 0,
+        isPending: club.pendingUsers.length > 0,
+    };
+};
+
+export const requestJoinClub = async (clubid: number, userId: number) => {
+    await db.user.update({
+        where: { id: userId },
+        data: {
+            pendingClubs: {
+                connect: { id: clubid },
+            },
+        },
+    });
+    return { success: true };
+};
+
 export const updateWaitGame = async (playerid: number, pointer: number) => {
     const waitGame = await db.waitGame.updateMany({
         where: {

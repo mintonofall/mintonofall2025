@@ -39,9 +39,7 @@ export default async function Home() {
 
     // 실험용클럽(id=2)의 게임진행판은 가입 여부와 무관하게 모든 유저가 바로 사용할 수 있도록 링크만 노출합니다.
     const EXPERIMENTAL_CLUB_ID = 2;
-    const experimentalClub = user?.id
-        ? await db.club.findUnique({ where: { id: EXPERIMENTAL_CLUB_ID } })
-        : null;
+    const experimentalClub = user?.id ? await db.club.findUnique({ where: { id: EXPERIMENTAL_CLUB_ID } }) : null;
 
     const unjoinedClubs = await db.club.findMany({
         where: user?.id
@@ -158,6 +156,9 @@ export default async function Home() {
                                 </Link>
                                 <Link href={`playerList/${club.id}`} className="text-blue-500 hover:underline">
                                     <span>선수목록</span>
+                                </Link>
+                                <Link href={`/home/${club.id}/viewPage`} className="text-blue-500 hover:underline">
+                                    <span>진행현황</span>
                                 </Link>
                             </div>
                             <div className="flex justify-end gap-3 text-sm text-gray-500">

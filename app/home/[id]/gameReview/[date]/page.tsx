@@ -5,11 +5,19 @@ import { logoutFromViewpage } from "@/lib/logout";
 import { loginAndRevalidate } from "@/app/action";
 import db from "@/lib/db";
 
-export default async function GameReviewDatePage({ params }: { params: Promise<{ id: string; date: string }> }) {
+export default async function GameReviewDatePage({
+    params,
+    searchParams,
+}: {
+    params: Promise<{ id: string; date: string }>;
+    searchParams: Promise<{ from?: string }>;
+}) {
     const { id, date } = await params;
+    const { from } = await searchParams;
     const clubId = Number(id);
     const user = await getUser();
     const isLoggedIn = !!user; // 유저 정보가 존재하면 true
+    const backHref = from === "viewPage" ? `/home/${clubId}/viewPage` : `/home/${clubId}/gameReview`;
 
     const visibleMenus = Menus.filter((menu) => !menu.isLogin || isLoggedIn);
 
@@ -95,7 +103,7 @@ export default async function GameReviewDatePage({ params }: { params: Promise<{
                     </p>
                 </div>
                 <Link
-                    href={`/home/${clubId}/gameReview`}
+                    href={backHref}
                     className="px-4 py-2 bg-blue-500 text-white text-sm font-semibold rounded-lg shadow hover:bg-blue-600 transition-colors"
                 >
                     돌아가기

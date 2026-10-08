@@ -1,7 +1,16 @@
 "use client";
 
 import { useEffect, useState, useActionState } from "react";
-import { getClub, getMatch, getWaitGames, getUser, getMatchs, getWaitPlayerList } from "@/lib/getUserGoHome";
+import {
+    getClub,
+    getMatch,
+    getWaitGames,
+    getUser,
+    getMatchs,
+    getWaitPlayerList,
+    getClubMembershipStatus,
+    requestJoinClub,
+} from "@/lib/getUserGoHome";
 import { logoutFromViewpage } from "@/lib/logout";
 import { createMemberMessage, getMyMemberMessages, deleteMemberMessage } from "@/lib/memberMessage";
 import Link from "next/link";
@@ -45,7 +54,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
     const [clubName, setClubName] = useState<string>("로딩 중...");
     const [courts, setCourts] = useState<any[]>([]);
     const [waitGames, setWaitGames] = useState<(any | null)[]>(Array(35).fill(null));
-    const [activeTab, setActiveTab] = useState<"courts" | "waitlist" | "players" | "results" | "betting">("courts");
+    const [activeTab, setActiveTab] = useState<"courts" | "waitlist" | "players" | "betting">("courts");
     const [enteredPlayers, setEnteredPlayers] = useState<any[]>([]);
     const [user, setUser] = useState<any>(null);
     const [state, action] = useActionState(handleLogin, null);
@@ -53,8 +62,6 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
     const [players, setPlayers] = useState<any[]>([]);
     const [matches, setMatches] = useState<any[]>([]);
     const [allMatches, setAllMatches] = useState<any[]>([]);
-    const [displayCount, setDisplayCount] = useState<number>(10);
-    const [resultFilterPlayerId, setResultFilterPlayerId] = useState<number | null>(null);
     const [selectedPlayers, setSelectedPlayers] = useState<number[]>([]);
     const [bettedMatchIds, setBettedMatchIds] = useState<number[] | null>(null);
     const [currentTime, setCurrentTime] = useState<Date>(new Date());
@@ -76,6 +83,15 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
     const [requestSentNotice, setRequestSentNotice] = useState(false);
     const [myMessages, setMyMessages] = useState<any[]>([]);
     const [showMyMessages, setShowMyMessages] = useState(false);
+    const [membershipStatus, setMembershipStatus] = useState<{
+        isOwner: boolean;
+        isJoined: boolean;
+        isPending: boolean;
+    } | null>(null);
+    const [isRequestingJoin, setIsRequestingJoin] = useState(false);
+
+    // KST 기준 오늘 날짜 (게임 리뷰 페이지 경로에 사용)
+    const todayDateString = new Date(Date.now() + 9 * 60 * 60 * 1000).toISOString().split("T")[0];
 
     const handlePlayerClick = (player: any) => {
         if (selectedPlayers.includes(player.id)) {
@@ -146,6 +162,34 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
         const intervalId = setInterval(fetchMyMessages, 10000);
         return () => clearInterval(intervalId);
     }, [user?.id, clubId]);
+
+    useEffect(() => {
+        if (!user || clubId === null) {
+            setMembershipStatus(null);
+            return;
+        }
+        getClubMembershipStatus(clubId, user.id)
+            .then(setMembershipStatus)
+            .catch((error) => console.error("클럽 가입 상태를 확인하는 중 오류가 발생했습니다:", error));
+    }, [user?.id, clubId]);
+
+    const handleRequestJoin = async () => {
+        if (!user || clubId === null || isRequestingJoin) return;
+        setIsRequestingJoin(true);
+        try {
+            const result = await requestJoinClub(clubId, user.id);
+            if (result?.success) {
+                setMembershipStatus((prev) => (prev ? { ...prev, isPending: true } : prev));
+            } else {
+                alert("가입 요청에 실패했습니다.");
+            }
+        } catch (error) {
+            console.error("가입 요청 중 오류가 발생했습니다:", error);
+            alert("가입 요청에 실패했습니다.");
+        } finally {
+            setIsRequestingJoin(false);
+        }
+    };
 
     useEffect(() => {
         const fetchUser = async () => {
@@ -307,10 +351,10 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
         }
     }, [user?.id, clubId, activeTab]);
 
-    // 게임 결과 탭 무한 스크롤
+    // 배팅 내역 탭 무한 스크롤
     useEffect(() => {
         const handleScroll = () => {
-            if (activeTab !== "results" && activeTab !== "betting") return;
+            if (activeTab !== "betting") return;
 
             const scrollY = window.scrollY || document.documentElement.scrollTop;
             const scrollHeight = document.documentElement.scrollHeight;
@@ -318,8 +362,7 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
 
             // 화면 끝에서 100px 정도 남았을 때 추가 로드
             if (scrollY + clientHeight >= scrollHeight - 100) {
-                if (activeTab === "results") setDisplayCount((prev) => prev + 10);
-                if (activeTab === "betting") setBetDisplayCount((prev) => prev + 10);
+                setBetDisplayCount((prev) => prev + 10);
             }
         };
 
@@ -329,14 +372,8 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
 
     // 탭이 바뀔 때 표시 개수 초기화
     useEffect(() => {
-        if (activeTab === "results") setDisplayCount(10);
         if (activeTab === "betting") setBetDisplayCount(10);
     }, [activeTab]);
-
-    // 게임 결과 선수 필터가 바뀌면 표시 개수 초기화
-    useEffect(() => {
-        setDisplayCount(10);
-    }, [resultFilterPlayerId]);
 
     useEffect(() => {
         // 모바일 브라우저에서 화면을 아래로 당겨서 새로고침하는 동작(Pull-to-refresh)을 막습니다.
@@ -436,6 +473,27 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                     </>
                 )}
                 </div>
+                {user && membershipStatus && !membershipStatus.isOwner && !membershipStatus.isJoined && (
+                    <div className="mx-4 mb-3 flex items-center justify-between gap-2 bg-blue-50 border border-blue-200 rounded px-3 py-2">
+                        <span className="text-sm text-blue-700">
+                            {membershipStatus.isPending
+                                ? "가입 승인 대기 중입니다."
+                                : "아직 이 클럽에 가입되지 않았습니다."}
+                        </span>
+                        <button
+                            type="button"
+                            onClick={handleRequestJoin}
+                            disabled={membershipStatus.isPending || isRequestingJoin}
+                            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-1.5 px-3 rounded text-sm whitespace-nowrap transition-colors disabled:bg-gray-300 disabled:cursor-not-allowed"
+                        >
+                            {membershipStatus.isPending
+                                ? "대기 중"
+                                : isRequestingJoin
+                                  ? "요청 중..."
+                                  : "가입요청하기"}
+                        </button>
+                    </div>
+                )}
                 {user && (
                     <div className="px-4 pb-3">
                         <div className="flex items-center gap-2">
@@ -791,103 +849,6 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                     </div>
                 )}
 
-                {activeTab === "results" && (
-                    <div className="flex-1 bg-white p-4 lg:p-6 rounded-lg shadow-md">
-                        <h2 className="text-xl lg:text-2xl font-semibold mb-2 lg:mb-4 text-green-600 border-b pb-2">
-                            오늘의 게임 결과
-                        </h2>
-                        <div className="mb-4">
-                            <select
-                                value={resultFilterPlayerId ?? ""}
-                                onChange={(e) =>
-                                    setResultFilterPlayerId(e.target.value ? Number(e.target.value) : null)
-                                }
-                                className="border border-gray-300 rounded px-3 py-2 text-sm w-full outline-none focus:border-green-500 bg-white"
-                            >
-                                <option value="">전체 선수</option>
-                                {[...players]
-                                    .sort((a: any, b: any) => (a.name || "").localeCompare(b.name || ""))
-                                    .map((p: any) => (
-                                        <option key={p.id} value={p.id}>
-                                            {p.name}
-                                        </option>
-                                    ))}
-                            </select>
-                        </div>
-                        {(() => {
-                            const filteredMatches = resultFilterPlayerId
-                                ? matches.filter((m: any) =>
-                                      [m.player1id, m.player2id, m.player3id, m.player4id].includes(
-                                          resultFilterPlayerId,
-                                      ),
-                                  )
-                                : matches;
-
-                            return (
-                        <div className="flex flex-col gap-4">
-                            {filteredMatches.slice(0, displayCount).map((match: any, index: number) => {
-                                const p1 = players.find((p: any) => p.id === match.player1id);
-                                const p2 = players.find((p: any) => p.id === match.player2id);
-                                const p3 = players.find((p: any) => p.id === match.player3id);
-                                const p4 = players.find((p: any) => p.id === match.player4id);
-
-                                const renderResultPlayer = (player: any) => {
-                                    if (!player) return renderPlayer(player);
-                                    const isWinner = match.winner1id === player.id || match.winner2id === player.id;
-                                    return (
-                                        <div className="relative h-full">
-                                            {isWinner && (
-                                                <span className="absolute -top-2 -left-1 bg-yellow-400 text-yellow-800 text-[10px] px-1 py-0.5 rounded shadow font-bold z-10">
-                                                    WIN
-                                                </span>
-                                            )}
-                                            {renderPlayer(player)}
-                                        </div>
-                                    );
-                                };
-
-                                return (
-                                    <div
-                                        key={index}
-                                        className="bg-gray-50 p-3 rounded-lg border border-gray-200 shadow-sm"
-                                    >
-                                        <div className="flex justify-between items-center text-xs text-gray-500 font-semibold mb-2">
-                                            <span>
-                                                {match.createdAt
-                                                    ? new Date(match.createdAt).toLocaleTimeString([], {
-                                                          hour: "2-digit",
-                                                          minute: "2-digit",
-                                                      })
-                                                    : `Game ${filteredMatches.length - index}`}{" "}
-                                                종료
-                                            </span>
-                                            <span>게임 번호: {match.id}</span>
-                                        </div>
-                                        <div className="grid grid-cols-4 gap-2 text-center">
-                                            {renderResultPlayer(p1)}
-                                            {renderResultPlayer(p2)}
-                                            {renderResultPlayer(p3)}
-                                            {renderResultPlayer(p4)}
-                                        </div>
-                                    </div>
-                                );
-                            })}
-                            {filteredMatches.length === 0 && (
-                                <div className="text-center text-gray-500 py-10">
-                                    {resultFilterPlayerId
-                                        ? "선택한 선수의 게임 결과가 없습니다."
-                                        : "오늘 완료된 게임이 없습니다."}
-                                </div>
-                            )}
-                            {filteredMatches.length > 0 && displayCount < filteredMatches.length && (
-                                <div className="text-center text-sm text-gray-400 py-2">스크롤하여 더 보기...</div>
-                            )}
-                        </div>
-                            );
-                        })()}
-                    </div>
-                )}
-
                 {activeTab === "betting" && (
                     <div className="flex-1 bg-white p-4 lg:p-6 rounded-lg shadow-md">
                         <h2 className="text-xl lg:text-2xl font-semibold mb-2 lg:mb-4 text-orange-500 border-b pb-2">
@@ -1137,20 +1098,22 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
                         </svg>
                         <span className="text-xs font-semibold">선수목록</span>
                     </button>
-                    <button
-                        onClick={() => setActiveTab("results")}
-                        className={`flex flex-col items-center gap-1 ${activeTab === "results" ? "text-green-600" : "text-gray-400"} hover:text-green-600 transition-colors w-1/5 border-l border-gray-100`}
-                    >
-                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth={2}
-                                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
-                            />
-                        </svg>
-                        <span className="text-xs font-semibold">게임결과</span>
-                    </button>
+                    {clubId !== null && (
+                        <Link
+                            href={`/home/${clubId}/gameReview/${todayDateString}?from=viewPage`}
+                            className="flex flex-col items-center gap-1 text-gray-400 hover:text-green-600 transition-colors w-1/5 border-l border-gray-100"
+                        >
+                            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+                                />
+                            </svg>
+                            <span className="text-xs font-semibold">오늘의 리뷰</span>
+                        </Link>
+                    )}
                     <button
                         onClick={() => setActiveTab("betting")}
                         className={`flex flex-col items-center gap-1 ${activeTab === "betting" ? "text-orange-500" : "text-gray-400"} hover:text-orange-500 transition-colors w-1/5 border-l border-gray-100`}
