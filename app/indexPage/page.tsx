@@ -2,6 +2,7 @@ import { getUser } from "@/lib/getUserGoHome";
 import { logout } from "@/lib/logout";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import MyQrCode from "./MyQrCode";
 
 export default async function Index() {
     const user = await getUser();
@@ -31,6 +32,10 @@ export default async function Index() {
             <Link href={`/saju`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
                 민턴사주
             </Link>
+            <Link href={`/guhap`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
+                민턴궁합
+            </Link>
+            <MyQrCode userName={user!.userName} />
             <Link href={`/mypage`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
                 내 정보 수정
             </Link>
