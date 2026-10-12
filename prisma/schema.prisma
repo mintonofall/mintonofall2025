@@ -32,6 +32,7 @@ model User {
   Bettings       Betting[]
   posts          Post[]
   comments       Comment[]
+  mbti           String?
 }
 
 model FantasyTeam {
