@@ -2,11 +2,18 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { MBTI_QUESTIONS, MBTI_DESCRIPTIONS, calculateMbti, type MbtiQuestion } from "@/lib/mbtiQuestions";
+import {
+    MBTI_QUESTIONS,
+    MBTI_DESCRIPTIONS,
+    calculateMbti,
+    compareMbti,
+    type MbtiQuestion,
+} from "@/lib/mbtiQuestions";
 import { saveMbtiResult } from "@/lib/mbti";
 
 const QUESTIONS_PER_PAGE = 10;
 const TOTAL_PAGES = Math.ceil(MBTI_QUESTIONS.length / QUESTIONS_PER_PAGE);
+const MBTI_TYPES = Object.keys(MBTI_DESCRIPTIONS);
 
 function shuffle<T>(list: T[]): T[] {
     const copy = [...list];
@@ -32,6 +39,7 @@ export default function MbtiTest({
     const [result, setResult] = useState<string | null>(null);
     const [isSaving, setIsSaving] = useState(false);
     const [started, setStarted] = useState(false);
+    const [selfReportedMbti, setSelfReportedMbti] = useState("");
 
     const pageQuestions = questions.slice(page * QUESTIONS_PER_PAGE, (page + 1) * QUESTIONS_PER_PAGE);
     const pageAnswered = pageQuestions.every((q) => answers[q.id] !== undefined);
@@ -74,6 +82,7 @@ export default function MbtiTest({
         setPage(0);
         setResult(null);
         setStarted(false);
+        setSelfReportedMbti("");
     };
 
     if (result) {
@@ -82,6 +91,17 @@ export default function MbtiTest({
                 <p className="text-gray-500 mb-2">{userName}님의 배드민턴 MBTI는</p>
                 <h1 className="text-5xl font-extrabold text-blue-600 mb-4">{result}</h1>
                 <p className="text-gray-700 mb-8">{MBTI_DESCRIPTIONS[result]}</p>
+
+                {selfReportedMbti && (
+                    <div className="text-left bg-blue-50 border border-blue-100 rounded-lg p-4 mb-8">
+                        <p className="text-sm text-gray-500 mb-1">
+                            평소 알고 있던 MBTI <b className="text-gray-700">{selfReportedMbti}</b> vs 배드민턴장
+                            MBTI <b className="text-blue-700">{result}</b>
+                        </p>
+                        <p className="text-sm text-gray-700 mt-2">{compareMbti(selfReportedMbti, result)}</p>
+                    </div>
+                )}
+
                 <div className="flex flex-col sm:flex-row gap-2 justify-center">
                     <button
                         onClick={handleRestart}
@@ -119,6 +139,27 @@ export default function MbtiTest({
                 {initialMbti && (
                     <p className="text-sm text-gray-400 mb-6">이전에 측정한 유형: {initialMbti}</p>
                 )}
+                <div className="text-left mb-8">
+                    <label htmlFor="selfReportedMbti" className="block text-sm font-semibold text-gray-700 mb-1">
+                        테스트 전에, 평소 알고 있는 나의 MBTI는 무엇인가요? (선택)
+                    </label>
+                    <select
+                        id="selfReportedMbti"
+                        value={selfReportedMbti}
+                        onChange={(e) => setSelfReportedMbti(e.target.value)}
+                        className="w-full p-2 border border-gray-300 rounded bg-white"
+                    >
+                        <option value="">잘 모르겠어요 / 건너뛸게요</option>
+                        {MBTI_TYPES.map((type) => (
+                            <option key={type} value={type}>
+                                {type}
+                            </option>
+                        ))}
+                    </select>
+                    <p className="text-xs text-gray-400 mt-1">
+                        테스트 결과와 비교해서 평소 모습과 코트 안에서의 모습을 분석해 드려요.
+                    </p>
+                </div>
                 <button
                     onClick={() => setStarted(true)}
                     className="px-6 py-3 bg-blue-500 text-white rounded-lg font-bold text-lg hover:bg-blue-600"

@@ -424,3 +424,45 @@ export const MBTI_DESCRIPTIONS: Record<string, string> = {
     ENFP: "누구와도 금세 친해지는 복식 파트너계의 인싸, 즉흥 플레이도 즐긴다.",
     ENTP: "허를 찌르는 샷과 즉석 아이디어로 코트를 즐겁게 뒤흔드는 승부사.",
 };
+
+/** 각 글자가 나타내는 성향을 짧은 서술형 어구로 표현한 사전입니다 (비교 분석 문장 생성에 사용). */
+export const MBTI_LETTER_TRAITS: Record<string, string> = {
+    E: "사람들과 어울리며 에너지를 얻는",
+    I: "혼자만의 시간에서 에너지를 얻는",
+    S: "현실적이고 구체적인 것을 중시하는",
+    N: "직관과 새로운 가능성을 중시하는",
+    T: "논리와 원칙을 우선하는",
+    F: "관계와 감정을 우선하는",
+    J: "계획적이고 체계적인",
+    P: "즉흥적이고 유연한",
+};
+
+/**
+ * 평소 스스로 생각하는 MBTI와 배드민턴장에서 측정된 MBTI를 비교해 분석 문장을 생성합니다.
+ * @param selfType - 본인이 알고 있다고 답한 MBTI (4글자)
+ * @param measuredType - 테스트로 측정된 MBTI (4글자)
+ */
+export function compareMbti(selfType: string, measuredType: string): string {
+    const differences: string[] = [];
+
+    for (let i = 0; i < 4; i++) {
+        const selfLetter = selfType[i];
+        const measuredLetter = measuredType[i];
+        if (selfLetter !== measuredLetter) {
+            differences.push(
+                `평소에는 ${MBTI_LETTER_TRAITS[selfLetter]} 편인데, 배드민턴장 안에서는 ${MBTI_LETTER_TRAITS[measuredLetter]} 모습을 보이시는군요.`,
+            );
+        }
+    }
+
+    if (differences.length === 0) {
+        return "평소 생각하시는 모습과 배드민턴장 안에서의 모습이 똑같네요! 코트 안팎으로 한결같은 분이시군요.";
+    }
+
+    const intro =
+        differences.length === 4
+            ? "평소 알고 계신 모습과 배드민턴장 안에서의 모습이 꽤 다르네요."
+            : "평소 알고 계신 모습과 배드민턴장 안에서의 모습이 일부 다르게 나타났어요.";
+
+    return [intro, ...differences].join(" ");
+}
