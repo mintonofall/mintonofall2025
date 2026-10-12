@@ -1,6 +1,7 @@
 import { getUser } from "@/lib/getUserGoHome";
 import { redirect } from "next/navigation";
 import MyInfoForm from "./MyInfoForm";
+import type { SajuResult } from "@/lib/sajuTypes";
 
 export default async function MyPage() {
     const user = await getUser();
@@ -15,6 +16,7 @@ export default async function MyPage() {
             nickName={user.nickName}
             point={user.point}
             mbti={user.mbti}
+            saju={(user.saju as SajuResult | null) ?? null}
         />
     );
 }

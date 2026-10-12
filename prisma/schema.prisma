@@ -33,6 +33,7 @@ model User {
   posts          Post[]
   comments       Comment[]
   mbti           String?
+  saju           Json?
 }
 
 model FantasyTeam {

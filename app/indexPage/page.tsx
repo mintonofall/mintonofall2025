@@ -28,6 +28,9 @@ export default async function Index() {
             <Link href={`/mbti`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
                 배드민턴 MBTI 테스트
             </Link>
+            <Link href={`/saju`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
+                민턴사주
+            </Link>
             <Link href={`/mypage`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
                 내 정보 수정
             </Link>

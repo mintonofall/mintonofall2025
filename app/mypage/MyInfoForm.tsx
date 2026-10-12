@@ -2,21 +2,29 @@
 
 import { useActionState, useEffect, useState } from "react";
 import Link from "next/link";
+import { Radar } from "react-chartjs-2";
+import { Chart, registerables } from "chart.js";
 import { updateMyInfo } from "./action";
 import { MBTI_DESCRIPTIONS } from "@/lib/mbtiQuestions";
+import { ELEMENT_STYLE, type Element, type SajuResult } from "@/lib/sajuTypes";
+
+Chart.register(...registerables);
 
 const MBTI_TYPES = Object.keys(MBTI_DESCRIPTIONS);
+const ELEMENT_ORDER: Element[] = ["목", "화", "토", "금", "수"];
 
 export default function MyInfoForm({
     userName,
     nickName,
     point,
     mbti,
+    saju,
 }: {
     userName: string;
     nickName: string;
     point: number;
     mbti: string | null;
+    saju: SajuResult | null;
 }) {
     const [state, action, isPending] = useActionState(updateMyInfo, null);
     const [currentPassword, setCurrentPassword] = useState("");
@@ -59,6 +67,46 @@ export default function MyInfoForm({
                     <span>
                         보유 포인트 <b className="text-blue-600">{point.toLocaleString()}</b>
                     </span>
+                </div>
+
+                <div className="mb-6 border border-gray-200 rounded-lg p-4">
+                    <div className="flex items-center justify-between mb-2">
+                        <p className="text-sm font-semibold text-gray-700">민턴사주 오행 분포</p>
+                        <Link href="/saju" className="text-xs text-blue-500 hover:underline">
+                            {saju ? "다시 보기" : "사주 보러 가기"}
+                        </Link>
+                    </div>
+                    {saju ? (
+                        <>
+                            <Radar
+                                data={{
+                                    labels: ELEMENT_ORDER.map(
+                                        (e) => `${ELEMENT_STYLE[e].name} ${ELEMENT_STYLE[e].style}`,
+                                    ),
+                                    datasets: [
+                                        {
+                                            label: "오행 분포",
+                                            data: ELEMENT_ORDER.map((e) => saju.elementCounts[e]),
+                                            backgroundColor: "rgba(59, 130, 246, 0.2)",
+                                            borderColor: "rgba(59, 130, 246, 1)",
+                                            pointBackgroundColor: "rgba(59, 130, 246, 1)",
+                                        },
+                                    ],
+                                }}
+                                options={{
+                                    scales: { r: { beginAtZero: true, ticks: { stepSize: 1 } } },
+                                    plugins: { legend: { display: false } },
+                                }}
+                            />
+                            <p className="text-xs text-gray-500 mt-2">
+                                타고난 기본 타입: <b>{ELEMENT_STYLE[saju.baseElement].style}</b>
+                            </p>
+                        </>
+                    ) : (
+                        <p className="text-sm text-gray-400 text-center py-4">
+                            아직 측정하지 않았어요. 생년월일로 민턴사주를 확인해보세요.
+                        </p>
+                    )}
                 </div>
 
                 <form action={action} className="flex flex-col gap-4">
