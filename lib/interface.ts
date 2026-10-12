@@ -17,6 +17,16 @@ export interface Player {
     loseDatas: string[];
     enterDatas: Date[];
     createdAt: Date;
+
+    linkedUserId: number | null;
+    mbti: string | null;
+    birthYear: number | null;
+    birthMonth: number | null;
+    birthDay: number | null;
+    birthCalendarType: string | null;
+    birthIsLeapMonth: boolean | null;
+    birthHour: number | null;
+    saju: unknown;
 }
 
 export interface WaitGameListCLass {

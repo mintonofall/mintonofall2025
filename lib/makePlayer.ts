@@ -9,11 +9,25 @@ export async function makePlayer(fromClub: number, toClub: number) {
         },
     });
     console.log(fromPlayer);
-    const newClubPlayer = fromPlayer.map((player) => {
-        player.clubid = toClub;
-        delete (player as { id?: number }).id;
-        return player;
-    });
+    // id와 개인 식별 정보(이게 나에요로 연결된 유저, MBTI, 생일, 사주)는 새 클럽으로 복제하지 않습니다.
+    const newClubPlayer = fromPlayer.map(
+        ({
+            id: _id,
+            linkedUserId: _linkedUserId,
+            mbti: _mbti,
+            birthYear: _birthYear,
+            birthMonth: _birthMonth,
+            birthDay: _birthDay,
+            birthCalendarType: _birthCalendarType,
+            birthIsLeapMonth: _birthIsLeapMonth,
+            birthHour: _birthHour,
+            saju: _saju,
+            ...rest
+        }) => ({
+            ...rest,
+            clubid: toClub,
+        }),
+    );
 
     console.log(newClubPlayer);
     const result = await db.player.createMany({

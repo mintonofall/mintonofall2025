@@ -225,6 +225,17 @@ model Player {
   isJoinLeague    Boolean?            @default(false)
   createdAt       DateTime            @default(now())
   editRequests    PlayerEditRequest[]
+
+  // "이게 나에요" - 이 선수 프로필이 누구인지 유저와 연결하고, 그 유저의 MBTI/생일/사주를 저장합니다.
+  linkedUserId      Int?
+  mbti              String?
+  birthYear         Int?
+  birthMonth        Int?
+  birthDay          Int?
+  birthCalendarType String?
+  birthIsLeapMonth  Boolean?
+  birthHour         Int?
+  saju              Json?
 }
 
 model PlayerEditRequest {
