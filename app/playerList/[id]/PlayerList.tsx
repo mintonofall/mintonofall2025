@@ -3,15 +3,14 @@ import PlayerCard from "@/app/component/PlayerCard";
 import { Player } from "@/lib/interface";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { deletePlayer } from "./action";
-import ClaimMeModal from "./ClaimMeModal";
+import { deletePlayer, claimPlayerIdentity } from "./action";
 import getSessionClient from "@/lib/sessionClient";
 
 export default function PlayerListComponent({ playerList, id }: { playerList: Player[]; id: number }) {
     const [players, setPlayers] = useState<Player[]>([]);
     const [searchTerm, setSearchTerm] = useState("");
     const [myUserId, setMyUserId] = useState<number | null>(null);
-    const [claimTarget, setClaimTarget] = useState<Player | null>(null);
+    const [claimingId, setClaimingId] = useState<number | null>(null);
     useEffect(() => {
         setPlayers(playerList);
     }, [playerList]);
@@ -29,24 +28,33 @@ export default function PlayerListComponent({ playerList, id }: { playerList: Pl
         }
     };
 
-    const handleClaimClick = (player: Player) => {
+    const handleClaimClick = async (player: Player) => {
         if (!myUserId) {
             alert("로그인이 필요합니다.");
             return;
         }
-        setClaimTarget(player);
-    };
-
-    const handleClaimed = () => {
-        if (!claimTarget || !myUserId) return;
-        // 같은 클럽의 다른 선수에 걸려 있던 연결은 해제하고, 선택한 선수에만 연결합니다.
-        setPlayers((prev) =>
-            prev.map((p) => {
-                if (p.id === claimTarget.id) return { ...p, linkedUserId: myUserId };
-                if (p.linkedUserId === myUserId) return { ...p, linkedUserId: null };
-                return p;
-            }),
-        );
+        if (claimingId !== null) return;
+        setClaimingId(player.id);
+        try {
+            const result = await claimPlayerIdentity(myUserId, player.id, id);
+            if ("error" in result) {
+                alert(result.error);
+                return;
+            }
+            // 같은 클럽의 다른 선수에 걸려 있던 연결은 해제하고, 선택한 선수에만 연결/정보를 반영합니다.
+            setPlayers((prev) =>
+                prev.map((p) => {
+                    if (p.id === player.id) return { ...p, linkedUserId: myUserId, mbti: result.player.mbti, saju: result.player.saju };
+                    if (p.linkedUserId === myUserId) return { ...p, linkedUserId: null };
+                    return p;
+                }),
+            );
+        } catch (error) {
+            console.error("선수 지정 중 오류가 발생했습니다:", error);
+            alert("선수 지정에 실패했습니다.");
+        } finally {
+            setClaimingId(null);
+        }
     };
 
     return (
@@ -124,39 +132,20 @@ export default function PlayerListComponent({ playerList, id }: { playerList: Pl
                                 )}
                                 <button
                                     onClick={() => handleClaimClick(player)}
-                                    className={`text-xs font-semibold px-2 py-1 rounded ml-auto transition-colors ${
+                                    disabled={claimingId === player.id}
+                                    className={`text-xs font-semibold px-2 py-1 rounded ml-auto transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                                         isMine
                                             ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
                                             : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                                     }`}
                                 >
-                                    {isMine ? "나예요 ✓" : "이게 나에요"}
+                                    {claimingId === player.id ? "저장 중..." : isMine ? "나예요 ✓" : "이게 나에요"}
                                 </button>
                             </div>
                         </div>
                     );
                 })}
             </div>
-
-            {claimTarget && myUserId && (
-                <ClaimMeModal
-                    userId={myUserId}
-                    playerId={claimTarget.id}
-                    clubId={id}
-                    playerName={claimTarget.name}
-                    initial={{
-                        mbti: claimTarget.mbti,
-                        birthYear: claimTarget.birthYear,
-                        birthMonth: claimTarget.birthMonth,
-                        birthDay: claimTarget.birthDay,
-                        birthCalendarType: claimTarget.birthCalendarType,
-                        birthIsLeapMonth: claimTarget.birthIsLeapMonth,
-                        birthHour: claimTarget.birthHour,
-                    }}
-                    onClose={() => setClaimTarget(null)}
-                    onSaved={handleClaimed}
-                />
-            )}
         </div>
     );
 }
