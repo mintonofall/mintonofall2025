@@ -1,3 +1,5 @@
+import type { ZodiacSign } from "./zodiac";
+
 export type Element = "목" | "화" | "토" | "금" | "수";
 
 export const ELEMENT_STYLE: Record<
@@ -56,6 +58,8 @@ export interface SajuResult {
     dominantElement: Element;
     weakestElement: Element;
     baseElement: Element; // 일간(日干) 기준 나의 기본 타입
+    zodiac: ZodiacSign;
+    solarDate: string; // 양력 생년월일 (YYYY-MM-DD)
     analysis: string;
     calculatedAt: string;
 }

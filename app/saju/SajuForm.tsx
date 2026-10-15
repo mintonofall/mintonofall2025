@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Radar } from "react-chartjs-2";
 import { Chart, registerables } from "chart.js";
 import { ELEMENT_STYLE, type Element, type SajuResult } from "@/lib/sajuTypes";
+import { ZODIAC_STYLE } from "@/lib/zodiac";
 import { calculateAndSaveSaju } from "@/lib/saju";
 
 Chart.register(...registerables);
@@ -126,6 +127,24 @@ export default function SajuForm({
                         }
                     />
                 </div>
+
+                {result.zodiac && ZODIAC_STYLE[result.zodiac] ? (
+                    <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 rounded-lg p-4 mb-6 flex items-center gap-4">
+                        <div className="text-5xl shrink-0">{ZODIAC_STYLE[result.zodiac].emoji}</div>
+                        <div>
+                            <p className="text-sm text-gray-500">
+                                별자리 <span className="text-indigo-600">{ZODIAC_STYLE[result.zodiac].symbol}</span>{" "}
+                                {result.zodiac}
+                            </p>
+                            <p className="font-bold text-gray-800">{ZODIAC_STYLE[result.zodiac].style}</p>
+                            <p className="text-sm text-gray-600">{ZODIAC_STYLE[result.zodiac].description}</p>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6 text-sm text-amber-700 text-center">
+                        별자리 정보가 없어요. 아래 &quot;다시 계산하기&quot;로 생년월일을 다시 입력하면 별자리도 함께 표시돼요.
+                    </div>
+                )}
 
                 <div className="bg-white border border-gray-200 rounded-lg p-4 mb-6 shadow-sm">
                     <Radar

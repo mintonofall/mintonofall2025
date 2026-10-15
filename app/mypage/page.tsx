@@ -17,6 +17,7 @@ export default async function MyPage() {
             point={user.point}
             mbti={user.mbti}
             saju={(user.saju as SajuResult | null) ?? null}
+            profileImage={user.profileImage}
         />
     );
 }

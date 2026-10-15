@@ -1,5 +1,6 @@
 import { Lunar, Solar } from "lunar-javascript";
 import { ELEMENT_STYLE, type Element, type Pillar, type SajuInput, type SajuResult } from "./sajuTypes";
+import { getZodiacSign } from "./zodiac";
 
 const GAN_MAP: Record<string, { hangul: string; element: Element }> = {
     甲: { hangul: "갑", element: "목" },
@@ -79,6 +80,10 @@ export function calculateSaju(input: SajuInput): SajuResult {
     const weakestInfo = ELEMENT_STYLE[weakestElement];
     const baseInfo = ELEMENT_STYLE[baseElement];
 
+    // 서양 별자리는 양력 생일(월/일) 기준으로 판정합니다.
+    const zodiac = getZodiacSign(solarMonth, solarDay);
+    const solarDate = `${solarYear}-${String(solarMonth).padStart(2, "0")}-${String(solarDay).padStart(2, "0")}`;
+
     const analysis =
         dominantElement === weakestElement
             ? `일간(나 자신)은 ${baseInfo.name} 기운으로, 기본적으로 ${baseInfo.description}를 보입니다. 오행이 고르게 분포되어 있어 특정 스타일에 치우치지 않는 균형 잡힌 플레이어입니다.`
@@ -90,6 +95,8 @@ export function calculateSaju(input: SajuInput): SajuResult {
         dominantElement,
         weakestElement,
         baseElement,
+        zodiac,
+        solarDate,
         analysis,
         calculatedAt: new Date().toISOString(),
     };

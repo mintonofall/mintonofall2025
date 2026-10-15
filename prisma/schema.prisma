@@ -34,6 +34,36 @@ model User {
   comments       Comment[]
   mbti           String?
   saju           Json?
+  birthday             String? // YYYYMMDD (입력한 달력 기준 그대로, 윤달 등 그레고리력으로 환산 불가능한 날짜도 저장 가능)
+  birthdayCalendarType String? // "solar" | "lunar"
+  birthdayIsLeapMonth  Boolean?
+  profileImage         String?
+  style                Json?
+
+  compatibilityChecks    CompatibilityCheck[] @relation("CompatibilityOwner")
+  compatibilityCheckedBy CompatibilityCheck[] @relation("CompatibilityPartner")
+}
+
+model CompatibilityCheck {
+  id              Int      @id @default(autoincrement())
+  userId          Int
+  user            User     @relation("CompatibilityOwner", fields: [userId], references: [id], onDelete: Cascade)
+  partnerUserId   Int
+  partner         User     @relation("CompatibilityPartner", fields: [partnerUserId], references: [id], onDelete: Cascade)
+  partnerUserName String
+  overallScore    Int
+  mbtiScore       Int?
+  sajuScore       Int?
+  zodiacScore     Int?
+  commScore       Int?
+  playScore       Int?
+  memo            String   @default("")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@unique([userId, partnerUserId])
+  @@index([userId])
+  @@index([partnerUserId])
 }
 
 model FantasyTeam {

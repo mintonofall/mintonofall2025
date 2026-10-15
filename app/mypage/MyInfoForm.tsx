@@ -7,6 +7,8 @@ import { Chart, registerables } from "chart.js";
 import { updateMyInfo } from "./action";
 import { MBTI_DESCRIPTIONS } from "@/lib/mbtiQuestions";
 import { ELEMENT_STYLE, type Element, type SajuResult } from "@/lib/sajuTypes";
+import { ZODIAC_STYLE } from "@/lib/zodiac";
+import ProfilePhotoUploader from "./ProfilePhotoUploader";
 
 Chart.register(...registerables);
 
@@ -19,12 +21,14 @@ export default function MyInfoForm({
     point,
     mbti,
     saju,
+    profileImage,
 }: {
     userName: string;
     nickName: string;
     point: number;
     mbti: string | null;
     saju: SajuResult | null;
+    profileImage: string | null;
 }) {
     const [state, action, isPending] = useActionState(updateMyInfo, null);
     const [currentPassword, setCurrentPassword] = useState("");
@@ -43,6 +47,8 @@ export default function MyInfoForm({
         <div className="flex justify-center items-start min-h-screen bg-gray-100 p-4 pt-12">
             <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
                 <h1 className="text-2xl font-bold mb-6 text-center">내 정보 수정</h1>
+
+                <ProfilePhotoUploader initialImage={profileImage} />
 
                 {state?.success && (
                     <p className="text-green-600 text-sm text-center mb-4 bg-green-50 rounded py-2">
@@ -101,6 +107,31 @@ export default function MyInfoForm({
                             <p className="text-xs text-gray-500 mt-2">
                                 타고난 기본 타입: <b>{ELEMENT_STYLE[saju.baseElement].style}</b>
                             </p>
+                            {saju.zodiac && ZODIAC_STYLE[saju.zodiac] ? (
+                                <div className="mt-3 pt-3 border-t border-gray-100 flex items-center gap-3">
+                                    <div className="text-3xl shrink-0">{ZODIAC_STYLE[saju.zodiac].emoji}</div>
+                                    <div>
+                                        <p className="text-xs text-gray-500">
+                                            별자리{" "}
+                                            <span className="text-indigo-600">
+                                                {ZODIAC_STYLE[saju.zodiac].symbol}
+                                            </span>{" "}
+                                            {saju.zodiac}
+                                        </p>
+                                        <p className="text-sm font-bold text-gray-800">
+                                            {ZODIAC_STYLE[saju.zodiac].style}
+                                        </p>
+                                    </div>
+                                </div>
+                            ) : (
+                                <p className="text-xs text-amber-600 bg-amber-50 rounded mt-3 py-2 text-center">
+                                    별자리 정보가 없어요.{" "}
+                                    <Link href="/saju" className="underline font-semibold">
+                                        다시 계산하기
+                                    </Link>
+                                    로 추가해보세요.
+                                </p>
+                            )}
                         </>
                     ) : (
                         <p className="text-sm text-gray-400 text-center py-4">
