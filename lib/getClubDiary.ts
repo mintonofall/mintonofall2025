@@ -183,6 +183,7 @@ export async function getPlayersFromClub(clubid: number) {
             isMe: true,
             lastGameDate: true,
             createdAt: true,
+            linkedUserId: true,
         },
         orderBy: [
             {
@@ -451,6 +452,84 @@ export async function getWin(userid: number) {
     });
 
     return [wins, loses, point, loss];
+}
+
+/**
+ * 민턴궁합에서 상대로 지정한 유저가 내 일지의 어떤 선수인지 보여주기 위해,
+ * 아직 "나"로 지정되지 않은 내 일지 선수 목록을 가져옵니다.
+ * @param {number} ownerId - 일지 소유자(로그인한 사용자) ID
+ */
+export async function getMyDiaryPlayerOptions(ownerId: number) {
+    return db.playerDiary.findMany({
+        where: { userid: ownerId, isMe: false },
+        select: { id: true, name: true, linkedUserId: true },
+        orderBy: { name: "asc" },
+    });
+}
+
+/**
+ * 내 일지의 특정 선수를 실제 등록된 유저(민턴궁합 상대)와 연결합니다.
+ * 같은 유저가 이미 다른 선수와 연결되어 있다면 그 연결은 해제합니다.
+ * @param {number} ownerId - 일지 소유자(로그인한 사용자) ID
+ * @param {number} playerDiaryId - 연결할 내 일지 선수(PlayerDiary)의 ID
+ * @param {number} partnerUserId - 연결할 실제 유저 ID
+ */
+export async function linkDiaryPlayerToUser(
+    ownerId: number,
+    playerDiaryId: number,
+    partnerUserId: number,
+): Promise<{ error: string } | { success: true }> {
+    const target = await db.playerDiary.findUnique({ where: { id: playerDiaryId } });
+    if (!target || target.userid !== ownerId) {
+        return { error: "해당 선수를 찾을 수 없습니다." };
+    }
+
+    await db.playerDiary.updateMany({
+        where: { userid: ownerId, linkedUserId: partnerUserId, NOT: { id: playerDiaryId } },
+        data: { linkedUserId: null },
+    });
+    await db.playerDiary.update({
+        where: { id: playerDiaryId },
+        data: { linkedUserId: partnerUserId },
+    });
+
+    return { success: true as const };
+}
+
+/**
+ * 내 일지에서 "나"와, 특정 유저와 연결된 선수가 파트너(같은 팀)로 함께 뛴 경기의 전적을 계산합니다.
+ * 연결된 선수가 없으면 null을 반환합니다.
+ * @param {number} ownerId - 일지 소유자(로그인한 사용자) ID
+ * @param {number} partnerUserId - 상대 유저 ID
+ */
+export async function getHeadToHeadRecord(ownerId: number, partnerUserId: number) {
+    const [me, partner] = await Promise.all([
+        db.playerDiary.findFirst({ where: { userid: ownerId, isMe: true } }),
+        db.playerDiary.findFirst({ where: { userid: ownerId, linkedUserId: partnerUserId } }),
+    ]);
+
+    if (!me || !partner) return null;
+
+    const matches = await db.matchDiary.findMany({
+        where: { userid: ownerId, players: { hasEvery: [me.id, partner.id] } },
+    });
+
+    let wins = 0;
+    let games = 0;
+    for (const match of matches) {
+        const team1 = [match.players[0], match.players[1]];
+        const team2 = [match.players[2], match.players[3]];
+        const sameTeam =
+            (team1.includes(me.id) && team1.includes(partner.id)) ||
+            (team2.includes(me.id) && team2.includes(partner.id));
+        if (!sameTeam) continue;
+
+        games += 1;
+        const winners = [match.winner1id, match.winner2id];
+        if (winners.includes(me.id) && winners.includes(partner.id)) wins += 1;
+    }
+
+    return { games, wins, losses: games - wins, linkedPlayerName: partner.name };
 }
 
 /**

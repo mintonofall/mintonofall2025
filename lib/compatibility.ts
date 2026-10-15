@@ -7,6 +7,15 @@ import { mbtiCompatibility } from "./mbtiCompat";
 import { sajuCompatibility } from "./sajuCompat";
 import { zodiacCompatibility } from "./zodiacCompat";
 import { commCompatibility, playCompatibility } from "./styleCompat";
+import { getHeadToHeadRecord } from "./getClubDiary";
+
+const RECORD_SCORE_FLOOR = 70; // 승률 0%일 때 점수
+const RECORD_SCORE_CEIL_WIN_RATE = 0.8; // 이 승률부터는 만점
+
+function recordScoreFromWinRate(winRate: number): number {
+    if (winRate >= RECORD_SCORE_CEIL_WIN_RATE) return 100;
+    return Math.round(RECORD_SCORE_FLOOR + (winRate / RECORD_SCORE_CEIL_WIN_RATE) * (100 - RECORD_SCORE_FLOOR));
+}
 
 export async function getCompatibility(myUserId: number, partnerUserName: string) {
     // 맥/일부 IME에서 한글이 자소분리(NFD)로 입력될 수 있어, DB에 저장된 형태(NFC)로 정규화 후 조회합니다.
@@ -48,17 +57,35 @@ export async function getCompatibility(myUserId: number, partnerUserName: string
     const commResult = meStyle && partnerStyle ? commCompatibility(meStyle.comm, partnerStyle.comm) : null;
     const playResult = meStyle && partnerStyle ? playCompatibility(meStyle.play, partnerStyle.play) : null;
 
-    if (!mbtiResult && !sajuResult && !zodiacResult && !commResult && !playResult) {
+    const headToHead = await getHeadToHeadRecord(me.id, partner.id);
+    const recordResult = headToHead
+        ? {
+              // 승률 0%는 70점, 80% 이상은 100점이 되도록 선형으로 환산합니다.
+              score: headToHead.games > 0 ? recordScoreFromWinRate(headToHead.wins / headToHead.games) : null,
+              games: headToHead.games,
+              wins: headToHead.wins,
+              losses: headToHead.losses,
+              linkedPlayerName: headToHead.linkedPlayerName,
+          }
+        : null;
+
+    const scores = [
+        mbtiResult?.score,
+        sajuResult?.score,
+        zodiacResult?.score,
+        commResult?.score,
+        playResult?.score,
+        recordResult?.score,
+    ].filter((s): s is number => typeof s === "number");
+
+    if (scores.length === 0) {
         return {
             error: `${
                 partner.nickName || partner.userName
-            }님과의 궁합을 보려면 두 분 모두 MBTI, 민턴사주, 민턴스타일 중 하나는 측정이 필요해요.`,
+            }님과의 궁합을 보려면 MBTI, 민턴사주, 민턴스타일 중 하나는 측정하거나 일지에서 전적을 연동해주세요.`,
         };
     }
 
-    const scores = [mbtiResult?.score, sajuResult?.score, zodiacResult?.score, commResult?.score, playResult?.score].filter(
-        (s): s is number => typeof s === "number",
-    );
     const overallScore = Math.round(scores.reduce((sum, s) => sum + s, 0) / scores.length);
 
     // 조회한 궁합 기록을 저장합니다 (같은 상대와 다시 보면 점수만 갱신하고, 메모는 유지합니다).
@@ -74,6 +101,7 @@ export async function getCompatibility(myUserId: number, partnerUserName: string
             zodiacScore: zodiacResult?.score ?? null,
             commScore: commResult?.score ?? null,
             playScore: playResult?.score ?? null,
+            recordScore: recordResult?.score ?? null,
         },
         update: {
             partnerUserName: partner.userName,
@@ -83,11 +111,14 @@ export async function getCompatibility(myUserId: number, partnerUserName: string
             zodiacScore: zodiacResult?.score ?? null,
             commScore: commResult?.score ?? null,
             playScore: playResult?.score ?? null,
+            recordScore: recordResult?.score ?? null,
         },
     });
 
     return {
         success: true as const,
+        partnerUserId: partner.id,
+        partnerUserName: partner.userName,
         partnerName: partner.nickName || partner.userName,
         overallScore,
         mbti: mbtiResult ? { myType: me.mbti!, partnerType: partner.mbti!, ...mbtiResult } : null,
@@ -97,6 +128,7 @@ export async function getCompatibility(myUserId: number, partnerUserName: string
         zodiac: zodiacResult ? { myZodiac: meSaju!.zodiac, partnerZodiac: partnerSaju!.zodiac, ...zodiacResult } : null,
         comm: commResult,
         play: playResult,
+        record: recordResult,
     };
 }
 
@@ -117,6 +149,7 @@ export async function getCompatibilityHistory(userId: number) {
         zodiacScore: check.zodiacScore,
         commScore: check.commScore,
         playScore: check.playScore,
+        recordScore: check.recordScore,
         memo: check.memo,
         updatedAt: check.updatedAt.toISOString(),
     }));

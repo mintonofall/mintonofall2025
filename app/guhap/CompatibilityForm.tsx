@@ -2,12 +2,17 @@
 
 import { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
+import { Radar } from "react-chartjs-2";
+import { Chart, registerables, type Plugin } from "chart.js";
 import {
     deleteCompatibilityCheck,
     getCompatibility,
     getCompatibilityHistory,
     updateCompatibilityMemo,
 } from "@/lib/compatibility";
+import { getMyDiaryPlayerOptions, linkDiaryPlayerToUser } from "@/lib/getClubDiary";
+
+Chart.register(...registerables);
 
 type CompatibilityResult = Awaited<ReturnType<typeof getCompatibility>>;
 type CompatibilityHistoryItem = Awaited<ReturnType<typeof getCompatibilityHistory>>[number];
@@ -41,9 +46,196 @@ function ScoreCard({ title, score, children }: { title: string; score: number; c
     );
 }
 
-function CompatibilityBreakdown({ detail }: { detail: SuccessResult }) {
+/** 육각형 차트의 각 꼭짓점 위에 점수를 항상 표시하는 플러그인 (호버 없이도 보이도록). */
+const radarValueLabels: Plugin<"radar"> = {
+    id: "radarValueLabels",
+    afterDatasetsDraw(chart) {
+        const { ctx } = chart;
+        chart.data.datasets.forEach((dataset, datasetIndex) => {
+            const meta = chart.getDatasetMeta(datasetIndex);
+            meta.data.forEach((element, index) => {
+                const value = dataset.data[index];
+                if (value === null || value === undefined) return;
+                const pos = element.tooltipPosition(true);
+                ctx.save();
+                ctx.fillStyle = "#1d4ed8";
+                ctx.font = "bold 12px sans-serif";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "bottom";
+                ctx.fillText(String(value), pos.x ?? 0, (pos.y ?? 0) - 6);
+                ctx.restore();
+            });
+        });
+    },
+};
+
+function HexagonChart({ detail }: { detail: SuccessResult }) {
+    const labels = ["MBTI", "사주", "별자리", "소통", "스타일", "전적"];
+    const data = [
+        detail.mbti?.score ?? 0,
+        detail.saju?.score ?? 0,
+        detail.zodiac?.score ?? 0,
+        detail.comm?.score ?? 0,
+        detail.play?.score ?? 0,
+        detail.record?.score ?? 0,
+    ];
+
+    return (
+        <div className="bg-white border border-gray-200 rounded-lg p-3">
+            <Radar
+                data={{
+                    labels,
+                    datasets: [
+                        {
+                            label: "궁합 점수",
+                            data,
+                            backgroundColor: "rgba(59, 130, 246, 0.2)",
+                            borderColor: "rgba(59, 130, 246, 1)",
+                            pointBackgroundColor: "rgba(59, 130, 246, 1)",
+                        },
+                    ],
+                }}
+                options={{
+                    scales: { r: { beginAtZero: true, max: 100, ticks: { display: false, stepSize: 20 } } },
+                    plugins: { legend: { display: false } },
+                }}
+                plugins={[radarValueLabels]}
+            />
+        </div>
+    );
+}
+
+function DiaryRecordCard({
+    userId,
+    detail,
+    onRelink,
+}: {
+    userId: number;
+    detail: SuccessResult;
+    onRelink: () => void | Promise<void>;
+}) {
+    const [editing, setEditing] = useState(false);
+    const [options, setOptions] = useState<{ id: number; name: string; linkedUserId: number | null }[] | null>(null);
+    const [selectedId, setSelectedId] = useState<number | "">("");
+    const [isLoadingOptions, setIsLoadingOptions] = useState(false);
+    const [isSaving, setIsSaving] = useState(false);
+    const [error, setError] = useState("");
+
+    const startEditing = async () => {
+        setEditing(true);
+        setError("");
+        if (options) return;
+        setIsLoadingOptions(true);
+        try {
+            const list = await getMyDiaryPlayerOptions(userId);
+            setOptions(list);
+            const current = list.find((p) => p.linkedUserId === detail.partnerUserId);
+            setSelectedId(current ? current.id : "");
+        } catch (err) {
+            console.error("일지 선수 목록을 불러오는 중 오류가 발생했습니다:", err);
+            setError("일지 선수 목록을 불러오지 못했어요.");
+        } finally {
+            setIsLoadingOptions(false);
+        }
+    };
+
+    const handleApply = async () => {
+        if (!selectedId) return;
+        setIsSaving(true);
+        setError("");
+        try {
+            const res = await linkDiaryPlayerToUser(userId, Number(selectedId), detail.partnerUserId);
+            if ("error" in res) {
+                setError(res.error);
+                return;
+            }
+            setEditing(false);
+            setOptions(null);
+            await onRelink();
+        } catch (err) {
+            console.error("일지에 적용하는 중 오류가 발생했습니다:", err);
+            setError("적용하는 중 오류가 발생했습니다.");
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    return (
+        <div className="border border-gray-200 rounded-lg p-4">
+            <div className="flex justify-between items-center mb-1">
+                <p className="text-sm font-semibold text-gray-700">전적 궁합</p>
+                {detail.record?.score != null && <p className="text-lg font-bold text-blue-600">{detail.record.score}점</p>}
+            </div>
+            {detail.record ? (
+                <p className="text-sm text-gray-600 mb-2">
+                    일지의 <b>{detail.record.linkedPlayerName}</b>님과 {detail.record.games}전 {detail.record.wins}승{" "}
+                    {detail.record.losses}패
+                </p>
+            ) : (
+                <p className="text-sm text-gray-400 mb-2">아직 일지 선수와 연동되지 않았어요.</p>
+            )}
+
+            {!editing ? (
+                <button type="button" onClick={startEditing} className="text-xs text-blue-500 hover:underline font-semibold">
+                    일지에 적용하기
+                </button>
+            ) : (
+                <div className="flex flex-col gap-2 mt-2">
+                    {isLoadingOptions ? (
+                        <p className="text-xs text-gray-400">불러오는 중...</p>
+                    ) : (
+                        <select
+                            value={selectedId}
+                            onChange={(e) => setSelectedId(e.target.value ? Number(e.target.value) : "")}
+                            className="text-sm p-2 border border-gray-200 rounded bg-white"
+                        >
+                            <option value="">선수를 선택하세요</option>
+                            {options?.map((p) => (
+                                <option key={p.id} value={p.id}>
+                                    {p.name}
+                                </option>
+                            ))}
+                        </select>
+                    )}
+                    {error && <p className="text-xs text-red-500">{error}</p>}
+                    <div className="flex gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setEditing(false)}
+                            disabled={isSaving}
+                            className="px-3 py-1.5 text-xs bg-gray-100 hover:bg-gray-200 rounded disabled:opacity-50"
+                        >
+                            취소
+                        </button>
+                        <button
+                            type="button"
+                            onClick={handleApply}
+                            disabled={!selectedId || isSaving}
+                            className="px-3 py-1.5 text-xs bg-blue-500 text-white rounded disabled:bg-gray-300"
+                        >
+                            {isSaving ? "적용 중..." : "적용"}
+                        </button>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function CompatibilityBreakdown({
+    userId,
+    detail,
+    onRelink,
+}: {
+    userId: number;
+    detail: SuccessResult;
+    onRelink: () => void | Promise<void>;
+}) {
     return (
         <>
+            <HexagonChart detail={detail} />
+            <DiaryRecordCard userId={userId} detail={detail} onRelink={onRelink} />
+
             {detail.mbti && (
                 <ScoreCard title={`MBTI 궁합 (${detail.mbti.myType} x ${detail.mbti.partnerType})`} score={detail.mbti.score}>
                     <p className="text-xs text-indigo-600 font-semibold mb-3">{detail.mbti.summary}</p>
@@ -239,6 +431,21 @@ export default function CompatibilityForm({
         }
     };
 
+    const refreshDetail = async (item: CompatibilityHistoryItem) => {
+        setDetailLoadingId(item.id);
+        try {
+            const res = await getCompatibility(userId, item.partnerUserName);
+            setDetailCache((prev) => ({ ...prev, [item.id]: res }));
+            const refreshedHistory = await getCompatibilityHistory(userId);
+            setHistory(refreshedHistory);
+        } catch (error) {
+            console.error("궁합을 불러오는 중 오류가 발생했습니다:", error);
+            setDetailCache((prev) => ({ ...prev, [item.id]: { error: "궁합을 불러오는 중 오류가 발생했습니다." } }));
+        } finally {
+            setDetailLoadingId(null);
+        }
+    };
+
     const toggleDetail = async (item: CompatibilityHistoryItem) => {
         if (expandedId === item.id) {
             setExpandedId(null);
@@ -246,16 +453,7 @@ export default function CompatibilityForm({
         }
         setExpandedId(item.id);
         if (detailCache[item.id]) return;
-        setDetailLoadingId(item.id);
-        try {
-            const res = await getCompatibility(userId, item.partnerUserName);
-            setDetailCache((prev) => ({ ...prev, [item.id]: res }));
-        } catch (error) {
-            console.error("궁합을 불러오는 중 오류가 발생했습니다:", error);
-            setDetailCache((prev) => ({ ...prev, [item.id]: { error: "궁합을 불러오는 중 오류가 발생했습니다." } }));
-        } finally {
-            setDetailLoadingId(null);
-        }
+        await refreshDetail(item);
     };
 
     // QR코드로 들어온 경우 상대방 아이디가 미리 채워져 있으므로 바로 궁합을 계산합니다.
@@ -325,7 +523,12 @@ export default function CompatibilityForm({
                         <p className="text-gray-700 font-semibold">{scoreLabel(result.overallScore)}</p>
                     </div>
 
-                    <CompatibilityBreakdown key={result.partnerName} detail={result} />
+                    <CompatibilityBreakdown
+                        key={result.partnerName}
+                        userId={userId}
+                        detail={result}
+                        onRelink={() => handleSubmit(result.partnerUserName)}
+                    />
                 </div>
             )}
 
@@ -337,11 +540,6 @@ export default function CompatibilityForm({
                             <thead>
                                 <tr className="text-gray-400 border-b border-gray-200 bg-gray-50">
                                     <th className="text-left font-medium py-2 pl-3 pr-2">상대</th>
-                                    <th className="font-medium py-2 px-1">MBTI</th>
-                                    <th className="font-medium py-2 px-1">사주궁합</th>
-                                    <th className="font-medium py-2 px-1">별자리궁합</th>
-                                    <th className="font-medium py-2 px-1">소통</th>
-                                    <th className="font-medium py-2 px-1">스타일</th>
                                     <th className="font-medium py-2 px-1">총점</th>
                                     <th className="font-medium py-2 px-1">메모</th>
                                     <th className="font-medium py-2 pr-2"></th>
@@ -357,23 +555,8 @@ export default function CompatibilityForm({
                                                 onClick={() => toggleDetail(item)}
                                                 className="border-b border-gray-100 cursor-pointer hover:bg-gray-50 last:border-b-0"
                                             >
-                                                <td className="py-2 pl-3 pr-2 font-semibold text-gray-800 max-w-18 truncate">
+                                                <td className="py-2 pl-3 pr-2 font-semibold text-gray-800 max-w-24 truncate">
                                                     {item.partnerName}
-                                                </td>
-                                                <td className="py-2 px-1 text-center text-gray-700">
-                                                    {item.mbtiScore ?? "-"}
-                                                </td>
-                                                <td className="py-2 px-1 text-center text-gray-700">
-                                                    {item.sajuScore ?? "-"}
-                                                </td>
-                                                <td className="py-2 px-1 text-center text-gray-700">
-                                                    {item.zodiacScore ?? "-"}
-                                                </td>
-                                                <td className="py-2 px-1 text-center text-gray-700">
-                                                    {item.commScore ?? "-"}
-                                                </td>
-                                                <td className="py-2 px-1 text-center text-gray-700">
-                                                    {item.playScore ?? "-"}
                                                 </td>
                                                 <td className="py-2 px-1 text-center font-bold text-blue-600">
                                                     {item.overallScore}
@@ -418,7 +601,7 @@ export default function CompatibilityForm({
                                             </tr>
                                             {isExpanded && (
                                                 <tr>
-                                                    <td colSpan={9} className="bg-gray-50 border-b border-gray-100 p-3">
+                                                    <td colSpan={4} className="bg-gray-50 border-b border-gray-100 p-3">
                                                         <div className="flex flex-col gap-3">
                                                             {detailLoadingId === item.id && (
                                                                 <p className="text-xs text-gray-400 text-center py-2">
@@ -431,7 +614,11 @@ export default function CompatibilityForm({
                                                                 </p>
                                                             )}
                                                             {detail && "success" in detail && detail.success && (
-                                                                <CompatibilityBreakdown detail={detail} />
+                                                                <CompatibilityBreakdown
+                                                                    userId={userId}
+                                                                    detail={detail}
+                                                                    onRelink={() => refreshDetail(item)}
+                                                                />
                                                             )}
                                                         </div>
                                                     </td>

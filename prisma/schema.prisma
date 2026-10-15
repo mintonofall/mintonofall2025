@@ -57,6 +57,7 @@ model CompatibilityCheck {
   zodiacScore     Int?
   commScore       Int?
   playScore       Int?
+  recordScore     Int?
   memo            String   @default("")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
@@ -212,6 +213,9 @@ model PlayerDiary {
   isMe         Boolean   @default(false)
   lastGameDate DateTime?
   createdAt    DateTime  @default(now())
+
+  // 이 일지 선수가 실제로 어느 등록 유저인지 연결합니다 (민턴궁합의 전적 계산용).
+  linkedUserId Int?
 }
 
 model MatchDiary {
