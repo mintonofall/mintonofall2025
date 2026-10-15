@@ -34,9 +34,12 @@ function SignupForm() {
                     type="text"
                     id="username"
                     name="username"
+                    pattern="[A-Za-z0-9_]+"
+                    title="영문, 숫자, _(언더바)만 사용할 수 있습니다."
                     className="w-full p-2 border border-gray-300 rounded"
                     required
                 />
+                <p className="text-xs text-gray-400 mt-1">영문, 숫자, _(언더바)만 사용할 수 있어요.</p>
             </div>
             <div>
                 <label htmlFor="nickname" className="block text-gray-700 mb-2">

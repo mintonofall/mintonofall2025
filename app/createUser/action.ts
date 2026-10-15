@@ -8,9 +8,17 @@ import { redirect } from "next/navigation";
 import { sendSlackNotification } from "@/lib/slack";
 
 export default async function handleSignUp(pevState: unknown, formdata: FormData) {
-    const username = formdata.get("username");
+    // 맥/일부 IME에서 한글이 자소분리(NFD)로 입력될 수 있어, 저장/조회 전에 정규화(NFC)합니다.
+    const rawUsername = formdata.get("username");
+    const username = typeof rawUsername === "string" ? rawUsername.normalize("NFC") : rawUsername;
     const nickName = formdata.get("nickName");
     const password = formdata.get("password");
+
+    // 아이디는 영문/숫자/언더바만 허용합니다 (한글 아이디는 일부 환경에서 로그인 시 자소분리 문제가 생길 수 있어요).
+    if (typeof username !== "string" || !/^[A-Za-z0-9_]+$/.test(username)) {
+        return { error: "아이디는 영문, 숫자, _(언더바)만 사용할 수 있습니다." };
+    }
+
     // Check if the user already exists
     const user = await db.user.findFirst({
         where: {

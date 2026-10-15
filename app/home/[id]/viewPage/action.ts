@@ -7,7 +7,8 @@ import { redirect } from "next/navigation";
 import db from "@/lib/db";
 
 export default async function handleLogin(prevState: unknown, formdata: FormData) {
-    const userName = formdata.get("userName") as string;
+    // 맥/일부 IME에서 한글이 자소분리(NFD)로 입력될 수 있어, DB에 저장된 형태(NFC)로 정규화 후 조회합니다.
+    const userName = (formdata.get("userName") as string).normalize("NFC");
     const clubId = formdata.get("clubId") as string;
     // 해당 유저가 있는지 확인
     const user = await db.user.findFirst({
