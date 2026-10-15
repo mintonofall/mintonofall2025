@@ -27,6 +27,7 @@ export interface Player {
     birthIsLeapMonth: boolean | null;
     birthHour: number | null;
     saju: unknown;
+    style: unknown;
 }
 
 export interface WaitGameListCLass {

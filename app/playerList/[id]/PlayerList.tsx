@@ -44,7 +44,15 @@ export default function PlayerListComponent({ playerList, id }: { playerList: Pl
             // 같은 클럽의 다른 선수에 걸려 있던 연결은 해제하고, 선택한 선수에만 연결/정보를 반영합니다.
             setPlayers((prev) =>
                 prev.map((p) => {
-                    if (p.id === player.id) return { ...p, linkedUserId: myUserId, mbti: result.player.mbti, saju: result.player.saju };
+                    if (p.id === player.id)
+                        return {
+                            ...p,
+                            linkedUserId: myUserId,
+                            mbti: result.player.mbti,
+                            saju: result.player.saju,
+                            style: result.player.style,
+                            avater: result.player.avater,
+                        };
                     if (p.linkedUserId === myUserId) return { ...p, linkedUserId: null };
                     return p;
                 }),
@@ -90,7 +98,7 @@ export default function PlayerListComponent({ playerList, id }: { playerList: Pl
                     return (
                         <div key={player.id} className="bg-white shadow-md rounded p-4 flex flex-col gap-2">
                             <div className="flex justify-between items-center">
-                                <PlayerCard {...player} />
+                                <PlayerCard {...player} showBadges />
                                 <div className="flex gap-4">
                                     <Link
                                         href={`/editPlayer/${player.id}`}
@@ -126,6 +134,7 @@ export default function PlayerListComponent({ playerList, id }: { playerList: Pl
                                     </button>
                                 </div>
                             </div>
+
                             <div className="flex items-center justify-between">
                                 {claimedByOther && (
                                     <span className="text-[10px] text-gray-400">다른 분이 지정한 선수예요</span>

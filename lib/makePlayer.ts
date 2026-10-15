@@ -22,6 +22,7 @@ export async function makePlayer(fromClub: number, toClub: number) {
             birthIsLeapMonth: _birthIsLeapMonth,
             birthHour: _birthHour,
             saju: _saju,
+            style: _style,
             ...rest
         }) => ({
             ...rest,

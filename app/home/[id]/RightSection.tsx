@@ -5,6 +5,8 @@
  * @date 2024-07-16
  */
 import { useEffect, useState } from "react";
+import { ELEMENT_STYLE, type SajuResult } from "@/lib/sajuTypes";
+import { ZODIAC_STYLE } from "@/lib/zodiac";
 
 /**
  * RightSection 컴포넌트
@@ -16,6 +18,7 @@ import { useEffect, useState } from "react";
  * @param {any[]} props.courts - 현재 코트 데이터 (선수 상태 표시에 사용)
  * @param {(criteria: string) => void} props.onSort - 정렬 기준 변경 함수
  * @param {string} props.currentSort - 현재 정렬 기준
+ * @param {number} props.nameCharIndex - 이름 정렬 시 기준 글자 위치 (0: 첫번째 글자, 1: 두번째 글자)
  * @param {(player: any) => void} props.onEdit - 선수 정보 수정 모달 열기 함수
  * @param {(player: any) => void} props.onHistoryClick - 선수 경기 기록 모달 열기 함수
  */
@@ -27,6 +30,7 @@ export default function RightSection({
     courts = [],
     onSort,
     currentSort,
+    nameCharIndex = 0,
     onEdit,
     onHistoryClick,
 }: {
@@ -37,6 +41,7 @@ export default function RightSection({
     courts?: any[];
     onSort?: (criteria: string) => void;
     currentSort?: string;
+    nameCharIndex?: number;
     onEdit?: (player: any) => void;
     onHistoryClick?: (player: any) => void;
 }) {
@@ -188,6 +193,35 @@ export default function RightSection({
                                     </span>
                                 </div>
                             </div>
+                            {(() => {
+                                const saju = player.saju as SajuResult | null;
+                                const hasBadges = !!(player.mbti || saju?.baseElement || saju?.zodiac);
+                                if (!hasBadges) return null;
+                                return (
+                                    <div className="flex flex-col gap-1 items-end shrink-0 mx-2">
+                                        {player.mbti && (
+                                            <span className="flex items-center gap-0.5 bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded-full text-[10px] whitespace-nowrap">
+                                                <span>🧠</span>
+                                                <span className="font-semibold">{player.mbti}</span>
+                                            </span>
+                                        )}
+                                        {saju?.baseElement && (
+                                            <span className="flex items-center gap-0.5 bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded-full text-[10px] whitespace-nowrap">
+                                                <span>{ELEMENT_STYLE[saju.baseElement].emoji}</span>
+                                                <span className="font-semibold">
+                                                    {ELEMENT_STYLE[saju.baseElement].style}
+                                                </span>
+                                            </span>
+                                        )}
+                                        {saju?.zodiac && ZODIAC_STYLE[saju.zodiac] && (
+                                            <span className="flex items-center gap-0.5 bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded-full text-[10px] whitespace-nowrap">
+                                                <span>{ZODIAC_STYLE[saju.zodiac].emoji}</span>
+                                                <span className="font-semibold">{saju.zodiac}</span>
+                                            </span>
+                                        )}
+                                    </div>
+                                );
+                            })()}
                             {/* 선수별 액션 버튼 (기록 보기, 수정) */}
                             <div className="flex flex-row gap-2 items-center justify-center pr-2">
                                 <button
