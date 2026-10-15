@@ -154,12 +154,16 @@ export default function ProfilePhotoUploader({ initialImage }: { initialImage: s
         );
     }
 
+    const displaySrc = currentImage?.startsWith("https://imagedelivery.net/")
+        ? `${currentImage}/avatar`
+        : currentImage;
+
     return (
         <div className="flex flex-col items-center mb-6">
             <label htmlFor="profilePhotoInput" className="cursor-pointer group relative">
                 <div className="w-24 h-24 rounded-full bg-gray-100 border border-gray-200 overflow-hidden flex items-center justify-center">
-                    {currentImage ? (
-                        <img src={currentImage} alt="프로필 사진" className="w-full h-full object-cover" />
+                    {displaySrc ? (
+                        <img src={displaySrc} alt="프로필 사진" className="w-full h-full object-cover" />
                     ) : (
                         <span className="text-gray-300 text-4xl">👤</span>
                     )}
