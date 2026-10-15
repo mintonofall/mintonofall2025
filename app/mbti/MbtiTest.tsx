@@ -40,6 +40,8 @@ export default function MbtiTest({
     const [isSaving, setIsSaving] = useState(false);
     const [started, setStarted] = useState(false);
     const [selfReportedMbti, setSelfReportedMbti] = useState("");
+    const [isApplying, setIsApplying] = useState(false);
+    const [appliedDirectly, setAppliedDirectly] = useState(false);
 
     const pageQuestions = questions.slice(page * QUESTIONS_PER_PAGE, (page + 1) * QUESTIONS_PER_PAGE);
     const pageAnswered = pageQuestions.every((q) => answers[q.id] !== undefined);
@@ -83,6 +85,23 @@ export default function MbtiTest({
         setResult(null);
         setStarted(false);
         setSelfReportedMbti("");
+        setAppliedDirectly(false);
+    };
+
+    const handleApplyWithoutTest = async () => {
+        if (!selfReportedMbti || isApplying) return;
+        setIsApplying(true);
+        try {
+            await saveMbtiResult(userId, selfReportedMbti);
+            setAppliedDirectly(true);
+            setResult(selfReportedMbti);
+        } catch (error) {
+            console.error("MBTI 저장 중 오류가 발생했습니다:", error);
+            alert("저장에 실패했습니다. 다시 시도해주세요.");
+        } finally {
+            setIsApplying(false);
+        }
+        window.scrollTo({ top: 0, behavior: "smooth" });
     };
 
     if (result) {
@@ -92,14 +111,18 @@ export default function MbtiTest({
                 <h1 className="text-5xl font-extrabold text-blue-600 mb-4">{result}</h1>
                 <p className="text-gray-700 mb-8">{MBTI_DESCRIPTIONS[result]}</p>
 
-                {selfReportedMbti && (
-                    <div className="text-left bg-blue-50 border border-blue-100 rounded-lg p-4 mb-8">
-                        <p className="text-sm text-gray-500 mb-1">
-                            평소 알고 있던 MBTI <b className="text-gray-700">{selfReportedMbti}</b> vs 배드민턴장
-                            MBTI <b className="text-blue-700">{result}</b>
-                        </p>
-                        <p className="text-sm text-gray-700 mt-2">{compareMbti(selfReportedMbti, result)}</p>
-                    </div>
+                {appliedDirectly ? (
+                    <p className="text-sm text-gray-500 mb-8">테스트 없이 선택하신 MBTI를 그대로 적용했어요.</p>
+                ) : (
+                    selfReportedMbti && (
+                        <div className="text-left bg-blue-50 border border-blue-100 rounded-lg p-4 mb-8">
+                            <p className="text-sm text-gray-500 mb-1">
+                                평소 알고 있던 MBTI <b className="text-gray-700">{selfReportedMbti}</b> vs 배드민턴장
+                                MBTI <b className="text-blue-700">{result}</b>
+                            </p>
+                            <p className="text-sm text-gray-700 mt-2">{compareMbti(selfReportedMbti, result)}</p>
+                        </div>
+                    )
                 )}
 
                 <div className="flex flex-col sm:flex-row gap-2 justify-center">
@@ -160,12 +183,24 @@ export default function MbtiTest({
                         테스트 결과와 비교해서 평소 모습과 코트 안에서의 모습을 분석해 드려요.
                     </p>
                 </div>
-                <button
-                    onClick={() => setStarted(true)}
-                    className="px-6 py-3 bg-blue-500 text-white rounded-lg font-bold text-lg hover:bg-blue-600"
-                >
-                    시작하기
-                </button>
+                <div className="flex flex-col sm:flex-row gap-2 justify-center">
+                    <button
+                        onClick={() => setStarted(true)}
+                        className="px-6 py-3 bg-blue-500 text-white rounded-lg font-bold text-lg hover:bg-blue-600"
+                    >
+                        시작하기
+                    </button>
+                    <button
+                        onClick={handleApplyWithoutTest}
+                        disabled={!selfReportedMbti || isApplying}
+                        className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-bold text-lg hover:bg-gray-300 disabled:opacity-40 disabled:cursor-not-allowed"
+                    >
+                        {isApplying ? "적용 중..." : "테스트 안하고 적용하기"}
+                    </button>
+                </div>
+                <Link href="/indexPage" className="block text-center mt-6 text-gray-500 hover:text-gray-700 text-sm">
+                    돌아가기
+                </Link>
             </div>
         );
     }
