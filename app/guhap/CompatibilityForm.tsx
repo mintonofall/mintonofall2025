@@ -489,7 +489,7 @@ export default function CompatibilityForm({
                 </div>
             )}
 
-            <div className="flex gap-2 mb-8">
+            <div className="flex gap-2 mb-3">
                 <input
                     type="text"
                     value={partnerUserName}
@@ -508,6 +508,14 @@ export default function CompatibilityForm({
                     {isLoading ? "계산 중..." : "궁합 보기"}
                 </button>
             </div>
+
+            <button
+                onClick={() => handleSubmit("dogtable")}
+                disabled={isLoading}
+                className="block w-full text-center mb-8 text-sm text-indigo-500 hover:text-indigo-700 underline disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+                주인장과의 궁합이 궁금하세요?
+            </button>
 
             {result && "error" in result && (
                 <p className="text-red-500 text-sm text-center bg-red-50 rounded py-3 px-2">{result.error}</p>
