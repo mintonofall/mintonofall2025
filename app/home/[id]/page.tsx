@@ -118,6 +118,8 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
     const [sortCriteria, setSortCriteria] = useState("enterTime");
     /** @type {"asc" | "desc"} 대기 명단 정렬 방향 */
     const [sortDirection, setSortDirection] = useState<"asc" | "desc">("asc");
+    /** @type {number} 이름 정렬 시 기준으로 삼는 글자 위치 (0: 첫번째 글자, 1: 두번째 글자). "이름" 버튼을 누를 때마다 번갈아 전환됩니다. */
+    const [nameCharIndex, setNameCharIndex] = useState(0);
     /** @deprecated 현재 사용되지 않는 상태 */
     const [selectedPlayers, setSelectedPlayers] = useState<string[]>([]);
     /** @type {{ isOpen: boolean; courtIndex: number | null }} 경기 결과 입력 모달 상태 */
@@ -362,6 +364,16 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
             setSortCriteria(criteria);
             return;
         }
+        if (criteria === "name") {
+            if (sortCriteria === "name") {
+                // 이름 정렬을 다시 누르면 첫번째 글자 기준과 두번째 글자 기준을 번갈아 전환합니다.
+                setNameCharIndex((prev) => (prev === 0 ? 1 : 0));
+            } else {
+                setSortCriteria("name");
+                setNameCharIndex(0);
+            }
+            return;
+        }
         if (sortCriteria === criteria) {
             setSortDirection((prev) => (prev === "asc" ? "desc" : "asc"));
         } else {
@@ -391,7 +403,11 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         const direction = sortDirection === "asc" ? 1 : -1;
         switch (sortCriteria) {
             case "name":
-                return list.sort((a, b) => a.name.localeCompare(b.name) * direction);
+                return list.sort((a, b) => {
+                    const charA = a.name?.[nameCharIndex] ?? "";
+                    const charB = b.name?.[nameCharIndex] ?? "";
+                    return charA.localeCompare(charB) || a.name.localeCompare(b.name);
+                });
             case "grade":
                 const gradeOrder: { [key: string]: number } = { S: 0, A: 1, B: 2, C: 3, D: 4, E: 5 };
                 return list.sort((a, b) => ((gradeOrder[a.grade] ?? 99) - (gradeOrder[b.grade] ?? 99)) * direction);
@@ -421,7 +437,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
             default:
                 return list;
         }
-    }, [waitPlayerList, sortCriteria, sortDirection, courts, gridData]);
+    }, [waitPlayerList, sortCriteria, sortDirection, nameCharIndex, courts, gridData]);
 
     /**
      * 대기 명단(RightSection)에서 선수를 클릭했을 때, 대기 게임판(LeftBottomSection)에 추가하는 핸들러
@@ -922,6 +938,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                 courts={courts}
                 onSort={handleSort}
                 currentSort={sortCriteria}
+                nameCharIndex={nameCharIndex}
                 onEdit={(player) => setEditModal({ isOpen: true, player })}
                 onHistoryClick={handleHistoryClick}
             />
