@@ -1,10 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import Link from "next/link";
-import { getCompatibility } from "@/lib/compatibility";
+import {
+    deleteCompatibilityCheck,
+    getCompatibility,
+    getCompatibilityHistory,
+    updateCompatibilityMemo,
+} from "@/lib/compatibility";
 
 type CompatibilityResult = Awaited<ReturnType<typeof getCompatibility>>;
+type CompatibilityHistoryItem = Awaited<ReturnType<typeof getCompatibilityHistory>>[number];
 
 function scoreLabel(score: number): string {
     if (score >= 90) return "환상의 복식 파트너! 🏆";
@@ -13,20 +19,164 @@ function scoreLabel(score: number): string {
     return "스타일 차이는 있지만 해볼만해요 🤔";
 }
 
+type SuccessResult = Extract<CompatibilityResult, { success: true }>;
+
+function ScoreCard({ title, score, children }: { title: string; score: number; children: React.ReactNode }) {
+    const [expanded, setExpanded] = useState(false);
+    return (
+        <div className="border border-gray-200 rounded-lg overflow-hidden">
+            <button
+                type="button"
+                onClick={() => setExpanded((v) => !v)}
+                className="w-full flex justify-between items-center gap-2 p-4 text-left hover:bg-gray-50"
+            >
+                <span className="text-sm font-semibold text-gray-700">{title}</span>
+                <span className="flex items-center gap-2 shrink-0">
+                    <span className="text-lg font-bold text-blue-600">{score}점</span>
+                    <span className="text-gray-400 text-xs">{expanded ? "▲" : "▼"}</span>
+                </span>
+            </button>
+            {expanded && <div className="px-4 pb-4">{children}</div>}
+        </div>
+    );
+}
+
+function CompatibilityBreakdown({ detail }: { detail: SuccessResult }) {
+    return (
+        <>
+            {detail.mbti && (
+                <ScoreCard title={`MBTI 궁합 (${detail.mbti.myType} x ${detail.mbti.partnerType})`} score={detail.mbti.score}>
+                    <p className="text-xs text-indigo-600 font-semibold mb-3">{detail.mbti.summary}</p>
+                    <div className="flex flex-col gap-2">
+                        {detail.mbti.layers.map((layer) => (
+                            <div key={layer.title} className="bg-gray-50 rounded p-2">
+                                <div className="flex justify-between items-center mb-0.5">
+                                    <p className="text-xs font-semibold text-gray-700">
+                                        {layer.title} <span className="text-gray-400">· {layer.tag}</span>
+                                    </p>
+                                    <p className="text-xs font-bold text-blue-600">{layer.score}점</p>
+                                </div>
+                                <p className="text-xs text-gray-500 leading-relaxed">{layer.description}</p>
+                            </div>
+                        ))}
+                    </div>
+                </ScoreCard>
+            )}
+
+            {detail.saju && (
+                <ScoreCard
+                    title={`민턴사주 궁합 (${detail.saju.myElement} x ${detail.saju.partnerElement})`}
+                    score={detail.saju.score}
+                >
+                    <p className="text-xs text-indigo-600 font-semibold mb-3">{detail.saju.summary}</p>
+                    <div className="flex flex-col gap-2">
+                        {detail.saju.layers.map((layer) => (
+                            <div key={layer.title} className="bg-gray-50 rounded p-2">
+                                <div className="flex justify-between items-center mb-0.5">
+                                    <p className="text-xs font-semibold text-gray-700">
+                                        {layer.title} <span className="text-gray-400">· {layer.tag}</span>
+                                    </p>
+                                    <p className="text-xs font-bold text-blue-600">{layer.score}점</p>
+                                </div>
+                                <p className="text-xs text-gray-500 leading-relaxed">{layer.description}</p>
+                            </div>
+                        ))}
+                    </div>
+                </ScoreCard>
+            )}
+
+            {detail.zodiac && (
+                <ScoreCard
+                    title={`별자리 궁합 (${detail.zodiac.myZodiac} x ${detail.zodiac.partnerZodiac}, ${detail.zodiac.tag})`}
+                    score={detail.zodiac.score}
+                >
+                    <p className="text-sm text-gray-600 leading-relaxed">{detail.zodiac.description}</p>
+                </ScoreCard>
+            )}
+
+            {detail.comm && (
+                <ScoreCard title="소통·멘탈 궁합" score={detail.comm.score}>
+                    <p className="text-xs text-indigo-600 font-semibold mb-3">{detail.comm.summary}</p>
+                    <div className="flex flex-col gap-2">
+                        {detail.comm.layers.map((layer) => (
+                            <div key={layer.title} className="bg-gray-50 rounded p-2">
+                                <div className="flex justify-between items-center mb-0.5">
+                                    <p className="text-xs font-semibold text-gray-700">
+                                        {layer.title} <span className="text-gray-400">· {layer.tag}</span>
+                                    </p>
+                                    <p className="text-xs font-bold text-blue-600">{layer.score}점</p>
+                                </div>
+                                <p className="text-xs text-gray-500 leading-relaxed">{layer.description}</p>
+                            </div>
+                        ))}
+                    </div>
+                </ScoreCard>
+            )}
+
+            {detail.play && (
+                <ScoreCard title="플레이 스타일 궁합" score={detail.play.score}>
+                    <p className="text-xs text-indigo-600 font-semibold mb-3">{detail.play.summary}</p>
+                    <div className="flex flex-col gap-2">
+                        {detail.play.layers.map((layer) => (
+                            <div key={layer.title} className="bg-gray-50 rounded p-2">
+                                <div className="flex justify-between items-center mb-0.5">
+                                    <p className="text-xs font-semibold text-gray-700">
+                                        {layer.title} <span className="text-gray-400">· {layer.tag}</span>
+                                    </p>
+                                    <p className="text-xs font-bold text-blue-600">{layer.score}점</p>
+                                </div>
+                                <p className="text-xs text-gray-500 leading-relaxed">{layer.description}</p>
+                            </div>
+                        ))}
+                    </div>
+                </ScoreCard>
+            )}
+
+            {(!detail.mbti || !detail.saju || !detail.zodiac || !detail.comm || !detail.play) &&
+                (detail.mbti || detail.saju || detail.zodiac || detail.comm || detail.play) && (
+                    <p className="text-xs text-gray-400 text-center">
+                        {[
+                            !detail.mbti && "MBTI",
+                            !detail.saju && "민턴사주",
+                            !detail.zodiac && "별자리",
+                            !(detail.comm || detail.play) && "민턴스타일",
+                        ]
+                            .filter(Boolean)
+                            .join(", ")}{" "}
+                        정보가 없는 쪽이 있어 측정된 지표만 반영됐어요.
+                    </p>
+                )}
+        </>
+    );
+}
+
 export default function CompatibilityForm({
     userId,
     hasMbti,
     hasSaju,
+    hasStyle,
     initialPartnerUserName,
+    initialHistory,
 }: {
     userId: number;
     hasMbti: boolean;
     hasSaju: boolean;
+    hasStyle: boolean;
     initialPartnerUserName?: string;
+    initialHistory: CompatibilityHistoryItem[];
 }) {
     const [partnerUserName, setPartnerUserName] = useState(initialPartnerUserName ?? "");
     const [result, setResult] = useState<CompatibilityResult | null>(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [history, setHistory] = useState(initialHistory);
+    const [memoDrafts, setMemoDrafts] = useState<Record<number, string>>(
+        Object.fromEntries(initialHistory.map((item) => [item.id, item.memo])),
+    );
+    const [savingId, setSavingId] = useState<number | null>(null);
+    const [savedId, setSavedId] = useState<number | null>(null);
+    const [expandedId, setExpandedId] = useState<number | null>(null);
+    const [detailCache, setDetailCache] = useState<Record<number, CompatibilityResult>>({});
+    const [detailLoadingId, setDetailLoadingId] = useState<number | null>(null);
 
     const handleSubmit = async (nameOverride?: string) => {
         const name = (nameOverride ?? partnerUserName).trim();
@@ -36,11 +186,75 @@ export default function CompatibilityForm({
         try {
             const res = await getCompatibility(userId, name);
             setResult(res);
+            if (res && "success" in res && res.success) {
+                const refreshed = await getCompatibilityHistory(userId);
+                setHistory(refreshed);
+                setMemoDrafts(Object.fromEntries(refreshed.map((item) => [item.id, item.memo])));
+            }
         } catch (error) {
             console.error("궁합을 계산하는 중 오류가 발생했습니다:", error);
             setResult({ error: "궁합을 계산하는 중 오류가 발생했습니다." });
         } finally {
             setIsLoading(false);
+        }
+    };
+
+    const handleMemoSave = async (checkId: number) => {
+        setSavingId(checkId);
+        setSavedId(null);
+        try {
+            const memo = memoDrafts[checkId] ?? "";
+            const res = await updateCompatibilityMemo(userId, checkId, memo);
+            if (res && "success" in res) {
+                setHistory((prev) => prev.map((item) => (item.id === checkId ? { ...item, memo } : item)));
+                setSavedId(checkId);
+            }
+        } catch (error) {
+            console.error("메모를 저장하는 중 오류가 발생했습니다:", error);
+        } finally {
+            setSavingId(null);
+        }
+    };
+
+    const handleDelete = async (checkId: number) => {
+        if (!confirm("이 궁합 기록을 삭제할까요?")) return;
+        try {
+            const res = await deleteCompatibilityCheck(userId, checkId);
+            if (res && "success" in res) {
+                setHistory((prev) => prev.filter((item) => item.id !== checkId));
+                setMemoDrafts((prev) => {
+                    const next = { ...prev };
+                    delete next[checkId];
+                    return next;
+                });
+                setDetailCache((prev) => {
+                    const next = { ...prev };
+                    delete next[checkId];
+                    return next;
+                });
+                if (expandedId === checkId) setExpandedId(null);
+            }
+        } catch (error) {
+            console.error("궁합 기록을 삭제하는 중 오류가 발생했습니다:", error);
+        }
+    };
+
+    const toggleDetail = async (item: CompatibilityHistoryItem) => {
+        if (expandedId === item.id) {
+            setExpandedId(null);
+            return;
+        }
+        setExpandedId(item.id);
+        if (detailCache[item.id]) return;
+        setDetailLoadingId(item.id);
+        try {
+            const res = await getCompatibility(userId, item.partnerUserName);
+            setDetailCache((prev) => ({ ...prev, [item.id]: res }));
+        } catch (error) {
+            console.error("궁합을 불러오는 중 오류가 발생했습니다:", error);
+            setDetailCache((prev) => ({ ...prev, [item.id]: { error: "궁합을 불러오는 중 오류가 발생했습니다." } }));
+        } finally {
+            setDetailLoadingId(null);
         }
     };
 
@@ -59,17 +273,21 @@ export default function CompatibilityForm({
                 상대방 아이디를 입력하면 MBTI와 민턴사주로 복식 궁합을 봐드려요
             </p>
 
-            {!hasMbti && !hasSaju && (
+            {!hasMbti && !hasSaju && !hasStyle && (
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-6 text-sm text-amber-700">
                     아직 MBTI와 민턴사주를 측정하지 않으셨네요. 먼저{" "}
                     <Link href="/mbti" className="underline font-semibold">
                         MBTI
-                    </Link>{" "}
-                    나{" "}
+                    </Link>
+                    ,{" "}
                     <Link href="/saju" className="underline font-semibold">
                         민턴사주
                     </Link>
-                    를 측정하면 더 정확한 궁합을 볼 수 있어요.
+                    , 또는{" "}
+                    <Link href="/style" className="underline font-semibold">
+                        민턴스타일
+                    </Link>
+                    을 측정하면 더 정확한 궁합을 볼 수 있어요.
                 </div>
             )}
 
@@ -107,37 +325,124 @@ export default function CompatibilityForm({
                         <p className="text-gray-700 font-semibold">{scoreLabel(result.overallScore)}</p>
                     </div>
 
-                    {result.mbti && (
-                        <div className="border border-gray-200 rounded-lg p-4">
-                            <div className="flex justify-between items-center mb-2">
-                                <p className="text-sm font-semibold text-gray-700">
-                                    MBTI 궁합 ({result.mbti.myType} x {result.mbti.partnerType})
-                                </p>
-                                <p className="text-lg font-bold text-blue-600">{result.mbti.score}점</p>
-                            </div>
-                            <p className="text-sm text-gray-600 leading-relaxed">{result.mbti.description}</p>
-                        </div>
-                    )}
+                    <CompatibilityBreakdown key={result.partnerName} detail={result} />
+                </div>
+            )}
 
-                    {result.saju && (
-                        <div className="border border-gray-200 rounded-lg p-4">
-                            <div className="flex justify-between items-center mb-2">
-                                <p className="text-sm font-semibold text-gray-700">
-                                    민턴사주 궁합 ({result.saju.myElement} x {result.saju.partnerElement}, {result.saju.relation})
-                                </p>
-                                <p className="text-lg font-bold text-blue-600">{result.saju.score}점</p>
-                            </div>
-                            <p className="text-sm text-gray-600 leading-relaxed">{result.saju.description}</p>
-                        </div>
-                    )}
-
-                    {(!result.mbti || !result.saju) && (
-                        <p className="text-xs text-gray-400 text-center">
-                            {!result.mbti && !result.saju
-                                ? ""
-                                : `${!result.mbti ? "MBTI" : "민턴사주"} 정보가 없는 쪽이 있어 한쪽 지표만 반영됐어요.`}
-                        </p>
-                    )}
+            {history.length > 0 && (
+                <div className="mt-10">
+                    <h2 className="text-lg font-bold mb-3">지금까지 본 궁합</h2>
+                    <div className="overflow-x-auto border border-gray-200 rounded-lg">
+                        <table className="w-full text-xs border-collapse">
+                            <thead>
+                                <tr className="text-gray-400 border-b border-gray-200 bg-gray-50">
+                                    <th className="text-left font-medium py-2 pl-3 pr-2">상대</th>
+                                    <th className="font-medium py-2 px-1">MBTI</th>
+                                    <th className="font-medium py-2 px-1">사주궁합</th>
+                                    <th className="font-medium py-2 px-1">별자리궁합</th>
+                                    <th className="font-medium py-2 px-1">소통</th>
+                                    <th className="font-medium py-2 px-1">스타일</th>
+                                    <th className="font-medium py-2 px-1">총점</th>
+                                    <th className="font-medium py-2 px-1">메모</th>
+                                    <th className="font-medium py-2 pr-2"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {history.map((item) => {
+                                    const detail = detailCache[item.id];
+                                    const isExpanded = expandedId === item.id;
+                                    return (
+                                        <Fragment key={item.id}>
+                                            <tr
+                                                onClick={() => toggleDetail(item)}
+                                                className="border-b border-gray-100 cursor-pointer hover:bg-gray-50 last:border-b-0"
+                                            >
+                                                <td className="py-2 pl-3 pr-2 font-semibold text-gray-800 max-w-18 truncate">
+                                                    {item.partnerName}
+                                                </td>
+                                                <td className="py-2 px-1 text-center text-gray-700">
+                                                    {item.mbtiScore ?? "-"}
+                                                </td>
+                                                <td className="py-2 px-1 text-center text-gray-700">
+                                                    {item.sajuScore ?? "-"}
+                                                </td>
+                                                <td className="py-2 px-1 text-center text-gray-700">
+                                                    {item.zodiacScore ?? "-"}
+                                                </td>
+                                                <td className="py-2 px-1 text-center text-gray-700">
+                                                    {item.commScore ?? "-"}
+                                                </td>
+                                                <td className="py-2 px-1 text-center text-gray-700">
+                                                    {item.playScore ?? "-"}
+                                                </td>
+                                                <td className="py-2 px-1 text-center font-bold text-blue-600">
+                                                    {item.overallScore}
+                                                </td>
+                                                <td className="py-2 px-1">
+                                                    <div className="flex flex-col items-center gap-0.5">
+                                                        <input
+                                                            type="text"
+                                                            value={memoDrafts[item.id] ?? ""}
+                                                            onChange={(e) =>
+                                                                setMemoDrafts((prev) => ({
+                                                                    ...prev,
+                                                                    [item.id]: e.target.value.slice(0, 10),
+                                                                }))
+                                                            }
+                                                            onBlur={() => handleMemoSave(item.id)}
+                                                            onClick={(e) => e.stopPropagation()}
+                                                            placeholder="메모"
+                                                            maxLength={10}
+                                                            className="w-20 text-xs p-1 border border-gray-200 rounded text-center"
+                                                        />
+                                                        {savingId === item.id && (
+                                                            <span className="text-[10px] text-gray-400">저장중</span>
+                                                        )}
+                                                        {savedId === item.id && savingId !== item.id && (
+                                                            <span className="text-[10px] text-green-600">저장됨</span>
+                                                        )}
+                                                    </div>
+                                                </td>
+                                                <td className="py-2 pr-2 text-right">
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleDelete(item.id);
+                                                        }}
+                                                        aria-label="삭제"
+                                                        className="text-gray-300 hover:text-red-500 px-1"
+                                                    >
+                                                        ✕
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            {isExpanded && (
+                                                <tr>
+                                                    <td colSpan={9} className="bg-gray-50 border-b border-gray-100 p-3">
+                                                        <div className="flex flex-col gap-3">
+                                                            {detailLoadingId === item.id && (
+                                                                <p className="text-xs text-gray-400 text-center py-2">
+                                                                    불러오는 중...
+                                                                </p>
+                                                            )}
+                                                            {detail && "error" in detail && (
+                                                                <p className="text-xs text-red-500 text-center">
+                                                                    {detail.error}
+                                                                </p>
+                                                            )}
+                                                            {detail && "success" in detail && detail.success && (
+                                                                <CompatibilityBreakdown detail={detail} />
+                                                            )}
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </Fragment>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             )}
 
