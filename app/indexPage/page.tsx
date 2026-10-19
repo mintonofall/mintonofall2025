@@ -5,6 +5,7 @@ import { redirect } from "next/navigation";
 import MyQrCode from "./MyQrCode";
 import { ELEMENT_STYLE, type SajuResult } from "@/lib/sajuTypes";
 import type { StyleResult } from "@/lib/styleTypes";
+import GuestCompatibilityButton from "@/app/guhap/GuestCompatibilityButton";
 
 export default async function Index() {
     const user = await getUser();
@@ -69,6 +70,7 @@ export default async function Index() {
                 <Link href={`/guhap`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
                     민턴궁합
                 </Link>
+                <GuestCompatibilityButton />
                 <MyQrCode userName={user!.userName} />
                 <Link
                     href="https://iotofall.notion.site/doc"

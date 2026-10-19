@@ -11,7 +11,6 @@ import {
     updateCompatibilityMemo,
 } from "@/lib/compatibility";
 import { getMyDiaryPlayerOptions, linkDiaryPlayerToUser } from "@/lib/getClubDiary";
-import GuestCompatibilityButton from "./GuestCompatibilityButton";
 
 Chart.register(...registerables);
 
@@ -510,7 +509,6 @@ export default function CompatibilityForm({
                 </button>
             </div>
 
-            <GuestCompatibilityButton />
 
             {result && "error" in result && (
                 <p className="text-red-500 text-sm text-center bg-red-50 rounded py-3 px-2">{result.error}</p>

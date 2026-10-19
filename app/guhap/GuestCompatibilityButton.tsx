@@ -5,7 +5,7 @@ export default function GuestCompatibilityButton() {
     return (
         <Link
             href="/guhap/guest"
-            className="flex items-center gap-3 w-full mb-8 p-3 bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-lg hover:from-indigo-100 hover:to-purple-100 transition-colors"
+            className="flex items-center gap-3 w-full p-3 bg-gradient-to-r from-indigo-50 to-purple-50 border border-indigo-100 rounded-lg hover:from-indigo-100 hover:to-purple-100 transition-colors"
         >
             <img
                 src={GUEST_PLAYER.photo}
