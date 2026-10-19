@@ -7,137 +7,237 @@ export interface CompatLayer {
 
 export interface MbtiCompatibilityResult {
     score: number;
-    sameCount: number;
     styleTag: string;
     summary: string;
     layers: CompatLayer[];
 }
 
-type DimensionKey = "EI" | "SN" | "TF" | "JP";
+// ---- 주기능·부기능 스택 (표준 융 심리 기능 순서) ----
 
-interface DimensionOutcome {
-    tag: string;
-    score: number;
-    description: string;
+type FuncLetter = "S" | "N" | "T" | "F";
+type Orientation = "i" | "e";
+interface CogFunction {
+    letter: FuncLetter;
+    orientation: Orientation;
 }
 
-const DIMENSION_INFO: Record<
-    DimensionKey,
-    { title: string; same: Record<string, DimensionOutcome>; diff: DimensionOutcome }
-> = {
-    EI: {
-        title: "에너지 방향 (E/I)",
-        same: {
-            E: {
-                tag: "외향 동일 (E-E)",
-                score: 80,
-                description: "둘 다 에너지 넘치는 외향형이라 경기 분위기를 화끈하게 띄우는 텐션 폭발형 조합이에요.",
-            },
-            I: {
-                tag: "내향 동일 (I-I)",
-                score: 80,
-                description: "둘 다 차분한 내향형이라 말이 없어도 눈빛만으로 호흡이 맞는 조용한 집중형 조합이에요.",
-            },
-        },
-        diff: {
-            tag: "외향-내향 보완 (E-I)",
-            score: 85,
-            description: "한쪽은 분위기를 띄우고 한쪽은 차분하게 중심을 잡아주는, 에너지 밸런스가 좋은 보완 조합이에요. E와 I는 반대일수록 오히려 잘 맞는 궁합이에요.",
-        },
-    },
-    SN: {
-        title: "인식 방식 (S/N)",
-        same: {
-            S: {
-                tag: "감각 동일 (S-S)",
-                score: 82,
-                description: "둘 다 현재 상황과 디테일에 강해서 실전 감각으로 척척 맞춰가는 조합이에요.",
-            },
-            N: {
-                tag: "직관 동일 (N-N)",
-                score: 78,
-                description: "둘 다 큰 그림과 전략을 중시해서 창의적인 작전을 함께 구상하는 조합이에요.",
-            },
-        },
-        diff: {
-            tag: "감각-직관 보완 (S-N)",
-            score: 88,
-            description: "한쪽은 눈앞의 상황을 꼼꼼히 챙기고 한쪽은 전체 흐름과 전략을 그려주는, 현실 감각과 전략이 모두 잡히는 찰떡 보완 조합이에요.",
-        },
-    },
-    TF: {
-        title: "판단 기준 (T/F)",
-        same: {
-            T: {
-                tag: "사고 동일 (T-T)",
-                score: 80,
-                description: "둘 다 논리적이고 솔직해서 효율적으로 피드백을 주고받는 조합이에요.",
-            },
-            F: {
-                tag: "감정 동일 (F-F)",
-                score: 78,
-                description: "둘 다 서로를 세심하게 배려해서 편안한 분위기를 만드는 조합이에요.",
-            },
-        },
-        diff: {
-            tag: "사고-감정 보완 (T-F)",
-            score: 86,
-            description: "한쪽은 냉철하게 판단하고 한쪽은 팀 분위기와 감정을 챙기는, 판단력과 배려심이 균형 잡힌 조합이에요.",
-        },
-    },
-    JP: {
-        title: "생활 양식 (J/P)",
-        same: {
-            J: {
-                tag: "판단 동일 (J-J)",
-                score: 82,
-                description: "둘 다 계획적이라 루틴과 전략을 착착 맞춰가는 조합이에요.",
-            },
-            P: {
-                tag: "인식 동일 (P-P)",
-                score: 72,
-                description: "둘 다 즉흥적이고 유연해서 자유로운 플레이가 나오지만, 계획성이 부족해 산만해질 수 있어요.",
-            },
-        },
-        diff: {
-            tag: "판단-인식 보완 (J-P)",
-            score: 85,
-            description: "한쪽이 계획을 세우고 한쪽이 유연하게 대처하는, 구조와 유연함이 모두 갖춰진 조합이에요.",
-        },
-    },
+const FUNCTION_STACK: Record<string, [CogFunction, CogFunction]> = {
+    ISTJ: [{ letter: "S", orientation: "i" }, { letter: "T", orientation: "e" }],
+    ISFJ: [{ letter: "S", orientation: "i" }, { letter: "F", orientation: "e" }],
+    INFJ: [{ letter: "N", orientation: "i" }, { letter: "F", orientation: "e" }],
+    INTJ: [{ letter: "N", orientation: "i" }, { letter: "T", orientation: "e" }],
+    ISTP: [{ letter: "T", orientation: "i" }, { letter: "S", orientation: "e" }],
+    ISFP: [{ letter: "F", orientation: "i" }, { letter: "S", orientation: "e" }],
+    INFP: [{ letter: "F", orientation: "i" }, { letter: "N", orientation: "e" }],
+    INTP: [{ letter: "T", orientation: "i" }, { letter: "N", orientation: "e" }],
+    ESTP: [{ letter: "S", orientation: "e" }, { letter: "T", orientation: "i" }],
+    ESFP: [{ letter: "S", orientation: "e" }, { letter: "F", orientation: "i" }],
+    ENFP: [{ letter: "N", orientation: "e" }, { letter: "F", orientation: "i" }],
+    ENTP: [{ letter: "N", orientation: "e" }, { letter: "T", orientation: "i" }],
+    ESTJ: [{ letter: "T", orientation: "e" }, { letter: "S", orientation: "i" }],
+    ESFJ: [{ letter: "F", orientation: "e" }, { letter: "S", orientation: "i" }],
+    ENFJ: [{ letter: "F", orientation: "e" }, { letter: "N", orientation: "i" }],
+    ENTJ: [{ letter: "T", orientation: "e" }, { letter: "N", orientation: "i" }],
 };
 
-const DIMENSION_ORDER: { key: DimensionKey; index: number }[] = [
-    { key: "EI", index: 0 },
-    { key: "SN", index: 1 },
-    { key: "TF", index: 2 },
-    { key: "JP", index: 3 },
-];
+// ---- 1. 기능쌍 (ST/SF/NF/NT, 40점 비중) ----
 
-function dimensionLayer(key: DimensionKey, letterA: string, letterB: string): CompatLayer {
-    const info = DIMENSION_INFO[key];
-    const outcome = letterA === letterB ? info.same[letterA] : info.diff;
-    return { title: info.title, tag: outcome.tag, score: outcome.score, description: outcome.description };
+type FuncPair = "ST" | "SF" | "NF" | "NT";
+
+function funcPairOf(type: string): FuncPair {
+    return `${type[1]}${type[2]}` as FuncPair;
+}
+
+function functionPairLayer(typeA: string, typeB: string): CompatLayer {
+    const a = funcPairOf(typeA);
+    const b = funcPairOf(typeB);
+    const title = "기능쌍";
+
+    if (a === b) {
+        return {
+            title,
+            tag: `${a}-${b} · 같은 기능쌍`,
+            score: 70,
+            description: "소통은 가장 쉽지만 약점이 같이 겹치는 조합이에요.",
+        };
+    }
+
+    const shareFirst = a[0] === b[0]; // S 또는 N 공유
+    const shareSecond = a[1] === b[1]; // T 또는 F 공유
+
+    if (!shareFirst && !shareSecond) {
+        return {
+            title,
+            tag: `${a}-${b} · 정반대 기능쌍`,
+            score: 85,
+            description:
+                "한 명은 데이터와 패턴으로, 한 명은 흐름과 감으로 코트를 읽어요. 초반 호흡은 느려도 서로의 사각지대를 메우며 가장 크게 성장하는 조합이에요.",
+        };
+    }
+
+    if (shareFirst) {
+        const label = a[0] === "S" ? "감각(S) 공유" : "직관(N) 공유";
+        return {
+            title,
+            tag: `${a}-${b} · ${label}`,
+            score: 80,
+            description: "코트를 읽는 방식이 같아 이동과 콜이 빠르고, 판단 기준은 달라서 서로 보완돼요.",
+        };
+    }
+
+    const label = a[1] === "F" ? "감정(F) 공유" : "사고(T) 공유";
+    const description =
+        a[1] === "F"
+            ? "파트너를 배려하는 분위기와 실수 후 회복이 좋고, 구체성과 전체 흐름을 서로 채워줘요."
+            : "작전과 분석 중심이라 대화가 잘 통하지만, 감정을 다독이는 부분은 약한 편이에요.";
+    return { title, tag: `${a}-${b} · ${label}`, score: 75, description };
+}
+
+// ---- 2. 인지기능 축 (주기능·부기능 보완 여부, 25점 비중) ----
+
+type PairResult = "complement" | "same" | "none";
+
+function evaluateFunctionPair(fA: CogFunction, fB: CogFunction): PairResult {
+    if (fA.letter !== fB.letter) return "none";
+    return fA.orientation !== fB.orientation ? "complement" : "same";
+}
+
+function cogFunctionLayer(typeA: string, typeB: string): CompatLayer {
+    const [domA, auxA] = FUNCTION_STACK[typeA];
+    const [domB, auxB] = FUNCTION_STACK[typeB];
+
+    const domResult = evaluateFunctionPair(domA, domB);
+    const auxResult = evaluateFunctionPair(auxA, auxB);
+
+    let score = 40;
+    score += domResult === "complement" ? 20 : domResult === "same" ? 10 : 0;
+    score += auxResult === "complement" ? 20 : auxResult === "same" ? 10 : 0;
+    score = Math.min(100, score);
+
+    const complementCount = [domResult, auxResult].filter((r) => r === "complement").length;
+    const sameCount = [domResult, auxResult].filter((r) => r === "same").length;
+
+    const title = "인지기능 축";
+    let tag: string;
+    let description: string;
+
+    if (complementCount === 2) {
+        tag = "주기능·부기능 모두 보완 짝";
+        description =
+            "주기능과 부기능이 둘 다 서로 다른 성향(내향·외향)의 짝을 이뤄서, 콜과 작전을 주고받는 호흡이 가장 좋아요.";
+    } else if (complementCount === 1 && sameCount === 1) {
+        tag = "보완 짝 1개 + 동일 기능 1개";
+        description = "한쪽은 서로 다른 성향으로 보완하고 한쪽은 똑같은 기능을 공유해서, 편안하면서도 서로를 채워줘요.";
+    } else if (complementCount === 1) {
+        tag = "보완 짝 1개";
+        description = "주기능이나 부기능 중 한쪽이 서로 다른 성향으로 보완돼서, 어느 정도 호흡이 맞는 편이에요.";
+    } else if (sameCount === 2) {
+        tag = "주기능·부기능 모두 동일 기능 공유";
+        description = "같은 기능을 공유해서 편하게 소통할 수 있지만, 새로운 자극은 적은 편이에요.";
+    } else if (sameCount === 1) {
+        tag = "동일 기능 1개";
+        description = "일부 기능을 공유해서 소통이 편한 면이 있지만, 나머지는 서로 맞춰가야 해요.";
+    } else {
+        tag = "짝도 공유도 없음";
+        description = "주기능과 부기능이 서로 다른 영역이라, 콜과 작전을 맞추는 데 시간이 좀 걸릴 수 있어요.";
+    }
+
+    return { title, tag, score, description };
+}
+
+// ---- 3. J/P 조합 (작전·로테이션 합의 속도, 20점 비중) ----
+
+function jpLayer(typeA: string, typeB: string): CompatLayer {
+    const jpA = typeA[3];
+    const jpB = typeB[3];
+    const title = "J/P 조합";
+
+    if (jpA === "J" && jpB === "J") {
+        return {
+            title,
+            tag: "J-J",
+            score: 90,
+            description: "작전과 로테이션 합의가 가장 빠르고, 약속한 포지션을 잘 지키는 조합이에요.",
+        };
+    }
+    if (jpA === "P" && jpB === "P") {
+        return {
+            title,
+            tag: "P-P",
+            score: 60,
+            description: "유연하지만 작전 결정이 미뤄져서 경기 중 혼선이 생길 수 있어요.",
+        };
+    }
+    return {
+        title,
+        tag: "J-P",
+        score: 75,
+        description: "계획형이 작전을 잡고 즉흥형이 변칙에 대응하지만, 사전 합의가 필요한 조합이에요.",
+    };
+}
+
+// ---- 4. 사분면 (활동 에너지·템포, 15점 비중) ----
+
+function quadrantLayer(typeA: string, typeB: string): CompatLayer {
+    const quadA = `${typeA[0]}${typeA[1]}`;
+    const quadB = `${typeB[0]}${typeB[1]}`;
+    const title = "사분면";
+
+    if (quadA === quadB) {
+        return {
+            title,
+            tag: `${quadA}-${quadB} · 동일`,
+            score: 100,
+            description: "활동 에너지와 경기 템포가 비슷해서 합을 맞추기 편한 조합이에요.",
+        };
+    }
+    const shared = quadA[0] === quadB[0] || quadA[1] === quadB[1];
+    if (shared) {
+        return {
+            title,
+            tag: `${quadA}-${quadB} · 한 글자 공유`,
+            score: 70,
+            description: "활동 에너지나 템포 중 한쪽은 비슷해서 적당히 맞춰갈 수 있는 조합이에요.",
+        };
+    }
+    return {
+        title,
+        tag: `${quadA}-${quadB} · 공유 없음`,
+        score: 40,
+        description: "활동 에너지와 경기 템포가 많이 달라서, 서로 맞추는 연습이 필요한 조합이에요.",
+    };
+}
+
+// ---- 종합 ----
+
+const WEIGHT = { funcPair: 0.4, cog: 0.25, jp: 0.2, quadrant: 0.15 };
+
+function styleTagOf(score: number): string {
+    if (score >= 85) return "환상의 복식 케미";
+    if (score >= 75) return "손발 잘 맞는 조합";
+    if (score >= 65) return "무난한 조합";
+    return "맞춰가야 하는 조합";
 }
 
 /**
- * MBTI 4개 차원을 각각 독립적으로 분석합니다. 같은 글자라고 무조건 좋은 것도,
- * 다른 글자라고 무조건 안 맞는 것도 아니라는 전제로, 차원별로 서로 다른 궁합 해석을 줍니다.
+ * MBTI 궁합을 복식 파트너로서의 호흡 기준으로 계산합니다. 네 글자를 단순 비교하지 않고
+ * 기능쌍(40%)·인지기능 축(25%)·J/P 조합(20%)·사분면(15%) 네 층을 가중 합산합니다.
+ * 실제 승률은 반영하지 않고 MBTI만으로 점수를 냅니다.
  */
 export function mbtiCompatibility(typeA: string, typeB: string): MbtiCompatibilityResult {
-    const layers = DIMENSION_ORDER.map(({ key, index }) => dimensionLayer(key, typeA[index], typeB[index]));
-    const sameCount = DIMENSION_ORDER.filter(({ index }) => typeA[index] === typeB[index]).length;
-    const score = Math.round(layers.reduce((sum, l) => sum + l.score, 0) / layers.length);
+    const a = typeA.toUpperCase();
+    const b = typeB.toUpperCase();
 
-    const diffCount = 4 - sameCount;
-    const styleTag = diffCount >= 3 ? "상호보완형" : diffCount <= 1 ? "싱크로형" : "밸런스형";
+    const funcPair = functionPairLayer(a, b);
+    const cog = cogFunctionLayer(a, b);
+    const jp = jpLayer(a, b);
+    const quadrant = quadrantLayer(a, b);
 
-    const summary =
-        styleTag === "상호보완형"
-            ? "서로 다른 점이 많지만, 다른 성향끼리 빈틈을 채워주는 보완형 조합이에요."
-            : styleTag === "싱크로형"
-              ? "성향이 비슷해서 말하지 않아도 척척 맞는 싱크로형 조합이에요."
-              : "닮은 점과 다른 점이 적절히 섞인 밸런스형 조합이에요.";
+    const weighted =
+        funcPair.score * WEIGHT.funcPair + cog.score * WEIGHT.cog + jp.score * WEIGHT.jp + quadrant.score * WEIGHT.quadrant;
+    const score = Math.round(weighted);
+    const styleTag = styleTagOf(score);
+    const summary = `${styleTag} · ${funcPair.description}`;
 
-    return { score, sameCount, styleTag, summary, layers };
+    return { score, styleTag, summary, layers: [funcPair, cog, jp, quadrant] };
 }
