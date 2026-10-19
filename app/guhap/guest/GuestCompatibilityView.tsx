@@ -204,7 +204,14 @@ export default function GuestCompatibilityView({ userId }: { userId: number }) {
                 <p className="text-sm text-red-500 text-center bg-red-50 rounded py-3 px-2">{result.error}</p>
             )}
 
-            {result && "success" in result && result.success && <GuestResultBody result={result} />}
+            {result && "success" in result && result.success && (
+                <>
+                    <GuestResultBody result={result} />
+                    <p className="text-center text-sm text-indigo-500 font-semibold mt-6">
+                        다음은 어떤 특별 게스트가 우릴 기다릴까요?
+                    </p>
+                </>
+            )}
 
             <Link href="/guhap" className="block text-center mt-8 text-gray-500 hover:text-gray-700 text-sm">
                 돌아가기
