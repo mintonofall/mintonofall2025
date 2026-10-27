@@ -313,6 +313,38 @@ export async function makeMatch(
 }
 
 /**
+ * 기록된 경기(MatchDiary)를 삭제합니다. 잘못 입력한 경기 결과를 언제든 지울 수 있게 합니다.
+ * @param {number} matchId - 삭제할 경기(MatchDiary)의 ID
+ */
+export async function deleteMatch(matchId: number) {
+    await db.matchDiary.delete({ where: { id: matchId } });
+    return { success: true as const };
+}
+
+/**
+ * 기록된 경기(MatchDiary)의 점수와 승자를 수정합니다. 팀 편성(선수 구성)은 그대로 두고
+ * 점수와 그에 따른 승자만 바꿉니다.
+ * @param {number} matchId - 수정할 경기(MatchDiary)의 ID
+ * @param {number} score1 - 팀1(선수 1·2) 점수
+ * @param {number} score2 - 팀2(선수 3·4) 점수
+ * @param {number | null} winner1id - 승리팀 선수1 ID
+ * @param {number | null} winner2id - 승리팀 선수2 ID
+ */
+export async function updateMatchScore(
+    matchId: number,
+    score1: number,
+    score2: number,
+    winner1id: number | null,
+    winner2id: number | null,
+) {
+    const updated = await db.matchDiary.update({
+        where: { id: matchId },
+        data: { score1, score2, winner1id, winner2id },
+    });
+    return updated;
+}
+
+/**
  * 특정 사용자의 오늘 경기 승/패, 득/실점을 계산하여 반환합니다.
  * @param {number} userid - 사용자(클럽 관리자) ID
  * @returns {Promise<[number, number, number, number]>} [승, 패, 득점, 실점] 배열

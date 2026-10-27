@@ -8,8 +8,16 @@
  * @author Treebird
  * @date 2024-07-16
  */
-import { useEffect, useState } from "react";
-import { getPlayersFromClub, getWinToday, makeMatch, getOrCreateClubDiary, getMatch } from "@/lib/getClubDiary";
+import { useEffect, useRef, useState } from "react";
+import {
+    getPlayersFromClub,
+    getWinToday,
+    makeMatch,
+    getOrCreateClubDiary,
+    getMatch,
+    deleteMatch,
+    updateMatchScore,
+} from "@/lib/getClubDiary";
 import { PlayerDiary } from "@/lib/interface";
 import type { MatchDiaryWithPlayers } from "@/lib/types";
 import ScoreInput from "@/app/component/ScoreInput";
@@ -31,11 +39,22 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
     const [score2, setScore2] = useState<number>(25); // ScoreInput으로 이동
     /** @type {string} 선수 검색어. */
     const [searchTerm, setSearchTerm] = useState("");
+    /** @type {"recent" | "name" | "record"} 선수 목록 정렬 기준. */
+    const [sortCriteria, setSortCriteria] = useState<"recent" | "name" | "record">("recent");
     const [data, setData] = useState<number[]>([0, 0, 0, 0]);
     /** @type {number | null} 현재 사용자가 소유한 ClubDiary의 실제 ID (경기 기록 생성 시 연결에 사용). */
     const [clubDiaryId, setClubDiaryId] = useState<number | null>(null);
     /** @type {MatchDiaryWithPlayers[]} 나와의 상대전적을 계산하기 위한 전체 경기 기록. */
     const [allMatches, setAllMatches] = useState<MatchDiaryWithPlayers[]>([]);
+    /** sessionStorage 복원이 끝나기 전까지는 저장 effect가 빈 상태로 덮어쓰지 않도록 막는 플래그. */
+    const hasRestoredRef = useRef(false);
+    /** @type {boolean} 경기 결과 저장 중 여부. 중복 제출을 막기 위해 '결과입력' 버튼을 비활성화하는 데 사용합니다. */
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    /** @type {number | null} '오늘 기록' 목록에서 현재 점수를 수정 중인 경기의 ID. */
+    const [editingMatchId, setEditingMatchId] = useState<number | null>(null);
+    const [editScore1, setEditScore1] = useState(0);
+    const [editScore2, setEditScore2] = useState(0);
+    const [isSavingEdit, setIsSavingEdit] = useState(false);
 
     // --- 데이터 로딩 및 초기화 (Data Loading & Initialization) ---
 
@@ -75,6 +94,38 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
         }
         fetchPlayers();
     }, [userid]);
+
+    /**
+     * 선수추가 등으로 다른 페이지에 다녀와도 입력 중이던 경기(선택한 선수, 점수)가 초기화되지
+     * 않도록, userid가 설정되면 sessionStorage에서 복원합니다.
+     */
+    useEffect(() => {
+        if (userid === 0) return;
+        try {
+            const saved = sessionStorage.getItem(`diary-match-${userid}`);
+            if (saved) {
+                const parsed = JSON.parse(saved);
+                if (Array.isArray(parsed.playerList)) setPlayerList(parsed.playerList);
+                if (typeof parsed.score1 === "number") setScore1(parsed.score1);
+                if (typeof parsed.score2 === "number") setScore2(parsed.score2);
+            }
+        } catch (error) {
+            console.error("입력 중이던 경기 정보를 복원하는 중 오류가 발생했습니다:", error);
+        } finally {
+            // 복원이 끝난 뒤에만 저장 effect가 동작하도록 허용합니다 (복원 전 빈 상태로 덮어쓰는 것을 방지).
+            hasRestoredRef.current = true;
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [userid]);
+
+    /**
+     * 선택한 선수나 점수가 바뀔 때마다 sessionStorage에 저장해, 다른 페이지에 다녀와도
+     * 입력 중이던 경기가 유지되게 합니다.
+     */
+    useEffect(() => {
+        if (userid === 0 || !hasRestoredRef.current) return;
+        sessionStorage.setItem(`diary-match-${userid}`, JSON.stringify({ playerList, score1, score2 }));
+    }, [userid, playerList, score1, score2]);
 
     /** @type {PlayerDiary | undefined} "주인공"(나)으로 지정된 선수. */
     const me = firstWaitPlayerList.find((p) => p.isMe);
@@ -122,6 +173,38 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
         }).length;
     }
 
+    /**
+     * 선수 목록을 정렬 기준에 맞게 정렬합니다.
+     * - 최근: 마지막 경기 시간이 최신인 선수부터
+     * - 이름: 가나다순
+     * - 전적: 나와의 상대전적(승+패) 경기가 많은 선수부터, 같으면 전적이 좋은 선수부터
+     * @param {PlayerDiary[]} list - 정렬할 선수 목록
+     * @returns {PlayerDiary[]} 정렬된 선수 목록
+     */
+    function sortPlayers(list: PlayerDiary[]): PlayerDiary[] {
+        // 주인공(나)은 정렬 기준과 무관하게 항상 맨 위에 둡니다.
+        const mine = list.filter((p) => me && p.id === me.id);
+        const others = list.filter((p) => !me || p.id !== me.id);
+
+        if (sortCriteria === "name") {
+            others.sort((a, b) => a.name.localeCompare(b.name, "ko"));
+        } else if (sortCriteria === "record") {
+            others.sort((a, b) => {
+                const ra = getHeadToHeadRecord(a.id);
+                const rb = getHeadToHeadRecord(b.id);
+                const gamesA = ra.wins + ra.losses;
+                const gamesB = rb.wins + rb.losses;
+                if (gamesB !== gamesA) return gamesB - gamesA;
+                return rb.wins - rb.losses - (ra.wins - ra.losses);
+            });
+        } else {
+            // 최근 (기본값)
+            others.sort((a, b) => (b.lastGameDate?.getTime() ?? 0) - (a.lastGameDate?.getTime() ?? 0));
+        }
+
+        return [...mine, ...others];
+    }
+
     // --- 이벤트 핸들러 (Event Handlers) ---
 
     /**
@@ -140,9 +223,14 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
         // [Optimistic Update]
         // 대기 선수 목록에서 lastGameDate를 현재 시간으로 낙관적 업데이트합니다.
         // 이를 통해 UI에서 선수의 마지막 경기 시간을 즉시 반영할 수 있습니다.
-        setWaitPlayerList((currentWaitList) =>
-            currentWaitList.map((p) => (p.id === player.id ? { ...p, lastGameDate: new Date() } : p)),
+        const updatedList = firstWaitPlayerList.map((p) =>
+            p.id === player.id ? { ...p, lastGameDate: new Date() } : p,
         );
+        setFirstWaitPlayerList(updatedList);
+
+        // 선수를 선택하면 검색어와 검색 결과를 초기화해 전체 목록으로 되돌립니다.
+        setSearchTerm("");
+        setWaitPlayerList(updatedList);
     }
 
     /**
@@ -167,6 +255,8 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
             alert("무승부는 입력할 수 없습니다.");
             return;
         }
+
+        if (isSubmitting) return;
 
         let winner1: number | undefined;
         let winner2: number | undefined;
@@ -195,30 +285,97 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
             score2,
         });
 
-        const result = await makeMatch(allPlayerIds, userid, clubDiaryId, winner1, winner2, score1, score2);
-        console.log("Match submission result:", result);
+        setIsSubmitting(true);
+        try {
+            const result = await makeMatch(allPlayerIds, userid, clubDiaryId, winner1, winner2, score1, score2);
+            console.log("Match submission result:", result);
 
-        // allPlayerIds의 숫자를 waitPlayerList의 id와 매치하여 lastGameDate에 현재시간을 입력함
-        setWaitPlayerList((currentWaitList) =>
-            currentWaitList
-                .map((p) => (allPlayerIds.includes(p.id) ? { ...p, lastGameDate: new Date() } : p))
-                .sort((a, b) => (b.lastGameDate?.getTime() || 0) - (a.lastGameDate?.getTime() || 0)),
-        );
+            // allPlayerIds의 숫자를 waitPlayerList의 id와 매치하여 lastGameDate에 현재시간을 입력함
+            setWaitPlayerList((currentWaitList) =>
+                currentWaitList
+                    .map((p) => (allPlayerIds.includes(p.id) ? { ...p, lastGameDate: new Date() } : p))
+                    .sort((a, b) => (b.lastGameDate?.getTime() || 0) - (a.lastGameDate?.getTime() || 0)),
+            );
 
+            const datas = await getWinToday(userid);
+            setData(datas);
+
+            // 나와의 상대전적에 방금 기록한 경기가 반영되도록 다시 불러옵니다.
+            const matches = await getMatch(userid);
+            setAllMatches(matches);
+
+            // 상태 초기화
+            setPlayerList([]);
+            setScore1(25);
+            setScore2(25);
+            setSearchTerm("");
+            setWaitPlayerList(firstWaitPlayerList); // 검색 필터 및 선수 목록 초기화
+            sessionStorage.removeItem(`diary-match-${userid}`);
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
+
+    /**
+     * 경기 기록을 삭제합니다. 잘못 입력한 결과를 언제든 지울 수 있게 합니다.
+     * @param {number} matchId - 삭제할 경기(MatchDiary)의 ID
+     */
+    async function handleDeleteMatch(matchId: number) {
+        if (!confirm("이 경기 기록을 삭제할까요?")) return;
+        await deleteMatch(matchId);
+        setAllMatches((prev) => prev.filter((m) => m.id !== matchId));
         const datas = await getWinToday(userid);
         setData(datas);
-
-        // 나와의 상대전적에 방금 기록한 경기가 반영되도록 다시 불러옵니다.
-        const matches = await getMatch(userid);
-        setAllMatches(matches);
-
-        // 상태 초기화
-        setPlayerList([]);
-        setScore1(25);
-        setScore2(25);
-        setSearchTerm("");
-        setWaitPlayerList(firstWaitPlayerList); // 검색 필터 및 선수 목록 초기화
     }
+
+    /**
+     * '오늘 기록' 목록에서 점수 수정을 시작합니다. 경기 기록은 지우지 않고,
+     * 점수 칸만 그 자리에서 입력창으로 바꿔 수정할 수 있게 합니다.
+     * @param {MatchDiaryWithPlayers} match - 수정할 경기 기록
+     */
+    function startEditMatch(match: MatchDiaryWithPlayers) {
+        setEditingMatchId(match.id);
+        setEditScore1(match.score1 ?? 25);
+        setEditScore2(match.score2 ?? 25);
+    }
+
+    /**
+     * 수정한 점수를 저장합니다. 더 높은 점수를 받은 팀을 승자로 다시 계산해서 반영합니다.
+     * 팀 편성(선수 구성)은 그대로 둡니다.
+     * @param {MatchDiaryWithPlayers} match - 수정 중인 경기 기록
+     */
+    async function handleSaveEditMatch(match: MatchDiaryWithPlayers) {
+        if (editScore1 === editScore2) {
+            alert("무승부는 입력할 수 없습니다.");
+            return;
+        }
+
+        const team1Won = editScore1 > editScore2;
+        const winner1id = (team1Won ? match.players[0]?.id : match.players[2]?.id) ?? null;
+        const winner2id = (team1Won ? match.players[1]?.id : match.players[3]?.id) ?? null;
+
+        setIsSavingEdit(true);
+        try {
+            await updateMatchScore(match.id, editScore1, editScore2, winner1id, winner2id);
+            setAllMatches((prev) =>
+                prev.map((m) =>
+                    m.id === match.id
+                        ? { ...m, score1: editScore1, score2: editScore2, winner1id, winner2id }
+                        : m,
+                ),
+            );
+            const datas = await getWinToday(userid);
+            setData(datas);
+            setEditingMatchId(null);
+        } finally {
+            setIsSavingEdit(false);
+        }
+    }
+
+    /** @type {MatchDiaryWithPlayers[]} 오늘 기록된 경기만 모아, 수정/삭제 목록에 보여줍니다. */
+    const todayMatches = allMatches
+        .filter((match) => new Date(match.startTime).toDateString() === new Date().toDateString())
+        .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
 
     return (
         // --- 렌더링 (Rendering) ---
@@ -251,9 +408,10 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                              * 선수 4명이 모두 선택되었는지 확인하고, 승자를 결정한 후 `makeMatch` API를 호출하여 경기 결과를 저장합니다.
                              */
                             onClick={handleSubmitMatch}
-                            className="mt-4 px-7 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75"
+                            disabled={isSubmitting}
+                            className="mt-4 px-7 py-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75 disabled:bg-gray-300 disabled:cursor-not-allowed"
                         >
-                            결과입력
+                            {isSubmitting ? "저장 중..." : "결과입력"}
                         </button>
                         <button
                             /**
@@ -272,6 +430,17 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                     </div>
                 </div>
                 <div className="flex flex-col w-1/2 p-4 bg-gray-100 shadow-md rounded-lg overflow-y-auto">
+                    <Link
+                        className="sticky top-0 z-10 block"
+                        href={{
+                            pathname: `/diary/${userid}/create`,
+                            query: { userid: userid },
+                        }}
+                    >
+                        <span className="block w-full text-center lg:text-lg text-lg py-2 px-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+                            선수추가
+                        </span>
+                    </Link>
                     <input
                         className="p-2 m-2"
                         type="text"
@@ -290,7 +459,28 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                             }
                         }}
                     ></input>
-                    {waitPlayerList.map((player) => {
+                    <div className="flex gap-1 px-2 pb-2">
+                        {(
+                            [
+                                { key: "recent", label: "최근" },
+                                { key: "name", label: "이름" },
+                                { key: "record", label: "전적" },
+                            ] as const
+                        ).map((option) => (
+                            <button
+                                key={option.key}
+                                onClick={() => setSortCriteria(option.key)}
+                                className={`text-xs px-2 py-1 rounded ${
+                                    sortCriteria === option.key
+                                        ? "bg-blue-600 text-white"
+                                        : "bg-white text-gray-700 hover:bg-gray-200"
+                                }`}
+                            >
+                                {option.label}
+                            </button>
+                        ))}
+                    </div>
+                    {sortPlayers(waitPlayerList).map((player) => {
                         const isMePlayer = me?.id === player.id;
                         const record = !isMePlayer ? getHeadToHeadRecord(player.id) : null;
                         const partnerCount = !isMePlayer ? getPartnerCount(player.id) : null;
@@ -329,19 +519,88 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                             </div>
                         );
                     })}
-                    <Link
-                        className=""
-                        href={{
-                            pathname: `/diary/${userid}/create`,
-                            query: { userid: userid },
-                        }}
-                    >
-                        <span className="mt-4 lg:px-4 w-10/12 lg:text-lg text-lg   py-2 px-2 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
-                            새로만들기
-                        </span>
-                    </Link>
                 </div>
             </div>
+            {todayMatches.length > 0 && (
+                <div className="shrink-0 border-t max-h-40 overflow-y-auto">
+                    <h3 className="text-sm font-semibold text-gray-600 px-2 pt-2">오늘 기록 (수정·삭제 가능)</h3>
+                    {todayMatches.map((match) => {
+                        const [p0, p1, p2, p3] = match.players;
+                        const isEditing = editingMatchId === match.id;
+                        return (
+                            <div
+                                key={match.id}
+                                className="flex items-center justify-between gap-2 px-2 py-1.5 text-sm border-b last:border-b-0"
+                            >
+                                <span className="truncate flex items-center gap-1">
+                                    {p0?.name}·{p1?.name} <b className="text-gray-400">vs</b> {p2?.name}·{p3?.name}
+                                    {isEditing ? (
+                                        <span className="flex items-center gap-1 ml-1">
+                                            (
+                                            <input
+                                                type="number"
+                                                value={editScore1}
+                                                onChange={(e) => setEditScore1(Number(e.target.value))}
+                                                className="w-12 text-center border border-gray-300 rounded"
+                                            />
+                                            :
+                                            <input
+                                                type="number"
+                                                value={editScore2}
+                                                onChange={(e) => setEditScore2(Number(e.target.value))}
+                                                className="w-12 text-center border border-gray-300 rounded"
+                                            />
+                                            )
+                                        </span>
+                                    ) : (
+                                        match.score1 != null &&
+                                        match.score2 != null && (
+                                            <span className="text-gray-500 ml-1">
+                                                ({match.score1}:{match.score2})
+                                            </span>
+                                        )
+                                    )}
+                                </span>
+                                <span className="flex gap-1 shrink-0">
+                                    {isEditing ? (
+                                        <>
+                                            <button
+                                                onClick={() => handleSaveEditMatch(match)}
+                                                disabled={isSavingEdit}
+                                                className="text-xs px-2 py-1 bg-blue-500 text-white rounded disabled:bg-gray-300"
+                                            >
+                                                {isSavingEdit ? "저장 중..." : "저장"}
+                                            </button>
+                                            <button
+                                                onClick={() => setEditingMatchId(null)}
+                                                disabled={isSavingEdit}
+                                                className="text-xs px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded"
+                                            >
+                                                취소
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <button
+                                                onClick={() => startEditMatch(match)}
+                                                className="text-xs px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded"
+                                            >
+                                                수정
+                                            </button>
+                                            <button
+                                                onClick={() => handleDeleteMatch(match.id)}
+                                                className="text-xs px-2 py-1 bg-red-50 text-red-600 hover:bg-red-100 rounded"
+                                            >
+                                                삭제
+                                            </button>
+                                        </>
+                                    )}
+                                </span>
+                            </div>
+                        );
+                    })}
+                </div>
+            )}
             <div className="shrink-0 text-center py-2">
                 오늘 결과 {data[0]}승 {data[1]}패 {data[2]}득점 {data[3]}실점
             </div>
