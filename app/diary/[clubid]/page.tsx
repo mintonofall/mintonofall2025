@@ -9,15 +9,7 @@
  * @date 2024-07-16
  */
 import { useEffect, useRef, useState } from "react";
-import {
-    getPlayersFromClub,
-    getWinToday,
-    makeMatch,
-    getOrCreateClubDiary,
-    getMatch,
-    deleteMatch,
-    updateMatchScore,
-} from "@/lib/getClubDiary";
+import { getPlayersFromClub, getWinToday, makeMatch, getOrCreateClubDiary, getMatch } from "@/lib/getClubDiary";
 import { PlayerDiary } from "@/lib/interface";
 import type { MatchDiaryWithPlayers } from "@/lib/types";
 import ScoreInput from "@/app/component/ScoreInput";
@@ -50,11 +42,6 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
     const hasRestoredRef = useRef(false);
     /** @type {boolean} 경기 결과 저장 중 여부. 중복 제출을 막기 위해 '결과입력' 버튼을 비활성화하는 데 사용합니다. */
     const [isSubmitting, setIsSubmitting] = useState(false);
-    /** @type {number | null} '오늘 기록' 목록에서 현재 점수를 수정 중인 경기의 ID. */
-    const [editingMatchId, setEditingMatchId] = useState<number | null>(null);
-    const [editScore1, setEditScore1] = useState(0);
-    const [editScore2, setEditScore2] = useState(0);
-    const [isSavingEdit, setIsSavingEdit] = useState(false);
 
     // --- 데이터 로딩 및 초기화 (Data Loading & Initialization) ---
 
@@ -316,71 +303,26 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
         }
     }
 
-    /**
-     * 경기 기록을 삭제합니다. 잘못 입력한 결과를 언제든 지울 수 있게 합니다.
-     * @param {number} matchId - 삭제할 경기(MatchDiary)의 ID
-     */
-    async function handleDeleteMatch(matchId: number) {
-        if (!confirm("이 경기 기록을 삭제할까요?")) return;
-        await deleteMatch(matchId);
-        setAllMatches((prev) => prev.filter((m) => m.id !== matchId));
-        const datas = await getWinToday(userid);
-        setData(datas);
-    }
-
-    /**
-     * '오늘 기록' 목록에서 점수 수정을 시작합니다. 경기 기록은 지우지 않고,
-     * 점수 칸만 그 자리에서 입력창으로 바꿔 수정할 수 있게 합니다.
-     * @param {MatchDiaryWithPlayers} match - 수정할 경기 기록
-     */
-    function startEditMatch(match: MatchDiaryWithPlayers) {
-        setEditingMatchId(match.id);
-        setEditScore1(match.score1 ?? 25);
-        setEditScore2(match.score2 ?? 25);
-    }
-
-    /**
-     * 수정한 점수를 저장합니다. 더 높은 점수를 받은 팀을 승자로 다시 계산해서 반영합니다.
-     * 팀 편성(선수 구성)은 그대로 둡니다.
-     * @param {MatchDiaryWithPlayers} match - 수정 중인 경기 기록
-     */
-    async function handleSaveEditMatch(match: MatchDiaryWithPlayers) {
-        if (editScore1 === editScore2) {
-            alert("무승부는 입력할 수 없습니다.");
-            return;
-        }
-
-        const team1Won = editScore1 > editScore2;
-        const winner1id = (team1Won ? match.players[0]?.id : match.players[2]?.id) ?? null;
-        const winner2id = (team1Won ? match.players[1]?.id : match.players[3]?.id) ?? null;
-
-        setIsSavingEdit(true);
-        try {
-            await updateMatchScore(match.id, editScore1, editScore2, winner1id, winner2id);
-            setAllMatches((prev) =>
-                prev.map((m) =>
-                    m.id === match.id
-                        ? { ...m, score1: editScore1, score2: editScore2, winner1id, winner2id }
-                        : m,
-                ),
-            );
-            const datas = await getWinToday(userid);
-            setData(datas);
-            setEditingMatchId(null);
-        } finally {
-            setIsSavingEdit(false);
-        }
-    }
-
-    /** @type {MatchDiaryWithPlayers[]} 오늘 기록된 경기만 모아, 수정/삭제 목록에 보여줍니다. */
-    const todayMatches = allMatches
-        .filter((match) => new Date(match.startTime).toDateString() === new Date().toDateString())
-        .sort((a, b) => new Date(b.startTime).getTime() - new Date(a.startTime).getTime());
-
     return (
         // --- 렌더링 (Rendering) ---
         <div className="h-full flex flex-col">
-            <h1 className="text-2xl font-bold mb-3 text-center shrink-0">게임 결과 입력</h1>
+            <div className="relative flex items-center justify-center mb-3 shrink-0">
+                <h1 className="text-2xl font-bold text-center">게임 결과 입력</h1>
+                <Link
+                    href="/indexPage"
+                    className="absolute right-0 p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                    title="홈으로"
+                >
+                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"
+                        />
+                    </svg>
+                </Link>
+            </div>
             <div className="flex flex-1 min-h-0 flex-row gap-4 justify-center">
                 <div className="flex flex-col w-1/2 p-4 bg-white shadow-md rounded-lg overflow-y-auto">
                     <div className="mb-2">
@@ -521,86 +463,6 @@ export default function Diary({ params }: { params: Promise<{ userid: number }> 
                     })}
                 </div>
             </div>
-            {todayMatches.length > 0 && (
-                <div className="shrink-0 border-t max-h-40 overflow-y-auto">
-                    <h3 className="text-sm font-semibold text-gray-600 px-2 pt-2">오늘 기록 (수정·삭제 가능)</h3>
-                    {todayMatches.map((match) => {
-                        const [p0, p1, p2, p3] = match.players;
-                        const isEditing = editingMatchId === match.id;
-                        return (
-                            <div
-                                key={match.id}
-                                className="flex items-center justify-between gap-2 px-2 py-1.5 text-sm border-b last:border-b-0"
-                            >
-                                <span className="truncate flex items-center gap-1">
-                                    {p0?.name}·{p1?.name} <b className="text-gray-400">vs</b> {p2?.name}·{p3?.name}
-                                    {isEditing ? (
-                                        <span className="flex items-center gap-1 ml-1">
-                                            (
-                                            <input
-                                                type="number"
-                                                value={editScore1}
-                                                onChange={(e) => setEditScore1(Number(e.target.value))}
-                                                className="w-12 text-center border border-gray-300 rounded"
-                                            />
-                                            :
-                                            <input
-                                                type="number"
-                                                value={editScore2}
-                                                onChange={(e) => setEditScore2(Number(e.target.value))}
-                                                className="w-12 text-center border border-gray-300 rounded"
-                                            />
-                                            )
-                                        </span>
-                                    ) : (
-                                        match.score1 != null &&
-                                        match.score2 != null && (
-                                            <span className="text-gray-500 ml-1">
-                                                ({match.score1}:{match.score2})
-                                            </span>
-                                        )
-                                    )}
-                                </span>
-                                <span className="flex gap-1 shrink-0">
-                                    {isEditing ? (
-                                        <>
-                                            <button
-                                                onClick={() => handleSaveEditMatch(match)}
-                                                disabled={isSavingEdit}
-                                                className="text-xs px-2 py-1 bg-blue-500 text-white rounded disabled:bg-gray-300"
-                                            >
-                                                {isSavingEdit ? "저장 중..." : "저장"}
-                                            </button>
-                                            <button
-                                                onClick={() => setEditingMatchId(null)}
-                                                disabled={isSavingEdit}
-                                                className="text-xs px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded"
-                                            >
-                                                취소
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <button
-                                                onClick={() => startEditMatch(match)}
-                                                className="text-xs px-2 py-1 bg-gray-100 hover:bg-gray-200 rounded"
-                                            >
-                                                수정
-                                            </button>
-                                            <button
-                                                onClick={() => handleDeleteMatch(match.id)}
-                                                className="text-xs px-2 py-1 bg-red-50 text-red-600 hover:bg-red-100 rounded"
-                                            >
-                                                삭제
-                                            </button>
-                                        </>
-                                    )}
-                                </span>
-                            </div>
-                        );
-                    })}
-                </div>
-            )}
             <div className="shrink-0 text-center py-2">
                 오늘 결과 {data[0]}승 {data[1]}패 {data[2]}득점 {data[3]}실점
             </div>
