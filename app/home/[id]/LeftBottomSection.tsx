@@ -1,6 +1,6 @@
 /**
  * @file /app/home/[id]/LeftBottomSection.tsx
- * @description 메인 대시보드의 왼쪽 하단 섹션. 선수들이 게임을 대기하는 7x5 그리드 판을 표시합니다.
+ * @description 메인 대시보드의 왼쪽 하단 섹션. 선수들이 게임을 대기하는 5x5 그리드 판을 표시합니다.
  * @author Treebird
  * @date 2024-07-16
  */
@@ -40,9 +40,9 @@ export default function LeftBottomSection({
 
     return (
         <div className="h-[70%] p-4 bg-gray-50">
-            <div className="grid grid-cols-[1fr_4fr_4fr_4fr_4fr] grid-rows-7 gap-1 h-full">
-                {/* 35개의 셀을 렌더링 (7행 5열) */}
-                {Array.from({ length: 35 }).map((_, index) => {
+            <div className="grid grid-cols-[1fr_4fr_4fr_4fr_4fr] grid-rows-5 gap-1 h-full">
+                {/* 25개의 셀을 렌더링 (5행 5열) */}
+                {Array.from({ length: 25 }).map((_, index) => {
                     let canStartGame = false;
                     if (index % 5 === 0) {
                         const p1 = gridData[index + 1];
@@ -65,7 +65,7 @@ export default function LeftBottomSection({
                             {/* 첫 번째 열(인덱스가 5의 배수)에는 '게임 시작' 버튼 렌더링 */}
                             {index % 5 === 0 ? (
                                 <button
-                                    className={`px-2 py-1 rounded text-xs shadow transition-colors whitespace-nowrap ${
+                                    className={`px-3 py-2 rounded text-sm shadow transition-colors whitespace-nowrap ${
                                         canStartGame
                                             ? "bg-blue-500 text-white hover:bg-blue-600"
                                             : "bg-gray-400 text-gray-200 cursor-not-allowed"
@@ -80,8 +80,8 @@ export default function LeftBottomSection({
                                 </button>
                             ) : gridData[index] ? (
                                 <>
-                                    <div className="flex flex-row items-center justify-start w-full h-full overflow-hidden p-1 pl-2 pr-4">
-                                        <div className="w-12 h-12 rounded-full bg-gray-200 overflow-hidden flex-shrink-0 mr-2">
+                                    <div className="flex flex-row items-center justify-start w-full h-full overflow-hidden p-2 pl-3 pr-5">
+                                        <div className="w-16 h-16 rounded-full bg-gray-200 overflow-hidden flex-shrink-0 mr-3">
                                             {gridData[index].avater ? (
                                                 <img
                                                     src={
@@ -100,20 +100,20 @@ export default function LeftBottomSection({
                                         </div>
                                         {/* 선수 정보 (이름, 나이, 급수, 경기 수 등) */}
                                         <div className="text-left leading-tight min-w-0 flex-1">
-                                            <div className="flex items-center gap-1 h-5 w-full min-w-0">
-                                                <span className="font-bold text-sm truncate min-w-0 flex-1">
+                                            <div className="flex items-center gap-1 h-6 w-full min-w-0">
+                                                <span className="font-bold text-lg truncate min-w-0 flex-1">
                                                     {gridData[index].name}
                                                 </span>
                                                 {gridData[index].isJoinLeague && (
-                                                    <span className="px-1 py-0.5 rounded bg-indigo-100 text-indigo-700 text-[10px] font-bold whitespace-nowrap flex-shrink-0">
+                                                    <span className="px-1.5 py-0.5 rounded bg-indigo-100 text-indigo-700 text-xs font-bold whitespace-nowrap flex-shrink-0">
                                                         리그참가
                                                     </span>
                                                 )}
                                             </div>
-                                            <span className="text-xs text-gray-500 block">
+                                            <span className="text-sm text-gray-500 block">
                                                 {gridData[index].age} • {gridData[index].grade}조
                                             </span>
-                                            <span className="text-xs text-blue-600 font-bold block">
+                                            <span className="text-sm text-blue-600 font-bold block">
                                                 {getTodayGameCount(gridData[index].gameDatas)}경기
                                             </span>
                                         </div>
@@ -121,13 +121,13 @@ export default function LeftBottomSection({
                                     {/* isSaved가 true일 때만 제거 버튼 표시 (DB에 저장된 항목) */}
                                     {gridData[index].isSaved && (
                                         <button
-                                            className="absolute top-0 right-0 text-red-500 hover:text-red-700 p-0.5 leading-none"
+                                            className="absolute top-0.5 right-0.5 text-red-500 hover:text-red-700 p-1 leading-none"
                                             onClick={(e) => {
                                                 e.stopPropagation();
                                                 onRemovePlayer?.(index);
                                             }}
                                         >
-                                            <span className="text-xs font-bold">✕</span>
+                                            <span className="text-sm font-bold">✕</span>
                                         </button>
                                     )}
                                 </>

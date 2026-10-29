@@ -38,6 +38,10 @@ import AddPlayerModal from "./AddPlayerModal";
 import { processBettingResult } from "./processBettingAction";
 import { getMemberMessages, markMemberMessageRead } from "@/lib/memberMessage";
 
+/** 대기 게임판의 줄 수(한 줄 = 게임시작 버튼 1칸 + 선수 4칸)와 전체 칸 수. */
+const WAIT_GRID_ROWS = 5;
+const WAIT_GRID_SIZE = WAIT_GRID_ROWS * 5;
+
 /**
  * 한글 초성을 추출하기 위한 배열
  */
@@ -104,8 +108,8 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
     const [isRefreshing, setIsRefreshing] = useState(false);
     /** @type {number | null} 대기 게임판에서 선택된 셀의 인덱스 */
     const [selectedCell, setSelectedCell] = useState<number | null>(1);
-    /** @type {(any | null)[]} 35칸의 대기 게임판 데이터. 각 셀에는 선수 정보 또는 null이 저장됩니다. */
-    const [gridData, setGridData] = useState<(any | null)[]>(Array(35).fill(null));
+    /** @type {(any | null)[]} 25칸의 대기 게임판 데이터. 각 셀에는 선수 정보 또는 null이 저장됩니다. */
+    const [gridData, setGridData] = useState<(any | null)[]>(Array(WAIT_GRID_SIZE).fill(null));
     /** @type {number} 클럽의 총 코트 수 */
     const [howManyCourts, setHowManyCourts] = useState<number>(0);
     /** @type {number} 다음 게임이 배정될 코트 인덱스 (0-based) */
@@ -197,10 +201,10 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         );
 
         // 대기 게임판(gridData) 상태 설정
-        const newGridData = Array(35).fill(null);
+        const newGridData = Array(WAIT_GRID_SIZE).fill(null);
         if (waitGameData && Array.isArray(waitGameData)) {
             waitGameData.forEach((game: any) => {
-                if (game.point !== null && game.point >= 0 && game.point < 35) {
+                if (game.point !== null && game.point >= 0 && game.point < WAIT_GRID_SIZE) {
                     const player = latestPlayers.find((p: any) => p.id === game.playerid);
                     if (player) {
                         newGridData[game.point] = { ...player, isSaved: true };
@@ -246,10 +250,10 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         setCourtPointer(nextEmptyCourt);
 
         let firstEmptyIndex = 0;
-        while (firstEmptyIndex < 35 && (firstEmptyIndex % 5 === 0 || newGridData[firstEmptyIndex])) {
+        while (firstEmptyIndex < WAIT_GRID_SIZE && (firstEmptyIndex % 5 === 0 || newGridData[firstEmptyIndex])) {
             firstEmptyIndex++;
         }
-        setSelectedCell(firstEmptyIndex < 35 ? firstEmptyIndex : 1);
+        setSelectedCell(firstEmptyIndex < WAIT_GRID_SIZE ? firstEmptyIndex : 1);
 
         console.log(data);
         setIsLoading(false);
@@ -464,19 +468,19 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
 
         // 다음 비어있는 셀을 찾아 selectedCell로 설정
         let nextCell = selectedCell + 1; // 현재 셀 다음부터 탐색 시작
-        while (nextCell < 35 && (nextCell % 5 === 0 || newGridData[nextCell])) {
+        while (nextCell < WAIT_GRID_SIZE && (nextCell % 5 === 0 || newGridData[nextCell])) {
             nextCell++;
         }
 
-        if (nextCell < 35) {
+        if (nextCell < WAIT_GRID_SIZE) {
             setSelectedCell(nextCell);
         } else {
             // 끝까지 탐색했는데 빈 셀이 없으면 처음부터 다시 탐색
             let nextEmpty = 1;
-            while (nextEmpty < 35 && (nextEmpty % 5 === 0 || newGridData[nextEmpty])) {
+            while (nextEmpty < WAIT_GRID_SIZE && (nextEmpty % 5 === 0 || newGridData[nextEmpty])) {
                 nextEmpty++;
             }
-            setSelectedCell(nextEmpty < 35 ? nextEmpty : 1);
+            setSelectedCell(nextEmpty < WAIT_GRID_SIZE ? nextEmpty : 1);
         }
 
         const waitGameList = newGridData
@@ -565,8 +569,8 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
 
         // 게임 시작한 줄을 대기 게임판에서 제거하고, 그 아래 줄들을 한 줄씩 그대로 위로 당깁니다.
         const startedRow = Math.floor(startIndex / 5);
-        const totalRows = 7; // 35칸 / 5칸(줄당)
-        const newGridData = Array(35).fill(null);
+        const totalRows = WAIT_GRID_ROWS;
+        const newGridData = Array(WAIT_GRID_SIZE).fill(null);
 
         // 시작된 줄보다 위에 있는 줄들은 그대로 유지합니다.
         for (let r = 0; r < startedRow; r++) {
@@ -586,10 +590,10 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
 
         // 다음 선택될 셀을 첫 번째 빈 칸으로 설정
         let firstEmptyIndex = 0;
-        while (firstEmptyIndex < 35 && (firstEmptyIndex % 5 === 0 || newGridData[firstEmptyIndex])) {
+        while (firstEmptyIndex < WAIT_GRID_SIZE && (firstEmptyIndex % 5 === 0 || newGridData[firstEmptyIndex])) {
             firstEmptyIndex++;
         }
-        setSelectedCell(firstEmptyIndex < 35 ? firstEmptyIndex : null);
+        setSelectedCell(firstEmptyIndex < WAIT_GRID_SIZE ? firstEmptyIndex : null);
 
         try {
             // DB에 경기 생성 및 시작 정보 기록
