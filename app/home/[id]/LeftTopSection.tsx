@@ -6,6 +6,9 @@
  */
 import { useEffect, useState } from "react";
 
+// 화면의 세로 해상도가 이 값 이하이면 선수 사진 없이 이름/급수만 표시합니다.
+const COMPACT_SCREEN_HEIGHT = 800;
+
 /**
  * LeftTopSection 컴포넌트
  * @param {object} props - 컴포넌트 프로퍼티
@@ -75,8 +78,18 @@ export default function LeftTopSection({
         courtsContainerClass = "grid grid-cols-4 grid-rows-2 h-full gap-2";
     }
 
+    // 화면의 세로 해상도가 부족하면 사진 없이 이름/급수만 표시하는 compact 모드로 전환합니다.
+    const [isCompact, setIsCompact] = useState(false);
+
+    useEffect(() => {
+        const checkHeight = () => setIsCompact(window.innerHeight <= COMPACT_SCREEN_HEIGHT);
+        checkHeight();
+        window.addEventListener("resize", checkHeight);
+        return () => window.removeEventListener("resize", checkHeight);
+    }, []);
+
     return (
-        <div className="h-[30%] p-4 bg-gray-50">
+        <div className="flex-[3] min-h-0 p-4 bg-gray-50">
             <div className={courtsContainerClass}>
                 {/* 클럽의 코트 수만큼 코트 컴포넌트를 렌더링 */}
                 {Array.from({ length: howManyCourts }).map((_, index) => {
@@ -89,14 +102,13 @@ export default function LeftTopSection({
                         courtData.p3?.isJoinLeague &&
                         courtData.p4?.isJoinLeague;
 
-                    const avatarSizeClass = "w-12 h-12";
-                    const nameOverlayTextClass = isTwoRows ? "text-[21px]" : "text-[10px]";
-
                     return (
                         <div
                             key={index}
                             // courtPointer와 인덱스가 일치하는 코트(다음에 게임이 배정될 코트)는 다른 배경색으로 강조
-                            className={`relative flex-1 flex flex-col items-center justify-center rounded shadow-sm cursor-pointer overflow-hidden ${
+                            // courtData가 있을 땐 상단 헤더/하단 버튼을 shrink-0으로 고정하고 가운데 아바타 영역만
+                            // flex-1로 줄어들게 하여, 칸이 좁아도 헤더와 버튼이 절대 짤리지 않도록 합니다.
+                            className={`relative flex-1 flex flex-col items-center ${courtData ? "justify-start" : "justify-center"} rounded shadow-sm cursor-pointer overflow-hidden ${
                                 isTwoRows ? "p-0" : "p-2"
                             } ${courtPointer === index ? "bg-green-500" : "bg-white"}`}
                             onClick={() => setCourtPointer(index)}
@@ -118,7 +130,7 @@ export default function LeftTopSection({
                                 className={
                                     isTwoRows
                                         ? "absolute top-0.5 inset-x-0 flex items-center justify-center z-10"
-                                        : "flex items-center justify-center"
+                                        : "shrink-0 flex items-center justify-center"
                                 }
                             >
                                 <span
@@ -147,25 +159,48 @@ export default function LeftTopSection({
                                             </span>
                                         </button>
                                     )}
-                                    {/* 게임에 참여 중인 선수 얼굴 (이름은 사진 하단에 겹쳐서 표시) */}
+                                    {/* 게임에 참여 중인 선수 표시.
+                                        칸의 실제 높이가 부족(세로 해상도 부족)하면 사진 없이 이름/급수만 크게 표시하고,
+                                        충분하면 사진+이름을 겹쳐서 표시합니다 (isCompact: 실측 높이 기준). */}
                                     <div
                                         className={
                                             isTwoRows
-                                                ? "flex flex-row justify-center w-full gap-0"
-                                                : "grid grid-cols-2 w-full gap-2 mt-2 px-2"
+                                                ? "flex-1 min-h-0 flex flex-row justify-center items-stretch w-full gap-0"
+                                                : "flex-1 min-h-0 grid grid-cols-2 grid-rows-2 w-full gap-2 mt-2 px-2"
                                         }
                                     >
                                         {[courtData.p1, courtData.p2, courtData.p3, courtData.p4].map(
                                             (player, playerIndex) => {
+                                                if (isCompact) {
+                                                    return (
+                                                        <div
+                                                            key={playerIndex}
+                                                            className={`flex-1 min-w-0 flex flex-row items-baseline justify-center gap-1 px-0.5 ${
+                                                                isTwoRows && playerIndex > 0 ? "border-l border-black/10" : ""
+                                                            }`}
+                                                        >
+                                                            <span
+                                                                className={`font-bold text-center truncate leading-tight text-base ${
+                                                                    courtPointer === index ? "text-white" : "text-gray-800"
+                                                                }`}
+                                                            >
+                                                                {player?.name}
+                                                            </span>
+                                                            <span
+                                                                className={`font-bold text-center leading-tight text-sm shrink-0 ${
+                                                                    courtPointer === index ? "text-white/90" : "text-blue-600"
+                                                                }`}
+                                                            >
+                                                                {player?.grade}조
+                                                            </span>
+                                                        </div>
+                                                    );
+                                                }
                                                 const avatarSrc = getAvatarSrc(player);
                                                 return (
                                                     <div
                                                         key={playerIndex}
-                                                        className={
-                                                            isTwoRows
-                                                                ? "relative flex-1 aspect-square min-w-0 rounded-lg bg-gray-200 overflow-hidden flex items-center justify-center"
-                                                                : `relative mx-auto rounded-lg bg-gray-200 overflow-hidden flex-shrink-0 flex items-center justify-center ${avatarSizeClass}`
-                                                        }
+                                                        className="relative h-full aspect-square max-w-full min-w-0 min-h-0 mx-auto rounded-lg bg-gray-200 overflow-hidden flex items-center justify-center"
                                                     >
                                                         {avatarSrc ? (
                                                             <img
@@ -177,9 +212,7 @@ export default function LeftTopSection({
                                                             <span className="text-[9px] text-gray-400">No</span>
                                                         )}
                                                         {/* 이름표: 사진 하단에 겹쳐서 표시 */}
-                                                        <span
-                                                            className={`absolute bottom-0 left-0 right-0 bg-black/50 text-white font-bold text-center truncate leading-tight px-0.5 ${nameOverlayTextClass}`}
-                                                        >
+                                                        <span className="absolute bottom-0 left-0 right-0 bg-black/50 text-white font-bold text-center truncate leading-tight px-0.5 text-[10px]">
                                                             {player?.name}
                                                         </span>
                                                     </div>
@@ -190,7 +223,7 @@ export default function LeftTopSection({
                                     {!courtData.isLoading && (
                                         // 경기완료 버튼: 코트 카드 하단에 배치
                                         <button
-                                            className={`bg-blue-600 hover:bg-blue-700 text-white font-bold rounded shadow-sm transition-colors z-10 ${
+                                            className={`shrink-0 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded shadow-sm transition-colors z-10 ${
                                                 isTwoRows ? "mt-0.5 mb-0.5 px-2 py-0.5 text-[10px]" : "mt-2 px-3 py-1 text-xs"
                                             }`}
                                             onClick={(e) => {

@@ -895,7 +895,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
 
     return (
         <div className="flex h-screen p-4 gap-4">
-            <div className="w-[70%] flex flex-col gap-4">
+            <div className="w-[70%] flex flex-col gap-4 min-h-0">
                 <LeftTopSection
                     howManyCourts={howManyCourts}
                     courtPointer={courtPointer}
@@ -904,7 +904,7 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                     onGameEnd={handleGameEnd}
                     onGameCancel={handleGameCancel}
                 />
-                <div className="flex items-center justify-between p-2 bg-gray-100 rounded-md text-sm text-gray-700 relative">
+                <div className="shrink-0 flex items-center justify-between p-2 bg-gray-100 rounded-md text-sm text-gray-700 relative">
                     <div className="w-full flex justify-center">
                         {displayInfoCell !== null ? <span>{getRowMatchIds(displayInfoCell)}</span> : "선택된 셀 없음"}
                     </div>
