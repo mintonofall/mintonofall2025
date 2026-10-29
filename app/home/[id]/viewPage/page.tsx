@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useActionState } from "react";
+import { useEffect, useRef, useState, useActionState } from "react";
 import {
     getClub,
     getMatch,
@@ -173,23 +173,39 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
             .catch((error) => console.error("클럽 가입 상태를 확인하는 중 오류가 발생했습니다:", error));
     }, [user?.id, clubId]);
 
-    const handleRequestJoin = async () => {
+    const requestJoin = async (options?: { silent?: boolean }) => {
         if (!user || clubId === null || isRequestingJoin) return;
         setIsRequestingJoin(true);
         try {
             const result = await requestJoinClub(clubId, user.id);
             if (result?.success) {
                 setMembershipStatus((prev) => (prev ? { ...prev, isPending: true } : prev));
-            } else {
+            } else if (!options?.silent) {
                 alert("가입 요청에 실패했습니다.");
             }
         } catch (error) {
             console.error("가입 요청 중 오류가 발생했습니다:", error);
-            alert("가입 요청에 실패했습니다.");
+            if (!options?.silent) alert("가입 요청에 실패했습니다.");
         } finally {
             setIsRequestingJoin(false);
         }
     };
+
+    const handleRequestJoin = () => requestJoin();
+
+    /**
+     * QR코드로 뷰페이지에 들어온 사람이 로그인 상태이거나 뷰페이지에서 로그인했다면,
+     * 해당 클럽에 자동으로 가입신청을 보냅니다 (한 번만 시도).
+     */
+    const hasAutoRequestedJoinRef = useRef(false);
+    useEffect(() => {
+        if (!user || clubId === null || !membershipStatus) return;
+        if (membershipStatus.isOwner || membershipStatus.isJoined || membershipStatus.isPending) return;
+        if (hasAutoRequestedJoinRef.current) return;
+        hasAutoRequestedJoinRef.current = true;
+        requestJoin({ silent: true });
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [user, clubId, membershipStatus]);
 
     useEffect(() => {
         const fetchUser = async () => {
