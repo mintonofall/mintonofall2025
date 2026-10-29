@@ -409,6 +409,22 @@ export default function ViewPage({ params }: { params: Promise<{ id: string }> }
         <div className="bg-gray-100 min-h-screen pb-24">
             {/* 상단 헤더 (유저 상태 표시) */}
             <div className="sticky top-0 z-40 bg-white shadow-sm border-b border-gray-200">
+                <div className="flex justify-end px-4 pt-2">
+                    <Link
+                        href="/indexPage"
+                        className="p-1.5 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                        title="홈으로"
+                    >
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h3a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1h3a1 1 0 001-1V10"
+                            />
+                        </svg>
+                    </Link>
+                </div>
                 <div className="flex justify-between items-center p-4">
                 {user ? (
                     <>
