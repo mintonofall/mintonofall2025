@@ -15,20 +15,20 @@ export default async function Index() {
     }
 
     const saju = user.saju as SajuResult | null;
-    const sajuSummary = saju
-        ? [ELEMENT_STYLE[saju.baseElement].style, saju.zodiac].filter(Boolean).join(" · ")
-        : null;
+    const sajuSummary = saju ? [ELEMENT_STYLE[saju.baseElement].style, saju.zodiac].filter(Boolean).join(" · ") : null;
     const style = user.style as StyleResult | null;
     const styleSummary = style ? "측정완료" : null;
 
     return (
         <div className="relative flex flex-col items-center space-y-4 p-4">
-            <Link
-                href={`/mypage`}
-                className="absolute top-4 right-4 text-blue-500 hover:text-blue-700 font-semibold"
-            >
-                마이페이지
-            </Link>
+            <div className="absolute top-4 right-4 flex items-center gap-4">
+                <Link href={`/board`} className="text-blue-500 hover:text-blue-700 font-semibold">
+                    게시판
+                </Link>
+                <Link href={`/mypage`} className="text-blue-500 hover:text-blue-700 font-semibold">
+                    마이페이지
+                </Link>
+            </div>
             <h1>어서오세요 {user?.userName} </h1>
             <div className="flex flex-col items-stretch gap-4 w-64 sm:w-72">
                 <Link href={"/home/"} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
@@ -39,9 +39,6 @@ export default async function Index() {
                 </Link> */}
                 <Link href={`/diary/${user!.id}`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
                     일지작성
-                </Link>
-                <Link href={`/board`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
-                    모두의민턴 게시판
                 </Link>
                 <div className="flex items-center justify-between">
                     <Link href={`/mbti`} className="text-blue-500 hover:text-blue-700 font-semibold text-lg">
