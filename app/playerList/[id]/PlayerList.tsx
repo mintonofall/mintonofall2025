@@ -23,7 +23,11 @@ export default function PlayerListComponent({ playerList, id }: { playerList: Pl
 
     const handleDelete = async (playerId: number) => {
         if (confirm("정말 이 플레이어를 삭제하시겠습니까?")) {
-            await deletePlayer(playerId, id);
+            const result = await deletePlayer(playerId, id);
+            if (result && "error" in result) {
+                alert(result.error);
+                return;
+            }
             setPlayers((prevPlayers) => prevPlayers.filter((p) => p.id !== playerId));
         }
     };

@@ -4,11 +4,38 @@ import db from "@/lib/db";
 import { revalidatePath } from "next/cache";
 import { Prisma } from "@prisma/client";
 
+/**
+ * 선수를 삭제합니다. 다만 현재 게임 현황판(코트)에 올라가 있거나 진행 중인 경기(아직 끝나지 않은
+ * Match)에 포함되어 있으면, 경기 기록이 꼬이지 않도록 삭제를 막습니다.
+ */
 export async function deletePlayer(playerId: number, clubId: number) {
+    const playerCondition = [
+        { player1id: playerId },
+        { player2id: playerId },
+        { player3id: playerId },
+        { player4id: playerId },
+    ];
+
+    const [onGameBoard, inActiveMatch] = await Promise.all([
+        db.gameBoard.findFirst({
+            where: { clubid: clubId, OR: playerCondition },
+        }),
+        db.match.findFirst({
+            where: { clubid: clubId, endTime: null, OR: playerCondition },
+        }),
+    ]);
+
+    if (onGameBoard || inActiveMatch) {
+        return {
+            error: "현재 게임 현황판이나 진행 중인 경기에 포함된 선수는 삭제할 수 없습니다. 경기를 종료한 뒤 다시 시도해주세요.",
+        };
+    }
+
     await db.player.delete({
         where: { id: playerId },
     });
     revalidatePath(`/playerList/${clubId}`);
+    return { success: true as const };
 }
 
 /**
