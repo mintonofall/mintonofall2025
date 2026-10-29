@@ -6,7 +6,7 @@ import { handleForm } from "./action";
 
 export default function CreatePlayerMany({ params }: { params: Promise<{ clubid: string }> }) {
     const [id, setId] = useState<number | null>(null);
-    const [, action] = useActionState(handleForm, null);
+    const [, action, isPending] = useActionState(handleForm, null);
     useEffect(() => {
         async function fetchParams() {
             const resolvedParams = (await params).clubid;
@@ -77,8 +77,12 @@ export default function CreatePlayerMany({ params }: { params: Promise<{ clubid:
                     </div>
                 ))}
                 <input type="hidden" name="clubid" value={String(id)} />
-                <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">
-                    선수등록
+                <button
+                    type="submit"
+                    disabled={isPending}
+                    className="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                >
+                    {isPending ? "등록 중..." : "선수등록"}
                 </button>
                 <Link href={`/home/${id}`}>
                     <div className="mt-4 bg-gray-500 text-center text-white p-2 rounded hover:bg-gray-600">
