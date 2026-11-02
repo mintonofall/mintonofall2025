@@ -6,7 +6,7 @@
  */
 import { useEffect, useState } from "react";
 
-// 화면의 세로 해상도가 이 값 이하이면 선수 사진 없이 이름/급수만 표시합니다.
+// 화면의 세로 해상도가 이 값 이하이면 선수 사진 없이 이름만 표시합니다.
 const COMPACT_SCREEN_HEIGHT = 800;
 
 /**
@@ -175,23 +175,16 @@ export default function LeftTopSection({
                                                     return (
                                                         <div
                                                             key={playerIndex}
-                                                            className={`flex-1 min-w-0 flex flex-row items-baseline justify-center gap-1 px-0.5 ${
+                                                            className={`flex-1 min-w-0 flex flex-col items-center justify-center ${
                                                                 isTwoRows && playerIndex > 0 ? "border-l border-black/10" : ""
                                                             }`}
                                                         >
                                                             <span
-                                                                className={`font-bold text-center truncate leading-tight text-base ${
+                                                                className={`w-full min-w-0 font-bold text-center truncate leading-tight text-lg ${
                                                                     courtPointer === index ? "text-white" : "text-gray-800"
                                                                 }`}
                                                             >
                                                                 {player?.name}
-                                                            </span>
-                                                            <span
-                                                                className={`font-bold text-center leading-tight text-sm shrink-0 ${
-                                                                    courtPointer === index ? "text-white/90" : "text-blue-600"
-                                                                }`}
-                                                            >
-                                                                {player?.grade}조
                                                             </span>
                                                         </div>
                                                     );

@@ -14,36 +14,36 @@ import { ZODIAC_STYLE } from "@/lib/zodiac";
  * @param {any[]} props.waitPlayerList - 대기 선수 목록 배열
  * @param {(id: number) => void} props.onExit - 선수 퇴장 처리 함수
  * @param {(player: any) => void} props.onPlayerClick - 선수 클릭(게임판에 추가) 처리 함수
- * @param {any[]} props.gridData - 현재 게임판 데이터 (선수 상태 표시에 사용)
  * @param {any[]} props.courts - 현재 코트 데이터 (선수 상태 표시에 사용)
  * @param {(criteria: string) => void} props.onSort - 정렬 기준 변경 함수
  * @param {string} props.currentSort - 현재 정렬 기준
  * @param {number} props.nameCharIndex - 이름 정렬 시 기준 글자 위치 (0: 첫번째 글자, 1: 두번째 글자)
  * @param {(player: any) => void} props.onEdit - 선수 정보 수정 모달 열기 함수
  * @param {(player: any) => void} props.onHistoryClick - 선수 경기 기록 모달 열기 함수
+ * @param {Record<number, number>} props.waitEntryCounts - 선수별로 오늘 대기 게임판에 들어간 누적 횟수
  */
 export default function RightSection({
     waitPlayerList = [],
     onExit,
     onPlayerClick,
-    gridData = [],
     courts = [],
     onSort,
     currentSort,
     nameCharIndex = 0,
     onEdit,
     onHistoryClick,
+    waitEntryCounts = {},
 }: {
     waitPlayerList?: any[];
     onExit?: (id: number) => void;
     onPlayerClick?: (player: any) => void;
-    gridData?: any[];
     courts?: any[];
     onSort?: (criteria: string) => void;
     currentSort?: string;
     nameCharIndex?: number;
     onEdit?: (player: any) => void;
     onHistoryClick?: (player: any) => void;
+    waitEntryCounts?: Record<number, number>;
 }) {
     /** @type {Date} 현재 시간을 저장하는 상태. 1분마다 업데이트되어 경과 시간을 다시 계산합니다. */
     const [now, setNow] = useState(new Date());
@@ -127,16 +127,18 @@ export default function RightSection({
                                 court.p4?.id === player.id),
                     );
 
+                    // 오늘 대기 게임판에 들어간 누적 횟수가 많을수록 더 진한 핑크색으로 표시
+                    const entryCount = waitEntryCounts[player.id] ?? 0;
+                    const PINK_SHADE_BY_ENTRY_COUNT = ["bg-white", "bg-pink-200", "bg-pink-300", "bg-pink-400", "bg-pink-500"];
+                    const pinkShade = PINK_SHADE_BY_ENTRY_COUNT[Math.min(entryCount, PINK_SHADE_BY_ENTRY_COUNT.length - 1)];
+
                     return (
                         <div
                             key={player.id}
-                            // 선수의 상태(대기판에 있는지, 게임 중인지)에 따라 배경색을 다르게 표시
+                            // 선수의 상태(대기판 누적 입장 횟수, 게임 중인지)에 따라 배경색을 다르게 표시
+                            // 코트에서 게임 중이면 녹색을 우선 표시
                             className={`relative p-2 rounded shadow flex justify-between items-center cursor-pointer hover:bg-gray-50 ${
-                                gridData.some((p) => p && p.id === player.id)
-                                    ? "bg-green-100"
-                                    : isPlaying
-                                      ? "bg-green-300"
-                                      : "bg-white"
+                                isPlaying ? "bg-green-300" : pinkShade
                             }`}
                             onClick={() => onPlayerClick?.(player)}
                         >

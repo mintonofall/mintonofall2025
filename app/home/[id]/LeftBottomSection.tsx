@@ -39,7 +39,7 @@ export default function LeftBottomSection({
     };
 
     return (
-        <div className="flex-[7] min-h-0 p-4 bg-gray-50">
+        <div className="flex-[7] min-h-0 p-4 bg-pink-50">
             <div className="grid grid-cols-[1fr_4fr_4fr_4fr_4fr] grid-rows-5 gap-1 h-full">
                 {/* 25개의 셀을 렌더링 (5행 5열) */}
                 {Array.from({ length: 25 }).map((_, index) => {
@@ -56,7 +56,7 @@ export default function LeftBottomSection({
                             key={index}
                             // 첫 번째 열(게임 시작 버튼)과 선택된 셀은 다른 배경색을 가짐 (border 클래스 제거)
                             className={`flex items-center justify-center relative ${
-                                index % 5 === 0 ? "bg-gray-200" : selectedCell === index ? "bg-blue-200" : "bg-white"
+                                index % 5 === 0 ? "bg-gray-200" : selectedCell === index ? "bg-blue-200" : "bg-pink-100"
                             }`}
                             onClick={() => {
                                 if (index % 5 !== 0) onCellClick(index);

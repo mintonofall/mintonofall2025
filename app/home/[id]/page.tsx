@@ -110,6 +110,8 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
     const [selectedCell, setSelectedCell] = useState<number | null>(1);
     /** @type {(any | null)[]} 25칸의 대기 게임판 데이터. 각 셀에는 선수 정보 또는 null이 저장됩니다. */
     const [gridData, setGridData] = useState<(any | null)[]>(Array(WAIT_GRID_SIZE).fill(null));
+    /** @type {Record<number, number>} 선수별로 오늘 대기 게임판에 들어간 누적 횟수 (입장 명단 색 표시에 사용) */
+    const [waitEntryCounts, setWaitEntryCounts] = useState<Record<number, number>>({});
     /** @type {number} 클럽의 총 코트 수 */
     const [howManyCourts, setHowManyCourts] = useState<number>(0);
     /** @type {number} 다음 게임이 배정될 코트 인덱스 (0-based) */
@@ -460,6 +462,9 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         newGridData[selectedCell] = updatedPlayer;
         setGridData(newGridData);
 
+        // 선수가 대기 게임판에 들어간 누적 횟수를 1 증가 (입장 명단 색 표시에 사용)
+        setWaitEntryCounts((prev) => ({ ...prev, [player.id]: (prev[player.id] ?? 0) + 1 }));
+
         // 대기 명단에서 선수의 클릭 시간을 업데이트하여 순서를 조정
         setWaitPlayerList((prev) => {
             const newList = prev.filter((p) => p.id !== player.id);
@@ -716,11 +721,6 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
         const isLeagueGame =
             court.p1?.isJoinLeague && court.p2?.isJoinLeague && court.p3?.isJoinLeague && court.p4?.isJoinLeague;
 
-        if (isLeagueGame && winnersKey.length !== 2) {
-            alert("리그게임은 반드시 승리자 2명을 선택해야 합니다.");
-            return;
-        }
-
         const winnerIds = winnersKey.map((key) => court[key].id);
 
         setCourts((prev) => {
@@ -938,13 +938,13 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                 waitPlayerList={sortedWaitPlayerList}
                 onExit={handleExit}
                 onPlayerClick={handlePlayerSelect}
-                gridData={gridData}
                 courts={courts}
                 onSort={handleSort}
                 currentSort={sortCriteria}
                 nameCharIndex={nameCharIndex}
                 onEdit={(player) => setEditModal({ isOpen: true, player })}
                 onHistoryClick={handleHistoryClick}
+                waitEntryCounts={waitEntryCounts}
             />
 
             <GameResultModal
@@ -1120,16 +1120,18 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                                             선수입장 ({selectedPlayerIds.length})
                                         </button>
                                     )}
-                                    <button
-                                        className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600"
-                                        onClick={() => {
-                                            setAddModalOpen(true);
-                                            setShowPlayerList(false);
-                                            setSelectedPlayerIds([]);
-                                        }}
-                                    >
-                                        선수 추가
-                                    </button>
+                                    {selectedPlayerIds.length === 0 && (
+                                        <button
+                                            className="px-3 py-1 bg-green-500 text-white text-sm rounded hover:bg-green-600"
+                                            onClick={() => {
+                                                setAddModalOpen(true);
+                                                setShowPlayerList(false);
+                                                setSelectedPlayerIds([]);
+                                            }}
+                                        >
+                                            선수 추가
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                             <input
@@ -1154,7 +1156,10 @@ export default function TestPage({ params }: { params: Promise<{ id: string }> }
                                 .map((player, index) => (
                                     <div
                                         key={index}
-                                        className="flex items-center gap-3 p-3 border rounded hover:bg-gray-50"
+                                        // 이미 입장 중인 선수는 옅은 녹색으로 표시
+                                        className={`flex items-center gap-3 p-3 border rounded hover:bg-gray-50 ${
+                                            waitPlayerList.some((p) => p.id === player.id) ? "bg-green-100" : ""
+                                        }`}
                                     >
                                         <input
                                             type="checkbox"
